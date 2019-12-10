@@ -1,0 +1,10 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    name:
+        label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.name
+    slug:
+        label: waka.utils::lang.global.slug
+        preset: name

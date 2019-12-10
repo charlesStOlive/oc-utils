@@ -1,0 +1,65 @@
+<?php namespace {{studly_author}}\{{studly_plugin}}\Injectors;
+
+use Event;
+
+use {{studly_targetAuthor}}\{{studly_targetPlugin}}\Controllers\{{studly_targetName}}s as {{studly_plural_targetName}}Controller;
+use {{studly_targetAuthor}}\{{studly_targetPlugin}}\Models\User as {{studly_targetName}}Model;
+
+class {{studly_name}}{{studly_targetName}}
+{
+
+    static function inject()
+    {
+
+        {{studly_targetName}}Model::extend(function ($model) {
+            $model->belongsTo['{{lower_name}}'] = ['{{studly_author}}\{{studly_plugin}}\Models\{{studly_name}}'];
+        });
+
+        {{studly_targetName}}sController::extend(function ($controller) {
+
+            // Implement behavior if not already implemented
+            if (!$controller->isClassExtendedWith('Backend.Behaviors.RelationController')) {
+                $controller->implement[] = 'Backend.Behaviors.RelationController';
+            }
+
+            // Define property if not already defined
+            if (!isset($controller->relationConfig)) {
+                $controller->addDynamicProperty('relationConfig');
+            }
+
+            // Splice in configuration safely
+            $myConfigPath = '$/{{lower_author}}/{{lower_plugin}}/controllers/injectors/{{lower_targetName}}/config_relation.yaml';
+
+            $controller->relationConfig = $controller->mergeConfig(
+                $controller->relationConfig,
+                $myConfigPath
+            );
+
+        });
+
+        Event::listen('backend.form.extendFields', function ($widget) {
+
+            // Only for the User controller
+            if (!$widget->getController() instanceof {{snake_plural_targetName}}Controller) {
+                return;
+            }
+
+            // Only for the User model
+            if (!$widget->model instanceof {{studly_targetName}}Model) {
+                return;
+            }
+
+            // Add an extra birthday field
+            $widget->addTabFields([
+                '{{lower_name}}' => [
+                    'label' => '{{studly_name}}',
+                    'path' => '$/{{lower_author}}/{{lower_plugin}}/controllers/injectors/{{lower_targetName}}/_field_{{lower_name}}.htm',
+                    'type' => 'partial',
+                    'tab' => '{{studly_name}}',
+                ],
+            ]);
+        });
+
+    }
+
+}

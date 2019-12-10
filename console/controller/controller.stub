@@ -1,0 +1,46 @@
+<?php namespace {{studly_author}}\{{studly_plugin}}\Controllers;
+
+use BackendMenu;
+use Backend\Classes\Controller;
+
+/**
+ * {{title_name}} Back-end Controller
+ */
+class {{studly_name}} extends Controller
+{
+    public $implement = [
+        'Backend.Behaviors.FormController',
+        'Backend.Behaviors.ListController',
+    {% if addDuplicateBehavior %}
+        'Waka.Utils.Behaviors.DuplicateModel',
+    {% endif %}
+    {% if addReorderBehavior %}
+        'Backend.Behaviors.ReorderController',
+    {% endif %}
+        
+    ];
+
+    public $formConfig = 'config_form.yaml';
+    public $listConfig = 'config_list.yaml';
+    {% if addDuplicateBehavior %}
+    public $duplicateConfig = 'config_duplicate.yaml';
+
+    {% endif %}
+    {% if addReorderBehavior %}
+    public $reorderConfig  = 'config_reorder.yaml';
+
+    {% endif %}
+    {% if addSideBar %}
+    /**
+    * @var string Body CSS class to add to the layout.
+    */
+    public $bodyClass = 'compact-container';
+    
+    {% endif %}
+    public function __construct()
+    {
+        parent::__construct();
+
+        BackendMenu::setContext('{{studly_author}}.{{studly_plugin}}', '{{lower_plugin}}', '{{lower_name}}');
+    }
+}

@@ -1,0 +1,51 @@
+# ===================================
+#  Duplicate Behavior Config
+# 
+# ATTENTION LE TITRE NE DOIT PAS AVOIR D ESPACE
+
+# Model Class name
+modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_model}}
+
+name: {{lower_name}}
+title: waka.utils::lang.global.duplicate_the {{studly_model}}
+redirect: backend/{{lower_author}}/{{lower_plugin}}/{{lower_name}}/update/
+
+duplication:
+    #Les champs dans le tableau relation seront cloné et attaché au nouveau model 
+    # relations:
+    #     - quotesdetails
+
+    #Les champs dans le tableau transformation auront les valeurs listé ci dessous 
+    # transformation:
+    #     quotestatus_id: 1
+    #     code: null
+    #     unblock: false
+
+    #Les champs qui seront modifié dans le formulaire du popup 
+    fields:
+        name:
+          label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_model}}.name 
+
+        # _keep:
+        #   label: Dupliquer dans ce projet
+        #   type: checkbox
+        #   default: 0
+
+        # project:
+        #   label: Choisissez un projet
+        #   type: relation
+        #   placeholder: -- choisissez un projet --
+        #   select: concat(name,' | ' ,code)
+        #   trigger:
+        #     action: hide
+        #     field: _keep
+        #     condition: checked
+
+
+
+          
+    
+        
+
+
+

@@ -1,0 +1,16 @@
+# ===================================
+#  Relation Behavior Config
+# ===================================
+
+{{lower_name}}:
+    label: {{studly_name}}
+    view:
+        form: $/{{lower_author}}/{{lower_plugin}}/models/{{lower_name}}/fields_for_relation_{{lower_targetName}}.yaml
+        toolbarButtons: create|update|link|unlink
+    manage:
+        form: $/{{lower_author}}/{{lower_plugin}}/models/{{lower_name}}/fields_for_relation_{{lower_targetName}}.yaml
+        list: $/{{lower_author}}/{{lower_plugin}}/models/{{lower_name}}/columns.yaml
+        showSearch: true
+
+
+

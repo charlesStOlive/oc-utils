@@ -1,6 +1,8 @@
 <?php namespace Waka\Utils;
 
 use Backend;
+use Event;
+use View;
 use System\Classes\PluginBase;
 
 /**
@@ -30,6 +32,9 @@ class Plugin extends PluginBase
      */
     public function register()
     {
+        $this->registerConsoleCommand('waka.model', 'Waka\Utils\Console\CreateModel');
+        $this->registerConsoleCommand('waka.injector', 'Waka\Utils\Console\CreateInjector');
+        $this->registerConsoleCommand('waka.controller', 'Waka\Utils\Console\CreateController');
 
     }
 
@@ -40,6 +45,13 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
+        Event::listen('backend.top.update', function($controller) {
+            if($controller->duplicateConfig) {
+                $model = $controller->formGetModel();
+                return View::make('waka.utils::duplicatebutton')->withModelId($model->id);
+            }
+            
+        });
 
     }
 

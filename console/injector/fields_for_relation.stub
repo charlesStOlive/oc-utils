@@ -1,0 +1,8 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    name:
+        label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.name
+
