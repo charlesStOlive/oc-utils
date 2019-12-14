@@ -54,11 +54,9 @@ class DuplicateModel extends ControllerBehavior
 
     public function onLoadDuplicateForm()
     {
-        $this->model = $this->exportGetModel();
+        //$this->model = $this->exportGetModel();
         $title = $this->getConfig('title');
-
         $this->vars['modelId'] = post('id');
-
 
         return $this->makePartial('$/waka/utils/behaviors/duplicatemodel/_duplicate_form.htm');
 
