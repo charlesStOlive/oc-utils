@@ -5,6 +5,7 @@ use Event;
 use View;
 use System\Classes\PluginBase;
 
+
 /**
  * Utils Plugin Information File
  */
@@ -52,12 +53,6 @@ class Plugin extends PluginBase
             }
             
         });
-
-        Event::listen('backend.page.beforeDisplay', function($controller, $action, $params) {
-            $controller->addJs('/waka/publisher/assets/js/clipboard.min.js');
-        });
-
-
 
     }
 
