@@ -14,6 +14,7 @@ return [
         'save_close' => 'Sauver & fermer',
         'create' => 'Créer',
         'create_close' => 'Créer & fermer',
+        'update' => 'Mettre à jour',
         'validate' => 'Valider',
         'reorder' => 'Réordonner',
         'or' => 'ou',
@@ -22,6 +23,8 @@ return [
         'icon' => 'Îcone',
         'placeholder_icon' => '--Choisissez une îcone',
         'saving' => 'Sauvegarde',
-        'edit' => 'Editer'
+        'edit' => 'Editer',
+        'code' => 'Code',
+        'code_identification' => "Code d'identification",
     ],
 ];
