@@ -1,0 +1,59 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    name:
+        label: waka.utils::lang.datasource.name
+        span: auto
+    model:
+        label: waka.utils::lang.datasource.model
+        span: auto
+    author:
+        label: waka.utils::lang.datasource.author
+        span: auto
+    plugin:
+        label: waka.utils::lang.datasource.plugin
+        span: auto
+    section_controller:
+        label: waka.utils::lang.datasource.section_controller
+        type: section
+    controller:
+        label: waka.utils::lang.datasource.controller
+        span: auto
+    specific_list:
+        label: waka.utils::lang.datasource.specific_list
+        span: auto
+    specific_update:
+        label: waka.utils::lang.datasource.specific_update
+        span: auto
+    specific_create:
+        label: waka.utils::lang.datasource.specific_create
+        span: auto
+    
+    section_relation:
+        label: waka.utils::lang.datasource.section_relation
+        type: section
+    relations_list:
+        label: waka.utils::lang.datasource.relations
+        type: repeater
+        titleFrom: name
+        prompt: waka.utils::lang.datasource.relations_prompt
+        span: auto
+        form:
+            fields:
+                name:
+                    label: waka.utils::lang.datasource.relation_name
+
+    attributes_list:
+        label: waka.utils::lang.datasource.attributes
+        span: auto
+        type: repeater
+        titleFrom: name
+        prompt: waka.utils::lang.datasource.attributes_prompt
+        span: auto
+        form:
+            fields:
+                name:
+                    label: waka.utils::lang.datasource.attribute_name
+    

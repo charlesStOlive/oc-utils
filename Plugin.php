@@ -4,6 +4,7 @@ use Backend;
 use Event;
 use View;
 use System\Classes\PluginBase;
+use Lang;
 
 
 /**
@@ -93,18 +94,17 @@ class Plugin extends PluginBase
      *
      * @return array
      */
-    public function registerNavigation()
+    public function registerSettings()
     {
-        return []; // Remove this line to activate
-
         return [
-            'utils' => [
-                'label'       => 'Utils',
-                'url'         => Backend::url('waka/utils/mycontroller'),
-                'icon'        => 'icon-leaf',
-                'permissions' => ['waka.utils.*'],
-                'order'       => 500,
-            ],
+            'data_sources' => [
+                'label'       => Lang::get('waka.utils::lang.settings_ds.label'),
+                'description' => Lang::get('waka.utils::lang.settings_ds.description'),
+                'category'    => Lang::get('waka.utils::lang.settings_ds.category'),
+                'icon'        => 'icon-paper-plane',
+                'url'         => Backend::url('waka/utils/datasources'),
+                'order'       => 1,
+            ]
         ];
     }
 }

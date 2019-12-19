@@ -1,0 +1,31 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: Data Source
+
+# Model Form Field configuration
+form: $/waka/utils/models/datasource/fields.yaml
+
+# Model Class name
+modelClass: Waka\Utils\Models\DataSource
+
+# Default redirect location
+defaultRedirect: waka/utils/datasources
+
+# Create page
+create:
+    title: Create Data Source
+    redirect: waka/utils/datasources/update/:id
+    redirectClose: waka/utils/datasources
+
+# Update page
+update:
+    title: Edit Data Source
+    redirect: waka/utils/datasources
+    redirectClose: waka/utils/datasources
+
+# Preview page
+preview:
+    title: Preview Data Source
