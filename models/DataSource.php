@@ -1,6 +1,8 @@
 <?php namespace Waka\Utils\Models;
 
 use Model;
+use Schema;
+use October\Rain\Support\Collection;
 
 /**
  * DataSource Model
@@ -17,7 +19,7 @@ class DataSource extends Model
     /**
      * @var array Guarded fields
      */
-    protected $guarded = ['*'];
+    protected $guarded = ['client_id', 'id'];
 
     /**
      * @var array Fillable fields
@@ -68,4 +70,34 @@ class DataSource extends Model
     public $morphMany = [];
     public $attachOne = [];
     public $attachMany = [];
+
+    public function getModelClassAttribute() {
+        return $this->author.'\\'.$this->plugin.'\\models\\'.$this->model;
+    }
+
+    public function listApi($id=null) {
+        $targetModel = $this->modelClass;
+        if(!$id) $id = $targetModel::first()->id;
+        // $targetModel = $this->modelClass::first();
+        // $columns = new Collection();
+        // $columns->push(Schema::getColumnListing($targetModel->table));
+        // if(count($targetModel->notPublishable)) {
+        //     $columns = $columns->reject(function ($item) use($targetModel) {
+        //         return in_array($item, $targetModel->notPublishable);
+        //     });
+        // }
+        //trace_log($targetModel->relations_list);
+        //$columns->put($targetModel->relations_list);
+        //trace_log($columns);
+        $embedRelation = null;
+        $constructApi = null;
+        if(count($this->relations_list)) {
+            $embedRelation = array_pluck($this->relations_list, 'name');
+            $constructApi = $targetModel::with($embedRelation)->find($id)->toArray();
+        } else {
+            $constructApi = $targetModel::find($id)->toArray();
+        }
+        $api[snake_case($this->model)] = $constructApi;
+        return array_dot($api);
+    }
 }
