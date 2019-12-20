@@ -1,0 +1,28 @@
+<?= Form::open() ?>
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="popup">×</button>
+    <h4 class="modal-title">
+        Actions
+    </h4>
+</div>
+
+<div class="modal-body">
+    <?php $dataModal = [
+        'model' => $model,
+        'id' => $id
+    ];
+    ?>
+    <?= $this->fireViewEvent('popup.actions.line1', $dataModal) ?>
+    <?= $this->fireViewEvent('popup.actions.line2', $dataModal) ?>
+    <?= $this->fireViewEvent('popup.actions.line3', $dataModal) ?>
+</div>
+
+<div class="modal-footer">
+
+    <button type="button" class="btn btn-default" data-dismiss="popup">
+        Annuler
+    </button>
+</div>
+
+<?= Form::close() ?>

@@ -5,6 +5,7 @@ use Event;
 use View;
 use System\Classes\PluginBase;
 use Lang;
+use Waka\Utils\Columns\BtnActions;
 
 
 /**
@@ -41,6 +42,13 @@ class Plugin extends PluginBase
 
     }
 
+    public function registerListColumnTypes()
+    {
+        return [
+            'waka-btn-actions' => [BtnActions::class, 'render'],
+        ];
+    }
+
     /**
      * Boot method, called right before the request route.
      *
@@ -49,12 +57,22 @@ class Plugin extends PluginBase
     public function boot()
     {
         Event::listen('backend.top.update', function($controller) {
-            if($controller->duplicateConfig) {
+            trace_log($controller->implement);
+            if(in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement )) {
                 $model = $controller->formGetModel();
-                return View::make('waka.utils::duplicatebutton')->withModelId($model->id);
+                return View::make('waka.utils::duplicatebutton')->withId($model->id);
             }
             
         });
+        Event::listen('popup.actions.line1', function($controller, $model, $id) {
+            trace_log($model);
+            trace_log($id);
+            if(in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement )) {
+                return View::make('waka.utils::duplicatebutton')->withId($id);
+            }
+            
+        });
+        
 
     }
 
