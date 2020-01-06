@@ -1,3 +1,4 @@
 1.0.1: 
   - 'First version of Utils'
   - create_data_sources_table.php
+  - seed_tables.php

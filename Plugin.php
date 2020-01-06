@@ -49,6 +49,13 @@ class Plugin extends PluginBase
         ];
     }
 
+    public function registerFormWidgets(): array
+    {
+        return [
+            'Waka\Utils\FormWidgets\ColorPickerAnalyser' => 'colorpickeranalyser',
+        ];
+    }
+
     /**
      * Boot method, called right before the request route.
      *
@@ -65,8 +72,6 @@ class Plugin extends PluginBase
             
         });
         Event::listen('popup.actions.line1', function($controller, $model, $id) {
-            trace_log($model);
-            trace_log($id);
             if(in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement )) {
                 return View::make('waka.utils::duplicatebutton')->withId($id);
             }

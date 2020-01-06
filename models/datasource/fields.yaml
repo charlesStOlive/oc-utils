@@ -15,6 +15,11 @@ fields:
     plugin:
         label: waka.utils::lang.datasource.plugin
         span: auto
+    test_id@update:
+        label: waka.utils::lang.datasource.test_id
+        type: dropdown
+        options: listModelNameId
+        prompt: waka.utils::lang.datasource.test_id_prompt
     section_controller:
         label: waka.utils::lang.datasource.section_controller
         type: section

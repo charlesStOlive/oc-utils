@@ -78,16 +78,6 @@ class DataSource extends Model
     public function listApi($id=null) {
         $targetModel = $this->modelClass;
         if(!$id) $id = $targetModel::first()->id;
-        // $targetModel = $this->modelClass::first();
-        // $columns = new Collection();
-        // $columns->push(Schema::getColumnListing($targetModel->table));
-        // if(count($targetModel->notPublishable)) {
-        //     $columns = $columns->reject(function ($item) use($targetModel) {
-        //         return in_array($item, $targetModel->notPublishable);
-        //     });
-        // }
-        //trace_log($targetModel->relations_list);
-        //$columns->put($targetModel->relations_list);
         //trace_log($columns);
         $embedRelation = null;
         $constructApi = null;
@@ -99,5 +89,10 @@ class DataSource extends Model
         }
         $api[snake_case($this->model)] = $constructApi;
         return array_dot($api);
+    }
+    public function listModelNameId() {
+        trace_log("listModelNameId");
+        trace_log($this->modelClass::lists('id', 'name'));
+        return $this->modelClass::lists('name', 'id' );
     }
 }

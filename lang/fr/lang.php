@@ -48,6 +48,8 @@ return [
         'attributes' => 'Liste des attributs à utiliser',
         'attributes_pompt' => 'Ajouter une relation',
         'attribute_name' => "Nom de l'attribut",
+        'test_id' => "Model d'exemple",
+        'test_id_prompt' => "--Choisissez un model d'exemple--",
     ],
     'settings_ds' => [
         'label' => 'Sources des données',

@@ -16,6 +16,7 @@ class CreateDataSourcesTable extends Migration
             $table->string('plugin');
             $table->string('model');
             $table->string('controller')->nullable();
+            $table->string('test_id')->nullable();
             $table->string('specific_list')->nullable();
             $table->string('specific_update')->nullable();
             $table->string('specific_create')->nullable();
