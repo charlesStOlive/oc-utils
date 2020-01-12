@@ -4,14 +4,14 @@ use October\Rain\Scaffold\GeneratorCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-class CreateBehaviorContent extends GeneratorCommand
+class CreateContent extends GeneratorCommand
 {
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'waka:behaviorcontent';
+    protected $name = 'waka:content';
 
     /**
      * The console command description.
@@ -25,7 +25,7 @@ class CreateBehaviorContent extends GeneratorCommand
      *
      * @var string
      */
-    protected $type = 'Injector';
+    protected $type = 'content';
 
     /**
      * A mapping of stub to generated file.
@@ -33,7 +33,9 @@ class CreateBehaviorContent extends GeneratorCommand
      * @var array
      */
     protected $stubs = [
-        'contentbehavior/behavior.stub'        => 'behaviors/Content{{studly_name}}.php',
+        'contentbehavior/behavior.stub'        => 'contents/Content{{studly_name}}.php',
+        'contentbehavior/compiler.stub'       => 'contents/compilers/{{studly_name}}.php',
+        'contentbehavior/config.stub'      => 'contents/compilers/{{lower_name}}.yaml',
     ];
     
 

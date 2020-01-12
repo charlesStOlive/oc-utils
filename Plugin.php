@@ -38,7 +38,7 @@ class Plugin extends PluginBase
         $this->registerConsoleCommand('waka.model', 'Waka\Utils\Console\CreateModel');
         $this->registerConsoleCommand('waka.injector', 'Waka\Utils\Console\CreateInjector');
         $this->registerConsoleCommand('waka.controller', 'Waka\Utils\Console\CreateController');
-        $this->registerConsoleCommand('waka.behaviorcontent', 'Waka\Utils\Console\CreateBehaviorContent');
+        $this->registerConsoleCommand('waka.content', 'Waka\Utils\Console\CreateContent');
 
     }
 

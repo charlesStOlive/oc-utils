@@ -1,0 +1,27 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    sector:
+        label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.sector
+        type: dropdown
+        options: listNestedSector
+    data: 
+        label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.data
+        type: repeater
+        minItems: 1
+        prompt: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.data_prompt
+        form:
+            fields:
+                value:
+                    label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.value
+                    type: textarea
+                    size: small
+                path:
+                    label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.path
+                    type: mediafinder
+
+            
+
+
