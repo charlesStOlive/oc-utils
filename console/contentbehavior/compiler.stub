@@ -6,7 +6,7 @@ class {{studly_name}}
 {
 
 
-    public static function proceed($contents) {
+    public static function proceed($contents, $dataSourceModel) {
         $datas= [];
         $index = 1;
         foreach($contents as $content ) {

@@ -12,6 +12,7 @@ use ApplicationException;
 class DataSource extends Model
 {
     use \October\Rain\Database\Traits\Validation;
+    use \Waka\Cloudis\Classes\Traits\CloudisKey;
         
     /**
      * @var string The database table used by the model.
@@ -73,9 +74,6 @@ class DataSource extends Model
     public $attachOne = [];
     public $attachMany = [];
 
-    public function afterSave() {
-        trace_log($this->getImagesList());
-    }
 
     public function getModelClassAttribute() {
         return $this->author.'\\'.$this->plugin.'\\models\\'.$this->model;
@@ -107,53 +105,6 @@ class DataSource extends Model
         
     }
     public function getImagesList($id=null) {
-        $targetModel;
-        if(!$id) {
-            $targetModel = $this->modelClass::first();
-        } else {
-            $targetModel = $this->modelClass::find($id);
-        }
-        //trace_log('name : '.$targetModel->name);
-        $collection = new \October\Rain\Support\Collection();
-        $datas = Yaml::parse($this->media_files);
-        //trace_log($datas);
-        //trace_log(get_class($targetModel));
-        foreach($datas as $key => $data) {
-            $tempModel = $targetModel;
-            if(array_key_exists('from', $data)) {
-                if(!$targetModel[$data['from']]) throw new ApplicationException('dataSource model relation not exist : '.$data['from']);
-                // nous sommes dans une relation. 
-                $tempModel = $targetModel[$data['from']];
-            }
-            if(!$data['type']) throw new ApplicationException('dataSource type missing');
-            //
-            switch ($data['type']) {
-                case 'file':
-                    $collection->push([
-                        'name' => $data['label'],
-                        'url' => $tempModel[$key]->getLocalPath()
-                    ]);
-                    break;
-                case 'media':
-                    $collection->push([
-                        'name' => $data['label'],
-                        'url' => storage_path('app/media/'.$tempModel[$key])
-                    ]);
-                    break;
-                case 'montages':
-                    trace_log('montages : '. get_class($tempModel));
-                    foreach($tempModel->montages as $montage) {
-                        $collection->push([
-                            'name' => $data['label'].' : '.$montage->name,
-                            'url' => $montage->getCloudiUrl('src')
-                        ]);
-
-                    }
-                    break;
-            }
-
-
-        }
-        return $collection;
+        return $this->encryptKeyedImage($this, $id);
     }
 }

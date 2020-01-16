@@ -50,6 +50,7 @@ return [
         'attribute_name' => "Nom de l'attribut",
         'test_id' => "Model d'exemple",
         'test_id_prompt' => "--Choisissez un model d'exemple--",
+        'sector_access' => "Accès relation sector",
     ],
     'settings_ds' => [
         'label' => 'Sources des données',

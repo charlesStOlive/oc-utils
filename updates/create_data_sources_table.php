@@ -15,6 +15,7 @@ class CreateDataSourcesTable extends Migration
             $table->string('author')->default('waka');
             $table->string('plugin');
             $table->string('model');
+            $table->string('sector_access');
             $table->string('controller')->nullable();
             $table->string('test_id')->nullable();
             $table->string('specific_list')->nullable();

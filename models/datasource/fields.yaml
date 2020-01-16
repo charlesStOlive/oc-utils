@@ -19,7 +19,11 @@ fields:
         label: waka.utils::lang.datasource.test_id
         type: dropdown
         options: listModelNameId
+        span: auto
         prompt: waka.utils::lang.datasource.test_id_prompt
+    sector_access:
+        label: waka.utils::lang.datasource.sector_access
+        span: auto
     section_controller:
         label: waka.utils::lang.datasource.section_controller
         type: section

@@ -64,7 +64,6 @@ class Plugin extends PluginBase
     public function boot()
     {
         Event::listen('backend.top.update', function($controller) {
-            trace_log($controller->implement);
             if(in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement )) {
                 $model = $controller->formGetModel();
                 return View::make('waka.utils::duplicatebutton')->withId($model->id);
