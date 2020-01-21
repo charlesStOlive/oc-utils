@@ -53,6 +53,7 @@ class Plugin extends PluginBase
     {
         return [
             'Waka\Utils\FormWidgets\ColorPickerAnalyser' => 'colorpickeranalyser',
+            'Waka\Utils\FormWidgets\CommentField' => 'commentfield',
         ];
     }
 
