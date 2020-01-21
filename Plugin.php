@@ -73,7 +73,7 @@ class Plugin extends PluginBase
         });
         Event::listen('popup.actions.line1', function($controller, $model, $id) {
             if(in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement )) {
-                return View::make('waka.utils::duplicatebutton')->withId($id);
+                return View::make('waka.utils::duplicatebuttoncontent')->withId($id);
             }
             
         });

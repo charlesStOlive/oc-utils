@@ -46,6 +46,7 @@ class BtnActions
             return '
 <a href="javascript:;"
     data-control="popup"
+    data-size="huge"
     data-handler="onLoadActionPopup"
     data-request-data="' . $field->getRequestData() . '"
     title="Actions">

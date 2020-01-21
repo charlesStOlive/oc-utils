@@ -13,16 +13,18 @@
         'id' => $id
     ];
     ?>
-    <?= $this->fireViewEvent('popup.actions.line1', $dataModal) ?>
-    <?= $this->fireViewEvent('popup.actions.line2', $dataModal) ?>
-    <?= $this->fireViewEvent('popup.actions.line3', $dataModal) ?>
-</div>
-
-<div class="modal-footer">
-
-    <button type="button" class="btn btn-default" data-dismiss="popup">
-        Annuler
-    </button>
+    <div class="control-toolbar">
+        <div class="toolbar-item toolbar-primary">
+            <div data-control="toolbar">
+                <div class="btn-group">
+                    <?= $this->fireViewEvent('popup.actions.line1', $dataModal) ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="popupActionContent" class="p-b-md">
+        Choisissez une action
+    </div>
 </div>
 
 <?= Form::close() ?>

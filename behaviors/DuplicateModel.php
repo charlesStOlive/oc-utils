@@ -57,9 +57,17 @@ class DuplicateModel extends ControllerBehavior
         //$this->model = $this->exportGetModel();
         $title = $this->getConfig('title');
         $this->vars['modelId'] = post('id');
-
         return $this->makePartial('$/waka/utils/behaviors/duplicatemodel/_duplicate_form.htm');
 
+    }
+
+    public function onLoadDuplicateContentForm()
+    {
+        $title = $this->getConfig('title');
+        $this->vars['modelId'] = post('id');
+        return [
+            '#popupActionContent' => $this->makePartial('$/waka/utils/behaviors/duplicatemodel/_duplicate_content.htm')
+        ];
     }
 
     public function createDuplicateFormWidget() {
