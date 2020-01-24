@@ -1,0 +1,20 @@
+<?php if($field->headingLevel == 'h3') { ?>
+<h3 class="<?=$field->class?>">
+    <?php if($field->icon) { ?><i class="<?=$field->icon?>"></i><?php } ?>
+    <?=$field->label?>
+</h3>
+<?php } elseif($field->headingLevel == 'h4') { ?>
+<h4 class="<?=$field->class?>">
+    <?php if($field->icon) { ?><i class="<?=$field->icon?>"></i><?php } ?>
+    <?=$field->label?>
+</h4>
+<?php } else { ?>
+<h2 class="<?=$field->class?>">
+    <?php if($field->icon) { ?><i class="<?=$field->icon?>"></i><?php } ?>
+    <?=$field->label?>
+</h2>
+<?php } ?>
+<?php foreach($field->relations as $key => $value) { ?>
+<li><?=$this->makePartial('link_datahandler',['key'=>$key, 'value' =>$value, 'field'=>$field])?></li>
+<?php } ?>
+</ul>

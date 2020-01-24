@@ -1,4 +1,4 @@
-<?php namespace Waka\Publisher\Updates;
+<?php namespace Waka\Utils\Updates;
 
 //use Excel;
 use Seeder;
