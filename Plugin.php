@@ -6,6 +6,7 @@ use View;
 use System\Classes\PluginBase;
 use Lang;
 use Waka\Utils\Columns\BtnActions;
+use Waka\Utils\Columns\CalculColumn;
 
 
 /**
@@ -46,6 +47,7 @@ class Plugin extends PluginBase
     {
         return [
             'waka-btn-actions' => [BtnActions::class, 'render'],
+            'waka-calcul' => [CalculColumn::class, 'render'],
         ];
     }
 

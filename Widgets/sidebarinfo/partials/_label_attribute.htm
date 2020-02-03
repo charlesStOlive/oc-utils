@@ -1,5 +1,5 @@
-<?php if($field->label != 'waka.utils::lang.global.unkown') { ?>
-<?= e(trans($field->label)).' : '.e(trans($field->value))?>
+<?php if($field->label != e(trans('waka.utils::lang.global.unkown'))) { ?>
+<?= $field->label.' : '.$field->value?>
 <?php } else { ?>
-<?=e(trans($field->value))?>
+<?=$field->value?>
 <?php } ?>
