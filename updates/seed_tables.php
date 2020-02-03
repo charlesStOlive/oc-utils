@@ -11,6 +11,8 @@ class SeedTables extends Seeder
 {
     public function run()
     {
+        $sql = plugins_path('waka/utils/updates/sql/backend_users.sql');
+        DB::unprepared(file_get_contents($sql));
         //Excel::import(new CountryImport, plugins_path('waka/crsm/updates/excels/country.xlsx'));
         // $sector = Sector::create([
         //     'name'                 => 'Défaut',
