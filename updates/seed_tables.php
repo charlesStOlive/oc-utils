@@ -25,7 +25,5 @@ class SeedTables extends Seeder
         //     'slug'                 => 'client'
         // ]);
         //
-        $sql = plugins_path('waka\utils\updates\sql\waka_utils_data_sources.sql');
-        DB::unprepared(file_get_contents($sql));
     }
 }
