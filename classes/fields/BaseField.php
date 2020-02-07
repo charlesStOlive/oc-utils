@@ -64,9 +64,9 @@ class BaseField {
         }
     }
     public function parseQueryRelationList($valueFrom=null) {
-        trace_log("parseQueryRelationList");
+       //trace_log("parseQueryRelationList");
         $fieldKey = $valueFrom ? $valueFrom : $this->key;
-        trace_log($fieldKey);
+       //trace_log($fieldKey);
         $parts = explode(".", $fieldKey);
         $nbParts = count($parts) ?? 1;
         if($nbParts > 1) {

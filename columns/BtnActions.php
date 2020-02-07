@@ -27,9 +27,9 @@ class BtnActions
      */
     public static function storeFieldConfig($field, array $config)
     {
-        trace_log(self::$defaultFieldConfig);
+       //trace_log(self::$defaultFieldConfig);
         self::$listConfig[$field] = array_merge(self::$defaultFieldConfig, $config, ['name' => $field]);
-        trace_log(self::$listConfig[$field]);
+       //trace_log(self::$listConfig[$field]);
     }
 
     /**
