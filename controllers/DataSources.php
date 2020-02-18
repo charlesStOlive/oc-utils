@@ -1,7 +1,7 @@
 <?php namespace Waka\Utils\Controllers;
 
-use Backend\Classes\Controller;
 use BackendMenu;
+use Backend\Classes\Controller;
 use System\Classes\SettingsManager;
 
 /**
@@ -19,7 +19,6 @@ class DataSources extends Controller
     public function __construct()
     {
         parent::__construct();
-        //BackendMenu::setContext('Waka.Publisher', 'publisher', 'side-menu-models');
         BackendMenu::setContext('October.System', 'system', 'settings');
         SettingsManager::setContext('Waka.Utils', 'datasources');
     }
