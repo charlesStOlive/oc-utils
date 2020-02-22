@@ -13,6 +13,8 @@ class CommentField extends FormWidgetBase
     protected $defaultAlias = 'waka_utils_comment_field';
 
     public $type = "info";
+    public $mode = "static";
+    public $text = "Une explication";
 
     /**
      * @inheritDoc
@@ -21,6 +23,8 @@ class CommentField extends FormWidgetBase
     {
         $this->fillFromConfig([
             'type',
+            'mode',
+            'text',
             'valueFrom',
         ]);
     }
@@ -41,8 +45,12 @@ class CommentField extends FormWidgetBase
     {
         $this->vars['name'] = $this->formField->getName();
         $this->vars['value'] = $this->getLoadValue();
-        $this->vars['comment'] = $this->model[$this->valueFrom];
         $this->vars['type'] = $this->type;
+        if ($this->mode == "static") {
+            $this->vars['text'] = $this->text;
+        } else {
+            $this->vars['text'] = $this->model[$this->valueFrom];
+        }
     }
 
     /**
