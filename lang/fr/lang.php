@@ -33,6 +33,7 @@ return [
         'unkown' => 'Inconnu',
         'confirm_delete' => 'Confirmez vous la suppression. Attention ! Cette action est irreversible',
         'save_indicator' => 'Sauvegarde en cours',
+        'state' => "Etat",
     ],
     'datasource' => [
         'name' => 'Intitulé de la source',

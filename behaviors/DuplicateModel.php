@@ -1,13 +1,10 @@
 <?php namespace Waka\Utils\Behaviors;
 
 use Backend\Classes\ControllerBehavior;
-
-use October\Rain\Support\Collection;
-use October\Rain\Exception\ApplicationException;
 use Flash;
+use October\Rain\Exception\ApplicationException;
+use October\Rain\Support\Collection;
 use Redirect;
-use Session;
-
 
 class DuplicateModel extends ControllerBehavior
 {
@@ -28,12 +25,9 @@ class DuplicateModel extends ControllerBehavior
 
     protected $duplicateWidget;
 
+    //protected $exportExcelWidget;
 
-
-
-	//protected $exportExcelWidget;
-
-	public function __construct($controller)
+    public function __construct($controller)
     {
         parent::__construct($controller);
         /*
@@ -41,16 +35,11 @@ class DuplicateModel extends ControllerBehavior
          */
         $this->config = $this->makeConfig($controller->duplicateConfig, $this->requiredConfig);
         $this->duplicateWidget = $this->createDuplicateFormWidget();
-        
-
-        
-
 
         //$this->exportExcelWidget = $this->createExportExcelFormWidget();
     }
 
-
-     //ci dessous tous les calculs pour permettre l'import excel. 
+    //ci dessous tous les calculs pour permettre l'import excel.
 
     public function onLoadDuplicateForm()
     {
@@ -66,11 +55,12 @@ class DuplicateModel extends ControllerBehavior
         $title = $this->getConfig('title');
         $this->vars['modelId'] = post('id');
         return [
-            '#popupActionContent' => $this->makePartial('$/waka/utils/behaviors/duplicatemodel/_duplicate_content.htm')
+            '#popupActionContent' => $this->makePartial('$/waka/utils/behaviors/duplicatemodel/_duplicate_content.htm'),
         ];
     }
 
-    public function createDuplicateFormWidget() {
+    public function createDuplicateFormWidget()
+    {
         $configDuplication = new Collection($this->getConfig('duplication'));
         //opération pour retourver l'objet fields
         // !! attention l'objet field doit être en dernier !
@@ -91,7 +81,8 @@ class DuplicateModel extends ControllerBehavior
         return $widget;
     }
 
-    public function onDuplicateValidation(){
+    public function onDuplicateValidation()
+    {
         $data = $this->duplicateWidget->getSaveData();
 
         $transformations = new Collection($this->getConfig('duplication[transformation]'));
@@ -103,39 +94,38 @@ class DuplicateModel extends ControllerBehavior
         $sourceModel = $modelName::find(post('id'));
         $cloneModel = $sourceModel->replicate();
 
-        
-
-        if($transformations) {
-            foreach($transformations as $key => $value ) {
+        if ($transformations) {
+            foreach ($transformations as $key => $value) {
                 //if(!$value) $value = null;
                 $cloneModel[$key] = $value;
             }
         }
-       
-        if($manipulations) {
-            foreach($manipulations as  $key => $value ) { 
+
+        if ($manipulations) {
+            foreach ($manipulations as $key => $value) {
                 //Verification si le champs ne commence pas par _ ( instruction de ne pas enregistrer ) et si la valeur existe ( cas ches champs caché)
-                if(!starts_with($key , '_') && $data[$key]) $cloneModel[$key] = $data[$key];
+                if (!starts_with($key, '_') && $data[$key]) {
+                    $cloneModel[$key] = $data[$key];
+                }
+
             }
         }
 
-        
-        
         $cloneModel->save();
 
         //load relations on EXISTING MODEL
-        if($relations) {
+        if ($relations) {
             $sourceModel->load($relations);
             //re-sync everything
-            foreach ($sourceModel->getRelations() as $relationName => $values){
+            foreach ($sourceModel->getRelations() as $relationName => $values) {
                 $cloneModel->{$relationName}()->sync($values);
             }
         }
 
         // if($relations) {
         //     foreach($relations as $Keyrelation => $fieldRelation  ) {
-                
-        //         foreach($sourceModel[$Keyrelation] as $related ) { 
+
+        //         foreach($sourceModel[$Keyrelation] as $related ) {
         //             $new_relation = $related->replicate();
         //             // suppression des champs nested si existe
         //             if($new_relation->parent_id) $new_relation->parent_id = null;
@@ -143,18 +133,18 @@ class DuplicateModel extends ControllerBehavior
         //             $new_relation->save();
         //         }
         //     }
-        // } 
+        // }
         // if($relationsManyToMany) {
         //     foreach($relationsManyToMany as $Keyrelation => $fieldRelation  ) {
-        //         foreach($sourceModel[$Keyrelation] as $related ) { 
+        //         foreach($sourceModel[$Keyrelation] as $related ) {
         //             $cloneModel->attach($related);
         //         }
-        //         trace_log('----');
+        //       //trace_log('----');
         //     }
-        // }  
+        // }
 
         Flash::info("Duplication effectuée");
-        return  Redirect::to($this->getConfig('redirect').$cloneModel->id);
+        return Redirect::to($this->getConfig('redirect') . $cloneModel->id);
         //return true;
 
     }
@@ -174,5 +164,4 @@ class DuplicateModel extends ControllerBehavior
         return $this->model = new $modelClass;
     }
 
-    
 }
