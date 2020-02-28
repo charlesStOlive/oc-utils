@@ -56,6 +56,11 @@ return [
         'test_id' => "Model d'exemple",
         'test_id_prompt' => "--Choisissez un model d'exemple--",
         'sector_access' => "Accès relation sector",
+        'param' => "Nom du Paramètre",
+        'param_com' => "Paramètre qui fera transiter la clé",
+        'key' => "key",
+        'key_com' => "Modifier la clé si id n'existe pas. NE FONCTIONNE PAS ENCORE",
+        'relation_collection_name' => "Nom de la relation collection",
     ],
     'settings_ds' => [
         'label' => 'Sources des données',
