@@ -82,6 +82,10 @@ class DataSource extends Model
     }
     public function getHasRelationArrayAttribute()
     {
+        if (!$this->relations_array_list) {
+            return false;
+        }
+
         if (count($this->relations_array_list)) {
             return true;
         } else {
@@ -90,6 +94,10 @@ class DataSource extends Model
     }
     public function getHasRelationAttribute()
     {
+        if (!$this->relations_list) {
+            return false;
+        }
+
         if (count($this->relations_list)) {
             return true;
         } else {
