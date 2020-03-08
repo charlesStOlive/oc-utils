@@ -9,7 +9,7 @@ class CreateDataSourcesTableU102 extends Migration
     public function up()
     {
         Schema::table('waka_utils_data_sources', function (Blueprint $table) {
-            $table->text('relations_array_list')->default(0);
+            $table->text('relations_array_list')->nullable();
         });
     }
 
