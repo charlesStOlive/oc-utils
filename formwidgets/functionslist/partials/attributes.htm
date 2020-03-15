@@ -1,0 +1,13 @@
+<div class="modal-body">
+    <form class="form-elements" role="form">
+        <?php foreach($attributes as $key=>$attribute) ?>
+        <?php if($attribute->type == 'text') { ?>
+        <div class="form-group span-full">
+            <label><?=$attribute->name?></label>
+            <input type="text" name="<?=$key?>" value="" class="form-control" />
+        </div>
+        <?php} ?>
+        <?php } ?>
+    </form>
+
+</div>

@@ -57,6 +57,7 @@ class Plugin extends PluginBase
             'Waka\Utils\FormWidgets\ColorPickerAnalyser' => 'colorpickeranalyser',
             'Waka\Utils\FormWidgets\CommentField' => 'commentfield',
             'Waka\Utils\FormWidgets\LabelList' => 'labellist',
+            'Waka\Utils\FormWidgets\FunctionsList' => 'functionslist',
         ];
     }
 
