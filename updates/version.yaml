@@ -1,7 +1,13 @@
-1.0.1: 
-  - 'First version of Utils'
-  - create_data_sources_table.php
-  - seed_tables.php
-1.0.2: 
-  - 'Add aditional params'
-  - create_data_sources_table_u102.php
+1.0.1:
+    - 'First version of Utils'
+    - create_data_sources_table.php
+    - seed_tables.php
+1.0.2:
+    - 'Add aditional params'
+    - create_data_sources_table_u102.php
+1.0.3:
+    - 'Add contacts to find contacts from relation'
+    - create_data_sources_table_u103.php
+1.0.4:
+    - 'Ajout de function_class'
+    - create_data_sources_table_u104.php

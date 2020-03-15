@@ -61,6 +61,9 @@ return [
         'key' => "key",
         'key_com' => "Modifier la clé si id n'existe pas. NE FONCTIONNE PAS ENCORE",
         'relation_collection_name' => "Nom de la relation collection",
+        'section_contact' => "Gestion des relations pour acceder aux contacts emails",
+        'contacts' => "Configuration yaml des contacts",
+        'model_scopes' => 'Class Scope du model',
     ],
     'settings_ds' => [
         'label' => 'Sources des données',

@@ -61,19 +61,6 @@ fields:
             fields:
                 name:
                     label: waka.utils::lang.datasource.relation_name
-                is_array:
-                    label: waka.utils::lang.datasource.is_array
-                    type: checkbox
-                from_array_row:
-                    label: waka.utils::lang.datasource.from_array_row
-                    type: checkbox
-                param:
-                    label: waka.utils::lang.datasource.param
-                    trigger:
-                        action: show
-                        field: is_array
-                        condition: checked
-                    comment: si vide l'app prendra par default la première ligne, sinon mettre le nom du param imput qui portera l'id de la relation
                     
     relations_array_list:
         label: waka.utils::lang.datasource.relations
@@ -113,4 +100,15 @@ fields:
             fields:
                 name:
                     label: waka.utils::lang.datasource.attribute_name
+
+    function_class:
+        label: waka.utils::lang.datasource.model_scopes
+    section_contact:
+        label: waka.utils::lang.datasource.section_contact
+        type: section
+    contacts:
+        label: waka.utils::lang.datasource.ask_contacts
+        type: codeeditor
+        language: yaml
+        span: auto
     

@@ -9,6 +9,7 @@ use Schema;
 class DataSource extends Model
 {
     use \October\Rain\Database\Traits\Validation;
+    use \Waka\Utils\Classes\Traits\StringRelation;
     use \Waka\Cloudis\Classes\Traits\CloudisKey;
 
     /**
@@ -139,9 +140,6 @@ class DataSource extends Model
     public function getRelationQuery($relation, $id = null)
     {
         $targetModel = $this->modelClass;
-        //trace_log("getRelationQuery");
-        //trace_log($this->modelClass);
-        //trace_log($id);
         $relationModel = null;
         if (!$id) {
             if ($targetModel::first() ?? false) {
@@ -199,15 +197,18 @@ class DataSource extends Model
         } else {
             //si il n' y a pas de parametre
         }
-
-        //$api[snake_case($this->model)] = $constructApi;
-        trace_log("-----Array dot-----");
-        trace_log(array_dot($api));
+        // trace_log("-----Array dot-----");
+        // trace_log(array_dot($api));
         return array_dot($api);
         //return null;
     }
+    public function getAllPictures($id = null)
+    {
+        //trait CloudisKey
+        return $this->getDotedImagesList($this, $id);
+    }
 
-    public function getDotedValues($id = null)
+    public function getValues($id = null)
     {
         $targetModel = $this->modelClass;
         if (!$id) {
@@ -221,6 +222,13 @@ class DataSource extends Model
         } else {
             $constructApi = $targetModel::find($id)->toArray();
         }
+        return $constructApi;
+    }
+
+    public function getDotedValues($id = null)
+    {
+        $constructApi = $this->getValues($id);
+
         $api[snake_case($this->model)] = $constructApi;
         return array_dot($api);
     }
@@ -241,4 +249,97 @@ class DataSource extends Model
     {
         return $this->encryptKeyedImage($this, $id);
     }
+
+    /**
+     * Return model
+     */
+
+    public function getContactFromYaml($type)
+    {
+        $array = \Yaml::parse($this->contacts);
+        $array = $array[$type] ?? null;
+        if (!$array) {
+            throw new \ApplicationException("Il manque l'info email dans de data_source ask_contacts");
+        }
+
+        return [
+            'key' => $array['key'],
+            'relation' => $array['relation'] ?? null,
+        ];
+    }
+
+    /**
+     * FOnctions d'identifications des contacts
+     */
+    public function getContact($id = null)
+    {
+        $targetModel = $this->modelClass;
+        if (!$id) {
+            $id = $targetModel::first()->id;
+        }
+        $emailData = $this->getContactFromYaml('ask_to');
+
+        $datas = $this->getStringRelation($targetModel::find($id), $emailData['relation']);
+        if ($datas->count()) {
+            $datas = $datas->lists($emailData['key']);
+        } else {
+            $datas[0] = $datas[$emailData['key']];
+        }
+        return $datas;
+
+    }
+    public function getCcContact($type, $id = null)
+    {
+        $targetModel = $this->modelClass;
+        if (!$id) {
+            $id = $targetModel::first()->id;
+        }
+        $ccEmail = $this->getContactFromYaml($type);
+
+        $model = $targetModel::find($id);
+        return $this->getStringRelation($targetModel::find($id), $ccEmail['relation'])->lists($ccEmail['key']);
+
+    }
+
+    public function getFunctionsList()
+    {
+        if (!$this->function_class) {
+            throw new \ApplicationException("Il manque le chemin de la classe fonction dans DataSource pour ce model");
+        }
+        $fn = new $this->function_class;
+        return $fn->getFunctionsList();
+    }
+    public function getFunctionClass()
+    {
+        if (!$this->function_class) {
+            throw new \ApplicationException("Il manque le chemin de la classe fonction dans DataSource pour ce model");
+        }
+        return new $this->function_class;
+    }
+    // public function getFunctionsCollections($id)
+    // {
+    //     $targetModel = $this->modelClass;
+    //     if (!$id) {
+    //         $id = $targetModel::first()->id;
+    //     }
+    //     return $targetModel::find($id)->getFunctionsCollection();
+    // }
+    public function getFunctionsCollections($id, $wakaModel)
+    {
+        $targetModel = $this->modelClass;
+        if (!$id) {
+            $id = $targetModel::first()->id;
+        }
+        $model = $targetModel::find($id);
+
+        $collection = [];
+        $fnc = $this->getFunctionClass();
+        $fnc->setModel($model);
+        foreach ($wakaModel->model_functions as $item) {
+            $itemFnc = $item['functioncode'];
+            $collection[$item['code']] = $fnc->{$itemFnc}($item);
+        }
+        return $collection;
+    }
+
 }
