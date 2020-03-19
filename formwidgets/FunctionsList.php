@@ -37,6 +37,7 @@ class FunctionsList extends FormWidgetBase
     {
         $this->vars['functionClass'] = $this->model->data_source->getFunctionClass();
         $this->vars['name'] = $this->formField->getName();
+        trace_log($this->getLoadValue());
         $this->vars['values'] = $this->getLoadValue();
         $this->vars['model'] = $this->model;
 
@@ -61,14 +62,20 @@ class FunctionsList extends FormWidgetBase
 
     public function onShowFunctions()
     {
-        $this->vars['functionList'] = $this->functionClass->getFunctionsList();
+        $fnc_class = $this->model->data_source->getFunctionClass();
+        $this->vars['functionList'] = $fnc_class->getFunctionsList();
         return $this->makePartial('popup');
 
     }
 
     public function onChooseFunction()
     {
-        $attributes = $this->functionClass->getFunctionAttribute();
+        trace_log('onChooseFunction');
+        $functionId = post('functionId');
+        trace_log($functionId);
+
+        $fnc_class = $this->model->data_source->getFunctionClass();
+        $attributes = $fnc_class->getFunctionAttribute($functionId);
         if ($attributes) {
             $this->vars['attributes'] = $attributes;
             return [
