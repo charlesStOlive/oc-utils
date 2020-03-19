@@ -73,9 +73,23 @@ class FunctionsList extends FormWidgetBase
         trace_log('onChooseFunction');
         $functionId = post('functionId');
         trace_log($functionId);
-
         $fnc_class = $this->model->data_source->getFunctionClass();
         $attributes = $fnc_class->getFunctionAttribute($functionId);
+        //
+        $attributeWidget = $this->createFormWidget();
+        foreach ($attributes as $key => $value) {
+            $attributeWidget->addFields([
+                $key => [
+                    'label' => $value['label'],
+                    'type' => $value['type'],
+                    'options' => $value['options'] ?? null,
+                ],
+            ]);
+
+        }
+        $this->vars['attributeWidget'] = $attributeWidget;
+
+        trace_log($attributes);
         if ($attributes) {
             $this->vars['attributes'] = $attributes;
             return [
@@ -85,8 +99,19 @@ class FunctionsList extends FormWidgetBase
 
     }
 
+    public function onFunctionValidation()
+    {
+        trace_log(post());
+    }
+
     public function createFormWidget()
     {
-
+        $config = $this->makeConfig('$/waka/utils/models/scopefunction/fields.yaml');
+        $config->alias = 'attributeWidget';
+        $config->arrayName = 'attributes_array';
+        $config->model = new \Waka\Utils\Models\ScopeFunction();
+        $widget = $this->makeWidget('Backend\Widgets\Form', $config);
+        $widget->bindToController();
+        return $widget;
     }
 }

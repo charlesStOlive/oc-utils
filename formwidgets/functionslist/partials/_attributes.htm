@@ -1,11 +1,3 @@
 <div class="modal-body">
-    <form class="form-elements" role="form">
-        <?php foreach($attributes as $key=>$attribute) { ?>
-        <div class="form-group span-full">
-            <label><?=$attribute->name?></label>
-            <input type="text" name="<?=$key?>" value="" class="form-control" />
-        </div>
-        <?php } ?>
-    </form>
-
+    <?=  $attributeWidget->render() ?>
 </div>
