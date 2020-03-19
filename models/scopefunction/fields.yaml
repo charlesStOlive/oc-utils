@@ -1,0 +1,23 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    name:
+        label: Name
+    fnc_name:
+        label: Nom de la fonction
+    data_source@create:
+        label: waka.mailer::lang.wakamail.data_source
+        placeholder: waka.mailer::lang.wakamail.data_source_placeholder
+        type: relation
+        select: name
+        span: auto 
+    data_source@update:
+        label: waka.mailer::lang.wakamail.data_source
+        placeholder: waka.mailer::lang.wakamail.data_source_placeholder
+        type: relation
+        select: name
+        span: auto
+        disabled: true
+    

@@ -1,0 +1,31 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: Scope Function
+
+# Model Form Field configuration
+form: $/waka/utils/models/scopefunction/fields.yaml
+
+# Model Class name
+modelClass: Waka\Utils\Models\ScopeFunction
+
+# Default redirect location
+defaultRedirect: waka/utils/scopefunctions
+
+# Create page
+create:
+    title: Create Scope Function
+    redirect: waka/utils/scopefunctions/update/:id
+    redirectClose: waka/utils/scopefunctions
+
+# Update page
+update:
+    title: Edit Scope Function
+    redirect: waka/utils/scopefunctions
+    redirectClose: waka/utils/scopefunctions
+
+# Preview page
+preview:
+    title: Preview Scope Function

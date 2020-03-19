@@ -1,0 +1,14 @@
+# ===================================
+#  List Column Definitions
+# ===================================
+
+columns:
+    name:
+        label: Nom
+        searchable: true
+    data_src:
+        label: waka.mailer::lang.wakamail.data_source
+        relation: data_source
+        select: name
+    
+    

@@ -11,3 +11,9 @@
 1.0.4:
     - 'Ajout de function_class'
     - create_data_sources_table_u104.php
+1.0.5:
+    - 'Ajout de scopeFunctions'
+    - create_scope_functions_table.php
+1.0.6:
+    - 'Ajout de scopeFunctionable'
+    - create_scope_functionables_table.php
