@@ -4,40 +4,6 @@
         Show Functions
     </button>
 </p>
-<div>
-    <?php if($values && count($values)) { ?>
-    <div class="list-preview list-flush">
-        <div class="control-list">
-            <table class="table data" data-control="rowlink">
-                <thead>
-                    <tr>
-                        <th><span>Fonctions</span></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($values as $key=>$value): ?>
-                    <tr>
-                        <td>
-                            <?=$value['code']?>
-                        </td>
-                        <td class="nolink text-right">
-                            <button data-attach-loading href="javascript:;" data-request="onUpdateFunction"
-                                data-stripe-load-indicator
-                                data-request-data="functionId:'<?=$value['code']?>' , record_id: 'temp'"
-                                class="btn btn-secondary btn-xs oc-icon-pencil" data-toggle="tooltip"
-                                title="Update">Update</button>
-                        </td>
-                    </tr>
-                    <?php endforeach ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <?php } else { ?>
-    <p>
-        Il n' y a pas encore de fonctions
-    </p>
-    <?php } ?>
-
+<div id="list">
+    <?= $this->makePartial('list', ['values' => $values]) ?>
 </div>

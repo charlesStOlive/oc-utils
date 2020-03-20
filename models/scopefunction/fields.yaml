@@ -5,3 +5,7 @@
 fields:
     name:
         label: Nom de la fonction
+        
+    collectionCode:
+        label: Code de la collection
+        commentAbove: Attention les espaces et caractères speciaux sont interdits

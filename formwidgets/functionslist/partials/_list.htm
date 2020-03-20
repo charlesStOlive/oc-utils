@@ -1,0 +1,43 @@
+<?php
+ if($values && count($values)) {
+      ?>
+<div class="list-preview list-flush">
+    <div class="control-list">
+        <table class="table data" data-control="rowlink">
+            <thead>
+                <tr>
+                    <th><span>Fonctions</span></th>
+                    <th><span>Attributes</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($values as $value): ?>
+                <tr>
+                    <td>
+                        <?=$value['collectionCode']?>
+                    </td>
+                    <td>
+
+                    </td>
+                    <td class="nolink text-right">
+                        <button data-attach-loading href="javascript:;" data-control="popup"
+                            data-handler="onUpdateFunction" data-stripe-load-indicator data-request-data="functionCode:'<?=$value['functionCode']?>',collectionCode:'<?=$value['collectionCode']?>'
+                            class=" btn btn-secondary btn-xs" data-toggle="tooltip" title="Update"><i
+                                class="icon-pencil"></i></button>
+                        <button data-attach-loading href="javascript:;" data-request="onDeleteFunction"
+                            data-stripe-load-indicator data-request-data="collectionCode:'<?=$value['collectionCode']?>'
+                            class=" btn btn-danger btn-xs" data-toggle="tooltip" title="Delete"><i
+                                class="icon-trash"></i></button>
+                    </td>
+                </tr>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<?php } else { ?>
+<p>
+    Il n' y a pas encore de fonctions
+</p>
+<?php } ?>
