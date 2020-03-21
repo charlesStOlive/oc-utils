@@ -336,8 +336,8 @@ class DataSource extends Model
         $fnc = $this->getFunctionClass();
         $fnc->setModel($model);
         foreach ($wakaModel->model_functions as $item) {
-            $itemFnc = $item['functioncode'];
-            $collection[$item['code']] = $fnc->{$itemFnc}($item);
+            $itemFnc = $item['functionCode'];
+            $collection[$item['collectionCode']] = $fnc->{$itemFnc}($item);
         }
         return $collection;
     }
