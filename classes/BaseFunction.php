@@ -6,6 +6,7 @@ class BaseFunction
     {
         $this->model = $model;
     }
+
     public function getFunctionsList()
     {
         $data = [];
