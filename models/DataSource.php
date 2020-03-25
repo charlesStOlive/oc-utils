@@ -154,6 +154,11 @@ class DataSource extends Model
         }
         return $relationModel;
     }
+    /**
+     * Utilisé exclusivement par compilator.document a bouger.
+     * Cette fonction permet d'isoler un ID d'une collection et de l'ajouter au doted array pour word
+     * Ce n'est pas franchement une bonne idée
+     */
     public function getDotedRelationValues($id, array $params)
     {
         $targetModel = $this->modelClass;
@@ -163,23 +168,23 @@ class DataSource extends Model
         $embedRelation = null;
         $constructApi = null;
         $api = [];
-        trace_log('params');
-        trace_log($params);
+        // trace_log('params');
+        // trace_log($params);
         if (count($params)) {
             foreach ($this->relations_array_list as $relation) {
                 trace_log("Parseur de relation");
                 $relationName = $relation['name'];
                 $relationParam = $relation['param'];
                 $relationValue = $params[$relationParam] ?? false;
-                trace_log("relationName : " . $relationName);
-                trace_log("relationValue : " . $relationValue);
+                // trace_log("relationName : " . $relationName);
+                // trace_log("relationValue : " . $relationValue);
 
                 if ($relationValue) {
                     $keyRel = snake_case($this->model) . '.' . $relationName;
 
                     if (count($relation['relations_list'])) {
-                        trace_log($relation['relations_list']);
-                        trace_log(array_pluck($relation['relations_list'], 'name'));
+                        // trace_log($relation['relations_list']);
+                        // trace_log(array_pluck($relation['relations_list'], 'name'));
                         $embedRelation = array_pluck($relation['relations_list'], 'name');
                         $api[$keyRel] = $targetModel::find($id)->{$relationName}()->with($embedRelation)->find($relationValue)->toArray();
 
@@ -202,9 +207,12 @@ class DataSource extends Model
         return array_dot($api);
         //return null;
     }
+
+    /**
+     * Cette fonction utulise le trait CloudisKey
+     */
     public function getAllPictures($id = null)
     {
-        //trait CloudisKey
         return $this->getDotedImagesList($this, $id);
     }
 
@@ -269,7 +277,8 @@ class DataSource extends Model
     }
 
     /**
-     * FOnctions d'identifications des contacts
+     * Fonctions d'identifications des contacts, utilises dans les popup de wakamail
+     * getstringrelation est dans le trait StringRelation
      */
     public function getContact($id = null)
     {
@@ -288,6 +297,10 @@ class DataSource extends Model
         return $datas;
 
     }
+    /**
+     * Fonctions d'identifications des copy de contact, utilises dans les popup de wakamail
+     * getstringrelation est dans le trait StringRelation
+     */
     public function getCcContact($type, $id = null)
     {
         $targetModel = $this->modelClass;
@@ -301,6 +314,10 @@ class DataSource extends Model
 
     }
 
+    /**
+     * retourne la liste des fonctions dans la classe de fonction liée à se data source.
+     * Utiise par le formwifget functionlist et les wakamail, datasource, aggregator
+     */
     public function getFunctionsList()
     {
         if (!$this->function_class) {
@@ -309,6 +326,10 @@ class DataSource extends Model
         $fn = new $this->function_class;
         return $fn->getFunctionsList();
     }
+
+    /**
+     * retourne simplement le function class. mis en fonction pour ajouter l'application exeption sans nuire à la lisibitilé de la fonction getFunctionsCollections
+     */
     public function getFunctionClass()
     {
         if (!$this->function_class) {
@@ -316,15 +337,14 @@ class DataSource extends Model
         }
         return new $this->function_class;
     }
-    // public function getFunctionsCollections($id)
-    // {
-    //     $targetModel = $this->modelClass;
-    //     if (!$id) {
-    //         $id = $targetModel::first()->id;
-    //     }
-    //     return $targetModel::find($id)->getFunctionsCollection();
-    // }
-    public function getFunctionsCollections($id, $wakaModel)
+
+    /**
+     * Retourne les valeurs d'une fonction du model de se datasource.
+     * templatemodel = wakamail ou document ou aggregator
+     * id est l'id du model de datasource
+     */
+
+    public function getFunctionsCollections($id, $templateModel)
     {
         $targetModel = $this->modelClass;
         if (!$id) {
@@ -335,7 +355,7 @@ class DataSource extends Model
         $collection = [];
         $fnc = $this->getFunctionClass();
         $fnc->setModel($model);
-        foreach ($wakaModel->model_functions as $item) {
+        foreach ($templateModel->model_functions as $item) {
             $itemFnc = $item['functionCode'];
             $collection[$item['collectionCode']] = $fnc->{$itemFnc}($item);
         }

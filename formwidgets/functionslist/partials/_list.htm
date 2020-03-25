@@ -6,8 +6,9 @@
         <table class="table data" data-control="rowlink">
             <thead>
                 <tr>
-                    <th><span>Fonctions</span></th>
-                    <th><span>Attributes</span></th>
+                    <th><span>Nom de la collection/Fonction</span></th>
+                    <th><span>Fonction utilisé pour cette collection</span></th>
+                    <th class="text-right"><span>Actions</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -17,7 +18,7 @@
                         <?=$value['collectionCode']?>
                     </td>
                     <td>
-
+                        <?=$value['functionCode']?>
                     </td>
                     <td class="nolink text-right">
                         <button data-attach-loading href="javascript:;" data-control="popup"

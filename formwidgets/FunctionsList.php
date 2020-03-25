@@ -87,26 +87,29 @@ class FunctionsList extends FormWidgetBase
         //création du widget
         $attributeWidget = $this->createFormWidget();
         //ajout des whamps via les attributs
-        foreach ($attributes as $key => $value) {
-            trace_log($value['options'] ?? null);
-            $attributeWidget->addFields([
-                $key => [
-                    'label' => $value['label'],
-                    'type' => $value['type'],
-                    'options' => $value['options'] ?? null,
-                    'useKey' => true,
-                ],
-            ]);
+
+        if ($attributes) {
+            foreach ($attributes as $key => $value) {
+                trace_log($value['options'] ?? null);
+                $attributeWidget->addFields([
+                    $key => [
+                        'label' => $value['label'],
+                        'type' => $value['type'],
+                        'options' => $value['options'] ?? null,
+                        'useKey' => true,
+                    ],
+                ]);
+            }
+
         }
+
         $this->vars['attributeWidget'] = $attributeWidget;
 
         trace_log($attributes);
-        if ($attributes) {
-            $this->vars['attributes'] = $attributes;
-            return [
-                '#functionAttribute' => $this->makePartial('attributes'),
-            ];
-        }
+        $this->vars['attributes'] = $attributes;
+        return [
+            '#functionAttribute' => $this->makePartial('attributes'),
+        ];
 
     }
     public function onCreateFunctionValidation()
@@ -145,6 +148,7 @@ class FunctionsList extends FormWidgetBase
         trace_log($functionCode);
 
         $modelValues = $this->getLoadValue();
+        trace_log($modelValues);
         $datas = new \October\Rain\Support\Collection($modelValues);
         $data = $datas->where('collectionCode', $collectionCode)->first();
 
@@ -157,29 +161,33 @@ class FunctionsList extends FormWidgetBase
         $attributeWidget = $this->createFormWidget();
         $attributeWidget->getField('collectionCode')->value = $data['collectionCode'];
         $attributeWidget->getField('name')->value = $data['name'];
-        foreach ($attributes as $key => $value) {
-            $attributeWidget->addFields([
-                $key => [
-                    'label' => $value['label'],
-                    'type' => $value['type'],
-                    'options' => $value['options'] ?? null,
-                    'useKey' => true,
-                ],
-            ]);
-            if ($value['type'] == 'taglist') {
-                $attributeWidget->getField($key)->value = implode(",", $data[$key]);
-            } else {
-                $attributeWidget->getField($key)->value = $data[$key];
+
+        if ($attributes) {
+            foreach ($attributes as $key => $value) {
+                $attributeWidget->addFields([
+                    $key => [
+                        'label' => $value['label'],
+                        'type' => $value['type'],
+                        'options' => $value['options'] ?? null,
+                        'useKey' => true,
+                    ],
+                ]);
+                if ($value['type'] == 'taglist') {
+                    $val = $data[$key] ?? [];
+                    $attributeWidget->getField($key)->value = implode(",", $val);
+                } else {
+                    $attributeWidget->getField($key)->value = $data[$key] ?? null;
+                }
+
             }
 
         }
+
         $this->vars['collectionCode'] = $collectionCode;
         $this->vars['functionCode'] = $functionCode;
         $this->vars['attributeWidget'] = $attributeWidget;
 
         return $this->makePartial('popup_update');
-
-        //return $this->makePartial('popup_update');
 
     }
     public function onDeleteFunction()
