@@ -173,9 +173,10 @@ class FunctionsList extends FormWidgetBase
                     ],
                 ]);
                 if ($value['type'] == 'taglist') {
-                    $attributeWidget->getField($key)->value = implode(",", $data[$key]);
+                    $val = $data[$key] ?? [];
+                    $attributeWidget->getField($key)->value = implode(",", $val);
                 } else {
-                    $attributeWidget->getField($key)->value = $data[$key];
+                    $attributeWidget->getField($key)->value = $data[$key] ?? null;
                 }
 
             }
