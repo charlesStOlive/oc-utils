@@ -1,9 +1,9 @@
 <?php namespace Waka\Utils\FormWidgets;
 
-use Lang;
-use Backend\Classes\FormWidgetBase;
 use ApplicationException;
+use Backend\Classes\FormWidgetBase;
 use ColorPalette;
+use Lang;
 
 /**
  * Color picker
@@ -103,30 +103,27 @@ class ColorPickerAnalyser extends FormWidgetBase
         $availableColors = $this->availableColors;
         $path;
         $path = $this->model[$this->colorsFrom];
-        $file= null;
+        $file = null;
         $file = $this->model->{$this->colorsFrom}()->withDeferred($this->sessionKey);
         $model = $this->model;
         //trace_log($file);
-        if(!$this->fromMedia) {
-            if($file->first()) {
+        if (!$this->fromMedia) {
+            if ($file->first()) {
                 $path = $file->first()->getLocalPath();
                 // trace_log("deffered file --------------------------- : ");
                 // trace_log($file->get()->toArray());
                 // trace_log("normal ----------------------------------------");
                 // trace_log($this->model->{$this->colorsFrom}()->get()->toArray());
-                return $availableColors = ColorPalette::getPalette($path,6,10); 
-                
+                return $availableColors = ColorPalette::getPalette($path, 6, 10);
+
             }
-        }
-        elseif($path) {
-        $path = storage_path('app/media/'.$this->model[$this->colorsFrom]);
-        } if($path) {
-            return $availableColors = ColorPalette::getPalette($path,6,10); 
-        }
-        elseif (is_array($availableColors)) {
+        } elseif ($path) {
+            $path = storage_path('app/media/' . $this->model[$this->colorsFrom]);
+        }if ($path) {
+            return $availableColors = ColorPalette::getPalette($path, 6, 10);
+        } elseif (is_array($availableColors)) {
             return $availableColors;
-        }
-        elseif (is_string($availableColors) && !empty($availableColors)) {
+        } elseif (is_string($availableColors) && !empty($availableColors)) {
             if ($this->model->methodExists($availableColors)) {
                 return $this->availableColors = $this->model->{$availableColors}(
                     $this->formField->fieldName,
@@ -135,9 +132,9 @@ class ColorPickerAnalyser extends FormWidgetBase
                 );
             } else {
                 throw new ApplicationException(Lang::get('backend::lang.field.colors_method_not_exists', [
-                    'model'  => get_class($this->model),
+                    'model' => get_class($this->model),
                     'method' => $availableColors,
-                    'field'  => $this->formField->fieldName
+                    'field' => $this->formField->fieldName,
                 ]));
             }
         }
