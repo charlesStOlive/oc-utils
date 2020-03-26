@@ -64,6 +64,7 @@ return [
         'section_contact' => "Gestion des relations pour acceder aux contacts emails",
         'contacts' => "Configuration yaml des contacts",
         'model_scopes' => 'Class Scope du model',
+        'has_image' => 'Prendre les images',
     ],
     'settings_ds' => [
         'label' => 'Sources des données',

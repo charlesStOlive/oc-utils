@@ -61,31 +61,36 @@ fields:
             fields:
                 name:
                     label: waka.utils::lang.datasource.relation_name
+                    span: auto
+                has_images:
+                    label: waka.utils::lang.datasource.has_image
+                    span: auto
+                    type: checkbox
                     
-    relations_array_list:
-        label: waka.utils::lang.datasource.relations
-        type: repeater
-        titleFrom: name
-        prompt: waka.utils::lang.datasource.relations_prompt
-        span: auto
-        form:
-            fields:
-                name:
-                    label: waka.utils::lang.datasource.relation_collection_name
-                param:
-                    label: waka.utils::lang.datasource.param
-                    comment: waka.utils::lang.datasource.param_com
-                key:
-                    label: waka.utils::lang.datasource.key
-                relations_list:
-                    label: waka.utils::lang.datasource.relations
-                    type: repeater
-                    titleFrom: name
-                    prompt: waka.utils::lang.datasource.relations_prompt
-                    form:
-                        fields:
-                            name:
-                                label: waka.utils::lang.datasource.relation_name
+    # relations_array_list:
+    #     label: waka.utils::lang.datasource.relations
+    #     type: repeater
+    #     titleFrom: name
+    #     prompt: waka.utils::lang.datasource.relations_prompt
+    #     span: auto
+    #     form:
+    #         fields:
+    #             name:
+    #                 label: waka.utils::lang.datasource.relation_collection_name
+    #             param:
+    #                 label: waka.utils::lang.datasource.param
+    #                 comment: waka.utils::lang.datasource.param_com
+    #             key:
+    #                 label: waka.utils::lang.datasource.key
+    #             relations_list:
+    #                 label: waka.utils::lang.datasource.relations
+    #                 type: repeater
+    #                 titleFrom: name
+    #                 prompt: waka.utils::lang.datasource.relations_prompt
+    #                 form:
+    #                     fields:
+    #                         name:
+    #                             label: waka.utils::lang.datasource.relation_name
                     
 
 

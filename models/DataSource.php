@@ -72,11 +72,6 @@ class DataSource extends Model
     public $attachOne = [];
     public $attachMany = [];
 
-    public function beforeSave()
-    {
-
-    }
-
     public function getModelClassAttribute()
     {
         return $this->author . '\\' . $this->plugin . '\\models\\' . $this->model;
@@ -104,6 +99,15 @@ class DataSource extends Model
         } else {
             return false;
         }
+    }
+
+    public function getTargetModel($id = null)
+    {
+        $targetModel = $this->modelClass;
+        if (!$id) {
+            $id = $targetModel::first()->id;
+        }
+        return $targetModel::find($id);
     }
 
     public function getRelationCollection($id = null)
@@ -154,69 +158,8 @@ class DataSource extends Model
         }
         return $relationModel;
     }
-    /**
-     * Utilisé exclusivement par compilator.document a bouger.
-     * Cette fonction permet d'isoler un ID d'une collection et de l'ajouter au doted array pour word
-     * Ce n'est pas franchement une bonne idée
-     */
-    public function getDotedRelationValues($id, array $params)
-    {
-        $targetModel = $this->modelClass;
-        if (!$id) {
-            $id = $targetModel::first()->id;
-        }
-        $embedRelation = null;
-        $constructApi = null;
-        $api = [];
-        // trace_log('params');
-        // trace_log($params);
-        if (count($params)) {
-            foreach ($this->relations_array_list as $relation) {
-                trace_log("Parseur de relation");
-                $relationName = $relation['name'];
-                $relationParam = $relation['param'];
-                $relationValue = $params[$relationParam] ?? false;
-                // trace_log("relationName : " . $relationName);
-                // trace_log("relationValue : " . $relationValue);
 
-                if ($relationValue) {
-                    $keyRel = snake_case($this->model) . '.' . $relationName;
-
-                    if (count($relation['relations_list'])) {
-                        // trace_log($relation['relations_list']);
-                        // trace_log(array_pluck($relation['relations_list'], 'name'));
-                        $embedRelation = array_pluck($relation['relations_list'], 'name');
-                        $api[$keyRel] = $targetModel::find($id)->{$relationName}()->with($embedRelation)->find($relationValue)->toArray();
-
-                    } else {
-
-                        $api[$keyRel] = $targetModel::find($id)->{$relationName}->find($relationValue)->toArray();
-                    }
-
-                } else {
-                    //mesage sir pas de relation value
-                }
-                //fin du foreach
-            }
-            // fin du if parametre
-        } else {
-            //si il n' y a pas de parametre
-        }
-        // trace_log("-----Array dot-----");
-        // trace_log(array_dot($api));
-        return array_dot($api);
-        //return null;
-    }
-
-    /**
-     * Cette fonction utulise le trait CloudisKey
-     */
-    public function getAllPictures($id = null)
-    {
-        return $this->getDotedImagesList($this, $id);
-    }
-
-    public function getValues($id = null)
+    public function getModels($id = null)
     {
         $targetModel = $this->modelClass;
         if (!$id) {
@@ -226,20 +169,62 @@ class DataSource extends Model
         $constructApi = null;
         if (count($this->relations_list)) {
             $embedRelation = array_pluck($this->relations_list, 'name');
-            $constructApi = $targetModel::with($embedRelation)->find($id)->toArray();
+            $constructApi = $targetModel::with($embedRelation)->find($id);
         } else {
-            $constructApi = $targetModel::find($id)->toArray();
+            $constructApi = $targetModel::find($id);
         }
         return $constructApi;
+    }
+    public function getValues($id = null)
+    {
+        return $this->getModels($id)->toArray();
     }
 
     public function getDotedValues($id = null)
     {
         $constructApi = $this->getValues($id);
-
         $api[snake_case($this->model)] = $constructApi;
         return array_dot($api);
     }
+
+    /**
+     * Cette fonction utulise le trait CloudisKey
+     */
+    public function getAllPictures($id = null)
+    {
+        //Recherche du model
+        $targetModel = $this->getTargetModel($id);
+
+        //recherche des models liées avec images dans le datasource
+        $relationWithImages = new \October\Rain\Support\Collection($this->relations_list);
+        if (!$relationWithImages->count()) {
+            return;
+        }
+        $relationWithImages = $relationWithImages->where('has_images', true)->pluck('name');
+
+        $allImages;
+
+        foreach ($relationWithImages as $relation) {
+            $subModel = $this->getStringModelRelation($targetModel, $relation);
+            $listsImages = $subModel->getCloudiKeysObjects();
+            $allImages[$relation] = $listsImages;
+        }
+
+        //AJout des images du model en cours
+        trace_log($targetModel->id);
+        $allImages[snake_case($this->model)] = $targetModel->getCloudiKeysObjects();
+
+        return $allImages;
+
+        // $allImages = array_dot($allImages);
+        // trace_log($allImages);
+        // $allLinkedModels = $this->getValues($id);
+        // trace_log($allLinkedModels);
+    }
+
+    /**
+     * Je ne sais plus a quoi ca sert
+     */
     public function listModelNameId()
     {
         return $this->modelClass::lists('name', 'id');
@@ -259,9 +244,12 @@ class DataSource extends Model
     }
 
     /**
-     * Return model
+     * Utils for EMAIL ---------------------------------------------------
      */
 
+    /**
+     * Return model
+     */
     public function getContactFromYaml($type)
     {
         $array = \Yaml::parse($this->contacts);
@@ -275,20 +263,16 @@ class DataSource extends Model
             'relation' => $array['relation'] ?? null,
         ];
     }
-
     /**
      * Fonctions d'identifications des contacts, utilises dans les popup de wakamail
      * getstringrelation est dans le trait StringRelation
      */
     public function getContact($id = null)
     {
-        $targetModel = $this->modelClass;
-        if (!$id) {
-            $id = $targetModel::first()->id;
-        }
+        $targetModel = $this->getTargetModel($id);
         $emailData = $this->getContactFromYaml('ask_to');
 
-        $datas = $this->getStringRelation($targetModel::find($id), $emailData['relation']);
+        $datas = $this->getStringRelation($targetModel, $emailData['relation']);
         if ($datas->count()) {
             $datas = $datas->lists($emailData['key']);
         } else {
@@ -303,16 +287,16 @@ class DataSource extends Model
      */
     public function getCcContact($type, $id = null)
     {
-        $targetModel = $this->modelClass;
-        if (!$id) {
-            $id = $targetModel::first()->id;
-        }
         $ccEmail = $this->getContactFromYaml($type);
+        $model = $this->getTargetModel($id);
 
-        $model = $targetModel::find($id);
         return $this->getStringRelation($targetModel::find($id), $ccEmail['relation'])->lists($ccEmail['key']);
 
     }
+
+    /**
+     * UTILS FOR FUNCTIONS ------------------------------------------------------------
+     */
 
     /**
      * retourne la liste des fonctions dans la classe de fonction liée à se data source.
@@ -326,7 +310,6 @@ class DataSource extends Model
         $fn = new $this->function_class;
         return $fn->getFunctionsList();
     }
-
     /**
      * retourne simplement le function class. mis en fonction pour ajouter l'application exeption sans nuire à la lisibitilé de la fonction getFunctionsCollections
      */
@@ -337,7 +320,6 @@ class DataSource extends Model
         }
         return new $this->function_class;
     }
-
     /**
      * Retourne les valeurs d'une fonction du model de se datasource.
      * templatemodel = wakamail ou document ou aggregator
@@ -346,11 +328,7 @@ class DataSource extends Model
 
     public function getFunctionsCollections($id, $templateModel)
     {
-        $targetModel = $this->modelClass;
-        if (!$id) {
-            $id = $targetModel::first()->id;
-        }
-        $model = $targetModel::find($id);
+        $model = $this->getTargetModel($id);
 
         $collection = [];
         $fnc = $this->getFunctionClass();
