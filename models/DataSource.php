@@ -273,10 +273,15 @@ class DataSource extends Model
         $emailData = $this->getContactFromYaml('ask_to');
 
         $datas = $this->getStringRelation($targetModel, $emailData['relation']);
+
+        if (!$datas) {
+            throw new \ApplicationException("Nous n'avons pas trouvé de contact");
+        }
+
         if ($datas->count()) {
             $datas = $datas->lists($emailData['key']);
         } else {
-            $datas[0] = $datas[$emailData['key']];
+            $datas[0] = $datas[$emailData['key']] ?? null;
         }
         return $datas;
 
@@ -290,7 +295,7 @@ class DataSource extends Model
         $ccEmail = $this->getContactFromYaml($type);
         $model = $this->getTargetModel($id);
 
-        return $this->getStringRelation($targetModel::find($id), $ccEmail['relation'])->lists($ccEmail['key']);
+        return $this->getStringRelation($model::find($id), $ccEmail['relation'])->lists($ccEmail['key']);
 
     }
 
@@ -333,6 +338,11 @@ class DataSource extends Model
         $collection = [];
         $fnc = $this->getFunctionClass();
         $fnc->setModel($model);
+
+        if (!$templateModel->model_functions) {
+            return;
+        }
+
         foreach ($templateModel->model_functions as $item) {
             $itemFnc = $item['functionCode'];
             $collection[$item['collectionCode']] = $fnc->{$itemFnc}($item);
