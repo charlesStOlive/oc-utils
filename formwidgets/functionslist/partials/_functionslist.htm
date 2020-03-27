@@ -1,3 +1,6 @@
+<?php if($noFunction) { ?>
+<p>Auncune fonction disponible</p>
+<?php } else { ?>
 <p>
     <button href="javascript:;" class="btn btn-secondary oc-icon-files-o " data-control="popup"
         data-handler="onShowFunctions">
@@ -7,3 +10,5 @@
 <div id="list">
     <?= $this->makePartial('list', ['values' => $values]) ?>
 </div>
+
+<?php } ?>

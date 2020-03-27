@@ -42,7 +42,7 @@ class DataSource extends Model
     /**
      * @var array Attributes to be cast to JSON
      */
-    protected $jsonable = ['relations_list', 'attributes_list', 'relations_array_list'];
+    protected $jsonable = ['relations_list', 'attributes_list', 'relations_array_list', 'contacts'];
 
     /**
      * @var array Attributes to be appended to the API representation of the model (ex. toArray())
@@ -250,32 +250,42 @@ class DataSource extends Model
     /**
      * Return model
      */
-    public function getContactFromYaml($type)
+    public function getDataFromContacts($type)
     {
-        $array = \Yaml::parse($this->contacts);
-        $array = $array[$type] ?? null;
+        $array = $this->contacts;
         if (!$array) {
-            throw new \ApplicationException("Il manque l'info email dans de data_source ask_contacts");
+            throw new \ApplicationException("Les contacts ne sont pas configurés.");
+        }
+        $fields = $array[$type] ?? null;
+
+        if (!$fields['key']) {
+            trace_log('key est vide');
+            return;
         }
 
         return [
-            'key' => $array['key'],
-            'relation' => $array['relation'] ?? null,
+            'key' => $fields['key'] ?? null,
+            'relation' => $fields['relation'] ?? null,
         ];
     }
     /**
      * Fonctions d'identifications des contacts, utilises dans les popup de wakamail
      * getstringrelation est dans le trait StringRelation
      */
-    public function getContact($id = null)
+    public function getContact($type, $id = null)
     {
+        trace_log("get contact from type : " . $type);
         $targetModel = $this->getTargetModel($id);
-        $emailData = $this->getContactFromYaml('ask_to');
+        $emailData = $this->getDataFromContacts($type);
+
+        if (!$emailData) {
+            return;
+        }
 
         $datas = $this->getStringRelation($targetModel, $emailData['relation']);
 
         if (!$datas) {
-            throw new \ApplicationException("Nous n'avons pas trouvé de contact");
+            return;
         }
 
         if ($datas->count()) {
@@ -284,18 +294,6 @@ class DataSource extends Model
             $datas[0] = $datas[$emailData['key']] ?? null;
         }
         return $datas;
-
-    }
-    /**
-     * Fonctions d'identifications des copy de contact, utilises dans les popup de wakamail
-     * getstringrelation est dans le trait StringRelation
-     */
-    public function getCcContact($type, $id = null)
-    {
-        $ccEmail = $this->getContactFromYaml($type);
-        $model = $this->getTargetModel($id);
-
-        return $this->getStringRelation($model::find($id), $ccEmail['relation'])->lists($ccEmail['key']);
 
     }
 
@@ -321,7 +319,7 @@ class DataSource extends Model
     public function getFunctionClass()
     {
         if (!$this->function_class) {
-            throw new \ApplicationException("Il manque le chemin de la classe fonction dans DataSource pour ce model");
+            return null;
         }
         return new $this->function_class;
     }
@@ -333,15 +331,14 @@ class DataSource extends Model
 
     public function getFunctionsCollections($id, $templateModel)
     {
+        if (!$templateModel->model_functions) {
+            return;
+        }
         $model = $this->getTargetModel($id);
 
         $collection = [];
         $fnc = $this->getFunctionClass();
         $fnc->setModel($model);
-
-        if (!$templateModel->model_functions) {
-            return;
-        }
 
         foreach ($templateModel->model_functions as $item) {
             $itemFnc = $item['functionCode'];

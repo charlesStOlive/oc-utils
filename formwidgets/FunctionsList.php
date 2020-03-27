@@ -37,8 +37,14 @@ class FunctionsList extends FormWidgetBase
      */
     public function prepareVars()
     {
+        $noFunction = true;
+        $functionClass = $this->model->data_source->getFunctionClass();
+        if ($functionClass) {
+            $noFunction = false;
+        }
         $this->jsonValues = $this->getLoadValue();
-        $this->vars['functionClass'] = $this->model->data_source->getFunctionClass();
+        $this->vars['noFunction'] = $noFunction;
+        $this->vars['functionClass'] = $functionClass;
         $this->vars['name'] = $this->formField->getName();
         trace_log($this->getLoadValue());
         $this->vars['values'] = $this->getLoadValue();
