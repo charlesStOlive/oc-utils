@@ -122,9 +122,9 @@ class Plugin extends PluginBase
     {
         return [
             'data_sources' => [
-                'label' => Lang::get('waka.utils::lang.settings_ds.label'),
-                'description' => Lang::get('waka.utils::lang.settings_ds.description'),
-                'category' => Lang::get('waka.utils::lang.settings_ds.category'),
+                'label' => Lang::get('waka.utils::lang.menu.data_sources'),
+                'description' => Lang::get('waka.utils::lang.menu.data_sources_description'),
+                'category' => Lang::get('waka.utils::lang.menu.settings_category'),
                 'icon' => 'icon-paper-plane',
                 'url' => Backend::url('waka/utils/datasources'),
                 'order' => 1,

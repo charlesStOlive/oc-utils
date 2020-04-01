@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'menu' => [
+        'data_sources' => 'Sources des données',
+        'data_sources_description' => 'Gerer les sources et leur relation pour publisher, mailing, etc.',
+        'settings_category' => 'Wakaari options ',
+    ],
     'global' => [
         'details' => 'Détails',
         'slug' => 'Slug',
@@ -66,9 +71,5 @@ return [
         'model_scopes' => 'Class Scope du model',
         'has_image' => 'Prendre les images',
     ],
-    'settings_ds' => [
-        'label' => 'Sources des données',
-        'description' => 'Gerer les sources et leur relation pour publisher, mailing, etc.',
-        'category' => 'Wakaari options',
-    ],
+
 ];

@@ -190,6 +190,39 @@ class DataSource extends Model
     /**
      * Cette fonction utulise le trait CloudisKey
      */
+    public function getAllPicturesUrl($id = null)
+    {
+        //Recherche du model
+        $targetModel = $this->getTargetModel($id);
+
+        //recherche des models liées avec images dans le datasource
+        $relationWithImages = new \October\Rain\Support\Collection($this->relations_list);
+        if (!$relationWithImages->count()) {
+            return;
+        }
+        $relationWithImages = $relationWithImages->where('has_images', true)->pluck('name');
+
+        $allImages;
+
+        foreach ($relationWithImages as $relation) {
+            $subModel = $this->getStringModelRelation($targetModel, $relation);
+            $listsImages = $subModel->getCloudiKeysObjectsUrl();
+            $allImages[$relation] = $listsImages;
+        }
+
+        //AJout des images du model en cours
+        $allImages[snake_case($this->model)] = $targetModel->getCloudiKeysObjectsUrl();
+
+        return $allImages;
+
+        // $allImages = array_dot($allImages);
+        // trace_log($allImages);
+        // $allLinkedModels = $this->getValues($id);
+        // trace_log($allLinkedModels);
+    }
+    /**
+     * Cette fonction utulise le trait CloudisKey
+     */
     public function getAllPictures($id = null)
     {
         //Recherche du model
