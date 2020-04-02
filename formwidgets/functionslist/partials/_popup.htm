@@ -6,12 +6,14 @@
             <h4 class="modal-title">Are you sure you wanna do that?</h4>
         </div>
         <div class="modal-body">
-            <select class="form-control custom-select" data-request="onChooseFunction" name="functionCode">
-                <option value="" disabled selected>--Choisissez une fonction--</option>
-                <?php foreach($functionList as $key => $value)  { ?>
-                <option value="<?=$key?>"><?=$value?></option>
-                <?php } ?>
-            </select>
+            <div class="form-group dropdown-field span-full">
+                <select class="form-control custom-select" data-request="onChooseFunction" name="functionCode">
+                    <option value="" disabled selected>--Choisissez une fonction--</option>
+                    <?php foreach($functionList as $key => $value)  { ?>
+                    <option value="<?=$key?>"><?=$value?></option>
+                    <?php } ?>
+                </select>
+            </div>
             <div id="functionAttribute">
                 <!--Emplacement pour les data-->
             </div>
