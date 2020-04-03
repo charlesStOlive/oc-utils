@@ -212,12 +212,15 @@ class DataSource extends Model
 
     public function getPicturesUrl($id, $dataImages)
     {
+        $allPictures = [];
         $targetModel = $this->getTargetModel($id);
         //  trace_log("--dataImages--");
         //  trace_log($dataImages);
         foreach ($dataImages as $image) {
             //On recherche le bon model
             $modelImage = $targetModel;
+            $img;
+
             if ($image['relation'] != 'self') {
                 $modelImage = $this->getStringModelRelation($targetModel, $image['relation']);
             }
@@ -233,7 +236,6 @@ class DataSource extends Model
             if ($image['type'] == 'cloudi') {
                 $img = $modelImage->{$image['field']}->getUrl($options);
                 //  trace_log('image cloudi---' . $img);
-
             }
             // si montage ( voir GroupedImage )
             if ($image['type'] == 'montage') {
@@ -241,9 +243,10 @@ class DataSource extends Model
                 $img = $modelImage->getCloudiModelUrl($montage, $options);
                 //  trace_log('montage ---' . $img);
             }
+            $allPictures[$image['code']] = $img;
 
         }
-        return null;
+        return $allPictures;
     }
 
     /**
