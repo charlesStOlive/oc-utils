@@ -212,6 +212,9 @@ class DataSource extends Model
 
     public function getPicturesUrl($id, $dataImages)
     {
+        if (!$dataImages) {
+            return;
+        }
         $allPictures = [];
         $targetModel = $this->getTargetModel($id);
         //  trace_log("--dataImages--");
@@ -243,7 +246,11 @@ class DataSource extends Model
                 $img = $modelImage->getCloudiModelUrl($montage, $options);
                 //  trace_log('montage ---' . $img);
             }
-            $allPictures[$image['code']] = $img;
+            $allPictures[$image['code']] = [
+                'url' => $img,
+                'width' => $options['width'],
+                'height' => $options['height'],
+            ];
 
         }
         return $allPictures;
