@@ -210,39 +210,40 @@ class DataSource extends Model
 
     }
 
-    /**
-     * Cette fonction utulise le trait CloudisKey
-     */
-    public function getAllPictures($id = null)
+    public function getPicturesUrl($id, $dataImages)
     {
-        //Recherche du model
         $targetModel = $this->getTargetModel($id);
+        //  trace_log("--dataImages--");
+        //  trace_log($dataImages);
+        foreach ($dataImages as $image) {
+            //On recherche le bon model
+            $modelImage = $targetModel;
+            if ($image['relation'] != 'self') {
+                $modelImage = $this->getStringModelRelation($targetModel, $image['relation']);
+            }
+            //  trace_log("nom du model " . $modelImage->name);
 
-        //recherche des models liées avec images dans le datasource
-        $relationWithImages = new \October\Rain\Support\Collection($this->relations_list);
-        if (!$relationWithImages->count()) {
-            return;
+            $options = [
+                'width' => $image['width'] ?? null,
+                'height' => $image['height'] ?? null,
+                'crop' => $image['crop'] ?? null,
+            ];
+
+            // si cloudi ( voir GroupedImage )
+            if ($image['type'] == 'cloudi') {
+                $img = $modelImage->{$image['field']}->getUrl($options);
+                //  trace_log('image cloudi---' . $img);
+
+            }
+            // si montage ( voir GroupedImage )
+            if ($image['type'] == 'montage') {
+                $montage = $modelImage->montages->find($image['id']);
+                $img = $modelImage->getCloudiModelUrl($montage, $options);
+                //  trace_log('montage ---' . $img);
+            }
+
         }
-        $relationWithImages = $relationWithImages->where('has_images', true)->pluck('name');
-
-        $allImages;
-
-        foreach ($relationWithImages as $relation) {
-            $subModel = $this->getStringModelRelation($targetModel, $relation);
-            $listsImages = $subModel->getCloudiKeysObjects();
-            $allImages[$relation] = $listsImages;
-        }
-
-        //AJout des images du model en cours
-        trace_log($targetModel->id);
-        $allImages[snake_case($this->model)] = $targetModel->getCloudiKeysObjects();
-
-        return $allImages;
-
-        // $allImages = array_dot($allImages);
-        // trace_log($allImages);
-        // $allLinkedModels = $this->getValues($id);
-        // trace_log($allLinkedModels);
+        return null;
     }
 
     /**
@@ -282,7 +283,7 @@ class DataSource extends Model
         $fields = $array[$type] ?? null;
 
         if (!$fields['key']) {
-            trace_log('key est vide');
+            ////  trace_log('key est vide');
             return;
         }
 
@@ -297,7 +298,7 @@ class DataSource extends Model
      */
     public function getContact($type, $id = null)
     {
-        trace_log("get contact from type : " . $type);
+        //  trace_log("get contact from type : " . $type);
         $targetModel = $this->getTargetModel($id);
         $emailData = $this->getDataFromContacts($type);
 
@@ -352,9 +353,9 @@ class DataSource extends Model
      * id est l'id du model de datasource
      */
 
-    public function getFunctionsCollections($id, $templateModel)
+    public function getFunctionsCollections($id, $model_functions)
     {
-        if (!$templateModel->model_functions) {
+        if (!$model_functions) {
             return;
         }
         $model = $this->getTargetModel($id);
@@ -363,7 +364,7 @@ class DataSource extends Model
         $fnc = $this->getFunctionClass();
         $fnc->setModel($model);
 
-        foreach ($templateModel->model_functions as $item) {
+        foreach ($model_functions as $item) {
             $itemFnc = $item['functionCode'];
             $collection[$item['collectionCode']] = $fnc->{$itemFnc}($item);
         }

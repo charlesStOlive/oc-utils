@@ -46,7 +46,7 @@ class FunctionsList extends FormWidgetBase
         $this->vars['noFunction'] = $noFunction;
         $this->vars['functionClass'] = $functionClass;
         $this->vars['name'] = $this->formField->getName();
-        trace_log($this->getLoadValue());
+        //trace_log($this->getLoadValue());
         $this->vars['values'] = $this->getLoadValue();
         $this->vars['model'] = $this->model;
 
@@ -96,7 +96,7 @@ class FunctionsList extends FormWidgetBase
 
         if ($attributes) {
             foreach ($attributes as $key => $value) {
-                trace_log($value['options'] ?? null);
+                //trace_log($value['options'] ?? null);
                 $attributeWidget->addFields([
                     $key => [
                         'label' => $value['label'],
@@ -111,7 +111,7 @@ class FunctionsList extends FormWidgetBase
 
         $this->vars['attributeWidget'] = $attributeWidget;
 
-        trace_log($attributes);
+        //trace_log($attributes);
         $this->vars['attributes'] = $attributes;
         return [
             '#functionAttribute' => $this->makePartial('attributes'),
@@ -121,7 +121,7 @@ class FunctionsList extends FormWidgetBase
     public function onCreateFunctionValidation()
     {
         //mis d'en une collection des données existantes
-        trace_log(post());
+        //trace_log(post());
         $data;
         $modelValues = $this->getLoadValue();
         if ($modelValues && count($modelValues)) {
@@ -151,17 +151,17 @@ class FunctionsList extends FormWidgetBase
 
         $collectionCode = post('collectionCode');
         $functionCode = post('functionCode');
-        trace_log($functionCode);
+        //trace_log($functionCode);
 
         $modelValues = $this->getLoadValue();
-        trace_log($modelValues);
+        //trace_log($modelValues);
         $datas = new \October\Rain\Support\Collection($modelValues);
         $data = $datas->where('collectionCode', $collectionCode)->first();
 
         $fnc_class = $this->model->data_source->getFunctionClass();
         $attributes = $fnc_class->getFunctionAttribute($functionCode);
 
-        trace_log($data);
+        //trace_log($data);
 
         //création du widget
         $attributeWidget = $this->createFormWidget();

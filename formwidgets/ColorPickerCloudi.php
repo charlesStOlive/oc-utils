@@ -98,19 +98,19 @@ class ColorPickerCloudi extends FormWidgetBase
      */
     protected function getAvailableColors()
     {
-        trace_log("get avaiable colors");
-        trace_log($this->colorsFrom);
+        //trace_log("get avaiable colors");
+        //trace_log($this->colorsFrom);
         $availableColors = $this->availableColors;
         $cloudiObject = $this->model->{$this->colorsFrom};
-        trace_log($cloudiObject);
+        //trace_log($cloudiObject);
 
         $path = null;
         if ($cloudiObject) {
-            trace_log('il y a un cloudiObject');
+            //trace_log('il y a un cloudiObject');
             $path = $cloudiObject->getUrl();
         }
         if ($path) {
-            trace_log('il y a un patn' . $path);
+            //trace_log('il y a un patn' . $path);
             $availableColors = ColorPalette::getPalette($path, 6, 10);
         }
         return $availableColors;

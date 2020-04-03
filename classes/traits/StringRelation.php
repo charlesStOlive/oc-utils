@@ -27,7 +27,7 @@ trait StringRelation
     }
     public function getStringModelRelation($model, String $relation)
     {
-        trace_log("getStringModelRelation : " . $relation);
+        //trace_log("getStringModelRelation : " . $relation);
         $returnValue = null;
         $parts = explode(".", $relation);
         $nbParts = count($parts) ?? 1;
