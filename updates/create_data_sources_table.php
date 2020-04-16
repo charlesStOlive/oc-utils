@@ -1,8 +1,8 @@
 <?php namespace Waka\Utils\Updates;
 
-use Schema;
 use October\Rain\Database\Schema\Blueprint;
 use October\Rain\Database\Updates\Migration;
+use Schema;
 
 class CreateDataSourcesTable extends Migration
 {
@@ -15,15 +15,14 @@ class CreateDataSourcesTable extends Migration
             $table->string('author')->default('waka');
             $table->string('plugin');
             $table->string('model');
-            $table->string('sector_access');
             $table->string('controller')->nullable();
             $table->string('test_id')->nullable();
-            $table->string('specific_list')->nullable();
-            $table->string('specific_update')->nullable();
-            $table->string('specific_create')->nullable();
-            $table->text('media_files')->nullable();
+            // $table->string('specific_list')->nullable();
+            // $table->string('specific_update')->nullable();
+            // $table->string('specific_create')->nullable();
+            // $table->text('media_files')->nullable();
             $table->text('relations_list')->nullable();
-            $table->text('attributes_list')->nullable();
+            // $table->text('attributes_list')->nullable();
         });
     }
 

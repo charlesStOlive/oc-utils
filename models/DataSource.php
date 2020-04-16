@@ -2,6 +2,7 @@
 
 use Model;
 use Schema;
+use \Waka\Cloudis\Models\Settings as CloudisSettings;
 
 /**
  * DataSource Model
@@ -227,7 +228,7 @@ class DataSource extends Model
             if ($image['relation'] != 'self') {
                 $modelImage = $this->getStringModelRelation($targetModel, $image['relation']);
             }
-            //  trace_log("nom du model " . $modelImage->name);
+            trace_log("nom du model " . $modelImage->name);
 
             $options = [
                 'width' => $image['width'] ?? null,
@@ -237,7 +238,12 @@ class DataSource extends Model
 
             // si cloudi ( voir GroupedImage )
             if ($image['type'] == 'cloudi') {
-                $img = $modelImage->{$image['field']}->getUrl($options);
+                $img = $modelImage->{$image['field']};
+                if ($img) {
+                    $img = $img->getUrl($options);
+                } else {
+                    $img = \Cloudder::secureShow(CloudisSettings::get('srcPath'));
+                }
                 //  trace_log('image cloudi---' . $img);
             }
             // si montage ( voir GroupedImage )
