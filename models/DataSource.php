@@ -106,7 +106,8 @@ class DataSource extends Model
     {
         $targetModel = $this->modelClass;
         if (!$id) {
-            $id = $targetModel::first()->id;
+            //$id = $targetModel::first()->id;
+            $id = $this->test_id;
         }
         return $targetModel::find($id);
     }
@@ -164,7 +165,8 @@ class DataSource extends Model
     {
         $targetModel = $this->modelClass;
         if (!$id) {
-            $id = $targetModel::first()->id;
+            //$id = $targetModel::first()->id;
+            $id = $this->test_id;
         }
         $embedRelation = null;
         $constructApi = null;
@@ -185,6 +187,7 @@ class DataSource extends Model
     {
         $constructApi = $this->getValues($id);
         $api[snake_case($this->model)] = $constructApi;
+        trace_log(array_dot($api));
         return array_dot($api);
     }
 
