@@ -324,19 +324,32 @@ class DataSource extends Model
         if (!$emailData) {
             return;
         }
+        trace_log($emailData['relation']);
+        $contacts = $this->getStringRelation($targetModel, $emailData['relation']);
+        trace_log("liste des relations pour contact");
+        trace_log($contacts->toArray());
+        // trace_log($contacts['name']);
+        // trace_log(get_class($contacts));
 
-        $datas = $this->getStringRelation($targetModel, $emailData['relation']);
+        $results = [];
 
-        if (!$datas) {
+        if (!$contacts) {
             return;
         }
+        //On cherche si on a un l'email via la key
+        $email = $contacts[$emailData['key']] ?? false;
 
-        if ($datas->count()) {
-            $datas = $datas->lists($emailData['key']);
+        if ($email) {
+            array_push($results, $email);
         } else {
-            $datas[0] = $datas[$emailData['key']] ?? null;
+            foreach ($contacts as $contact) {
+                $email = $contact[$emailData['key']] ?? false;
+                if ($email) {
+                    array_push($results, $email);
+                }
+            }
         }
-        return $datas;
+        return $results;
 
     }
 
