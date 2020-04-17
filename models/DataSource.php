@@ -324,10 +324,10 @@ class DataSource extends Model
         if (!$emailData) {
             return;
         }
-        trace_log($emailData['relation']);
+        //trace_log($emailData['relation']);
         $contacts = $this->getStringRelation($targetModel, $emailData['relation']);
-        trace_log("liste des relations pour contact");
-        trace_log($contacts->toArray());
+        // trace_log("liste des relations pour contact");
+        // trace_log($contacts->toArray());
         // trace_log($contacts['name']);
         // trace_log(get_class($contacts));
 
