@@ -1,0 +1,55 @@
+<h3>Les attributs disponibles</h3>
+<p class="help-block">Liste des attributs et des relations disponibles.</p>
+<p class="help-block">Les valeurs affiché sont celles du modèle de test.</p>
+<h3>Attributs du modèle</h3>
+<div class="drag-balloon-selector">
+    <ul>
+        <?php foreach($attributesArray as $key=>$value) { ?>
+        <li style="" data-control="dragvalue" data-text-value="{{<?=$key?>}}" data-drag-click="true">
+            <?=$key?> = <?=str_limit($value, 40)?>
+        </li>
+        <?php } ?>
+    </ul>
+</div>
+<h3>Images du modèle</h3>
+<?php foreach($IMGSArray as $value) { ?>
+<div class="drag-balloon-selector">
+    <ul>
+        <li style="" data-control="dragvalue" data-text-value="{{IMG.<?=$value['code']?>.url}}" data-drag-click="true">
+            Adresse image <?=$value['code']?>
+        </li>
+        <li style="" data-control="dragvalue" data-text-value="{{IMG.<?=$value['code']?>.height}}"
+            data-drag-click="true">
+            H <?=$value['code']?>
+        </li>
+        <li style="" data-control="dragvalue" data-text-value="{{IMG.<?=$value['code']?>.width}}"
+            data-drag-click="true">
+            L <?=$value['code']?>
+        </li>
+    </ul>
+</div>
+<?php } ?>
+<h3>fonctions du modèle</h3>
+<p class="help-block">Pour chaque fonction vou devez impérativement mettre une balise ouvrante et fermente</p>
+<?php foreach($FNCSArray as $key=>$fncs) { ?>
+<h4><?=$key?></h4>
+<div class="drag-balloon-selector">
+    <ul>
+        <li style="" data-control="dragvalue" class="bg-a" data-text-value="{%for row in FNC.<?=$key?>%}"
+            data-drag-click="true">
+            || ---- Code balise ouvrante <?=$key?>
+        </li>
+
+        <?php foreach($fncs as $key=>$value) { ?>
+        <li style="" data-control="dragvalue" data-text-value="{{row.<?=$key?>}}" data-drag-click="true">
+            <?=$key?> => <?=str_limit($value, 20)?>
+        </li>
+        <?php } ?>
+
+        <li style="" data-control="dragvalue" class="bg-a" data-text-value="{%endfor%}" data-drag-click="true">
+            Code balise fermante ---- || <?=$key?>
+        </li>
+
+
+    </ul>
+</div> <?php } ?>

@@ -1,0 +1,15 @@
+/*
+ * This is a sample StyleSheet file used by LabelList
+ *
+ * You can delete this file if you want
+ */
+ #sidebar_info h3, h4 {
+    padding-top: 10px;
+  }
+
+.drag-balloon-selector ul {padding:0;margin-top:-5px}
+.drag-balloon-selector ul li {list-style:none;display:inline-block;padding:6px 7px 5px;margin-right:5px;margin-top:6px;background:#bcc3c7;color:#fff;font-size:10px;line-height:100%;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;-webkit-transition:all 0.1s ease;transition:all 0.1s ease}
+.drag-balloon-selector ul li.active {background:#2b5ba8 !important}
+.drag-balloon-selector.control-disabled {opacity:0.5;filter:alpha(opacity=50)}
+.drag-balloon-selector:not(.control-disabled) ul li:hover {background:#8e2532;cursor:pointer}
+.form-group .drag-balloon-selector ul {margin-bottom:0}

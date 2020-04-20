@@ -26,5 +26,15 @@ class BaseFunction
         }
 
     }
+    public function getFunctionsOutput($value)
+    {
+        $functions = $this->listFunctionAttributes();
+        foreach ($functions as $key => $values) {
+            if ($key == $value) {
+                return $values['outputs'] ?? null;
+            }
+        }
+
+    }
 
 }

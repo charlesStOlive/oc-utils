@@ -187,7 +187,6 @@ class DataSource extends Model
     {
         $constructApi = $this->getValues($id);
         $api[snake_case($this->model)] = $constructApi;
-        trace_log(array_dot($api));
         return array_dot($api);
     }
 
@@ -368,6 +367,14 @@ class DataSource extends Model
         }
         $fn = new $this->function_class;
         return $fn->getFunctionsList();
+    }
+    public function getFunctionsOutput($fnc)
+    {
+        if (!$this->function_class) {
+            throw new \ApplicationException("Il manque le chemin de la classe fonction dans DataSource pour ce model");
+        }
+        $fn = new $this->function_class;
+        return $fn->getFunctionsOutput($fnc);
     }
     /**
      * retourne simplement le function class. mis en fonction pour ajouter l'application exeption sans nuire à la lisibitilé de la fonction getFunctionsCollections
