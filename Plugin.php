@@ -72,9 +72,9 @@ class Plugin extends PluginBase
         /**
          * POur le copier coller
          */
-        Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
-            $controller->addJs('/plugins/waka/utils/assets/js/clipboard.min.js');
-        });
+        // Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
+        //     $controller->addJs('/plugins/waka/utils/assets/js/clipboard.min.js');
+        // });
 
         Event::listen('backend.update.duplicate', function ($controller) {
             if (in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement)) {

@@ -1,0 +1,47 @@
+<h3>Les attributs disponibles</h3>
+<p class="help-block">Liste des attributs et des relations disponibles.</p>
+<p class="help-block">Les valeurs affiché sont celles du modèle de test.</p>
+<p class="help-block">Cliquez sur un bouton pour copier la valeur dans le presse papier</p>
+<h3>Attributs du modèle</h3>
+<div class="list">
+    <?php foreach($attributesArray as $key=>$value) { ?>
+    <button type="button" class="btn btn-xs btn-default" data-clipboard-text="${<?=$key?>}">
+        <?=$key?> = <?=str_limit($value, 40)?>
+    </button>
+    <?php } ?>
+</div>
+<h3>Images du modèle</h3>
+<?php foreach($IMGSArray as $value) { ?>
+<div class="list">
+    <button type="button" class="btn btn-xs btn-default" data-clipboard-text="${IMG.<?=$value['code']?>}">
+        Adresse image <?=$value['code']?>
+    </button>
+</div>
+<?php } ?>
+<h3>fonctions du modèle</h3>
+<p class="help-block">Pour chaque fonction vou devez impérativement mettre une balise ouvrante et fermente</p>
+<?php foreach($FNCSArray as $key=>$fncs) { ?>
+<h4><?=$key?></h4>
+<div class="list">
+    <button type="button" class="btn btn-md btn-default" data-clipboard-text="${FNC.<?=$key?>}">
+        || -- Code balise ouvrante <?=$key?>
+    </button>
+
+    <?php foreach($fncs as $subkey=>$value) { ?>
+    <button type="button" class="btn btn-xs" data-clipboard-text="${<?=$key?>.<?=$subkey?>}">
+        <?=$subkey?> => <?=str_limit($value, 20)?>
+    </button>
+    <?php } ?>
+
+    <button type="button" class="btn btn-md btn-default" data-clipboard-text="${/FNC.<?=$key?>}">
+        Code balise fermante -- ||<?=$key?>
+    </button>
+
+</div> <?php } ?>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    new ClipboardJS('.btn');
+});
+
+</script>

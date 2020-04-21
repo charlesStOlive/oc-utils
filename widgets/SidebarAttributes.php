@@ -21,7 +21,12 @@ class SidebarAttributes extends WidgetBase
         $fncArray = $this->getFNCOutputs();
         trace_log($this->type);
         $this->vars['FNCSArray'] = $fncArray;
-        return $this->makePartial('list');
+        if ($this->type == 'word') {
+            return $this->makePartial('list_word');
+        } else {
+            return $this->makePartial('list');
+        }
+
     }
 
     public function perepareModel()
@@ -91,6 +96,8 @@ class SidebarAttributes extends WidgetBase
     public function loadAssets()
     {
         $this->addCss('css/sidebarattributes.css', 'Waka.Utils');
+        $this->addJs('js/clipboard.min.js', 'Waka.Utils');
+
         //$this->addJs('js/labellist.js', 'Waka.Utils');
     }
 
