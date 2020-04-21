@@ -4,6 +4,7 @@ use Backend\Classes\WidgetBase;
 
 class SidebarAttributes extends WidgetBase
 {
+    use \Waka\Utils\Classes\Traits\StringRelation;
     /**
      * @var string A unique alias to identify this widget.
      */
@@ -16,11 +17,15 @@ class SidebarAttributes extends WidgetBase
     public function render()
     {
         $this->perepareModel();
+        if (!$this->model) {
+            return;
+        }
         $this->vars['attributesArray'] = $this->dataSource->getDotedValues();
         $this->vars['IMGSArray'] = $this->getIMG();
         $fncArray = $this->getFNCOutputs();
         trace_log($this->type);
         $this->vars['FNCSArray'] = $fncArray;
+
         if ($this->type == 'word') {
             return $this->makePartial('list_word');
         } else {
@@ -33,6 +38,9 @@ class SidebarAttributes extends WidgetBase
     {
         $model = $this->controller->formGetModel();
         $this->model = $model;
+        if (!$model) {
+            return;
+        }
 
         $this->dataSource = $model->data_source;
         return false;
@@ -68,16 +76,33 @@ class SidebarAttributes extends WidgetBase
             $code = $fnc['collectionCode'];
             $outputs = $this->model->data_source->getFunctionsOutput($fnc['functionCode']);
             if ($outputs) {
+                $relations = $outputs['relations'] ?? null;
+                if ($relations) {
+                    foreach ($relations as $submodelKey => $submodelValue) {
+                        $modelFinal = $this->getStringModelRelation($modelTest, $submodelKey);
+                        $dataApi = $modelFinal->first()->toArray();
+                        $result[$code] = array_dot($dataApi);
+                    }
+                }
+                $models = $outputs['models'] ?? null;
+                if ($models) {
+                    foreach ($models as $model) {
+                        $result[$code] = array_dot($model);
+                    }
+                }
+                $images = $outputs['images'] ?? null;
+                if ($images) {
+                    foreach ($images as $image) {
+                        $result[$code][$image . '.path'] = 'IMAGE';
+                    }
+                }
+                $values = $outputs['values'] ?? null;
+                if ($values) {
+                    foreach ($values as $value) {
+                        $result[$code][$value] = 'contenu des P';
+                    }
+                }
 
-                $values = $outputs['values'];
-                foreach ($values as $submodelKey => $submodelValue) {
-                    $dataApi = $modelTest->{$submodelKey}()->with($submodelValue)->first()->toArray();
-                    $result[$code] = array_dot($dataApi);
-                }
-                $images = $outputs['images'];
-                foreach ($images as $image) {
-                    $result[$code][$image . '.path'] = 'IMAGE';
-                }
             }
         }
 

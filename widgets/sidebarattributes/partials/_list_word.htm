@@ -6,7 +6,7 @@
 <div class="list">
     <?php foreach($attributesArray as $key=>$value) { ?>
     <button type="button" class="btn btn-xs btn-default" data-clipboard-text="${<?=$key?>}">
-        <?=$key?> = <?=str_limit($value, 40)?>
+        <?=$key?> = <?=strip_tags(str_limit($value, 40))?>
     </button>
     <?php } ?>
 </div>
@@ -29,7 +29,7 @@
 
     <?php foreach($fncs as $subkey=>$value) { ?>
     <button type="button" class="btn btn-xs" data-clipboard-text="${<?=$key?>.<?=$subkey?>}">
-        <?=$subkey?> => <?=str_limit($value, 20)?>
+        <?=$subkey?> => <?=strip_tags(str_limit($value, 40))?>
     </button>
     <?php } ?>
 

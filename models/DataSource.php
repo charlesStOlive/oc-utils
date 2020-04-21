@@ -236,6 +236,7 @@ class DataSource extends Model
                 'width' => $image['width'] ?? null,
                 'height' => $image['height'] ?? null,
                 'crop' => $image['crop'] ?? null,
+                'gravity' => $image['gravity'] ?? null,
             ];
 
             // si cloudi ( voir GroupedImage )
@@ -255,7 +256,7 @@ class DataSource extends Model
                 //  trace_log('montage ---' . $img);
             }
             $allPictures[$image['code']] = [
-                'url' => $img,
+                'path' => $img,
                 'width' => $options['width'],
                 'height' => $options['height'],
             ];

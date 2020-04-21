@@ -7,7 +7,7 @@
     <?php foreach($attributesArray as $key=>$value) { ?>
     <button type="button" class="btn btn-xs btn-default" data-control="dragvalue" data-text-value="{{<?=$key?>}}"
         data-drag-click="true">
-        <?=$key?> = <?=str_limit($value, 40)?>
+        <?=$key?> = <?=strip_tags(str_limit($value, 40))?>
     </button>
     <?php } ?>
 </div>
@@ -16,7 +16,7 @@
 <div class="list">
     <div>
         <button style="display:inline" type="button" class="btn btn-xs btn-default" data-control="dragvalue"
-            data-text-value="{{IMG.<?=$value['code']?>.url}}" data-drag-click="true">
+            data-text-value="{{IMG.<?=$value['code']?>.path}}" data-drag-click="true">
             Adresse image <?=$value['code']?>
         </button>
         <button style="display:inline" type="button" class="btn btn-xs btn-default" data-control="dragvalue"
@@ -44,7 +44,7 @@
     <?php foreach($fncs as $key=>$value) { ?>
     <button type="button" class="btn btn-xs " data-control="dragvalue" data-text-value="{{row.<?=$key?>}}"
         data-drag-click="true">
-        <?=$key?> => <?=str_limit($value, 20)?>
+        <?=$key?> => <?=strip_tags(str_limit($value, 20))?>
     </button>
     <?php } ?>
 
