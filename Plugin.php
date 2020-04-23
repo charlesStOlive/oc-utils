@@ -75,7 +75,13 @@ class Plugin extends PluginBase
         // Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
         //     $controller->addJs('/plugins/waka/utils/assets/js/clipboard.min.js');
         // });
-
+        Event::listen('backend.down.rapidLinks', function ($controller) {
+            $model = $controller->formGetModel();
+            if (!$model->rapidLinks) {
+                throw new \ApplicationException("l'attributs rapidLinks ( getRapidLinksAttribute)  est manquant dans " . get_class($model));
+            }
+            return View::make('waka.utils::rapidLinks')->withLinks($model->rapidLinks);
+        });
         Event::listen('backend.update.duplicate', function ($controller) {
             if (in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement)) {
                 $model = $controller->formGetModel();
@@ -115,7 +121,7 @@ class Plugin extends PluginBase
     {
         return [
             'waka.datasource.user.admin' => [
-                'tab' => 'Waka',
+                'tab' => 'Waka - Utils',
                 'label' => 'Administrateur des Data Sources',
             ],
         ];

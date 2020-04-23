@@ -1,0 +1,9 @@
+<div class="dropdown dropup" style=display:inline>
+    <a href="#" data-toggle="dropdown" class="btn btn-primary oc-icon-external-link">Liens rapides</a>
+
+    <ul class="dropdown-menu" role="menu" data-dropdown-title="Add something small">
+        {% for key,link in links %}
+        <li role="presentation"><a role="menuitem" tabindex="-1" href="{{link}}">{{key}}</a></li>
+        {% endfor %}
+    </ul>
+</div>
