@@ -3,6 +3,27 @@
  *
  * You can delete this file if you want
  */
- #sidebar_info h3, h4 {
+  .sidebar_info ul{
+    list-style-type: none;
+    margin-left: 0px;
+    padding-left: 0px;
+  }
+
+  .sb-h1 {
+    font-size: 2rem;
+    font-weight: bold;
     padding-top: 10px;
+    padding-bottom: 5px;
+  }
+
+  .sb-h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding-top: 5px;
+
+  }
+
+  .sb-h3 {
+    font-size: 1.2rem;
+    font-weight: bold;
   }

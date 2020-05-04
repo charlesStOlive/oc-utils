@@ -1,11 +1,6 @@
 <?php namespace Waka\Utils\Widgets;
 
 use Backend\Classes\WidgetBase;
-use Yaml;
-use ApplicationException;
-use lang;
-
-use Waka\Utils\Classes\ParseFields;
 
 class SidebarInfo extends WidgetBase
 {
@@ -22,32 +17,70 @@ class SidebarInfo extends WidgetBase
     {
         $this->perepareVars();
         $this->vars['fields'] = $this->fields;
-        return $this->makePartial('sidebar_info');
+        return $this->makePartial('sidebar_list');
     }
 
-    public function perepareVars() {
-        $model = $this->controller->formGetModel();
-        $returnFields = new ParseFields();
-        $this->fields = $returnFields->parseFields($model, $this->config->fields);
+    public function perepareVars()
+    {
+        $controllerModel = $this->controller->formGetModel();
+        $modelId = $controllerModel->id;
+
+        //$model = get_class($controllerModel)::find($modelId);
+
+        $dataSource = \Waka\Utils\Models\DataSource::where('model', '=', $this->config->model)->first();
+        $dotedValues = $dataSource->getDotedValues($modelId);
+
+        trace_log($dotedValues);
+
+        //$returnFields = new ParseFields();
+        //$this->fields = $returnFields->parseFields($model, $this->config->fields);
+        $this->fields = $this->setValues($dotedValues, $this->config->fields);
+    }
+
+    public function setValues($dotedValues, $fields)
+    {
+        $parsedFields = [];
+        foreach ($fields as $field) {
+            $type = $field['type'] ?? 'label_value';
+            $icon = $field['icon'] ?? null;
+
+            $label = $field['label'] ?? null;
+            $labelFrom = $field['labelFrom'] ?? null;
+            if ($labelFrom) {
+                $label = $dotedValues[$this->config->model . '.' . $labelFrom] ?? "inconnu";
+            }
+
+            $value = null;
+            $fieldValue = $field['value'] ?? null;
+            if ($fieldValue) {
+                $value = $dotedValues[$this->config->model . '.' . $fieldValue] ?? "inconnu";
+            }
+
+            $cssClass = $field['cssClass'] ?? null;
+            $link = null;
+            $racine = $field['racine'] ?? null;
+            if ($racine && $value) {
+                $link = \Backend::url($field['racine'] . $value);
+            }
+
+            $field = [
+                'type' => $type,
+                'icon' => $icon,
+                'label' => $label,
+                'value' => $value,
+                'cssClass' => $cssClass,
+                'link' => $link,
+            ];
+
+            array_push($parsedFields, $field);
+        }
+        return $parsedFields;
+
     }
 
     public function loadAssets()
     {
         $this->addCss('css/sidebarinfo.css', 'Waka.Utils');
-        //$this->addJs('js/labellist.js', 'Waka.Utils');
     }
 
-    
 }
-
-
-
-
-
-
-
-
-
-
-
-
