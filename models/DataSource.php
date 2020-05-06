@@ -302,7 +302,7 @@ class DataSource extends Model
         $fields = $array[$type] ?? null;
 
         if (!$fields['key']) {
-            ////  trace_log('key est vide');
+            trace_log('key est vide');
             return;
         }
 
@@ -320,6 +320,9 @@ class DataSource extends Model
         //  trace_log("get contact from type : " . $type);
         $targetModel = $this->getTargetModel($id);
         $emailData = $this->getDataFromContacts($type);
+
+        trace_log("getContact emaildata | ");
+        trace_log($emailData);
 
         if (!$emailData) {
             return;

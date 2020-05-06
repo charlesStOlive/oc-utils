@@ -105,10 +105,8 @@ class Plugin extends PluginBase
      */
     public function registerComponents()
     {
-        return []; // Remove this line to activate
-
         return [
-            'Waka\Utils\Components\MyComponent' => 'myComponent',
+            'Waka\Utils\Components\GestionKey' => 'gestionKey',
         ];
     }
 

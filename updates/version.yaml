@@ -11,3 +11,7 @@
 1.0.4:
     - 'Ajout de function_class'
     - create_data_sources_table_u104.php
+1.0.5 : 
+    - 'ajout des logs'
+    - create_log_states_table.php
+    - create_source_logs_table.php
