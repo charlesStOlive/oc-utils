@@ -40,6 +40,7 @@ return [
         'save_indicator' => 'Sauvegarde en cours',
         'state' => "Etat",
         'test' => 'test',
+        'is_ex' => 'Exemple',
     ],
     'datasource' => [
         'name' => 'Intitulé de la source',
