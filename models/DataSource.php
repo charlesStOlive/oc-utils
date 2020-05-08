@@ -281,10 +281,10 @@ class DataSource extends Model
         return Schema::getColumnListing($this->modelClass::first()->getTable());
 
     }
-    public function getImagesList($id = null)
-    {
-        return $this->encryptKeyedImage($this, $id);
-    }
+    // public function getImagesList($id = null)
+    // {
+    //     return $this->encryptKeyedImage($this, $id);
+    // }
 
     /**
      * Utils for EMAIL ---------------------------------------------------
