@@ -48,6 +48,8 @@ class Plugin extends PluginBase
         return [
             'waka-btn-actions' => [BtnActions::class, 'render'],
             'waka-calcul' => [CalculColumn::class, 'render'],
+            'euro' => function ($value) {return number_format($value, 2, ',', ' ') . ' €';},
+            'euro-int' => function ($value) {return number_format($value, 0, ',', ' ') . ' €';},
         ];
     }
 

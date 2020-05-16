@@ -31,7 +31,10 @@ fields:
         label: waka.utils::lang.datasource.controller
         span: auto
     function_class:
-        label: waka.utils::lang.datasource.model_scopes
+        label: waka.utils::lang.datasource.function_class
+        span: auto
+    agg_class:
+        label: waka.utils::lang.datasource.agg_class
         span: auto
     # specific_list:
     #     label: waka.utils::lang.datasource.specific_list

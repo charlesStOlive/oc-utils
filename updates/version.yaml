@@ -15,3 +15,6 @@
     - 'ajout des logs'
     - create_log_states_table.php
     - create_source_logs_table.php
+1.0.6 : 
+    - 'ajout de la classe d aggregation'
+    - create_data_sources_table_u106.php

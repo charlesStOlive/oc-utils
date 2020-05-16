@@ -71,6 +71,8 @@ return [
         'contacts' => "Configuration yaml des contacts",
         'model_scopes' => 'Class Scope du model',
         'has_image' => 'Prendre les images',
+        'function_class' => "Class fonctions d'éditions",
+        'agg_class' => "Class d'aggregation",
     ],
 
 ];
