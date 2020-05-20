@@ -98,8 +98,8 @@ class SidebarAttributes extends WidgetBase
                 }
                 $values = $outputs['values'] ?? null;
                 if ($values) {
-                    foreach ($values as $value) {
-                        $result[$code][$value] = 'contenu des P';
+                    foreach ($values as $key => $value) {
+                        $result[$code][$key] = $value;
                     }
                 }
 

@@ -96,15 +96,17 @@ class FunctionsList extends FormWidgetBase
 
         if ($attributes) {
             foreach ($attributes as $key => $value) {
-                //trace_log($value['options'] ?? null);
-                $attributeWidget->addFields([
-                    $key => [
-                        'label' => $value['label'],
-                        'type' => $value['type'],
-                        'options' => $value['options'] ?? null,
-                        'useKey' => true,
-                    ],
-                ]);
+                if ($value['type'] != 'repeater') {
+                    $attributeWidget->addFields([
+                        $key => [
+                            'label' => $value['label'],
+                            'type' => $value['type'],
+                            'options' => $value['options'] ?? null,
+                            'useKey' => true,
+                        ],
+                    ]);
+                }
+
             }
 
         }
