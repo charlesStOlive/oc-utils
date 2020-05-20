@@ -28,6 +28,18 @@ class Plugin extends PluginBase
         ];
     }
 
+    public function registerMarkupTags()
+    {
+        return [
+            'filters' => [
+                'toJson' => function ($twig) {
+                    return json_encode($twig);
+
+                },
+            ],
+        ];
+    }
+
     /**
      * Register method, called when the plugin is first registered.
      *
