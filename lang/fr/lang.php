@@ -43,6 +43,9 @@ return [
         'is_ex' => 'Exemple',
     ],
     'datasource' => [
+        'tab_path' => "Chemins des Classes",
+        'tab_contact' => "Liaison contacts",
+        'tab_relation' => "Relations",
         'name' => 'Intitulé de la source',
         'author' => 'Auteur du plugin',
         'plugin' => 'Nom du plugin',

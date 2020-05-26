@@ -21,154 +21,104 @@ fields:
         options: listModelNameId
         span: auto
         prompt: waka.utils::lang.datasource.test_id_prompt
+    controller:
+        label: waka.utils::lang.datasource.controller
+        span: auto
+tabs:
+    icons:
+        waka.utils::lang.datasource.tab_path: icon-road
+        waka.utils::lang.datasource.tab_contact: icon-envelope
+        waka.utils::lang.datasource.tab_relation: icon-sitemap
+    fields:
     # sector_access:
     #     label: waka.utils::lang.datasource.sector_access
     #     span: auto
     # section_controller:
     #     label: waka.utils::lang.datasource.section_controller
     #     type: section
-    controller:
-        label: waka.utils::lang.datasource.controller
-        span: auto
-    function_class:
-        label: waka.utils::lang.datasource.function_class
-        span: auto
-    agg_class:
-        label: waka.utils::lang.datasource.agg_class
-        span: auto
-    # specific_list:
-    #     label: waka.utils::lang.datasource.specific_list
-    #     span: auto
-    # specific_update:
-    #     label: waka.utils::lang.datasource.specific_update
-    #     span: auto
-    # specific_create:
-    #     label: waka.utils::lang.datasource.specific_create
-    #     span: auto
-    # section_images:
-    #     label: waka.utils::lang.datasource.section_images
-    #     type: section
-    # media_files:
-    #     label: waka.utils::lang.datasource.section_images
-    #     type: codeeditor
-    #     language: yaml
-
     
-    section_relation:
-        label: waka.utils::lang.datasource.section_relation
-        type: section
-    relations_list:
-        label: waka.utils::lang.datasource.relations
-        type: repeater
-        titleFrom: name
-        prompt: waka.utils::lang.datasource.relations_prompt
-        span: auto
-        form:
-            fields:
-                name:
-                    label: waka.utils::lang.datasource.relation_name
-                    span: auto
-                has_images:
-                    label: waka.utils::lang.datasource.has_image
-                    span: auto
-                    type: checkbox
+        function_class:
+            label: waka.utils::lang.datasource.function_class
+            span: auto
+            tab: waka.utils::lang.datasource.tab_path
+        agg_class:
+            label: waka.utils::lang.datasource.agg_class
+            span: auto
+            tab: waka.utils::lang.datasource.tab_path
+
+
+        relations_list:
+            label: waka.utils::lang.datasource.relations
+            type: repeater
+            titleFrom: name
+            tab: waka.utils::lang.datasource.tab_relation
+            prompt: waka.utils::lang.datasource.relations_prompt
+            span: auto
+            form:
+                fields:
+                    name:
+                        label: waka.utils::lang.datasource.relation_name
+                        span: auto
+                    has_images:
+                        label: waka.utils::lang.datasource.has_image
+                        span: auto
+                        type: checkbox
                     
-    # relations_array_list:
-    #     label: waka.utils::lang.datasource.relations
-    #     type: repeater
-    #     titleFrom: name
-    #     prompt: waka.utils::lang.datasource.relations_prompt
-    #     span: auto
-    #     form:
-    #         fields:
-    #             name:
-    #                 label: waka.utils::lang.datasource.relation_collection_name
-    #             param:
-    #                 label: waka.utils::lang.datasource.param
-    #                 comment: waka.utils::lang.datasource.param_com
-    #             key:
-    #                 label: waka.utils::lang.datasource.key
-    #             relations_list:
-    #                 label: waka.utils::lang.datasource.relations
-    #                 type: repeater
-    #                 titleFrom: name
-    #                 prompt: waka.utils::lang.datasource.relations_prompt
-    #                 form:
-    #                     fields:
-    #                         name:
-    #                             label: waka.utils::lang.datasource.relation_name
-                    
-
-
-    # attributes_list:
-    #     label: waka.utils::lang.datasource.attributes
-    #     span: auto
-    #     type: repeater
-    #     titleFrom: name
-    #     prompt: waka.utils::lang.datasource.attributes_prompt
-    #     span: auto
-    #     form:
-    #         fields:
-    #             name:
-    #                 label: waka.utils::lang.datasource.attribute_name
-
-    
-    section_contact:
-        label: waka.utils::lang.datasource.section_contact
-        type: section
-    contacts:
-        label: waka.utils::lang.datasource.ask_contacts
-        type: nestedform
-        form:
-            fields:
-                ask_to:
-                    label: Liste des contacts à lister dans  le champs A
-                    type: nestedform
-                    usePanelStyles: false
-                    form:
-                        fields:
-                            key:
-                                label: Champ à trouver
-                                span: auto
-                            relation: 
-                                label: relation
-                                span: auto
-                ask_cc:
-                    label: Liste des contacts à lister dans  le champs Cc
-                    type: nestedform
-                    usePanelStyles: false
-                    form:
-                        fields:
-                            key:
-                                label: Champ à trouver
-                                span: auto
-                            relation: 
-                                label: relation
-                                span: auto
-                auto_to:
-                    label: Liste des A automatiques
-                    type: nestedform
-                    usePanelStyles: false
-                    form:
-                        fields:
-                            key:
-                                label: Champ à trouver
-                                span: auto
-                            relation: 
-                                label: relation
-                                span: auto
-                auto_cc:
-                    label: Liste des Cc automatiques
-                    type: nestedform
-                    usePanelStyles: false
-                    form:
-                        fields:
-                            key:
-                                label: Champ à trouver
-                                span: auto
-                            relation: 
-                                label: relation
-                                span: auto
+   
+        contacts:
+            label: waka.utils::lang.datasource.ask_contacts
+            type: nestedform
+            tab: waka.utils::lang.datasource.tab_contact
+            form:
+                fields:
+                    ask_to:
+                        label: Liste des contacts à lister dans  le champs A
+                        type: nestedform
+                        usePanelStyles: false
+                        form:
+                            fields:
+                                key:
+                                    label: Champ à trouver
+                                    span: auto
+                                relation: 
+                                    label: relation
+                                    span: auto
+                    ask_cc:
+                        label: Liste des contacts à lister dans  le champs Cc
+                        type: nestedform
+                        usePanelStyles: false
+                        form:
+                            fields:
+                                key:
+                                    label: Champ à trouver
+                                    span: auto
+                                relation: 
+                                    label: relation
+                                    span: auto
+                    auto_to:
+                        label: Liste des A automatiques
+                        type: nestedform
+                        usePanelStyles: false
+                        form:
+                            fields:
+                                key:
+                                    label: Champ à trouver
+                                    span: auto
+                                relation: 
+                                    label: relation
+                                    span: auto
+                    auto_cc:
+                        label: Liste des Cc automatiques
+                        type: nestedform
+                        usePanelStyles: false
+                        form:
+                            fields:
+                                key:
+                                    label: Champ à trouver
+                                    span: auto
+                                relation: 
+                                    label: relation
+                                    span: auto
                 
 
     
