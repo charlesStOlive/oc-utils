@@ -42,6 +42,10 @@ class Plugin extends PluginBase
                     return $dataFromConfig;
 
                 },
+                'colorArray' => function ($twig, $color1) {
+                    $colorArray = [];
+                    return $colorArray;
+                },
             ],
         ];
     }
