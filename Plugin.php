@@ -106,14 +106,14 @@ class Plugin extends PluginBase
             }
             return View::make('waka.utils::rapidLinks')->withLinks($model->rapidLinks);
         });
-        Event::listen('backend.update.duplicate', function ($controller) {
+        Event::listen('backend.update.tools', function ($controller) {
             if (in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement)) {
                 $model = $controller->formGetModel();
                 return View::make('waka.utils::duplicatebutton')->withId($model->id);
             }
 
         });
-        Event::listen('popup.actions.line1', function ($controller, $model, $id) {
+        Event::listen('popup.actions.tools', function ($controller, $model, $id) {
             if (in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement)) {
                 return View::make('waka.utils::duplicatebuttoncontent')->withId($id);
             }

@@ -15,16 +15,37 @@
     ?>
     <div class="control-toolbar">
         <div class="toolbar-item toolbar-primary">
-            <div data-control="toolbar">
-                <div class="btn-group">
-                    <?= $this->fireViewEvent('popup.actions.line1', $dataModal) ?>
+            <div id="actionProd">
+                <h5>Productions</h5>
+                <div data-control="toolbar">
+                    <div class="btn-group">
+                        <?= $this->fireViewEvent('popup.actions.prod', $dataModal) ?>
+                    </div>
+                </div>
+            </div>
+            <div id="actionTools">
+                <h5>Outils</h5>
+                <div data-control="toolbar">
+                    <div class="btn-group">
+                        <?= $this->fireViewEvent('popup.actions.tools', $dataModal) ?>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div id="popupActionContent" class="p-b-md">
-        Choisissez une action
     </div>
 </div>
 
 <?= Form::close() ?>
+
+<script type="text/javascript">
+    $(document).ready(function () {  
+    if(!$('#actionTools').find('.btn-group').children().length) {
+        $( "#actionTools" ).remove();
+    }
+    if(!$('#actionProd').find('.btn-group').children().length) {
+        $( "#actionProd" ).remove();
+    }
+});
+</script>

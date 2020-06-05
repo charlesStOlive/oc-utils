@@ -41,7 +41,7 @@
                     <?= e(trans('waka.utils::lang.global.save_close')) ?>
                 </button>
                 {% if fireViewEvents %}
-                <?= $this->fireViewEvent('backend.down.update') ?>
+                <?= $this->fireViewEvent('backend.update.prod') ?>
                 {% endif %}
                 <button
                     type="button"
