@@ -1,10 +1,15 @@
 <?php if($noFunction) { ?>
-<p>Auncune fonction disponible</p>
+<div class="callout fade in callout-info no-subheader">
+    <div class="header">
+        <i class="icon-info"></i>
+        <h3>Auncune fonction disponible</h3>
+    </div>
+</div>
 <?php } else { ?>
 <p>
     <button href="javascript:;" class="btn btn-secondary oc-icon-files-o " data-control="popup"
         data-handler="onShowFunctions">
-        Show Functions
+        Ajouter une fonction
     </button>
 </p>
 <div id="list">
