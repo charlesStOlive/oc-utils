@@ -28,7 +28,7 @@ class SideBarAttributesBehavior extends ControllerBehavior
         /*
          * Build configuration
          */
-        trace_log('controller');
+        //trace_log('controller');
         $this->sidebarAttributes = new \Waka\Utils\Widgets\SidebarAttributes($controller);
         $this->sidebarAttributes->alias = 'SideBarAttributes';
         $this->sidebarAttributes->bindToController();

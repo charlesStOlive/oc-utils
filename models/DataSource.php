@@ -230,7 +230,7 @@ class DataSource extends Model
             if ($image['relation'] != 'self') {
                 $modelImage = $this->getStringModelRelation($targetModel, $image['relation']);
             }
-            trace_log("nom du model " . $modelImage->name);
+            //trace_log("nom du model " . $modelImage->name);
 
             $options = [
                 'width' => $image['width'] ?? null,
@@ -302,7 +302,7 @@ class DataSource extends Model
         $fields = $array[$type] ?? null;
 
         if (!$fields['key']) {
-            trace_log('key est vide');
+            //trace_log('key est vide');
             return;
         }
 
@@ -321,8 +321,8 @@ class DataSource extends Model
         $targetModel = $this->getTargetModel($id);
         $emailData = $this->getDataFromContacts($type);
 
-        trace_log("getContact emaildata | ");
-        trace_log($emailData);
+        //trace_log("getContact emaildata | ");
+        //trace_log($emailData);
 
         if (!$emailData) {
             return;

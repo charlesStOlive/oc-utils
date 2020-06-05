@@ -23,7 +23,7 @@ class SidebarAttributes extends WidgetBase
         $this->vars['attributesArray'] = $this->dataSource->getDotedValues();
         $this->vars['IMGSArray'] = $this->getIMG();
         $fncArray = $this->getFNCOutputs();
-        trace_log($this->type);
+        //trace_log($this->type);
         $this->vars['FNCSArray'] = $fncArray;
 
         if ($this->type == 'word') {

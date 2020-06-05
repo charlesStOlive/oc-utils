@@ -38,7 +38,7 @@ class Plugin extends PluginBase
                 },
                 'defaultConfig' => function ($twig, $config_name) {
                     $dataFromConfig = \Config('waka.crsm::' . $config_name);
-                    trace_log($dataFromConfig);
+                    //trace_log($dataFromConfig);
                     return $dataFromConfig;
 
                 },
