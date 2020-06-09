@@ -131,6 +131,10 @@ class Plugin extends PluginBase
         Event::listen('job.start.*', function ($job, $name) {
             $id = $job->getJobId();
             $joblist = Models\JobList::find($id);
+            if (!$joblist) {
+                return;
+            }
+
             if ($name) {
                 $joblist->name = $name;
             }
@@ -143,6 +147,10 @@ class Plugin extends PluginBase
         Event::listen('job.end.*', function ($job) {
             $id = $job->getJobId();
             $joblist = Models\JobList::find($id);
+            if (!$joblist) {
+                return;
+            }
+
             $joblist->end_at = date("Y-m-d H:i:s");
             $joblist->state = 'Terminé';
             $joblist->save();
@@ -151,6 +159,10 @@ class Plugin extends PluginBase
         \Queue::failing(function ($jobFailed) {
             $id = $jobFailed->job->getJobId();
             $joblist = Models\JobList::find($id);
+            if (!$joblist) {
+                return;
+            }
+            $joblist->end_at = date("Y-m-d H:i:s");
             $joblist->state = 'Erreur';
             $joblist->errors = $jobFailed->exception;
             trace_log("-----------------------------------erreurs : ");
