@@ -148,10 +148,21 @@ class Plugin extends PluginBase
             $joblist->save();
 
         });
-        Event::listen('job.error.*', function ($error) {
-            //trace_log("Listen : job.error.*");
-            //trace_log($error);
+        \Queue::failing(function ($jobFailed) {
+            $id = $jobFailed->job->getJobId();
+            $joblist = Models\JobList::find($id);
+            $joblist->state = 'Erreur';
+            $joblist->errors = $jobFailed->exception;
+            trace_log("-----------------------------------erreurs : ");
+            trace_log($jobFailed->exception);
+
+            $joblist->save();
+            //
         });
+        // Event::listen('job.error.*', function ($error) {
+        //     //trace_log("Listen : job.error.*");
+        //     //trace_log($error);
+        // });
 
     }
 

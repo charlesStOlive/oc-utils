@@ -37,7 +37,7 @@ class JobList extends Model
     /**
      * @var array Attributes to be cast to JSON
      */
-    protected $jsonable = ['payload', 'errors'];
+    protected $jsonable = ['payload'];
 
     /**
      * @var array Attributes to be appended to the API representation of the model (ex. toArray())

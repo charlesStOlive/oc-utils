@@ -6,3 +6,10 @@ fields:
     id:
         label: ID
         disabled: true
+    state:
+        label: Etat
+    errors:
+        label: erreurs
+        type: codeeditor
+        size: huge
+        language: php
