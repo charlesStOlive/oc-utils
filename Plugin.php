@@ -160,13 +160,12 @@ class Plugin extends PluginBase
             $id = $jobFailed->job->getJobId();
             $joblist = Models\JobList::find($id);
             if (!$joblist) {
+                /* */trace_log("job inconnu! : " . $jobFailed->job->getJobId());
                 return;
             }
             $joblist->end_at = date("Y-m-d H:i:s");
             $joblist->state = 'Erreur';
             $joblist->errors = $jobFailed->exception;
-            trace_log("-----------------------------------erreurs : ");
-            trace_log($jobFailed->exception);
 
             $joblist->save();
             //
