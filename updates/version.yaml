@@ -11,10 +11,13 @@
 1.0.4:
     - 'Ajout de function_class'
     - create_data_sources_table_u104.php
-1.0.5 : 
+1.0.5:
     - 'ajout des logs'
     - create_log_states_table.php
     - create_source_logs_table.php
-1.0.6 : 
+1.0.6:
     - 'ajout de la classe d aggregation'
     - create_data_sources_table_u106.php
+1.0.7:
+    - 'Ajout des jobs lists'
+    - create_job_lists_table.php

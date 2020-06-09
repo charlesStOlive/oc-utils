@@ -1,0 +1,18 @@
+# ===================================
+# Filter Scope Definitions
+# ===================================
+
+scopes:
+    num_id:
+        label: Ne pas afficher les tâches terminées
+        type: checkbox
+        conditions: state <> 'Terminé'
+
+
+    #     label: Afficher les exemples
+    #     type: switch
+    #     default: 1
+    #     conditions:
+    #         - is_ex <> true
+    #         - is_ex = true
+    

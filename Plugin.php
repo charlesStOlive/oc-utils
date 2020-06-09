@@ -119,6 +119,39 @@ class Plugin extends PluginBase
             }
 
         });
+        Event::listen('job.create.*', function ($jobId, $name) {
+            $joblist = new Models\JobList();
+            $joblist->id = $jobId;
+            $joblist->name = $name;
+            $joblist->state = 'Attente';
+            $joblist->save();
+        });
+
+        // Ecouteur de job et enregistrement
+        Event::listen('job.start.*', function ($job, $name) {
+            $id = $job->getJobId();
+            $joblist = Models\JobList::find($id);
+            if ($name) {
+                $joblist->name = $name;
+            }
+            $joblist->payload = $job->payload();
+            $joblist->attempts = $job->attempts();
+            $joblist->state = 'En cours';
+            $joblist->started_at = date("Y-m-d H:i:s");
+            $joblist->save();
+        });
+        Event::listen('job.end.*', function ($job) {
+            $id = $job->getJobId();
+            $joblist = Models\JobList::find($id);
+            $joblist->end_at = date("Y-m-d H:i:s");
+            $joblist->state = 'Terminé';
+            $joblist->save();
+
+        });
+        Event::listen('job.error.*', function ($error) {
+            //trace_log("Listen : job.error.*");
+            //trace_log($error);
+        });
 
     }
 
@@ -142,9 +175,17 @@ class Plugin extends PluginBase
     public function registerPermissions()
     {
         return [
-            'waka.datasource.user.admin' => [
+            'waka.datasource.admin' => [
                 'tab' => 'Waka - Utils',
                 'label' => 'Administrateur des Data Sources',
+            ],
+            'waka.jobList.admin' => [
+                'tab' => 'Waka - Utils',
+                'label' => "Administrateur des taches de l'app",
+            ],
+            'waka.jobList.user' => [
+                'tab' => 'Waka - Utils',
+                'label' => "Lecteur des taches de l'app",
             ],
         ];
     }
@@ -165,6 +206,16 @@ class Plugin extends PluginBase
                 'url' => Backend::url('waka/utils/datasources'),
                 'order' => 1,
                 'permissions' => ['waka.datasource.admin'],
+            ],
+            'joblists' => [
+                'label' => Lang::get('waka.utils::lang.menu.job_list'),
+                'description' => Lang::get('waka.utils::lang.menu.job_list_description'),
+                'category' => Lang::get('waka.utils::lang.menu.settings_category'),
+                'icon' => 'icon-tasks',
+                'url' => Backend::url('waka/utils/joblists'),
+                'order' => 1,
+                'counter' => 10,
+                'permissions' => ['waka.jobList.*'],
             ],
         ];
     }

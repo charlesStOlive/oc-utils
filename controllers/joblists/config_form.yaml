@@ -1,0 +1,31 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: Job List
+
+# Model Form Field configuration
+form: $/waka/utils/models/joblist/fields.yaml
+
+# Model Class name
+modelClass: Waka\Utils\Models\JobList
+
+# Default redirect location
+defaultRedirect: waka/utils/joblists
+
+# Create page
+create:
+    title: Create Job List
+    redirect: waka/utils/joblists/update/:id
+    redirectClose: waka/utils/joblists
+
+# Update page
+update:
+    title: Edit Job List
+    redirect: waka/utils/joblists
+    redirectClose: waka/utils/joblists
+
+# Preview page
+preview:
+    title: Preview Job List
