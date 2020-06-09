@@ -5,6 +5,8 @@ return [
         'data_sources' => 'Sources des données',
         'data_sources_description' => 'Gerer les sources et leur relation pour publisher, mailing, etc.',
         'settings_category' => 'Wakaari options ',
+        'job_list' => "Liste des taches",
+        'job_list_description' => "Liste des taches de l'application",
     ],
     'global' => [
         'details' => 'Détails',
@@ -76,6 +78,14 @@ return [
         'has_image' => 'Prendre les images',
         'function_class' => "Class fonctions d'éditions",
         'agg_class' => "Class d'aggregation",
+    ],
+    'job_list' => [
+        'name' => "Nom de la tache",
+        'started_at' => "Commencé à",
+        'created_at' => "Crée à",
+        'end_at' => "Terminé à",
+        'state' => "Etat",
+        'date_diff' => "Durée en S",
     ],
 
 ];
