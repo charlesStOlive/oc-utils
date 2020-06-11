@@ -20,6 +20,6 @@ class DataSources extends Controller
     {
         parent::__construct();
         BackendMenu::setContext('October.System', 'system', 'settings');
-        SettingsManager::setContext('Waka.Utils', 'datasources');
+        SettingsManager::setContext('Waka.Utils', 'data_sources');
     }
 }
