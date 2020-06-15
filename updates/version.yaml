@@ -21,3 +21,7 @@
 1.0.7:
     - 'Ajout des jobs lists'
     - create_job_lists_table.php
+1.0.8:
+    - 'suppresion des logs'
+    - delete_log_states_table.php
+    - delete_source_logs_table.php
