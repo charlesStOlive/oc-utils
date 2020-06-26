@@ -80,8 +80,11 @@ class SidebarAttributes extends WidgetBase
                 if ($relations) {
                     foreach ($relations as $submodelKey => $submodelValue) {
                         $modelFinal = $this->getStringModelRelation($modelTest, $submodelKey);
-                        $dataApi = $modelFinal->first()->toArray();
-                        $result[$code] = array_dot($dataApi);
+                        $dataApi = $modelFinal->first();
+                        if ($dataApi) {
+                            $result[$code] = array_dot($dataApi->toArray());
+                        }
+
                     }
                 }
                 $models = $outputs['models'] ?? null;
