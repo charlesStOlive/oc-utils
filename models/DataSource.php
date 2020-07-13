@@ -2,6 +2,7 @@
 
 use Model;
 use Schema;
+use \October\Rain\Support\Collection;
 use \Waka\Cloudis\Models\Settings as CloudisSettings;
 
 /**
@@ -43,7 +44,7 @@ class DataSource extends Model
     /**
      * @var array Attributes to be cast to JSON
      */
-    protected $jsonable = ['relations_list', 'attributes_list', 'relations_array_list', 'contacts'];
+    protected $jsonable = ['relations_list', 'inde_class_list', 'attributes_list', 'relations_array_list', 'contacts'];
 
     /**
      * @var array Attributes to be appended to the API representation of the model (ex. toArray())
@@ -112,54 +113,54 @@ class DataSource extends Model
         return $targetModel::find($id);
     }
 
-    public function getRelationCollection($id = null)
-    {
-        //trace_log("getRelationCollection");
-        $collection = new \October\Rain\Support\Collection();
-        if ($this->hasRelationArray) {
-            //trace_log("getRelationCollection hasRelationArray");
-            foreach ($this->relations_array_list as $relation) {
-                $data = [
-                    'name' => $relation['name'] ?? null,
-                    'param' => $relation['param'] ?? null,
-                    'options' => $this->getRelationQuery($relation['name'], $id)->lists('name', 'id'),
-                    'key' => $relation['key'] ?? null,
-                    'relations_list' => $relation['relations_list'] ?? null,
-                ];
-                $collection->push($data);
-            }
-        }
-        return $collection;
+    // public function getRelationCollection($id = null)
+    // {
+    //     //trace_log("getRelationCollection");
+    //     $collection = new Collection();
+    //     if ($this->hasRelationArray) {
+    //         //trace_log("getRelationCollection hasRelationArray");
+    //         foreach ($this->relations_array_list as $relation) {
+    //             $data = [
+    //                 'name' => $relation['name'] ?? null,
+    //                 'param' => $relation['param'] ?? null,
+    //                 'options' => $this->getRelationQuery($relation['name'], $id)->lists('name', 'id'),
+    //                 'key' => $relation['key'] ?? null,
+    //                 'relations_list' => $relation['relations_list'] ?? null,
+    //             ];
+    //             $collection->push($data);
+    //         }
+    //     }
+    //     return $collection;
 
-    }
-    public function getRelationFromParam(String $key)
-    {
-        foreach ($this->relations_array_list as $relation) {
-            if ($relation['param'] ?? false == $key) {
-                return $relation['name'];
-            }
-        }
-        return null;
+    // }
+    // public function getRelationFromParam(String $key)
+    // {
+    //     foreach ($this->relations_array_list as $relation) {
+    //         if ($relation['param'] ?? false == $key) {
+    //             return $relation['name'];
+    //         }
+    //     }
+    //     return null;
 
-    }
+    // }
 
-    public function getRelationQuery($relation, $id = null)
-    {
-        $targetModel = $this->modelClass;
-        $relationModel = null;
-        if (!$id) {
-            if ($targetModel::first() ?? false) {
-                $relationModel = $targetModel::first()->{$relation}();
-            }
+    // public function getRelationQuery($relation, $id = null)
+    // {
+    //     $targetModel = $this->modelClass;
+    //     $relationModel = null;
+    //     if (!$id) {
+    //         if ($targetModel::first() ?? false) {
+    //             $relationModel = $targetModel::first()->{$relation}();
+    //         }
 
-        } else {
-            if ($targetModel::find($id) ?? false) {
-                $relationModel = $targetModel::find($id)->{$relation}();
-            }
+    //     } else {
+    //         if ($targetModel::find($id) ?? false) {
+    //             $relationModel = $targetModel::find($id)->{$relation}();
+    //         }
 
-        }
-        return $relationModel;
-    }
+    //     }
+    //     return $relationModel;
+    // }
 
     public function getModels($id = null)
     {
@@ -178,9 +179,10 @@ class DataSource extends Model
         }
         return $constructApi;
     }
-    public function getValues($id = null)
+    public function getValues($id = null, $withInde = true)
     {
-        return $this->getModels($id)->toArray();
+        $dsApi = array_merge($this->getModels($id)->toArray(), $this->getIndeValues());
+        return $dsApi;
     }
 
     public function getDotedValues($id = null)
@@ -189,6 +191,26 @@ class DataSource extends Model
         $api[snake_case($this->model)] = $constructApi;
         return array_dot($api);
     }
+
+    public function getIndeValues()
+    {
+        $indeApi = [];
+        if ($this->inde_class_list) {
+            if (count($this->inde_class_list)) {
+                foreach ($this->inde_class_list as $indeClass) {
+                    $class = new $indeClass['class'];
+                    $class = $class::find($indeClass['id'])->first()->toArray();
+                    $indeApi[$indeClass['name']] = $class;
+                }
+            }
+        }
+        return $indeApi;
+    }
+    // public function getDotedIndeValues($id = null)
+    // {
+    //     $indeApi = $this->getIndeValues();
+    //     return array_dot($indeApi);
+    // }
 
     /**
      * Cette fonction utulise le trait CloudisKey
@@ -223,6 +245,7 @@ class DataSource extends Model
         //  trace_log("--dataImages--");
         //  trace_log($dataImages);
         foreach ($dataImages as $image) {
+            trace_log($image);
             //On recherche le bon model
             $modelImage = $targetModel;
             $img;

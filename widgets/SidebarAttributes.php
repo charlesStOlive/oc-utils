@@ -1,6 +1,7 @@
 <?php namespace Waka\Utils\Widgets;
 
 use Backend\Classes\WidgetBase;
+use \October\Rain\Support\Collection;
 
 class SidebarAttributes extends WidgetBase
 {
@@ -13,17 +14,31 @@ class SidebarAttributes extends WidgetBase
     public $model;
     public $dataSource;
     public $type;
+    public $separate_fields;
+    public $text_info;
+    public $hidden_fields;
+    public $valueArray;
+
+    public function init()
+    {
+        $this->fillFromConfig([
+            'model',
+            'type',
+            'text_info',
+            'separate_fields',
+            'hidden_fields',
+        ]);
+    }
 
     public function render()
     {
-        $this->perepareModel();
-        if (!$this->model) {
-            return;
-        }
-        $this->vars['attributesArray'] = $this->dataSource->getDotedValues();
+        $this->dataSource = $this->model->data_source;
+
+        $this->vars['text_info'] = $this->text_info;
+        $this->vars['attributesArray'] = $this->cleanModelValues($this->dataSource->getValues());
+        $this->vars['hidden_fields'] = $this->hidden_fields;
         $this->vars['IMGSArray'] = $this->getIMG();
         $fncArray = $this->getFNCOutputs();
-        //trace_log($this->type);
         $this->vars['FNCSArray'] = $fncArray;
 
         if ($this->type == 'word') {
@@ -34,17 +49,45 @@ class SidebarAttributes extends WidgetBase
 
     }
 
-    public function perepareModel()
+    public function cleanModelValues($array)
     {
-        $model = $this->controller->formGetModel();
-        $this->model = $model;
-        if (!$model) {
-            return;
-        }
+        $attributesCollection = new Collection($array);
+        //trace_log($attributesCollection->toArray());
 
-        $this->dataSource = $model->data_source;
-        return false;
+        $arrays = [];
+        $baseModelName = snake_case($this->model->data_source->model);
+
+        if ($this->separate_fields) {
+            foreach ($this->separate_fields as $field) {
+                $newArray = $attributesCollection->pull($field);
+
+                $tempObj = [
+                    $baseModelName => [
+                        $field => $newArray,
+                    ],
+
+                ];
+                $arrays[$field] = array_dot($tempObj);
+            }
+        }
+        $arrays = array_reverse($arrays);
+
+        $baseArray = [
+            $baseModelName => $attributesCollection->toArray(),
+        ];
+
+        $arrays['base'] = array_dot($baseArray);
+
+        $arrays = array_reverse($arrays);
+        // $arrays = new Collection($arrays);
+        // $arrays = $arrays->reject(function ($item) {
+        //     trace_log($item);
+        //     return false;
+        // });
+
+        return $arrays;
     }
+
     public function getIMG()
     {
         $imgs = $this->model->images;
@@ -109,15 +152,6 @@ class SidebarAttributes extends WidgetBase
             }
         }
 
-        // $modelTest = $this->model->data_source->getTargetModel();
-        // foreach ($fncs as $submodels) {
-        //     foreach ($submodels as $submodelKey => $submodelValue) {
-
-        //         $dataApi = $modelTest->{$submodelKey}()->with($submodelValue)->first()->toArray();
-        //         array_push($result, $dataApi);
-        //     }
-        // }
-
         return $result;
     }
 
@@ -125,8 +159,6 @@ class SidebarAttributes extends WidgetBase
     {
         $this->addCss('css/sidebarattributes.css', 'Waka.Utils');
         $this->addJs('js/clipboard.min.js', 'Waka.Utils');
-
-        //$this->addJs('js/labellist.js', 'Waka.Utils');
     }
 
 }

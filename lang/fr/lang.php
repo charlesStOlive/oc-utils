@@ -78,6 +78,14 @@ return [
         'has_image' => 'Prendre les images',
         'function_class' => "Class fonctions d'éditions",
         'agg_class' => "Class d'aggregation",
+        'inde_class_list' => [
+            'label' => 'Class independante à lier',
+            'prompt' => 'Entrez les classes indépendantes',
+            'name' => 'Nom de la class ( sera utiliser notamment dans word)',
+            'class' => 'Nom de la class indépendante',
+            'ids' => 'list des ID, si vide le premier sera pris',
+        ],
+
     ],
     'job_list' => [
         'name' => "Nom de la tache",

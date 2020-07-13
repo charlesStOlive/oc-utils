@@ -25,3 +25,6 @@
     - 'suppresion des logs'
     - delete_log_states_table.php
     - delete_source_logs_table.php
+1.0.9:
+    - 'Ajout des classes independantes'
+    - create_data_sources_table_u109.php

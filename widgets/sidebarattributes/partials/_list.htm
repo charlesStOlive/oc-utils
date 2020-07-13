@@ -1,15 +1,29 @@
 <h3>Les attributs disponibles</h3>
 <p class="help-block">Liste des attributs et des relations disponibles.</p>
 <p class="help-block">Les valeurs affiché sont celles du modèle de test.</p>
-<p class="help-block">Faites un glissez déposer dans le template</p>
+<p class="help-block"><b><?= $text_info ?></b></p>
 <h3>Attributs du modèle</h3>
 <div class="list">
-    <?php foreach($attributesArray as $key=>$value) { ?>
-    <button type="button" class="btn btn-xs btn-default" data-control="dragvalue" data-text-value="{{<?=$key?>}}"
-        data-drag-click="true">
-        <?=$key?> = <?=strip_tags(str_limit($value, 40))?>
-    </button>
-    <?php } ?>
+    <?php foreach($attributesArray as $keyCategorie=>$arrayCategories) : ?>
+    <?php if(count($arrayCategories)>1) : ?>
+    <div class="callout fade in callout-info no-subheader">
+        <div class="header">
+            <i class="icon-info"></i>
+            <h3><?=$keyCategorie?></h3>
+        </div>
+        <div class="content">
+            <?php foreach($arrayCategories as $key=>$value) : ?>
+            <?php if(!in_array($key, $hidden_fields)) : ?>
+            <button type="button" class="btn btn-xs btn-default" data-control="dragvalue"
+                data-text-value="{{<?=$key?>}}" data-drag-click="true">
+                <?=$key?> = <?=strip_tags(str_limit($value, 40))?>
+            </button>
+            <?php endif ?>
+            <?php endforeach ?>
+        </div>
+    </div>
+    <?php endif ?>
+    <?php endforeach ?>
 </div>
 <h3>Images du modèle</h3>
 <?php foreach($IMGSArray as $value) { ?>

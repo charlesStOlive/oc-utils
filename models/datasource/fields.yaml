@@ -59,9 +59,32 @@ tabs:
                     name:
                         label: waka.utils::lang.datasource.relation_name
                         span: auto
+                        trigger:
+                            action: show
+                            field: inde_class
+                            condition: unchecked
                     has_images:
                         label: waka.utils::lang.datasource.has_image
+                        type: checkbox
+        inde_class_list:
+            label: waka.utils::lang.datasource.inde_class_list.label
+            type: repeater
+            titleFrom: name
+            tab: waka.utils::lang.datasource.tab_relation
+            prompt: waka.utils::lang.datasource.inde_class_list.prompt
+            span: auto
+            form:
+                fields:
+                    class:
+                        label: waka.utils::lang.datasource.inde_class_list.class
+                    name:
+                        label: waka.utils::lang.datasource.inde_class_list.name
+                    id:
+                        label: waka.utils::lang.datasource.inde_class_list.ids
                         span: auto
+                        type: number
+                    has_images:
+                        label: waka.utils::lang.datasource.has_image
                         type: checkbox
                     
    
