@@ -1,6 +1,6 @@
 <div class="sidebar_info">
     <ul>
-        <?php foreach($fields as $field) { trace_log($field); ?>
+        <?php foreach($fields as $field) {  ?>
 
 
         <li class="<?=$field['cssClass']?>"><?=$this->makePartial('type/'.$field['type'],['field'=>$field])?></li>

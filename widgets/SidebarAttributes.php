@@ -52,7 +52,6 @@ class SidebarAttributes extends WidgetBase
     public function cleanModelValues($array)
     {
         $attributesCollection = new Collection($array);
-        //trace_log($attributesCollection->toArray());
 
         $arrays = [];
         $baseModelName = snake_case($this->model->data_source->model);
@@ -81,7 +80,6 @@ class SidebarAttributes extends WidgetBase
         $arrays = array_reverse($arrays);
         // $arrays = new Collection($arrays);
         // $arrays = $arrays->reject(function ($item) {
-        //     trace_log($item);
         //     return false;
         // });
 

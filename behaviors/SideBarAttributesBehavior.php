@@ -38,7 +38,7 @@ class SideBarAttributesBehavior extends ControllerBehavior
     public function __construct($controller)
     {
         parent::__construct($controller);
-        trace_log("construct sideBarAttributes");
+        //trace_log("construct sideBarAttributes");
         $this->config = $this->makeConfig($controller->sidebarInfoConfig, $this->requiredConfig);
     }
 

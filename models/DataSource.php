@@ -49,7 +49,7 @@ class DataSource extends Model
     /**
      * @var array Attributes to be appended to the API representation of the model (ex. toArray())
      */
-    protected $appends = [];
+    protected $appends = ['modelClass'];
 
     /**
      * @var array Attributes to be removed from the API representation of the model (ex. toArray())
@@ -113,54 +113,90 @@ class DataSource extends Model
         return $targetModel::find($id);
     }
 
-    // public function getRelationCollection($id = null)
-    // {
-    //     //trace_log("getRelationCollection");
-    //     $collection = new Collection();
-    //     if ($this->hasRelationArray) {
-    //         //trace_log("getRelationCollection hasRelationArray");
-    //         foreach ($this->relations_array_list as $relation) {
-    //             $data = [
-    //                 'name' => $relation['name'] ?? null,
-    //                 'param' => $relation['param'] ?? null,
-    //                 'options' => $this->getRelationQuery($relation['name'], $id)->lists('name', 'id'),
-    //                 'key' => $relation['key'] ?? null,
-    //                 'relations_list' => $relation['relations_list'] ?? null,
-    //             ];
-    //             $collection->push($data);
-    //         }
-    //     }
-    //     return $collection;
+    public function convertClassNameToModelName(String $model)
+    {
+        $modelClassDecouped = explode('\\', $model);
+        return array_pop($modelClassDecouped);
+    }
 
-    // }
-    // public function getRelationFromParam(String $key)
-    // {
-    //     foreach ($this->relations_array_list as $relation) {
-    //         if ($relation['param'] ?? false == $key) {
-    //             return $relation['name'];
-    //         }
-    //     }
-    //     return null;
+    /**
+     * TRAVAIL SUR LES PRODUCTOR
+     */
 
-    // }
+    public function getPartialOptions($modelId = null, $productorModel)
+    {
 
-    // public function getRelationQuery($relation, $id = null)
-    // {
-    //     $targetModel = $this->modelClass;
-    //     $relationModel = null;
-    //     if (!$id) {
-    //         if ($targetModel::first() ?? false) {
-    //             $relationModel = $targetModel::first()->{$relation}();
-    //         }
+        $options = $productorModel::whereHas('data_source', function ($query) {
+            $query->where('model', '=', $this->model);
+        });
 
-    //     } else {
-    //         if ($targetModel::find($id) ?? false) {
-    //             $relationModel = $targetModel::find($id)->{$relation}();
-    //         }
+        $myModel = $this->getTargetModel($modelId);
 
-    //     }
-    //     return $relationModel;
-    // }
+        $optionsList = [];
+
+        foreach ($options->get() as $option) {
+            if ($option->scopes) {
+                //Si il y a des limites (scopes dans pdf) verification des critères
+                if ($this->checkScopes($myModel, $option->scopes)) {
+                    $optionsList[$option->id] = $option->name;
+                }
+            } else {
+                $optionsList[$option->id] = $option->name;
+            }
+        }
+        return $optionsList;
+    }
+
+    public function checkScopes($myModel, $scopes)
+    {
+        $result = false;
+
+        $conditions = $scopes['conditions'] ?? null;
+        $mode = $scopes['mode'] ?? 'all';
+
+        //trace_log("'mode : " . $mode);
+
+        if (!$conditions) {
+            //si on ne retrouve pas les conditions on retourne true pour valider le model
+            return true;
+        }
+
+        $nbConditions = count($conditions);
+        $conditionsOk = [];
+
+        foreach ($conditions as $condition) {
+            $test = false;
+            if (!$condition['self']) {
+                $model = $this->getStringModelRelation($myModel, $condition['target']);
+                $test = in_array($model->id, $condition['ids']);
+            } else {
+                //trace_log($condition['ids']);
+                $test = in_array($myModel->id, $condition['ids']);
+
+            }
+
+            if ($test) {
+                if ($mode == 'one') {
+                    //si le test est bon et que le mode est 'one' a la première bonne valeur on retourne oui
+                    return true;
+                }
+                //si le test est bon mais que toutes les conditions doivent être bonne  on le met dans le tableau des OK
+                array_push($conditionsOk, $test);
+            }
+        }
+        //trace_log("nbConditions : " . $nbConditions);
+        //trace_log("count(conditionsOk) : " . count($conditionsOk));
+        if ($nbConditions == count($conditionsOk)) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
+     * RECUPERATION DES VALEURS DES MODELES ET DE LEURS LIAISON
+     */
 
     public function getModels($id = null)
     {
@@ -206,11 +242,6 @@ class DataSource extends Model
         }
         return $indeApi;
     }
-    // public function getDotedIndeValues($id = null)
-    // {
-    //     $indeApi = $this->getIndeValues();
-    //     return array_dot($indeApi);
-    // }
 
     /**
      * Cette fonction utulise le trait CloudisKey
@@ -245,7 +276,7 @@ class DataSource extends Model
         //  trace_log("--dataImages--");
         //  trace_log($dataImages);
         foreach ($dataImages as $image) {
-            trace_log($image);
+            //trace_log($image);
             //On recherche le bon model
             $modelImage = $targetModel;
             $img;
