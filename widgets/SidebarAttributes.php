@@ -18,6 +18,7 @@ class SidebarAttributes extends WidgetBase
     public $text_info;
     public $hidden_fields;
     public $valueArray;
+    public $lang_fields;
 
     public function init()
     {
@@ -27,6 +28,7 @@ class SidebarAttributes extends WidgetBase
             'text_info',
             'separate_fields',
             'hidden_fields',
+            'lang_fields',
         ]);
     }
 
@@ -58,7 +60,11 @@ class SidebarAttributes extends WidgetBase
 
         if ($this->separate_fields) {
             foreach ($this->separate_fields as $field) {
+
+                //On enlève de la collection et on range dans new Array la colone trouvé dans separateField
                 $newArray = $attributesCollection->pull($field);
+                // trace_log("new array");
+                // trace_log($newArray);
 
                 $tempObj = [
                     $baseModelName => [
@@ -66,9 +72,13 @@ class SidebarAttributes extends WidgetBase
                     ],
 
                 ];
+
                 $arrays[$field] = array_dot($tempObj);
+                $arrays[$field] = $this->cleanField($arrays[$field], $this->hidden_fields);
+
             }
         }
+
         $arrays = array_reverse($arrays);
 
         $baseArray = [
@@ -76,14 +86,37 @@ class SidebarAttributes extends WidgetBase
         ];
 
         $arrays['base'] = array_dot($baseArray);
+        $arrays['base'] = $this->cleanField($arrays['base'], $this->hidden_fields);
+
+        //trace_log($this->changeName());
 
         $arrays = array_reverse($arrays);
-        // $arrays = new Collection($arrays);
-        // $arrays = $arrays->reject(function ($item) {
-        //     return false;
-        // });
 
         return $arrays;
+    }
+
+    public function changeName()
+    {
+        //trace_log($this->lang_fields);
+
+    }
+    public function cleanField($rows, $hiddeArrayFields)
+    {
+        foreach ($rows as $key => $row) {
+            //trace_log("analyse du row : " . $key);
+            foreach ($hiddeArrayFields as $hiddenField) {
+                if (str_contains($key, $hiddenField)) {
+                    //trace_log("remove : " . $key);
+                    unset($rows[$key]);
+                }
+            }
+
+        }
+        // trace_log($rows);
+        // trace_log($this->hidden_fields);
+
+        return $rows;
+
     }
 
     public function getIMG()
@@ -113,17 +146,30 @@ class SidebarAttributes extends WidgetBase
         }
         $result = [];
         $modelTest = $this->model->data_source->getTargetModel();
+        // trace_log($modelTest->toArray());
+        // trace_log($this->model->toArray());
         foreach ($fncs as $fnc) {
             $code = $fnc['collectionCode'];
             $outputs = $this->model->data_source->getFunctionsOutput($fnc['functionCode']);
+            //trace_log($outputs);
             if ($outputs) {
                 $relations = $outputs['relations'] ?? null;
                 if ($relations) {
                     foreach ($relations as $submodelKey => $submodelValue) {
-                        $modelFinal = $this->getStringModelRelation($modelTest, $submodelKey);
-                        $dataApi = $modelFinal->first();
+                        // trace_log("----" . $code . "----");
+                        // trace_log($submodelKey);
+                        // trace_log($submodelValue);
+                        $modelFinal = $this->getStringRequestRelation($modelTest, $submodelKey);
+                        //$modelFinalOutput = $modelFinal->hidden_outputs;
+                        //trace_log(get_class($modelFinal));
+
+                        //trace_log($modelFinal->with($submodelValue)->get()->toArray());
+
+                        $dataApi = $modelFinal->with($submodelValue)->get()->first();
                         if ($dataApi) {
                             $result[$code] = array_dot($dataApi->toArray());
+
+                            $result[$code] = $this->cleanField($result[$code], $this->hidden_fields);
                         }
 
                     }
@@ -132,6 +178,7 @@ class SidebarAttributes extends WidgetBase
                 if ($models) {
                     foreach ($models as $model) {
                         $result[$code] = array_dot($model);
+                        $result[$code] = $this->cleanField($result[$code], $this->hidden_fields);
                     }
                 }
                 $images = $outputs['images'] ?? null;

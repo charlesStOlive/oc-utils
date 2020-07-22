@@ -102,6 +102,8 @@ class FunctionsList extends FormWidgetBase
                             'label' => $value['label'],
                             'type' => $value['type'],
                             'options' => $value['options'] ?? null,
+                            'mode' => $value['mode'] ?? null,
+                            'span' => $value['span'] ?? null,
                             'useKey' => true,
                         ],
                     ]);
