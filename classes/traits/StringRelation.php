@@ -28,7 +28,7 @@ trait StringRelation
         return $returnValue;
     }
 
-    public function getStringModelRelation($model, String $relation)
+    public function getStringModelRelation($model, String $relation, array $withSubR = null)
     {
         //trace_log("getStringModelRelation : " . $relation);
         $returnValue = $model;
@@ -48,6 +48,30 @@ trait StringRelation
         }
         if ($parts[4] ?? false) {
             $returnValue = $returnValue->{$parts[4]} ?? null;
+        }
+        return $returnValue;
+    }
+
+    public function getStringRequestRelation($model, String $relation, array $withSubR = null)
+    {
+        //trace_log("getStringModelRelation : " . $relation);
+        $returnValue = $model;
+        $parts = explode(".", $relation);
+        $nbParts = count($parts) ?? 1;
+        if ($parts[0] ?? false) {
+            $returnValue = $model->{$parts[0]}() ?? null;
+        }
+        if ($parts[1] ?? false) {
+            $returnValue = $returnValue->{$parts[1]}() ?? null;
+        }
+        if ($parts[2] ?? false) {
+            $returnValue = $returnValue->{$parts[2]}() ?? null;
+        }
+        if ($parts[3] ?? false) {
+            $returnValue = $returnValue->{$parts[3]}() ?? null;
+        }
+        if ($parts[4] ?? false) {
+            $returnValue = $returnValue->{$parts[4]}() ?? null;
         }
         return $returnValue;
     }
