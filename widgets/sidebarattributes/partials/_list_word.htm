@@ -13,8 +13,9 @@
         </div>
         <div class="">
             <?php foreach($arrayCategories as $key=>$value) : ?>
-            <?php if(!in_array($key, $hidden_fields)) : ?>
-            <button type="button" class="btn btn-xs btn-default" style="width:100%" data-clipboard-text="${<?=$key?>}">
+            <?php if(!in_array($key, $hidden_fields)) :  ?>
+            <button type="button" class="btn btn-xs btn-default" style="width:100%"
+                data-clipboard-text="${<?=$key?><?php if(ends_with($key, '_at')) echo '*date'?>}">
                 <?=strip_tags(str_limit($key.' = '.$value, 50))?>
             </button>
             <?php endif ?>
@@ -43,7 +44,8 @@
 
     <?php foreach($fncs as $subkey=>$value) { ?>
     <?php if (!is_countable($value)) : ?>
-    <button type="button" class="btn btn-xs" data-clipboard-text="${<?=$key?>.<?=$subkey?>}">
+    <button type="button" class="btn btn-xs"
+        data-clipboard-text="${<?=$key?>.<?=$subkey?><?php if(ends_with($key, '_at')) echo '*date'?>}">
         <?=strip_tags(str_limit($subkey.'='.$value, 40))?>
     </button>
     <?php endif ?>
