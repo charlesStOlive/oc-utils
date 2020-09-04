@@ -273,8 +273,8 @@ class DataSource extends Model
         }
         $allPictures = [];
         $targetModel = $this->getTargetModel($id);
-        //  trace_log("--dataImages--");
-        //  trace_log($dataImages);
+        // trace_log("--dataImages--");
+        // trace_log($dataImages);
         foreach ($dataImages as $image) {
             //trace_log($image);
             //On recherche le bon model
@@ -301,13 +301,13 @@ class DataSource extends Model
                 } else {
                     $img = \Cloudder::secureShow(CloudisSettings::get('srcPath'));
                 }
-                //  trace_log('image cloudi---' . $img);
+                // trace_log('image cloudi---' . $img);
             }
             // si montage ( voir GroupedImage )
             if ($image['type'] == 'montage') {
                 $montage = $modelImage->montages->find($image['id']);
                 $img = $modelImage->getCloudiModelUrl($montage, $options);
-                //  trace_log('montage ---' . $img);
+                // trace_log('montage ---' . $img);
             }
             $allPictures[$image['code']] = [
                 'path' => $img,
@@ -371,7 +371,7 @@ class DataSource extends Model
      */
     public function getContact($type, $id = null)
     {
-        //  trace_log("get contact from type : " . $type);
+        // trace_log("get contact from type : " . $type);
         $targetModel = $this->getTargetModel($id);
         $emailData = $this->getDataFromContacts($type);
 

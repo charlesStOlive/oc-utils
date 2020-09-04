@@ -32,6 +32,7 @@ class Plugin extends PluginBase
     {
         return [
             'filters' => [
+                'localeDate' => [new \Waka\Utils\Classes\WakaDate, 'localeDate'],
                 'toJson' => function ($twig) {
                     return json_encode($twig);
 
@@ -93,6 +94,7 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
+
         /**
          * POur le copier coller
          */

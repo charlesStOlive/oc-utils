@@ -150,22 +150,24 @@ class SidebarAttributes extends WidgetBase
         // trace_log($this->model->toArray());
         foreach ($fncs as $fnc) {
             $code = $fnc['collectionCode'];
+
             $outputs = $this->model->data_source->getFunctionsOutput($fnc['functionCode']);
             //trace_log($outputs);
             if ($outputs) {
+
                 $relations = $outputs['relations'] ?? null;
+
                 if ($relations) {
                     foreach ($relations as $submodelKey => $submodelValue) {
                         // trace_log("----" . $code . "----");
                         // trace_log($submodelKey);
                         // trace_log($submodelValue);
                         $modelFinal = $this->getStringRequestRelation($modelTest, $submodelKey);
-                        //$modelFinalOutput = $modelFinal->hidden_outputs;
-                        //trace_log(get_class($modelFinal));
 
                         //trace_log($modelFinal->with($submodelValue)->get()->toArray());
 
                         $dataApi = $modelFinal->with($submodelValue)->get()->first();
+
                         if ($dataApi) {
                             $result[$code] = array_dot($dataApi->toArray());
 
