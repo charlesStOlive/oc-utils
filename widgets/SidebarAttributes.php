@@ -164,13 +164,11 @@ class SidebarAttributes extends WidgetBase
                         // trace_log($submodelValue);
                         $modelFinal = $this->getStringRequestRelation($modelTest, $submodelKey);
 
-                        //trace_log($modelFinal->with($submodelValue)->get()->toArray());
-
+                        // //trace_log($modelFinal->with($submodelValue)->get()->toArray());
                         $dataApi = $modelFinal->with($submodelValue)->get()->first();
 
                         if ($dataApi) {
                             $result[$code] = array_dot($dataApi->toArray());
-
                             $result[$code] = $this->cleanField($result[$code], $this->hidden_fields);
                         }
 

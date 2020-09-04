@@ -90,8 +90,14 @@ class FunctionsList extends FormWidgetBase
         $fnc_class = $this->model->data_source->getFunctionClass();
         $attributes = $fnc_class->getFunctionAttribute($functionCode);
 
+        $functionList = $fnc_class->getFunctionsList();
+
         //création du widget
         $attributeWidget = $this->createFormWidget();
+
+        //Ajout du nom par defaut
+        $attributeWidget->getField('name')->value = $functionList[$functionCode];
+
         //ajout des whamps via les attributs
 
         if ($attributes) {
