@@ -1,6 +1,6 @@
 <?php namespace Waka\Utils\Classes;
 
-//use Carbon\Carbon;
+use Carbon\Carbon;
 
 class WakaDate
 {
@@ -32,6 +32,10 @@ class WakaDate
     }
     public function localeDate($twig, $format = null, $timeZone = null)
     {
+        if (is_string($twig)) {
+            $twig = Carbon::parse($twig);
+        }
+
         if (!$timeZone) {
             $timeZone = \Backend\Models\Preference::get('timezone');
         }
@@ -45,21 +49,24 @@ class WakaDate
             $format = "%a %e %b";
         }
         if ($format == 'date-full') {
+            $twig->setTimezone($timeZone);
             $format = "%A %e %B %Y";
         }
         if ($format == 'short') {
             $format = "%A %e %B %Y";
         }
         if ($format == 'date-time') {
+            $twig->setTimezone($timeZone);
             $format = "%A %e %B %Y à %H:%M";
         }
         if ($format == 'date-short') {
             $format = "%d/%m/%Y";
         }
         if ($format == 'date-short-time') {
+            $twig->setTimezone($timeZone);
             $format = "%d/%m/%Y à %H:%M";
         }
-        $twig->setTimezone($timeZone);
+
         return $twig->formatLocalized($format);
     }
 
