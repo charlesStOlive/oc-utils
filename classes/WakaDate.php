@@ -66,6 +66,9 @@ class WakaDate
             $twig->setTimezone($timeZone);
             $format = "%d/%m/%Y à %H:%M";
         }
+        setlocale(LC_ALL, 'fr_FR');
+        trace_log($timeZone);
+        trace_log("localisation");
 
         return $twig->formatLocalized($format);
     }

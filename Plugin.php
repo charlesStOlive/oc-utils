@@ -30,13 +30,10 @@ class Plugin extends PluginBase
 
     public function registerMarkupTags()
     {
-        trace_log("registermarkup2");
+        trace_log("registermarkup");
         return [
             'filters' => [
-                'localeDate' => function ($twig) {
-                    return json_encode($twig);
-
-                },
+                'localeDate' => [new \Waka\Utils\Classes\WakaDate, 'localeDate'],
                 'toJson' => function ($twig) {
                     return json_encode($twig);
 
