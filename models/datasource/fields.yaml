@@ -21,6 +21,9 @@ fields:
         options: listModelNameId
         span: auto
         prompt: waka.utils::lang.datasource.test_id_prompt
+    name_from:
+        label: waka.utils::lang.datasource.name_from
+        span: auto
     controller:
         label: waka.utils::lang.datasource.controller
         span: auto

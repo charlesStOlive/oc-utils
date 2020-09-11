@@ -12,8 +12,10 @@
         Ajouter une fonction
     </button>
 </p>
-<div id="list">
-    <?= $this->makePartial('list', ['values' => $values]) ?>
+<div class="list-widget list-scrollable-container">
+    <div class="control-list list-scrollable" id="list">
+        <?= $this->makePartial('list', ['values' => $values]) ?>
+    </div>
 </div>
 
 <?php } ?>

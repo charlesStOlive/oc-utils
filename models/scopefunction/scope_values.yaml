@@ -1,0 +1,24 @@
+fields:
+    name: 
+        label: waka.utils::lang.scopes.libelle
+    self: 
+        label: waka.utils::lang.scopes.self
+        type: checkbox
+        default: true
+    target:
+        label: waka.utils::lang.scopes.target
+        commentAbove: waka.utils::lang.scopes.target_com
+        trigger:
+            action: disable
+            field: self
+            condition: checked
+    
+    scope_field:
+        label: waka.utils::lang.scopes.scope_field
+        commentAbove: waka.utils::lang.scopes.scope_field_com
+        span: auto
+    scope_values:
+        label: waka.utils::lang.scopes.scope_values
+        type: taglist
+        mode: array
+        commentAbove: waka.utils::lang.scopes.scope_values_com

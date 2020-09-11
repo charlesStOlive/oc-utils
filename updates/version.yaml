@@ -28,3 +28,6 @@
 1.0.9:
     - 'Ajout des classes independantes'
     - create_data_sources_table_u109.php
+1.1.0:
+    - 'Ajout du champ name si name pas existnat dans la table'
+    - create_data_sources_table_u110.php

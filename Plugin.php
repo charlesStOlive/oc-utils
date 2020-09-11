@@ -85,6 +85,7 @@ class Plugin extends PluginBase
             'Waka\Utils\FormWidgets\CommentField' => 'commentfield',
             'Waka\Utils\FormWidgets\LabelList' => 'labellist',
             'Waka\Utils\FormWidgets\FunctionsList' => 'functionslist',
+            'Waka\Utils\FormWidgets\ScopesList' => 'scopeslist',
         ];
     }
 

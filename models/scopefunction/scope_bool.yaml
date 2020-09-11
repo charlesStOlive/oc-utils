@@ -1,0 +1,21 @@
+fields:
+    name: 
+        label: Libellé du scope
+    self: 
+        label: waka.utils::lang.scopes.self
+        type: checkbox
+        default: true
+    target:
+        label: waka.utils::lang.scopes.target
+        commentAbove: waka.utils::lang.scopes.target_com
+        trigger:
+            action: disable
+            field: self
+            condition: checked
+    
+    scope_field:
+        label: waka.utils::lang.scopes.field
+        commentAbove: waka.utils::lang.scopes.field_com
+    scope_bool:
+        label: waka.utils::lang.scopes.scope_bool
+        type: checkbox

@@ -1,0 +1,30 @@
+mode: 
+  type: radio
+  default: [all]
+  cssClass: 'inline-options'
+  options:
+    all: Toutes les conditions doivent être vrai
+    one: Une seul condition doit être vrai
+conditions_id:
+  label: waka.utils::lang.scopes.conditions_id.label
+  description: waka.utils::lang.scopes.conditions_id.description
+  fields:
+    self: 
+      label: waka.worder::lang.document.scopes.self
+      type: checkbox
+      span: full
+      default: true
+    target:
+      label: waka.worder::lang.document.scopes.target
+      commentAbove: waka.worder::lang.document.scopes.target_com
+      span: auto
+      trigger:
+          action: disable
+          field: self
+          condition: checked
+    ids:
+      label: waka.worder::lang.document.scopes.id
+      type: taglist
+      mode: array
+      commentAbove: waka.worder::lang.document.scopes.id_com
+      span: auto

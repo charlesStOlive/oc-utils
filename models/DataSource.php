@@ -74,6 +74,12 @@ class DataSource extends Model
     public $attachOne = [];
     public $attachMany = [];
 
+    public function getAttributeNameAttribute()
+    {
+        trace_log($this->name_from);
+        return !$this->name_from ? 'name' : $this->name_from;
+    }
+
     public function getModelClassAttribute()
     {
         return $this->author . '\\' . $this->plugin . '\\models\\' . $this->model;
@@ -130,14 +136,15 @@ class DataSource extends Model
             $query->where('model', '=', $this->model);
         });
 
-        $myModel = $this->getTargetModel($modelId);
+        $targetModel = $this->getTargetModel($modelId);
 
         $optionsList = [];
 
         foreach ($options->get() as $option) {
-            if ($option->scopes) {
-                //Si il y a des limites (scopes dans pdf) verification des critères
-                if ($this->checkScopes($myModel, $option->scopes)) {
+            if ($option->scope_type == 'all' || $option->scope_type == 'one') {
+                //Si il y a des limites
+                $scope = new \Waka\Utils\Classes\Scopes($option, $targetModel);
+                if ($scope->checkScopes()) {
                     $optionsList[$option->id] = $option->name;
                 }
             } else {
@@ -145,53 +152,6 @@ class DataSource extends Model
             }
         }
         return $optionsList;
-    }
-
-    public function checkScopes($myModel, $scopes)
-    {
-        $result = false;
-
-        $conditions = $scopes['conditions'] ?? null;
-        $mode = $scopes['mode'] ?? 'all';
-
-        //trace_log("'mode : " . $mode);
-
-        if (!$conditions) {
-            //si on ne retrouve pas les conditions on retourne true pour valider le model
-            return true;
-        }
-
-        $nbConditions = count($conditions);
-        $conditionsOk = [];
-
-        foreach ($conditions as $condition) {
-            $test = false;
-            if (!$condition['self']) {
-                $model = $this->getStringModelRelation($myModel, $condition['target']);
-                $test = in_array($model->id, $condition['ids']);
-            } else {
-                //trace_log($condition['ids']);
-                $test = in_array($myModel->id, $condition['ids']);
-
-            }
-
-            if ($test) {
-                if ($mode == 'one') {
-                    //si le test est bon et que le mode est 'one' a la première bonne valeur on retourne oui
-                    return true;
-                }
-                //si le test est bon mais que toutes les conditions doivent être bonne  on le met dans le tableau des OK
-                array_push($conditionsOk, $test);
-            }
-        }
-        //trace_log("nbConditions : " . $nbConditions);
-        //trace_log("count(conditionsOk) : " . count($conditionsOk));
-        if ($nbConditions == count($conditionsOk)) {
-            return true;
-        } else {
-            return false;
-        }
-
     }
 
     /**
@@ -324,12 +284,12 @@ class DataSource extends Model
      */
     public function listModelNameId()
     {
-        return $this->modelClass::lists('name', 'id');
+        return $this->modelClass::lists($this->attributeName, 'id');
     }
-    public function get()
-    {
-        return $this->modelClass::lists('name', 'id');
-    }
+    // public function get()
+    // {
+    //     return $this->modelClass::lists('name', 'id');
+    // }
     public function listTableColumns()
     {
         return Schema::getColumnListing($this->modelClass::first()->getTable());

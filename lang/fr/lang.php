@@ -78,6 +78,7 @@ return [
         'has_image' => 'Prendre les images',
         'function_class' => "Class fonctions d'éditions",
         'agg_class' => "Class d'aggregation",
+        "name_from" => "Nom à utiliser si 'name' n'existe pas",
         'inde_class_list' => [
             'label' => 'Class independante à lier',
             'prompt' => 'Entrez les classes indépendantes',
@@ -94,6 +95,22 @@ return [
         'end_at' => "Terminé à",
         'state' => "Etat",
         'date_diff' => "Durée en S",
+    ],
+    'scopes' => [
+        "libelle" => "Intitulé du scope",
+        "self" => "Fonction de restriction lié à ce modèle",
+        "target" => "Nom de la relation portant la restriction",
+        "field" => "Nom du champ",
+        "field_com" => "Nom de la colonne qui portera la valeur",
+        "target_com" => "Ecrire le nom de la relation. les relations parentes ne sont pas disponible",
+        "scope_field" => "Nom du champ",
+        "scope_value" => "Valeur unique du champ",
+        "scope_values" => "Lister les valeurs",
+        "scope_values_com" => "Saisissez une valeur et cliquez",
+        "scope_bool" => "Vrai/Faux",
+        "type" => "Type de restriction",
+        "scope_relation" => "Choisir la relation",
+        "scope_relation_com" => "Si vous recherchez chez un parent vous devez indiquer la relation avec le parent",
     ],
 
 ];

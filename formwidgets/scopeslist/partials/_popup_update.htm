@@ -1,0 +1,23 @@
+<?= Form::open() ?>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Mettre à jours la restriction</h4>
+        </div>
+        <input type="hidden" name="scopeKey" value="<?= $scopeKey ?>" />
+        <input type="hidden" name="scopeCode" value="<?= $scopeCode ?>" />
+        <div class="modal-body">
+            <div id="functionAttribute">
+                <?=  $attributeWidget->render() ?>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" data-stripe-load-indicator data-dismiss="modal" data-request="onUpdateScopeValidation"
+                data-request-data="redirect:0," class="btn btn-primary">
+                Mettre à jour
+            </button>
+        </div>
+    </div>
+</div>
+<?= Form::close() ?>

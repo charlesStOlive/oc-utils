@@ -1,0 +1,11 @@
+<p>
+    <button href="javascript:;" class="btn btn-secondary oc-icon-files-o " data-control="popup"
+        data-handler="onShowScopes">
+        Ajouter une restriction
+    </button>
+</p>
+<div class="list-widget list-scrollable-container">
+    <div class="control-list list-scrollable" id="scopeList">
+        <?= $this->makePartial('list', ['values' => $values]) ?>
+    </div>
+</div>
