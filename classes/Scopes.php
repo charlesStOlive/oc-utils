@@ -94,7 +94,8 @@ class Scopes
         if (!$model) {
             trace_log("Erreur sur le modèle");
         }
-        if (in_array($model->slug, $values)) {
+
+        if (in_array($model[$field], $values)) {
             return true;
         } else {
             return false;
