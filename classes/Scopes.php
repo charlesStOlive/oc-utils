@@ -15,8 +15,6 @@ class Scopes
         $this->scopes = $doc->scopes;
         $this->target = $target;
         $this->mode = $doc->scope_type;
-        trace_log($doc->name);
-
     }
     public function checkScopes()
     {
@@ -33,7 +31,6 @@ class Scopes
             $model = $this->target;
             if (!$scope['self']) {
                 $model = $this->getStringModelRelation($model, $scope['target']);
-                trace_log($model->name);
             }
             switch ($scope['scopeKey']) {
 

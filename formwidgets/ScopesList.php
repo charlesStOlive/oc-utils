@@ -102,7 +102,6 @@ class ScopesList extends FormWidgetBase
 
         $scopeKey = post('scopeKey');
         $scope = $this->scopesType[$scopeKey];
-        trace_log($scope['config']);
 
         $attributeWidget = $this->createFormWidget($scope['config']);
         $attributeWidget->getField('name')->value = $scope['label'];
@@ -151,8 +150,6 @@ class ScopesList extends FormWidgetBase
         $datas = new \October\Rain\Support\Collection($modelValues);
         $dataScope = $datas->where('scopeCode', $scopeCode)->first();
 
-        trace_log($dataScope);
-
         //création du widget
         $scopeKey = post('scopeKey');
         $scope = $this->scopesType[$scopeKey];
@@ -161,8 +158,6 @@ class ScopesList extends FormWidgetBase
         foreach ($dataScope as $key => $value) {
             $field = $attributeWidget->getField($key);
             if ($field) {
-                trace_log($key);
-                trace_log($value);
                 $attributeWidget->getField($key)->value = $value;
             }
 

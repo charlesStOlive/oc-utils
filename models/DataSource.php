@@ -76,7 +76,6 @@ class DataSource extends Model
 
     public function getAttributeNameAttribute()
     {
-        trace_log($this->name_from);
         return !$this->name_from ? 'name' : $this->name_from;
     }
 

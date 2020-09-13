@@ -30,7 +30,6 @@ class Plugin extends PluginBase
 
     public function registerMarkupTags()
     {
-        trace_log("registermarkup");
         return [
             'filters' => [
                 'localeDate' => [new \Waka\Utils\Classes\WakaDate, 'localeDate'],
