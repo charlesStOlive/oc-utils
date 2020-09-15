@@ -140,10 +140,33 @@ class DataSource extends Model
         $optionsList = [];
 
         foreach ($options->get() as $option) {
-            if ($option->scope_type == 'all' || $option->scope_type == 'one') {
+            if ($option->is_scope) {
                 //Si il y a des limites
                 $scope = new \Waka\Utils\Classes\Scopes($option, $targetModel);
                 if ($scope->checkScopes()) {
+                    $optionsList[$option->id] = $option->name;
+                }
+            } else {
+                $optionsList[$option->id] = $option->name;
+            }
+        }
+        return $optionsList;
+    }
+
+    public function getPartialIndexOptions($productorModel)
+    {
+
+        $options = $productorModel::whereHas('data_source', function ($query) {
+            $query->where('model', '=', $this->model);
+        });
+
+        $optionsList = [];
+
+        foreach ($options->get() as $option) {
+            if ($option->is_scope) {
+                //Si il y a des limites
+                $scope = new \Waka\Utils\Classes\Scopes($option);
+                if ($scope->checkIndexScopes()) {
                     $optionsList[$option->id] = $option->name;
                 }
             } else {

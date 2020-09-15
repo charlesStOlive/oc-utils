@@ -49,6 +49,8 @@ return [
         'tab_contact' => "Liaison contacts",
         'tab_relation' => "Relations",
         'name' => 'Intitulé de la source',
+        'title' => 'Choisissez une source',
+        'placeholder' => '--Choisissez une source--',
         'author' => 'Auteur du plugin',
         'plugin' => 'Nom du plugin',
         'model' => 'Nom du modèle',
@@ -97,7 +99,8 @@ return [
         'date_diff' => "Durée en S",
     ],
     'scopes' => [
-        "libelle" => "Intitulé du scope",
+        "libelle" => "Intitulé de la restriction",
+        "is_scope" => "Restriction ? ",
         "self" => "Fonction de restriction lié à ce modèle",
         "target" => "Nom de la relation portant la restriction",
         "field" => "Nom du champ",
@@ -111,6 +114,8 @@ return [
         "type" => "Type de restriction",
         "scope_relation" => "Choisir la relation",
         "scope_relation_com" => "Si vous recherchez chez un parent vous devez indiquer la relation avec le parent",
+        "userRoles" => "Role des utilisateurs",
+        'users' => 'Utilisateurs',
     ],
 
 ];

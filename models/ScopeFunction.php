@@ -1,5 +1,7 @@
 <?php namespace Waka\Utils\Models;
 
+use Backend\Models\User as BackendUser;
+use Backend\Models\UserRole;
 use Model;
 
 /**
@@ -68,4 +70,19 @@ class ScopeFunction extends Model
     public $morphMany = [];
     public $attachOne = [];
     public $attachMany = [];
+
+    public function listUsers()
+    {
+        $backendUser = BackendUser::get(['first_name', 'last_name', 'id']);
+        $backendUser = $backendUser->keyBy('id');
+        $backendUser->transform(function ($item, $key) {
+            return $item['first_name'] . ' ' . $item['last_name'];
+        });
+        //trace_log($backendUser);
+        return $backendUser->toArray();
+    }
+    public function listUserRoles()
+    {
+        return UserRole::lists('name', 'id');
+    }
 }

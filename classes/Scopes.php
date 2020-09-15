@@ -10,14 +10,17 @@ class Scopes
     public $checked;
     public $checkedOk;
 
-    public function __construct($doc, $target)
+    public function __construct($doc, $target = null)
     {
         $this->scopes = $doc->scopes;
         $this->target = $target;
-        $this->mode = $doc->scope_type;
+        $this->mode = $doc->is_scope;
     }
     public function checkScopes()
     {
+        if (!$this->target) {
+            throw new \ApplicationException("Il manque le modèle cible pour l'analyse des scopes");
+        }
         $this->checked = 0;
         $this->checkedOK = 0;
 
@@ -62,8 +65,51 @@ class Scopes
                     }
 
                     break;
+                case 'user':
+                    $ck = $this->getUserValidation($scope);
+                    if ($ck) {
+                        $this->checkedOK++;
+                    }
+                    break;
+                case 'user_role':
+                    $ck = $this->getUserRoleValidation($scope);
+                    if ($ck) {
+                        $this->checkedOK++;
+                    }
+                    break;
+
             }
         }
+        return $this->checkedOK == $this->checked;
+    }
+    public function checkIndexScopes()
+    {
+        $this->checked = 0;
+        $this->checkedOK = 0;
+
+        //s'il n'y a pas de scope on retourne la valeur directement.
+        if (!$this->scopes) {
+            return true;
+        }
+
+        foreach ($this->scopes as $scope) {
+            $this->checked++;
+            switch ($scope['scopeKey']) {
+                case 'user':
+                    $ck = $this->getUserValidation($scope);
+                    if ($ck) {
+                        $this->checkedOK++;
+                    }
+                    break;
+                case 'userGroup':
+                    $ck = $this->getUserValidation($scope);
+                    if ($ck) {
+                        $this->checkedOK++;
+                    }
+                    break;
+            }
+        }
+
         return $this->checkedOK == $this->checked;
     }
     private function getSingleValueValidation($model, $scope)
@@ -122,6 +168,18 @@ class Scopes
         $boolFromScope = boolval($scope['scope_bool']);
 
         return $boolFromModel == $boolFromScope;
+    }
+
+    private function getUserValidation($scope)
+    {
+        $userId = \BackendAuth::getUser()->id;
+
+        return in_array($userId, $scope);
+    }
+    private function getUserRoleValidation($scope)
+    {
+        $userRoleId = \BackendAuth::getUser()->role_id;
+        return in_array($userRoleId, $scope);
     }
 
 }

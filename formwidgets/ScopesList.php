@@ -14,35 +14,14 @@ class ScopesList extends FormWidgetBase
 
     public $jsonValues;
 
-    public $scopesType = [
-        'model_value' => [
-            'label' => "Restriction depuis une valeur d'un champ",
-            'config' => 'scope_value',
-        ],
-
-        'model_values' => [
-            'label' => "Restriction sur plusieurs valeurs d'un champ",
-            'config' => 'scope_values',
-        ],
-        'model_relation' => [
-            'label' => "Restriction en fonction d'une relation",
-            'config' => 'scope_relation',
-        ],
-        'model_bool' => [
-            'label' => "Restriction Vrai/Faux d'un champ",
-            'config' => 'scope_bool',
-        ],
-        'user' => [
-            'label' => "Restriction lié à l'utilisateur",
-            'config' => 'scope_users',
-        ],
-    ];
+    public $scopesType;
 
     /**
      * @inheritDoc
      */
     public function init()
     {
+        $this->scopesType = \Config::get('waka.utils::scopesType');
     }
 
     public $scopeClass;
@@ -52,6 +31,7 @@ class ScopesList extends FormWidgetBase
      */
     public function render()
     {
+
         $this->prepareVars();
         return $this->makePartial('scopeslist');
     }
@@ -119,6 +99,8 @@ class ScopesList extends FormWidgetBase
         $widgetArray['scopeCode'] = uniqid();
         $widgetArray['scopeKey'] = post('scopeKey');
 
+        //trace_log($widgetArray);
+
         $data;
         $modelValues = $this->getLoadValue();
         if ($modelValues && count($modelValues)) {
@@ -148,6 +130,7 @@ class ScopesList extends FormWidgetBase
         $modelValues = $this->getLoadValue();
         //trace_log($modelValues);
         $datas = new \October\Rain\Support\Collection($modelValues);
+
         $dataScope = $datas->where('scopeCode', $scopeCode)->first();
 
         //création du widget

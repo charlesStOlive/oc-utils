@@ -1,0 +1,9 @@
+fields:
+    name: 
+        label: Libellé du scope
+    scope_users:
+        label: waka.utils::lang.scopes.users
+        type: taglist
+        mode: array
+        useKey: true
+        options: listUsers
