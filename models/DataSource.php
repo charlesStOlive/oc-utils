@@ -78,6 +78,10 @@ class DataSource extends Model
     {
         return !$this->name_from ? 'name' : $this->name_from;
     }
+    public function getControllerUrlAttribute()
+    {
+        return strtolower($this->author . '\\' . $this->plugin . '\\' . $this->controller);
+    }
 
     public function getModelClassAttribute()
     {
