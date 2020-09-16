@@ -44,7 +44,7 @@
 
     <?php foreach($fncs as $subkey=>$value) { ?>
     <?php if (!is_countable($value)) : ?>
-    <button type="button" class="btn btn-xl btn-default" style="width:100%"
+    <button type="button" class="btn btn-xs btn-default" style="width:100%"
         data-clipboard-text=" ${<?=$key?>.<?=$subkey?><?php if(ends_with($key, '_at')) echo '*date'?>}">
         <?=$subkey?><br><?=strip_tags(str_limit(' ex :  '.$value, 50))?>
     </button>
