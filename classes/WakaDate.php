@@ -56,7 +56,7 @@ class WakaDate
             $twig->setTimezone($timeZone);
             $format = "%A %e %B %Y";
         }
-        if ($format == 'short') {
+        if ($format == 'date-tiny') {
             $format = "%A %e %B %Y";
         }
         if ($format == 'date-time') {
