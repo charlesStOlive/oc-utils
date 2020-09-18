@@ -6,6 +6,7 @@ return [
         'data_sources_description' => 'Gerer les sources et leur relation pour publisher, mailing, etc.',
         'settings_category' => 'Wakaari options ',
         'job_list' => "Liste des taches",
+        'job_list_s' => "Taches",
         'job_list_description' => "Liste des taches de l'application",
     ],
     'global' => [
@@ -97,6 +98,12 @@ return [
         'end_at' => "Terminé à",
         'state' => "Etat",
         'date_diff' => "Durée en S",
+        "user_name" => "Utilisateur",
+        "scopes" => [
+            "not_end" => "Ne pas afficher les taches terminés",
+            "only_user" => "Seulement vos taches",
+
+        ],
     ],
     'scopes' => [
         "libelle" => "Intitulé de la restriction",

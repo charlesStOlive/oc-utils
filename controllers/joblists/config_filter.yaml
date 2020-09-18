@@ -3,8 +3,14 @@
 # ===================================
 
 scopes:
-    num_id:
-        label: Ne pas afficher les tâches terminées
+    only_user:
+        label: waka.utils::lang.job_list.scopes.only_user
+        type: checkbox
+        default: 1
+        scope: onlyUser
+
+    not_end:
+        label:  waka.utils::lang.job_list.scopes.not_end
         type: checkbox
         conditions: state <> 'Terminé'
 

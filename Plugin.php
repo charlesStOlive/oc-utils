@@ -1,6 +1,7 @@
 <?php namespace Waka\Utils;
 
 use Backend;
+use Block;
 use Event;
 use Lang;
 use System\Classes\PluginBase;
@@ -95,13 +96,16 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
+        $pluginUrl = url('/plugins/waka/utils');
+        Block::append('body', '<script type="text/javascript" src="' . $pluginUrl . '/assets/js/backendnotifications.js"></script>');
 
         /**
          * POur le copier coller
          */
-        // Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
-        //     $controller->addJs('/plugins/waka/utils/assets/js/clipboard.min.js');
-        // });
+        Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
+            $controller->addCss('/plugins/waka/utils/assets/css/notification.css');
+        });
+
         Event::listen('backend.down.rapidLinks', function ($controller) {
             $model = $controller->formGetModel();
             if (!$model->rapidLinks) {
@@ -122,16 +126,25 @@ class Plugin extends PluginBase
             }
 
         });
-        Event::listen('job.create.*', function ($jobId, $name) {
+        Event::listen('job.create.*', function ($event, $params) {
+            $userId = \BackendAuth::getUser()->id;
+            $jobId = $params[0];
+            $name = $params[1];
             $joblist = new Models\JobList();
             $joblist->id = $jobId;
+            $joblist->user_id = $userId;
             $joblist->name = $name;
             $joblist->state = 'Attente';
             $joblist->save();
         });
 
         // Ecouteur de job et enregistrement
-        Event::listen('job.start.*', function ($job, $name) {
+        Event::listen('job.start.*', function ($event, $params) {
+            $job = $params[0];
+            $name = $params[1];
+            //trace_log("evenement job.start");
+            //trace_log($job->getJobId());
+            //trace_log($name);
             $id = $job->getJobId();
             $joblist = Models\JobList::find($id);
             if (!$joblist) {
@@ -147,7 +160,8 @@ class Plugin extends PluginBase
             $joblist->started_at = date("Y-m-d H:i:s");
             $joblist->save();
         });
-        Event::listen('job.end.*', function ($job) {
+        Event::listen('job.end.*', function ($event, $params) {
+            $job = $params[0];
             $id = $job->getJobId();
             $joblist = Models\JobList::find($id);
             if (!$joblist) {
@@ -209,6 +223,27 @@ class Plugin extends PluginBase
             'waka.jobList.user' => [
                 'tab' => 'Waka - Utils',
                 'label' => "Lecteur des taches de l'app",
+            ],
+        ];
+    }
+
+    public function registerNavigation()
+    {
+        $showNotification = true;
+
+        if (!$showNotification) {
+            return [];
+        }
+
+        return [
+            'notification' => [
+                'label' => Lang::get("waka.utils::lang.menu.job_list_s"),
+                'url' => Backend::url('waka/utils/joblists'),
+                'icon' => 'icon-refresh',
+                'order' => 500,
+                'counter' => 0,
+                'permissions' => ['waka.jobList.*'],
+                'counterLabel' => Lang::get('waka.utils::lang.joblist.btn_counter_label'),
             ],
         ];
     }

@@ -31,3 +31,6 @@
 1.1.0:
     - 'Ajout du champ name si name pas existnat dans la table'
     - create_data_sources_table_u110.php
+2.0.0:
+    - 'Nouveau corp en laravel 6.0 et ajout du user dans joblist'
+    - create_job_lists_table_u200.php

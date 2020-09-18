@@ -42,7 +42,7 @@ class JobList extends Model
     /**
      * @var array Attributes to be appended to the API representation of the model (ex. toArray())
      */
-    protected $appends = [];
+    protected $appends = ['counterByState'];
 
     /**
      * @var array Attributes to be removed from the API representation of the model (ex. toArray())
@@ -64,13 +64,19 @@ class JobList extends Model
      */
     public $hasOne = [];
     public $hasMany = [];
-    public $belongsTo = [];
+    public $belongsTo = [
+        'user' => ['\Backend\Models\User'],
+    ];
     public $belongsToMany = [];
     public $morphTo = [];
     public $morphOne = [];
     public $morphMany = [];
     public $attachOne = [];
     public $attachMany = [];
+
+    /**
+     * GETTER
+     */
 
     public function getDateDiffAttribute()
     {
@@ -81,5 +87,31 @@ class JobList extends Model
             return null;
         }
         return $this->started_at->diffInSeconds($this->end_at);
+    }
+
+    /**
+     * Scopes
+     */
+    public function scopeOnlyUser($query, $filter = true)
+    {
+        $user = \BackendAuth::getUser();
+        if (!$user || !$filter) {
+            return $query;
+        }
+        return $query->where('user_id', $user->id);
+
+    }
+    public function scopeState($query, $state)
+    {
+        if ($state == 'end') {
+            return $query->where('state', 'Terminé');
+        }
+        if ($state == 'error') {
+            return $query->where('state', 'Erreur');
+        }
+        if ($state == 'run') {
+            return $query->whereIn('state', ['En cours', 'Attente']);
+        }
+
     }
 }

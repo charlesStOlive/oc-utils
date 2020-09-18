@@ -9,6 +9,10 @@ columns:
     name:
         label: waka.utils::lang.job_list.name
         searchable: true
+    user_name:
+        label: waka.utils::lang.job_list.user_name
+        relation: user
+        select: login
     state:
         label: waka.utils::lang.job_list.state
         searchable: true

@@ -1,0 +1,22 @@
+.counter_run {
+    background-color: green!important;
+}
+.counter_end {
+    background-color: grey!important;
+}
+.counter_error {
+    background-color: red!important;
+}
+.icone_pause {
+    color: #2c2c2C!important;
+}
+.hide_btn {
+    display: none!important;
+}
+
+.rotate_counter {
+    animation: rotate 3s linear infinite!important; 
+}
+@keyframes rotate{
+    to{ transform: rotate(360deg); }
+  }
