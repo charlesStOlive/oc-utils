@@ -1,7 +1,6 @@
 <?php namespace Waka\Utils;
 
 use Backend;
-use Block;
 use Event;
 use Lang;
 use System\Classes\PluginBase;
@@ -97,7 +96,7 @@ class Plugin extends PluginBase
     public function boot()
     {
         $pluginUrl = url('/plugins/waka/utils');
-        Block::append('body', '<script type="text/javascript" src="' . $pluginUrl . '/assets/js/backendnotifications.js"></script>');
+        \Block::append('body', '<script type="text/javascript" src="' . $pluginUrl . '/assets/js/backendnotifications.js"></script>');
 
         /**
          * POur le copier coller

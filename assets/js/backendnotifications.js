@@ -27,17 +27,14 @@
         const icone = counterElement.parentElement.querySelector("a span");
         const btn_task = counterElement.parentElement;
         // $allError = run == false && error == false;
-        // console.log($allError)
         // if ($allError) {
-        //   console.log("on cache")
-        //   console.log(btn_task)
         //   btn_task.classList.add('hide_btn');
         // } else {
         //   btn_task.classList.remove('hide_btn');
         // }
 
         if (run) {
-          icone.classList.add('rotate_counter');
+          //icone.classList.add('rotate_counter');
           counterElement.innerHTML = run ? run : '';
           counterElement.classList.add('counter_run');
           counterElement.classList.remove('empty');
@@ -46,20 +43,20 @@
         } else if (error) {
           counterElement.classList.add('counter_error');
           counterElement.innerHTML = error ? error : '';
-          icone.classList.remove('rotate_counter');
+          //icone.classList.remove('rotate_counter');
           counterElement.classList.remove('empty');
           counterElement.classList.remove('counter_run');
           counterElement.classList.remove('counter_end');
         } else if (end) {
           counterElement.classList.add('counter_end');
           counterElement.innerHTML = end ? end : '';
-          icone.classList.remove('rotate_counter');
+          //icone.classList.remove('rotate_counter');
           counterElement.classList.remove('empty');
           counterElement.classList.remove('counter_error');
           counterElement.classList.remove('counter_run');
         } else {
           counterElement.classList.add('empty');
-          icone.classList.remove('rotate_counter');
+          //icone.classList.remove('rotate_counter');
           counterElement.classList.remove('counter_error');
           counterElement.classList.remove('counter_end');
           counterElement.classList.remove('counter_run');
