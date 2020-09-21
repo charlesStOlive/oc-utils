@@ -7,11 +7,11 @@
 
     function loadCount() {
         return fetch('/api/utils/', {
-                header: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
+            header: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        })
             .then((res) => {
                 if (res.ok) {
                     return res.json();
@@ -40,9 +40,8 @@
                     counterElement.innerHTML = run ? run : '';
                     counterElement.classList.add('counter_run');
                     counterElement.classList.remove('empty');
-                    counterElement.classList.remove('counter_end');
-                    counterElement.classList.remove('counter_error');
                 } else {
+                    counterElement.classList.add('empty');
                     counterElement.classList.remove('counter_run');
                 }
                 if ((error > 0) || (end > 0)) {
@@ -63,6 +62,15 @@
                         bot.classList.add('counter_end');
                         bot.classList.remove('counter_error');
                         bot.innerHTML = end;
+                    }
+                } else {
+                    let bot = document.getElementById('counter_bot');
+                    //console.log(bot)
+                    if (bot) {
+                        //console.log("il y a pas de bot")
+                        bot.classList.add('empty');
+                        bot.classList.remove('counter_run');
+                        bot.classList.remove('counter_error');
                     }
                 }
 
