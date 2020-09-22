@@ -95,14 +95,18 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
-        $pluginUrl = url('/plugins/waka/utils');
-        \Block::append('body', '<script type="text/javascript" src="' . $pluginUrl . '/assets/js/backendnotifications.js"></script>');
 
         /**
          * POur le copier coller
          */
         Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
             $controller->addCss('/plugins/waka/utils/assets/css/notification.css');
+            $user = \BackendAuth::getUser();
+            if ($user->hasAccess('waka.jobList.*')) {
+                $pluginUrl = url('/plugins/waka/utils');
+                \Block::append('body', '<script type="text/javascript" src="' . $pluginUrl . '/assets/js/backendnotifications.js"></script>');
+            }
+
         });
 
         Event::listen('backend.down.rapidLinks', function ($controller) {
@@ -272,7 +276,7 @@ class Plugin extends PluginBase
                 'url' => Backend::url('waka/utils/joblists'),
                 'order' => 1,
                 'counter' => 10,
-                'permissions' => ['waka.jobList.*'],
+                'permissions' => ['waka.jobList.admin'],
             ],
         ];
     }
