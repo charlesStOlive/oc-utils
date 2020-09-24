@@ -4,7 +4,8 @@ return [
     'menu' => [
         'data_sources' => 'Sources des données',
         'data_sources_description' => 'Gerer les sources et leur relation pour publisher, mailing, etc.',
-        'settings_category' => 'Wakaari options ',
+        'settings_category' => 'Configuration ',
+        'settings_category_model' => 'Gestion des Modèles',
         'job_list' => "Liste des taches",
         'job_list_s' => "Taches",
         'job_list_description' => "Liste des taches de l'application",
@@ -123,6 +124,16 @@ return [
         "scope_relation_com" => "Si vous recherchez chez un parent vous devez indiquer la relation avec le parent",
         "userRoles" => "Role des utilisateurs",
         'users' => 'Utilisateurs',
+    ],
+    'settings' => [
+        "activate_dashboard" => "Activer le bouton du Dashboard",
+        "activate_user_btn" => "Activer le bouton des utilisateurs",
+        "activate_cms" => "Activer le bouton du CMS",
+        "activate_builder" => "Activer le bouton du Builder",
+        "activate_task_btn" => "Activer le bouton dynamiqe de taches",
+        "label" => "Utilitaires",
+        "description" => "Cachez des élements",
+
     ],
 
 ];

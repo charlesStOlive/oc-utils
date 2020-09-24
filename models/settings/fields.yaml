@@ -1,0 +1,16 @@
+fields:
+  activate_dashboard:
+        label: waka.utils::lang.settings.activate_dashboard
+        type: switch
+  activate_cms:
+        label: waka.utils::lang.settings.activate_cms
+        type: switch
+  activate_builder:
+        label: waka.utils::lang.settings.activate_builder
+        type: switch
+  activate_task_btn:
+        label: waka.utils::lang.settings.activate_task_btn
+        type: switch
+  activate_user_btn:
+        label: waka.utils::lang.settings.activate_task_btn
+        type: switch

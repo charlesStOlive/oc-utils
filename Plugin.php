@@ -7,6 +7,7 @@ use System\Classes\PluginBase;
 use View;
 use Waka\Utils\Columns\BtnActions;
 use Waka\Utils\Columns\CalculColumn;
+use Waka\Utils\Models\Settings;
 
 /**
  * Utils Plugin Information File
@@ -102,11 +103,30 @@ class Plugin extends PluginBase
         Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
             $controller->addCss('/plugins/waka/utils/assets/css/notification.css');
             $user = \BackendAuth::getUser();
-            if ($user->hasAccess('waka.jobList.*')) {
+            if ($user->hasAccess('waka.jobList.*') && Settings::get('activate_task_btn')) {
                 $pluginUrl = url('/plugins/waka/utils');
                 \Block::append('body', '<script type="text/javascript" src="' . $pluginUrl . '/assets/js/backendnotifications.js"></script>');
             }
 
+        });
+
+        \Event::listen('backend.menu.extendItems', function ($navigationManager) {
+            trace_log($navigationManager->getActiveMainMenuItem());
+            if (!Settings::get('activate_dashboard')) {
+                $navigationManager->removeMainMenuItem('October.Backend', 'dashboard');
+            }
+            if (!Settings::get('activate_cms')) {
+                $navigationManager->removeMainMenuItem('October.Cms', 'cms');
+            }
+            if (!Settings::get('activate_builder')) {
+                $navigationManager->removeMainMenuItem('RainLab.Builder', 'builder');
+            }
+            if (!Settings::get('activate_user_btn')) {
+                $navigationManager->removeMainMenuItem('RainLab.User', 'user');
+            }
+            if (!Settings::get('activate_builder')) {
+                $navigationManager->removeMainMenuItem('RainLab.Builder', 'builder');
+            }
         });
 
         Event::listen('backend.down.rapidLinks', function ($controller) {
@@ -234,7 +254,7 @@ class Plugin extends PluginBase
     {
         $showNotification = true;
 
-        if (!$showNotification) {
+        if (!Settings::get('activate_task_btn')) {
             return [];
         }
 
@@ -259,13 +279,22 @@ class Plugin extends PluginBase
     public function registerSettings()
     {
         return [
+            'utils_settings' => [
+                'label' => Lang::get('waka.utils::lang.settings.label'),
+                'description' => Lang::get('waka.utils::lang.settings.description'),
+                'category' => Lang::get('waka.utils::lang.menu.settings_category'),
+                'icon' => 'icon-wrench',
+                'class' => 'Waka\Utils\Models\Settings',
+                'order' => 150,
+                'permissions' => ['waka.crsm.admin'],
+            ],
             'data_sources' => [
                 'label' => Lang::get('waka.utils::lang.menu.data_sources'),
                 'description' => Lang::get('waka.utils::lang.menu.data_sources_description'),
                 'category' => Lang::get('waka.utils::lang.menu.settings_category'),
                 'icon' => 'icon-paper-plane',
                 'url' => Backend::url('waka/utils/datasources'),
-                'order' => 1,
+                'order' => 100,
                 'permissions' => ['waka.datasource.admin'],
             ],
             'joblists' => [
@@ -274,10 +303,11 @@ class Plugin extends PluginBase
                 'category' => Lang::get('waka.utils::lang.menu.settings_category'),
                 'icon' => 'icon-tasks',
                 'url' => Backend::url('waka/utils/joblists'),
-                'order' => 1,
+                'order' => 170,
                 'counter' => 10,
                 'permissions' => ['waka.jobList.admin'],
             ],
+
         ];
     }
 }
