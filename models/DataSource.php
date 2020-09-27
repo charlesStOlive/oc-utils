@@ -74,6 +74,13 @@ class DataSource extends Model
     public $attachOne = [];
     public $attachMany = [];
 
+    public function beforeSave()
+    {
+        $ds = new \Waka\Utils\Classes\DataSource($this->id, 'id');
+        $ds->instanciateModel();
+        trace_log($ds->getValues());
+    }
+
     public function getAttributeNameAttribute()
     {
         return !$this->name_from ? 'name' : $this->name_from;
