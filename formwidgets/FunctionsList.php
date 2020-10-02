@@ -1,6 +1,7 @@
 <?php namespace Waka\Utils\FormWidgets;
 
 use Backend\Classes\FormWidgetBase;
+use Waka\Utils\Classes\DataSource;
 
 /**
  * FunctionsList Form Widget
@@ -31,6 +32,10 @@ class FunctionsList extends FormWidgetBase
         $this->prepareVars();
         return $this->makePartial('functionslist');
     }
+    public function getDataSource()
+    {
+        return new DataSource($this->model->data_source_id, 'id');
+    }
 
     /**
      * Prepares the form widget view data
@@ -38,7 +43,8 @@ class FunctionsList extends FormWidgetBase
     public function prepareVars()
     {
         $noFunction = true;
-        $functionClass = $this->model->data_source->getFunctionClass();
+        $ds = $this->getDataSource();
+        $functionClass = $ds->getFunctionClass();
         if ($functionClass) {
             $noFunction = false;
         }
@@ -72,7 +78,7 @@ class FunctionsList extends FormWidgetBase
     public function onShowFunctions()
     {
         //recuperation de la classe function du data_source
-        $fnc_class = $this->model->data_source->getFunctionClass();
+        $fnc_class = $this->getDataSource()->editFunctions;
 
         //liste des fonctions de la classe
         $this->vars['functionList'] = $fnc_class->getFunctionsList();
@@ -87,7 +93,7 @@ class FunctionsList extends FormWidgetBase
         $functionCode = post('functionCode');
 
         //recuperation de la classe function du data_source et des attributs de la fonction
-        $fnc_class = $this->model->data_source->getFunctionClass();
+        $fnc_class = $this->getDataSource()->editFunctions;
         $attributes = $fnc_class->getFunctionAttribute($functionCode);
 
         $functionList = $fnc_class->getFunctionsList();
@@ -168,7 +174,7 @@ class FunctionsList extends FormWidgetBase
         $datas = new \October\Rain\Support\Collection($modelValues);
         $data = $datas->where('collectionCode', $collectionCode)->first();
 
-        $fnc_class = $this->model->data_source->getFunctionClass();
+        $fnc_class = $this->getDataSource()->editFunctions;
         $attributes = $fnc_class->getFunctionAttribute($functionCode);
 
         //trace_log($data);

@@ -15,7 +15,7 @@ class DataSource
 
     public $name;
     public $id;
-    public $modelClass;
+    public $class;
     private $config;
     public $relations;
     public $otherRelations;
@@ -24,13 +24,17 @@ class DataSource
     public $aggFunctions;
     public $modelId;
     public $model;
+    public $testId;
+    public $modelName;
 
     public function __construct($id = null, $type_id = "name")
     {
         $globalConfig = new Collection($this->getSrConfig());
         $config = $globalConfig->where($type_id, $id)->first();
-        $this->modelClass = $config['model'] ?? false;
-        if (!$this->modelClass) {
+        $this->class = $config['class'] ?? false;
+        trace_log($id);
+        trace_log($type_id);
+        if (!$this->class) {
             throw new ApplicationException('Erreur data source model');
         }
         $this->config = $config;
@@ -40,6 +44,11 @@ class DataSource
         $this->otherRelations = $config['otherRelations'] ?? false;
         //
         $this->emails = $config['emails'] ?? false;
+        $this->name = $config['name'] ?? false;
+        //
+        $this->class = $config['class'] ?? false;
+        //
+        $this->testId = $config['test_id'] ?? false;
         //
         $this->editFunctions = $config['editFunctions'] ?? null;
         $this->aggFunctions = $config['aggFunctions'] ?? false;
@@ -50,10 +59,19 @@ class DataSource
     public function instanciateModel($id = null)
     {
         if ($id) {
-            $this->model = $this->modelClass::find($id);
+            $this->model = $this->class::find($id);
+
+        } else if ($this->testId) {
+            $this->model = $this->class::find($this->testId);
         } else {
-            $this->model = $this->modelClass::first();
+            $this->model = $this->class::first();
         }
+        $this->modelName = $this->model;
+    }
+    public function getModel($id)
+    {
+        $this->instanciateModel($modelId);
+        return $this->model;
     }
 
     /**
@@ -132,9 +150,9 @@ class DataSource
         $constructApi = null;
         $embedRelation = $this->getKeyAndEmbed();
         if ($embedRelation) {
-            $constructApi = $this->modelClass::with($embedRelation)->find($this->model->id);
+            $constructApi = $this->class::with($embedRelation)->find($this->model->id);
         } else {
-            $constructApi = $this->modelClass::find($this->model->id);
+            $constructApi = $this->class::find($this->model->id);
         }
         return $constructApi;
     }
@@ -167,29 +185,59 @@ class DataSource
     }
 
     /**
-     * Cette fonction utulise le trait CloudisKey
+     * FONCTIONS DE RECUPERATION DES IMAGES
+     * les fonctions utulisent le trait CloudisKey
      */
-    public function getAllPicturesKey($id = null)
+    public function getAllPicturesKey($modelId = null)
     {
-        //Recherche du model
         $this->instanciateModel($modelId);
-
-        $gi = new \Waka\Cloudis\Classes\GroupedImages($this->model);
-        return $gi->getLists($this);
-
+        $collection = $this->getAllDataSourceImage();
+        if ($collection) {
+            return $collection->lists('name', 'key');
+        } else {
+            return null;
+        }
     }
 
-    public function getOnePictureKey($key, $id = null)
+    public function getOnePictureKey($key, $modelId = null)
     {
-        //Recherche du model
         $this->instanciateModel($modelId);
-
-        $gi = new \Waka\Cloudis\Classes\GroupedImages($this->model);
-        return $gi->getOne($this, $key);
-
+        $collection = $this->getAllDataSourceImage();
+        return $collection->where('key', $key)->first();
     }
 
-    public function getPicturesUrl($id, $dataImages)
+    private function getAllDataSourceImage()
+    {
+        $allImages = new Collection();
+
+        $listsImages = $this->model->getCloudisList();
+        $listMontages = $this->model->getCloudiMontagesList();
+        if ($listsImages) {
+            $allImages = $allImages->merge($listsImages);
+        }
+        if ($listMontages) {
+            $allImages = $allImages->merge($listMontages);
+        }
+        $relationWithImages = new Collection($this->relations);
+        if ($relationWithImages->count()) {
+            $relationWithImages = $relationWithImages->where('image', true)->keys();
+            foreach ($relationWithImages as $relation) {
+                $subModel = $this->getStringModelRelation($this->model, $relation);
+                $listsImages = $subModel->getCloudisList($relation);
+                $listMontages = $subModel->getCloudiMontagesList($relation);
+                if ($listsImages) {
+                    $allImages = $allImages->merge($listsImages);
+                }
+                if ($listMontages) {
+                    $allImages = $allImages->merge($listMontages);
+                }
+            }
+        }
+
+        return $allImages;
+    }
+
+    public function getPicturesUrl($modelId, $dataImages)
     {
         if (!$dataImages) {
             return;
@@ -244,6 +292,148 @@ class DataSource
     }
 
     /**
+     * Utils for EMAIL ---------------------------------------------------
+     */
+
+    /**
+     * Return model
+     */
+    // public function getDataFromContacts($type)
+    // {
+    //     $array = $this->emails;
+    //     if (!$array) {
+    //         throw new \ApplicationException("Les contacts ne sont pas configurés.");
+    //     }
+    //     $fields = $array[$type] ?? null;
+
+    //     if (!$fields['key']) {
+    //         trace_log('key est vide');
+    //         return;
+    //     }
+
+    //     return [
+    //         'key' => $fields['key'] ?? null,
+    //         'relation' => $fields['relation'] ?? null,
+    //     ];
+    // }
+    /**
+     * Fonctions d'identifications des contacts, utilises dans les popup de wakamail
+     * getstringrelation est dans le trait StringRelation
+     */
+    public function getContact($type, $modelId = null)
+    {
+        $this->instanciateModel($modelId);
+        $emailData = $this->emails[$type] ?? null;
+        if (!$emailData) {
+            throw new \ApplicationException("Les contacts ne sont pas correctement configurés.");
+        }
+
+        // trace_log("getContact emaildata | ");
+        // trace_log($emailData);
+        // trace_log($this->emails);
+        // trace_log($type);
+
+        if (!$emailData) {
+            return;
+        }
+        $relation = $emailData['relation'] ?? null;
+        $contacts;
+        if ($relation) {
+            $contacts = $this->getStringRelation($this->model, $relation);
+        } else {
+            $contacts = $this->model;
+        }
+
+        // trace_log($this->model->name);
+        // trace_log($emailData['relations']);
+
+        // trace_log("liste des relations pour contact");
+        // trace_log($contacts->toArray());
+        // trace_log($contacts['name']);
+        // trace_log(get_class($contacts));
+
+        $results = [];
+
+        if (!$contacts) {
+            return;
+        }
+        //On cherche si on a un l'email via la key
+        $email = $contacts[$emailData['key']] ?? false;
+
+        if ($email) {
+            array_push($results, $email);
+        } else {
+            foreach ($contacts as $contact) {
+                $email = $contact[$emailData['key']] ?? false;
+                if ($email) {
+                    array_push($results, $email);
+                }
+            }
+        }
+        trace_log($results);
+        return $results;
+
+    }
+
+    /**
+     * UTILS FOR FUNCTIONS ------------------------------------------------------------
+     */
+
+    /**
+     * retourne la liste des fonctions dans la classe de fonction liée à se data source.
+     * Utiise par le formwifget functionlist et les wakamail, datasource, aggregator
+     */
+    public function getFunctionsList()
+    {
+        if (!$this->editFunctions) {
+            throw new \ApplicationException("Il manque le chemin de la classe fonction dans DataSource pour ce model");
+        }
+        $fn = new $this->editFunctions;
+        return $fn->getFunctionsList();
+    }
+    public function getFunctionsOutput($fnc)
+    {
+        if (!$this->editFunctions) {
+            throw new \ApplicationException("Il manque le chemin de la classe fonction dans DataSource pour ce model");
+        }
+        $fn = new $this->editFunctions;
+        return $fn->getFunctionsOutput($fnc);
+    }
+    /**
+     * retourne simplement le function class. mis en fonction pour ajouter l'application exeption sans nuire à la lisibitilé de la fonction getFunctionsCollections
+     */
+    public function getFunctionClass()
+    {
+        if (!$this->editFunctions) {
+            return null;
+        }
+        return new $this->editFunctions;
+    }
+    /**
+     * Retourne les valeurs d'une fonction du model de se datasource.
+     * templatemodel = wakamail ou document ou aggregator
+     * id est l'id du model de datasource
+     */
+
+    public function getFunctionsCollections($modelId, $model_functions)
+    {
+        if (!$model_functions) {
+            return;
+        }
+        $this->instanciateModel($modelId);
+
+        $collection = [];
+        $fnc = $this->getFunctionClass();
+        $fnc->setModel($this->model);
+
+        foreach ($model_functions as $item) {
+            $itemFnc = $item['functionCode'];
+            $collection[$item['collectionCode']] = $fnc->{$itemFnc}($item);
+        }
+        return $collection;
+    }
+
+    /**
      * GLOBAL
      */
 
@@ -254,7 +444,6 @@ class DataSource
         if ($dataSource) {
             return Yaml::parseFile(plugins_path() . $dataSource);
         } else {
-            trace_log("datasource pas trouve");
             return Yaml::parseFile(plugins_path() . '/waka/crsm/config/datasources.yaml');
         }
 

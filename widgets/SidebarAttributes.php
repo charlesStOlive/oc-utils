@@ -1,6 +1,7 @@
 <?php namespace Waka\Utils\Widgets;
 
 use Backend\Classes\WidgetBase;
+use Waka\Utils\Classes\DataSource;
 use \October\Rain\Support\Collection;
 
 class SidebarAttributes extends WidgetBase
@@ -34,7 +35,7 @@ class SidebarAttributes extends WidgetBase
 
     public function render()
     {
-        $this->dataSource = $this->model->data_source;
+        $this->dataSource = new DataSource($this->model->data_source_id, 'id');
 
         $this->vars['text_info'] = $this->text_info;
         $this->vars['attributesArray'] = $this->cleanModelValues($this->dataSource->getValues());
@@ -56,7 +57,7 @@ class SidebarAttributes extends WidgetBase
         $attributesCollection = new Collection($array);
 
         $arrays = [];
-        $baseModelName = snake_case($this->model->data_source->model);
+        $baseModelName = snake_case($this->dataSource->name);
 
         if ($this->separate_fields) {
             foreach ($this->separate_fields as $field) {
@@ -145,13 +146,13 @@ class SidebarAttributes extends WidgetBase
             return [];
         }
         $result = [];
-        $modelTest = $this->model->data_source->getTargetModel();
+        //$modelTest = $this->model->data_source->getTargetModel();
         // trace_log($modelTest->toArray());
         // trace_log($this->model->toArray());
         foreach ($fncs as $fnc) {
             $code = $fnc['collectionCode'];
 
-            $outputs = $this->model->data_source->getFunctionsOutput($fnc['functionCode']);
+            $outputs = $this->dataSource->getFunctionsOutput($fnc['functionCode']);
             //trace_log($outputs);
             if ($outputs) {
 
@@ -162,7 +163,7 @@ class SidebarAttributes extends WidgetBase
                         // trace_log("----" . $code . "----");
                         // trace_log($submodelKey);
                         // trace_log($submodelValue);
-                        $modelFinal = $this->getStringRequestRelation($modelTest, $submodelKey);
+                        $modelFinal = $this->getStringRequestRelation($this->dataSource->model, $submodelKey);
 
                         // //trace_log($modelFinal->with($submodelValue)->get()->toArray());
                         $dataApi = $modelFinal->with($submodelValue)->get()->first();
