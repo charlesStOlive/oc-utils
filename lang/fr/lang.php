@@ -47,6 +47,8 @@ return [
         'is_ex' => 'Exemple',
     ],
     'datasource' => [
+        'title' => 'Source de données',
+        'placeholder' => 'Choisissez une source',
         'tab_path' => "Chemins des Classes",
         'tab_contact' => "Liaison contacts",
         'tab_relation' => "Relations",

@@ -1,6 +1,7 @@
 <?php namespace Waka\Utils\Widgets;
 
 use Backend\Classes\WidgetBase;
+use Waka\Utils\Classes\DataSource;
 
 class SidebarInfo extends WidgetBase
 {
@@ -27,8 +28,11 @@ class SidebarInfo extends WidgetBase
 
         //$model = get_class($controllerModel)::find($modelId);
 
-        $dataSource = \Waka\Utils\Models\DataSource::where('model', '=', $this->config->model)->first();
-        $dotedValues = $dataSource->getDotedValues($modelId);
+        $ds = new DataSource($this->config->model, 'name');
+
+        //$dataSource = \Waka\Utils\Models\DataSource::where('model', '=', $this->config->model)->first();
+        $dotedValues = $ds->getSimpleDotedValues($modelId);
+        trace_log($dotedValues);
 
         //$returnFields = new ParseFields();
         //$this->fields = $returnFields->parseFields($model, $this->config->fields);
@@ -45,13 +49,13 @@ class SidebarInfo extends WidgetBase
             $label = $field['label'] ?? null;
             $labelFrom = $field['labelFrom'] ?? null;
             if ($labelFrom) {
-                $label = $dotedValues[$this->config->model . '.' . $labelFrom] ?? "inconnu";
+                $label = $dotedValues[$labelFrom] ?? "inconnu";
             }
 
             $value = null;
             $fieldValue = $field['value'] ?? null;
             if ($fieldValue) {
-                $value = $dotedValues[$this->config->model . '.' . $fieldValue] ?? "inconnu";
+                $value = $dotedValues[$fieldValue] ?? "inconnu";
             }
 
             $cssClass = $field['cssClass'] ?? null;

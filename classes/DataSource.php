@@ -68,7 +68,7 @@ class DataSource
         }
         $this->modelName = $this->model;
     }
-    public function getModel($id)
+    public function getModel($modelId)
     {
         $this->instanciateModel($modelId);
         return $this->model;
@@ -183,6 +183,11 @@ class DataSource
         $api[snake_case($this->name)] = $constructApi;
         return array_dot($api);
     }
+    public function getSimpleDotedValues($modelId = null)
+    {
+        $constructApi = $this->getValues($modelId);
+        return array_dot($constructApi);
+    }
 
     /**
      * FONCTIONS DE RECUPERATION DES IMAGES
@@ -209,9 +214,15 @@ class DataSource
     private function getAllDataSourceImage()
     {
         $allImages = new Collection();
+        $listsImages = null;
+        $listMontages = null;
 
-        $listsImages = $this->model->getCloudisList();
-        $listMontages = $this->model->getCloudiMontagesList();
+        //si il y a le trait cloudi dans la classe il y a des images à chercher
+        if (method_exists($this->model, 'getCloudisList')) {
+            $listsImages = $this->model->getCloudisList();
+            $listMontages = $this->model->getCloudiMontagesList();
+        }
+
         if ($listsImages) {
             $allImages = $allImages->merge($listsImages);
         }
@@ -293,30 +304,6 @@ class DataSource
 
     /**
      * Utils for EMAIL ---------------------------------------------------
-     */
-
-    /**
-     * Return model
-     */
-    // public function getDataFromContacts($type)
-    // {
-    //     $array = $this->emails;
-    //     if (!$array) {
-    //         throw new \ApplicationException("Les contacts ne sont pas configurés.");
-    //     }
-    //     $fields = $array[$type] ?? null;
-
-    //     if (!$fields['key']) {
-    //         trace_log('key est vide');
-    //         return;
-    //     }
-
-    //     return [
-    //         'key' => $fields['key'] ?? null,
-    //         'relation' => $fields['relation'] ?? null,
-    //     ];
-    // }
-    /**
      * Fonctions d'identifications des contacts, utilises dans les popup de wakamail
      * getstringrelation est dans le trait StringRelation
      */

@@ -78,7 +78,8 @@ class FunctionsList extends FormWidgetBase
     public function onShowFunctions()
     {
         //recuperation de la classe function du data_source
-        $fnc_class = $this->getDataSource()->editFunctions;
+        $ds = $this->getDataSource();
+        $fnc_class = new $ds->editFunctions;
 
         //liste des fonctions de la classe
         $this->vars['functionList'] = $fnc_class->getFunctionsList();
@@ -93,7 +94,8 @@ class FunctionsList extends FormWidgetBase
         $functionCode = post('functionCode');
 
         //recuperation de la classe function du data_source et des attributs de la fonction
-        $fnc_class = $this->getDataSource()->editFunctions;
+        $ds = $this->getDataSource();
+        $fnc_class = new $ds->editFunctions;
         $attributes = $fnc_class->getFunctionAttribute($functionCode);
 
         $functionList = $fnc_class->getFunctionsList();
@@ -174,7 +176,8 @@ class FunctionsList extends FormWidgetBase
         $datas = new \October\Rain\Support\Collection($modelValues);
         $data = $datas->where('collectionCode', $collectionCode)->first();
 
-        $fnc_class = $this->getDataSource()->editFunctions;
+        $ds = $this->getDataSource();
+        $fnc_class = new $ds->editFunctions;
         $attributes = $fnc_class->getFunctionAttribute($functionCode);
 
         //trace_log($data);

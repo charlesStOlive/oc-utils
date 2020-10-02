@@ -146,7 +146,6 @@ class SidebarAttributes extends WidgetBase
             return [];
         }
         $result = [];
-        //$modelTest = $this->model->data_source->getTargetModel();
         // trace_log($modelTest->toArray());
         // trace_log($this->model->toArray());
         foreach ($fncs as $fnc) {
