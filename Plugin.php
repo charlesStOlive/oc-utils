@@ -5,6 +5,7 @@ use Event;
 use Lang;
 use System\Classes\PluginBase;
 use View;
+use Waka\Utils\Classes\DataSourceList;
 use Waka\Utils\Columns\BtnActions;
 use Waka\Utils\Columns\CalculColumn;
 use Waka\Utils\Models\Settings;
@@ -74,6 +75,7 @@ class Plugin extends PluginBase
             'waka-calcul' => [CalculColumn::class, 'render'],
             'euro' => function ($value) {return number_format($value, 2, ',', ' ') . ' €';},
             'euro-int' => function ($value) {return number_format($value, 0, ',', ' ') . ' €';},
+            'datasource' => function ($value) {return DataSourceList::getValue($value);},
         ];
     }
 
@@ -111,7 +113,7 @@ class Plugin extends PluginBase
         });
 
         \Event::listen('backend.menu.extendItems', function ($navigationManager) {
-            trace_log($navigationManager->getActiveMainMenuItem());
+            //trace_log($navigationManager->getActiveMainMenuItem());
             if (!Settings::get('activate_dashboard')) {
                 $navigationManager->removeMainMenuItem('October.Backend', 'dashboard');
             }
@@ -287,15 +289,6 @@ class Plugin extends PluginBase
                 'class' => 'Waka\Utils\Models\Settings',
                 'order' => 150,
                 'permissions' => ['waka.crsm.admin'],
-            ],
-            'data_sources' => [
-                'label' => Lang::get('waka.utils::lang.menu.data_sources'),
-                'description' => Lang::get('waka.utils::lang.menu.data_sources_description'),
-                'category' => Lang::get('waka.utils::lang.menu.settings_category'),
-                'icon' => 'icon-paper-plane',
-                'url' => Backend::url('waka/utils/datasources'),
-                'order' => 100,
-                'permissions' => ['waka.datasource.admin'],
             ],
             'joblists' => [
                 'label' => Lang::get('waka.utils::lang.menu.job_list'),

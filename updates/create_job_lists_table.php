@@ -13,6 +13,7 @@ class CreateJobListsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('state')->nullable();
+            $table->text('user_id')->nullable();
             $table->integer('attempts')->nullable();
             $table->text('payload')->nullable();
             $table->text('errors')->nullable();
