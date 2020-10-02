@@ -32,7 +32,7 @@ class SidebarInfo extends WidgetBase
 
         //$dataSource = \Waka\Utils\Models\DataSource::where('model', '=', $this->config->model)->first();
         $dotedValues = $ds->getSimpleDotedValues($modelId);
-        trace_log($dotedValues);
+        //trace_log($dotedValues);
 
         //$returnFields = new ParseFields();
         //$this->fields = $returnFields->parseFields($model, $this->config->fields);

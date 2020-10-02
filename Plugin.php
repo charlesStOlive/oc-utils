@@ -113,7 +113,7 @@ class Plugin extends PluginBase
         });
 
         \Event::listen('backend.menu.extendItems', function ($navigationManager) {
-            trace_log($navigationManager->getActiveMainMenuItem());
+            //trace_log($navigationManager->getActiveMainMenuItem());
             if (!Settings::get('activate_dashboard')) {
                 $navigationManager->removeMainMenuItem('October.Backend', 'dashboard');
             }

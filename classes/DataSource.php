@@ -26,14 +26,15 @@ class DataSource
     public $model;
     public $testId;
     public $modelName;
+    public $controller;
 
     public function __construct($id = null, $type_id = "name")
     {
         $globalConfig = new Collection($this->getSrConfig());
         $config = $globalConfig->where($type_id, $id)->first();
         $this->class = $config['class'] ?? false;
-        trace_log($id);
-        trace_log($type_id);
+        //trace_log($id);
+        //trace_log($type_id);
         if (!$this->class) {
             throw new ApplicationException('Erreur data source model');
         }
@@ -49,6 +50,7 @@ class DataSource
         $this->class = $config['class'] ?? false;
         //
         $this->testId = $config['test_id'] ?? false;
+        $this->controller = $config['controller'] ?? false;
         //
         $this->editFunctions = $config['editFunctions'] ?? null;
         $this->aggFunctions = $config['aggFunctions'] ?? false;
@@ -357,7 +359,7 @@ class DataSource
                 }
             }
         }
-        trace_log($results);
+        //trace_log($results);
         return $results;
 
     }
@@ -427,7 +429,7 @@ class DataSource
     public function getSrConfig()
     {
         $dataSource = Config::get('waka.crsm::data_source.src');
-        trace_log($dataSource);
+        //trace_log($dataSource);
         if ($dataSource) {
             return Yaml::parseFile(plugins_path() . $dataSource);
         } else {

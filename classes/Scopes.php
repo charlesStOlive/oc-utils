@@ -135,7 +135,7 @@ class Scopes
             return false;
         }
         if (!$model) {
-            trace_log("Erreur sur le modèle");
+            //trace_log("Erreur sur le modèle");
         }
 
         if (in_array($model[$field], $values)) {
