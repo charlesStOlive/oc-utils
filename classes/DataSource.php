@@ -102,14 +102,20 @@ class DataSource
         return $optionsList;
     }
 
-    public function getPartialIndexOptions($productorModel)
+    public function getPartialIndexOptions($productorModel, $relation = false)
     {
 
-        $documents = $productorModel::where('data_source_id', $this->id);
+        $documents = $productorModel::where('data_source_id', $this->id)->get();
+
+        if ($relation) {
+            $documents = $documents->where('relation', '<>', null);
+        } else {
+            $documents = $documents->where('relation', '=', null);
+        }
 
         $optionsList = [];
 
-        foreach ($documents->get() as $document) {
+        foreach ($documents as $document) {
             if ($document->is_scope) {
                 //Si il y a des limites
                 $scope = new \Waka\Utils\Classes\Scopes($document);
