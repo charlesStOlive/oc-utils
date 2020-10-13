@@ -13,7 +13,10 @@ class DataSource
     use \Waka\Utils\Classes\Traits\StringRelation;
     use \Waka\Cloudis\Classes\Traits\CloudisKey;
 
+    public $label;
     public $name;
+    public $author;
+    public $plugin;
     public $id;
     public $class;
     private $config;
@@ -32,29 +35,34 @@ class DataSource
     {
         $globalConfig = new Collection($this->getSrConfig());
         $config = $globalConfig->where($type_id, $id)->first();
-        $this->class = $config['class'] ?? false;
-        //trace_log($id);
-        //trace_log($type_id);
+        //
+        $this->config = $config;
+        //
+        $this->author = $config['author'] ?? null;
+        $this->name = $config['name'] ?? null;
+        $this->plugin = $config['plugin'] ?? null;
+        $this->class = $config['class'] ?? null;
         if (!$this->class) {
             throw new ApplicationException('Erreur data source model');
         }
-        $this->config = $config;
         $this->id = $config['id'];
         //
+        $label = $config['label'] ?? null;
+        $this->label = $label ? $label : $this->name;
+        //
+        $controller  = $config['controller'] ?? null;
+        $this->controller = $controller ? $controller : strtolower($this->author) . '/' . strtolower($this->plugin) . '/' . str_plural($this->name);
+        //
         $this->relations = $config['relations'] ?? null;
-        $this->otherRelations = $config['otherRelations'] ?? false;
+        $this->otherRelations = $config['otherRelations'] ?? null;
         //
-        $this->emails = $config['emails'] ?? false;
-        $this->name = $config['name'] ?? false;
+        $this->emails = $config['emails'] ?? null;
         //
-        $this->class = $config['class'] ?? false;
-        //
-        $this->testId = $config['test_id'] ?? false;
-        $this->controller = $config['controller'] ?? false;
+        $this->testId = $config['test_id'] ?? null;
         //
         $this->editFunctions = $config['editFunctions'] ?? null;
         $this->aggFunctions = $config['aggFunctions'] ?? false;
-
+        //
         $config = null;
     }
 
