@@ -30,6 +30,7 @@ class DataSource
     public $testId;
     public $modelName;
     public $controller;
+    public $aggs;
 
     public function __construct($id = null, $type_id = "name")
     {
@@ -40,6 +41,7 @@ class DataSource
         //
         $this->author = $config['author'] ?? null;
         $this->name = $config['name'] ?? null;
+        $this->lowerName = strtolower($this->name);
         $this->plugin = $config['plugin'] ?? null;
         $this->class = $config['class'] ?? null;
         if (!$this->class) {
@@ -59,6 +61,8 @@ class DataSource
         $this->emails = $config['emails'] ?? null;
         //
         $this->testId = $config['test_id'] ?? null;
+        //
+        $this->aggConfig = $config['aggs'] ?? null;
         //
         $this->editFunctions = $config['editFunctions'] ?? null;
         $this->aggFunctions = $config['aggFunctions'] ?? false;
@@ -434,6 +438,17 @@ class DataSource
             $collection[$item['collectionCode']] = $fnc->{$itemFnc}($item);
         }
         return $collection;
+    }
+    /**
+     * Agg
+     * retourne un object AggConfig;
+     */
+    public function getAggConfig() {
+        if (class_exists('\Waka\Agg\Classes\AggConfig')) {
+            return new \Waka\Agg\Classes\AggConfig($this->aggConfig, $this->class);
+        } else {
+            throw new \ApplicationException("Il manque le systhème Agg");
+        }
     }
 
     /**
