@@ -1,0 +1,49 @@
+<?php
+ if($values && count($values)) {
+      ?>
+<div class="list-preview list-flush">
+    <div class="control-list">
+        <table class="table data" data-control="rowlink">
+            <thead>
+                <tr>
+                    <th><span>Code de l'image</span></th>
+                    <th><span>Source de l'image</span></th>
+                    <th><span>lg/larg/ajust</span></th>
+                    <th class="text-right"><span>Actions</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($values as $value): ?>
+                <tr>
+                    <td>
+                        <?=$value['code']?>
+                    </td>
+                    <td>
+                        <?=$value['name']?>
+                    </td>
+                    <td>
+                        <?=$value['width'] ?? null.'/'.$value['height'] ?? null.'/'.$value['crop'] ?? null?>
+                    </td>
+                    <td class="nolink text-right">
+                        <button data-attach-loading href="javascript:;" data-control="popup"
+                            data-handler="onUpdateImage" data-stripe-load-indicator
+                            data-request-data="code:'<?=$value['code']?>',source:'<?=$value['source']?>'"
+                            class=" btn btn-secondary btn-xs" data-toggle="tooltip" title="Update"><i
+                                class="icon-pencil"></i></button>
+                        <button data-attach-loading href="javascript:;" data-request="onDeleteImage"
+                            data-stripe-load-indicator data-request-data="code:'<?=$value['code']?>'"
+                            class=" btn btn-danger btn-xs" data-toggle="tooltip" title="Delete"><i
+                                class="icon-trash"></i></button>
+                    </td>
+                </tr>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<?php } else { ?>
+<p>
+    Il n' y a pas encore d'images
+</p>
+<?php } ?>

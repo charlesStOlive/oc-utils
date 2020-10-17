@@ -11,7 +11,7 @@ use Yaml;
 class DataSource
 {
     use \Waka\Utils\Classes\Traits\StringRelation;
-    use \Waka\Cloudis\Classes\Traits\CloudisKey;
+    //use \Waka\Cloudis\Classes\Traits\CloudisKey;
 
     public $label;
     public $name;
@@ -31,6 +31,7 @@ class DataSource
     public $modelName;
     public $controller;
     public $aggs;
+    public $wimages;
 
     public function __construct($id = null, $type_id = "name")
     {
@@ -66,8 +67,10 @@ class DataSource
         //
         $this->editFunctions = $config['editFunctions'] ?? null;
         $this->aggFunctions = $config['aggFunctions'] ?? false;
+
         //
         $config = null;
+        //
     }
 
     public function instanciateModel($id = null)
@@ -81,6 +84,8 @@ class DataSource
             $this->model = $this->class::first();
         }
         $this->modelName = $this->model;
+        $this->wimages = new Wimages($this->class, $this->testId, $this->relations, $this->model);
+        
     }
     public function getModel($modelId)
     {
@@ -213,114 +218,47 @@ class DataSource
      * FONCTIONS DE RECUPERATION DES IMAGES
      * les fonctions utulisent le trait CloudisKey
      */
-    public function getAllPicturesKey($modelId = null)
-    {
-        $this->instanciateModel($modelId);
-        $collection = $this->getAllDataSourceImage();
-        if ($collection) {
-            return $collection->lists('name', 'key');
-        } else {
-            return null;
-        }
-    }
+    
+    
 
-    public function getOnePictureKey($key, $modelId = null)
-    {
-        $this->instanciateModel($modelId);
-        $collection = $this->getAllDataSourceImage();
-        return $collection->where('key', $key)->first();
-    }
+    // private function getAllDataSourceImage()
+    // {
+    //     $allImages = new Collection();
+    //     $listsImages = null;
+    //     $listMontages = null;
 
-    private function getAllDataSourceImage()
-    {
-        $allImages = new Collection();
-        $listsImages = null;
-        $listMontages = null;
+    //     //si il y a le trait cloudi dans la classe il y a des images à chercher
+    //     if (method_exists($this->model, 'getCloudisList')) {
+    //         $listsImages = $this->model->getCloudisList();
+    //         $listMontages = $this->model->getCloudiMontagesList();
+    //     }
 
-        //si il y a le trait cloudi dans la classe il y a des images à chercher
-        if (method_exists($this->model, 'getCloudisList')) {
-            $listsImages = $this->model->getCloudisList();
-            $listMontages = $this->model->getCloudiMontagesList();
-        }
+    //     if ($listsImages) {
+    //         $allImages = $allImages->merge($listsImages);
+    //     }
+    //     if ($listMontages) {
+    //         $allImages = $allImages->merge($listMontages);
+    //     }
+    //     $relationWithImages = new Collection($this->relations);
+    //     if ($relationWithImages->count()) {
+    //         $relationWithImages = $relationWithImages->where('image', true)->keys();
+    //         foreach ($relationWithImages as $relation) {
+    //             $subModel = $this->getStringModelRelation($this->model, $relation);
+    //             $listsImages = $subModel->getCloudisList($relation);
+    //             $listMontages = $subModel->getCloudiMontagesList($relation);
+    //             if ($listsImages) {
+    //                 $allImages = $allImages->merge($listsImages);
+    //             }
+    //             if ($listMontages) {
+    //                 $allImages = $allImages->merge($listMontages);
+    //             }
+    //         }
+    //     }
 
-        if ($listsImages) {
-            $allImages = $allImages->merge($listsImages);
-        }
-        if ($listMontages) {
-            $allImages = $allImages->merge($listMontages);
-        }
-        $relationWithImages = new Collection($this->relations);
-        if ($relationWithImages->count()) {
-            $relationWithImages = $relationWithImages->where('image', true)->keys();
-            foreach ($relationWithImages as $relation) {
-                $subModel = $this->getStringModelRelation($this->model, $relation);
-                $listsImages = $subModel->getCloudisList($relation);
-                $listMontages = $subModel->getCloudiMontagesList($relation);
-                if ($listsImages) {
-                    $allImages = $allImages->merge($listsImages);
-                }
-                if ($listMontages) {
-                    $allImages = $allImages->merge($listMontages);
-                }
-            }
-        }
+    //     return $allImages;
+    // }
 
-        return $allImages;
-    }
-
-    public function getPicturesUrl($modelId, $dataImages)
-    {
-        if (!$dataImages) {
-            return;
-        }
-
-        $this->instanciateModel($modelId);
-        $allPictures = [];
-        // trace_log("--dataImages--");
-        // trace_log($dataImages);
-        foreach ($dataImages as $image) {
-            //trace_log($image);
-            //On recherche le bon model
-            $modelImage = $this->model;
-            $img;
-
-            if ($image['relation'] != 'self') {
-                $modelImage = $this->getStringModelRelation($this->model, $image['relation']);
-            }
-            //trace_log("nom du model " . $modelImage->name);
-
-            $options = [
-                'width' => $image['width'] ?? null,
-                'height' => $image['height'] ?? null,
-                'crop' => $image['crop'] ?? null,
-                'gravity' => $image['gravity'] ?? null,
-            ];
-
-            // si cloudi ( voir GroupedImage )
-            if ($image['type'] == 'cloudi') {
-                $img = $modelImage->{$image['field']};
-                if ($img) {
-                    $img = $img->getUrl($options);
-                } else {
-                    $img = \Cloudder::secureShow(CloudisSettings::get('srcPath'));
-                }
-                // trace_log('image cloudi---' . $img);
-            }
-            // si montage ( voir GroupedImage )
-            if ($image['type'] == 'montage') {
-                $montage = $modelImage->montages->find($image['id']);
-                $img = $modelImage->getCloudiModelUrl($montage, $options);
-                // trace_log('montage ---' . $img);
-            }
-            $allPictures[$image['code']] = [
-                'path' => $img,
-                'width' => $options['width'],
-                'height' => $options['height'],
-            ];
-
-        }
-        return $allPictures;
-    }
+    
 
     /**
      * Utils for EMAIL ---------------------------------------------------

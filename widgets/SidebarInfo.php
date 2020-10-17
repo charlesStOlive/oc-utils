@@ -28,6 +28,8 @@ class SidebarInfo extends WidgetBase
 
         //$model = get_class($controllerModel)::find($modelId);
 
+        trace_log($this->config->model);
+
         $ds = new DataSource($this->config->model, 'name');
 
         //$dataSource = \Waka\Utils\Models\DataSource::where('model', '=', $this->config->model)->first();
