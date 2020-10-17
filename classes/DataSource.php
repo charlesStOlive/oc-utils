@@ -81,10 +81,10 @@ class DataSource
         } else if ($this->testId) {
             $this->model = $this->class::find($this->testId);
         } else {
-            $this->model = $this->class::first();
+            throw new \SystemException('Il manque le test_id dans dataConfig');
         }
         $this->modelName = $this->model;
-        $this->wimages = new Wimages($this->class, $this->testId, $this->relations, $this->model);
+        $this->wimages = new Wimages($this->model, $this->relations);
         
     }
     public function getModel($modelId)

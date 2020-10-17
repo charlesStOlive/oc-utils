@@ -8,32 +8,17 @@ class Wimages
     use \Waka\Utils\Classes\Traits\StringRelation;
 
     private $model;
-    private $class;
-    public $testId;
+    protected $relations;
 
 
 
-    public function __construct($class, $testId, $relations, $model) {
-        $this->class = $class;
-        $this->testId = $testId;
+    public function __construct($model,$relations=[]) {
         $this->model = $model;
         $this->relations = $relations;
     }
 
-    public function instanciateModel($id = null)
+    public function getAllPicturesKey()
     {
-        if ($id) {
-            $this->model = $this->class::find($id);
-        } else if ($this->testId) {
-            $this->model = $this->class::find($this->testId);
-        } else {
-            $this->model = $this->class::first();
-        }
-    }
-
-    public function getAllPicturesKey($modelId = null)
-    {
-        $this->instanciateModel($modelId);
         $collection = $this->listAll($this->model);
         if ($collection) {
             return $collection->lists('name', 'key');
@@ -42,9 +27,8 @@ class Wimages
         }
     }
 
-    public function getOnePictureKey($key, $modelId = null)
+    public function getOnePictureKey($key)
     {
-        $this->instanciateModel($modelId);
         $collection = $this->listAll($this->model);
         return $collection->where('key', $key)->first();
     }
@@ -56,14 +40,12 @@ class Wimages
     //     return $collection->where('key', $key)->first();
     // }
 
-    public function listAll($id=null) {
+    public function listAll() {
         $allImages = new Collection();
-        if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
-            $cloudiList = \Waka\Cloudis\Classes\Cloudi::listCloudis($this->model);
-            $montages = \Waka\Cloudis\Classes\Cloudi::listMontages($this->model);
-            $allImages = $allImages->merge($cloudiList);
-            $allImages = $allImages->merge($montages);
-        }
+        $cloudiList = \Waka\Cloudis\Classes\Cloudi::listCloudis($this->model);
+        $montages = \Waka\Cloudis\Classes\Cloudi::listMontages($this->model);
+        $allImages = $allImages->merge($cloudiList);
+        $allImages = $allImages->merge($montages);
         //
         $listFiles = $this->listFile($this->model);
         $allImages = $allImages->merge($listFiles);
@@ -73,6 +55,20 @@ class Wimages
         $allImages = $allImages->merge($listRelationsImages);
 
         return $allImages;
+    }
+    public function listCloudis() {
+        if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
+        return \Waka\Cloudis\Classes\Cloudi::listCloudis($this->model);
+        } else {
+            return [];
+        }
+    }
+    public function listMontages() {
+        if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
+        return \Waka\Cloudis\Classes\Cloudi::listMontages($this->model);
+        } else {
+            return [];
+        }
     }
 
     public function listFile() {
@@ -141,7 +137,7 @@ class Wimages
             // si montage ( voir GroupedImage )
             if ($image['type'] == 'montage') {
                 $montage = $modelImage->montages->find($image['id']);
-                $img = $modelImage->getCloudiModelUrl($montage, $options);
+                $img = $modelImage->getMontage($montage, $options);
                 // trace_log('montage ---' . $img);
             }
             $allPictures[$image['code']] = [
