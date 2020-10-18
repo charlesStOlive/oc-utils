@@ -42,16 +42,16 @@ class Wimages
 
     public function listAll() {
         $allImages = new Collection();
-        $cloudiList = \Waka\Cloudis\Classes\Cloudi::listCloudis($this->model);
-        $montages = \Waka\Cloudis\Classes\Cloudi::listMontages($this->model);
+        $cloudiList = $this->listCloudis();
+        $montages = $this->listMontages();
         $allImages = $allImages->merge($cloudiList);
         $allImages = $allImages->merge($montages);
         //
-        $listFiles = $this->listFile($this->model);
+        $listFiles = $this->listFile();
         $allImages = $allImages->merge($listFiles);
 
         $listRelationsImages = $this->listRelation();
-        trace_log($listRelationsImages);
+        //trace_log($listRelationsImages);
         $allImages = $allImages->merge($listRelationsImages);
 
         return $allImages;
@@ -71,25 +71,49 @@ class Wimages
         }
     }
 
-    public function listFile() {
-        return [];
+    public function listFile($model=null, $relation=null) {
+        if(!$model) {
+            $model = $this->model;
+        }
+        $modelClassName = get_class($model);
+        $shortName = (new \ReflectionClass($modelClassName))->getShortName();
+        $cloudiKeys = [];
+        if (!$relation) {
+            $relation = 'self';
+        }
+
+        $files = $model->attachOne;
+        foreach ($files as $key => $value) {
+            if ($value == 'System\Models\File') {
+                $img = [
+                    'field' => $key,
+                    'type' => 'file',
+                    'relation' => $relation,
+                    'key' => $shortName .'_'. $key,
+                    'name' => $shortName . ' : ' . $key.' (Image)',
+                ];
+                array_push($cloudiKeys, $img);
+            }
+        }
+        return $cloudiKeys;
     }
 
     public function listRelation() {
         $relationImages = new Collection();
         $relationWithImages = new Collection($this->relations);
-        trace_log($relationWithImages->toArray());
+        //trace_log($relationWithImages->toArray());
         if ($relationWithImages->count()) {
             $relationWithImages = $relationWithImages->where('images', true)->keys();
             foreach ($relationWithImages as $relation) {
                 $subModel = $this->getStringModelRelation($this->model, $relation);
-                trace_log($subModel->name);
+                //trace_log($subModel->name);
                 if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
                     $cloudiList = \Waka\Cloudis\Classes\Cloudi::listCloudis($subModel, $relation);
                     $montages = \Waka\Cloudis\Classes\Cloudi::listMontages($subModel, $relation);
                     $relationImages = $relationImages->merge($cloudiList);
                     $relationImages = $relationImages->merge($montages);
                 }
+                $files = $this->listFiles($subModel, $relation);
             }
         }
         return $relationImages;
@@ -103,13 +127,10 @@ class Wimages
             return;
         }
         $allPictures = [];
-        trace_log("--dataImages--");
-        trace_log($dataImages);
         foreach ($dataImages as $image) {
             //trace_log($image);
             //On recherche le bon model
             $modelImage = $this->model;
-            trace_log($this->model->name);
             $img;
 
             if ($image['relation'] != 'self') {
@@ -123,8 +144,6 @@ class Wimages
                 'crop' => $image['crop'] ?? null,
                 'gravity' => $image['gravity'] ?? null,
             ];
-
-            // si cloudi ( voir GroupedImage )
             if ($image['type'] == 'cloudi') {
                 $img = $modelImage->{$image['field']};
                 if ($img) {
@@ -134,10 +153,18 @@ class Wimages
                 }
                 // trace_log('image cloudi---' . $img);
             }
-            // si montage ( voir GroupedImage )
             if ($image['type'] == 'montage') {
                 $montage = $modelImage->montages->find($image['id']);
                 $img = $modelImage->getMontage($montage, $options);
+                // trace_log('montage ---' . $img);
+            }
+            if ($image['type'] == 'file') {
+                $img = $modelImage->{$image['field']};
+                if ($img) {
+                    $img = $img->getThumb($options['width'], $options['height'], ['mode' => $options['crop']]);
+                } else {
+                    //trace_log('error');
+                }
                 // trace_log('montage ---' . $img);
             }
             $allPictures[$image['code']] = [

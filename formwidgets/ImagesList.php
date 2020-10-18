@@ -14,12 +14,14 @@ class ImagesList extends FormWidgetBase
     protected $defaultAlias = 'waka_utils_images_list';
 
     public $jsonValues;
+    public $imageWidget;
 
     /**
      * @inheritDoc
      */
     public function init()
     {
+        $this->imageWidget = $this->createFormWidget();
     }
 
     public $functionClass;
@@ -72,13 +74,20 @@ class ImagesList extends FormWidgetBase
     {
         $ds = new DataSource($this->model->data_source_id, 'id');
         $ds->instanciateModel();
+
         //liste des images de la classe depuis le datasource
-        $imageWidget = $this->createFormWidget();
-        $imageWidget->getField('source')->options = $ds->wimages->getAllPicturesKey();;
-        $imageWidget->getField('crop')->options = \Config::get('waka.cloudis::ImageOptions.crop.options');
-        $imageWidget->getField('gravity')->options = \Config::get('waka.cloudis::ImageOptions.gravity.options');
-        $this->vars['imageWidget'] = $imageWidget;
+        $this->imageWidget->getField('source')->options = $ds->wimages->getAllPicturesKey();;
+        $this->vars['imageWidget'] = $this->imageWidget;
         return $this->makePartial('popup');
+
+    }
+
+    public function onSelectImages()
+    {
+        $ds = new DataSource($this->model->data_source_id, 'id');
+        $ds->instanciateModel();
+        
+        
 
     }
 
@@ -95,7 +104,7 @@ class ImagesList extends FormWidgetBase
             $datas = new \October\Rain\Support\Collection();
         }
         //preparatio de l'array a ajouter
-        $imageOptionsArray = post('imageOptions_array');
+        $imageOptionsArray = post('imageList_array');
 
         $imageInfo = $ds->wimages->getOnePictureKey($imageOptionsArray['source']);
         $imageOptionsArray = array_merge($imageOptionsArray, $imageInfo);
@@ -127,17 +136,17 @@ class ImagesList extends FormWidgetBase
         $datas = new \October\Rain\Support\Collection($modelValues);
         $data = $datas->where('code', $code)->first();
 
-        $imageWidget = $this->createFormWidget();
-        $imageWidget->getField('source')->options =$ds->wimages->getAllPicturesKey();
-        $imageWidget->getField('crop')->options = \Config::get('waka.cloudis::ImageOptions.crop.options');
-        $imageWidget->getField('gravity')->options = \Config::get('waka.cloudis::ImageOptions.gravity.options');
-        $imageWidget->getField('code')->value = $data['code'];
-        $imageWidget->getField('source')->value = $data['source'] ?? null;
-        $imageWidget->getField('width')->value = $data['width'] ?? null;
-        $imageWidget->getField('height')->value = $data['height'] ?? null;
-        $imageWidget->getField('crop')->value = $data['crop'] ?? null;
-        $imageWidget->getField('gravity')->value = $data['gravity'] ?? null;
-        $this->vars['imageWidget'] = $imageWidget;
+        $this->imageWidget = $this->createFormWidget();
+        $this->imageWidget->getField('source')->options =$ds->wimages->getAllPicturesKey();
+        // $this->imageWidget->getField('crop')->options = \Config::get('waka.cloudis::ImageOptions.crop.options');
+        // $this->imageWidget->getField('gravity')->options = \Config::get('waka.cloudis::ImageOptions.gravity.options');
+        $this->imageWidget->getField('code')->value = $data['code'];
+        $this->imageWidget->getField('source')->value = $data['source'] ?? null;
+        $this->imageWidget->getField('width')->value = $data['width'] ?? null;
+        $this->imageWidget->getField('height')->value = $data['height'] ?? null;
+        $this->imageWidget->getField('crop')->value = $data['crop'] ?? null;
+        $this->imageWidget->getField('gravity')->value = $data['gravity'] ?? null;
+        $this->vars['imageWidget'] = $this->imageWidget;
         $this->vars['oldCode'] = $code;
         $this->vars['oldSource'] = $source;
 
@@ -181,7 +190,7 @@ class ImagesList extends FormWidgetBase
         //trace_log($oldCode);
 
         //preparatio de l'array a ajouter
-        $imageOptionsArray = post('imageOptions_array');
+        $imageOptionsArray = post('imageList_array');
         $imageInfo = $ds->wimages->getOnePictureKey($imageOptionsArray['source']);
         $imageOptionsArray = array_merge($imageOptionsArray, $imageInfo);
         //trace_log($imageOptionsArray);
@@ -212,12 +221,23 @@ class ImagesList extends FormWidgetBase
 
     public function createFormWidget()
     {
-        $config = $this->makeConfig('$/waka/cloudis/models/imagelist/fields.yaml');
-        $config->alias = 'imageOptionsWidget';
-        $config->arrayName = 'imageOptions_array';
-        $config->model = new \Waka\Cloudis\Models\ImageList();
+        $config = $this->makeConfig('$/waka/utils/models/imagelist/fields.yaml');
+        $config->alias = 'imagesListWidget';
+        $config->arrayName = 'imageList_array';
+        $config->model = new \Waka\Utils\Models\ImageList();
         $widget = $this->makeWidget('Backend\Widgets\Form', $config);
         $widget->bindToController();
         return $widget;
     }
+
+    // public function createOptionWidget($type)
+    // {
+    //     $config = $this->makeConfig('$/waka/utils/models/imagelist/fields_'.$type.'.yaml');
+    //     $config->alias = 'imageOptionsWidget';
+    //     $config->arrayName = 'imageOptions_array';
+    //     $config->model = new \Waka\Utils\Models\ImageList();
+    //     $widget = $this->makeWidget('Backend\Widgets\Form', $config);
+    //     $widget->bindToController();
+    //     return $widget;
+    // }
 }

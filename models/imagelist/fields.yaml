@@ -1,0 +1,34 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    code:
+        label: Code de l'image
+    source:
+        label: Source de l'image
+        placeholder: --Choisissez--
+        type: dropdown
+    width: 
+        label: Largeur de l'image
+        span: auto
+    height:
+        label: Hauteur de l'image
+        span: auto
+        
+    crop:
+        label: Comment ajuster l'image
+        type: dropdown
+        dependsOn: source
+        span: auto
+        options: listCrop
+    gravity:
+        label: Gravité du découpage
+        type: dropdown
+        dependsOn: source
+        span: auto
+        options: listGravity
+            
+
+
+    
