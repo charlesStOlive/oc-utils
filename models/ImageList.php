@@ -61,7 +61,7 @@ class ImageList extends Model
 
     public function listCrop() {
         if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
-            trace_log(\Config::get('waka.cloudis::ImageOptions.crop'));
+            //trace_log(\Config::get('waka.cloudis::ImageOptions.crop'));
             return \Config::get('waka.cloudis::ImageOptions.crop.options');
         } else {
             return [
@@ -77,7 +77,7 @@ class ImageList extends Model
 
     public function listGravity() {
         if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
-            trace_log(\Config::get('waka.cloudis::ImageOptions.gravity'));
+            //trace_log(\Config::get('waka.cloudis::ImageOptions.gravity'));
                 return \Config::get('waka.cloudis::ImageOptions.gravity.options');
             } else {
                 return [];

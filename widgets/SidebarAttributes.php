@@ -157,7 +157,7 @@ class SidebarAttributes extends WidgetBase
 
                 $relations = $outputs['relations'] ?? null;
 
-                trace_log($relations);
+                //trace_log($relations);
 
                 if ($relations) {
                     foreach ($relations as $submodelKey => $submodelValue) {

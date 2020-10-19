@@ -52,7 +52,7 @@ class FunctionsBase
         $returnArray = array();
         foreach ($array as $key => $value) {
             if (is_array($value)) {
-                trace_log("array");
+                //trace_log("array");
                 $returnArray[$key] = $this->recursiveSearchDynamicValue($value);
             } else {
                 //on regarde si il y a une valeur dynamique
