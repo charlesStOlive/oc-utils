@@ -14,12 +14,14 @@ class FunctionsList extends FormWidgetBase
     protected $defaultAlias = 'waka_utils_functions_list';
 
     public $jsonValues;
+    public $attributeWidget;
 
     /**
      * @inheritDoc
      */
     public function init()
     {
+        $this->attributeWidget = $this->createFormWidget();
     }
 
     public $functionClass;
@@ -101,33 +103,21 @@ class FunctionsList extends FormWidgetBase
         $functionList = $fnc_class->getFunctionsList();
 
         //création du widget
-        $attributeWidget = $this->createFormWidget();
+        //$this->attributeWidget = $this->createFormWidget();
 
         //Ajout du nom par defaut
-        $attributeWidget->getField('name')->value = $functionList[$functionCode];
+        $this->attributeWidget->getField('name')->value = $functionList[$functionCode];
 
         //ajout des whamps via les attributs
 
         if ($attributes) {
             foreach ($attributes as $key => $value) {
-                if ($value['type'] != 'repeater') {
-                    $attributeWidget->addFields([
-                        $key => [
-                            'label' => $value['label'],
-                            'type' => $value['type'],
-                            'options' => $value['options'] ?? null,
-                            'mode' => $value['mode'] ?? null,
-                            'span' => $value['span'] ?? null,
-                            'useKey' => true,
-                        ],
-                    ]);
-                }
-
+                    $this->attributeWidget->addFields([$key => $value]);
             }
 
         }
 
-        $this->vars['attributeWidget'] = $attributeWidget;
+        $this->vars['attributeWidget'] = $this->attributeWidget;
 
         //trace_log($attributes);
         $this->vars['attributes'] = $attributes;
@@ -183,25 +173,19 @@ class FunctionsList extends FormWidgetBase
         //trace_log($data);
 
         //création du widget
-        $attributeWidget = $this->createFormWidget();
-        $attributeWidget->getField('collectionCode')->value = $data['collectionCode'];
-        $attributeWidget->getField('name')->value = $data['name'];
+        
+        $this->attributeWidget->getField('collectionCode')->value = $data['collectionCode'];
+        $this->attributeWidget->getField('name')->value = $data['name'];
 
         if ($attributes) {
             foreach ($attributes as $key => $value) {
-                $attributeWidget->addFields([
-                    $key => [
-                        'label' => $value['label'],
-                        'type' => $value['type'],
-                        'options' => $value['options'] ?? null,
-                        'useKey' => true,
-                    ],
-                ]);
-                if ($value['type'] == 'taglist') {
+                $this->attributeWidget->addFields([$key => $value]);
+                $type = $value['type'] ?? false;
+                if ($type == 'taglist') {
                     $val = $data[$key] ?? [];
-                    $attributeWidget->getField($key)->value = implode(",", $val);
+                    $this->attributeWidget->getField($key)->value = implode(",", $val);
                 } else {
-                    $attributeWidget->getField($key)->value = $data[$key] ?? null;
+                    $this->attributeWidget->getField($key)->value = $data[$key] ?? null;
                 }
 
             }
@@ -210,7 +194,7 @@ class FunctionsList extends FormWidgetBase
 
         $this->vars['collectionCode'] = $collectionCode;
         $this->vars['functionCode'] = $functionCode;
-        $this->vars['attributeWidget'] = $attributeWidget;
+        $this->vars['attributeWidget'] = $this->attributeWidget;
 
         return $this->makePartial('popup_update');
 

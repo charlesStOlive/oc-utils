@@ -51,7 +51,8 @@ class Wimages
         $allImages = $allImages->merge($listFiles);
 
         $listRelationsImages = $this->listRelation();
-        //trace_log($listRelationsImages);
+        trace_log('listRelationsImages');
+        trace_log($listRelationsImages);
         $allImages = $allImages->merge($listRelationsImages);
 
         return $allImages;
@@ -101,19 +102,20 @@ class Wimages
     public function listRelation() {
         $relationImages = new Collection();
         $relationWithImages = new Collection($this->relations);
-        //trace_log($relationWithImages->toArray());
+        trace_log($relationWithImages->toArray());
         if ($relationWithImages->count()) {
             $relationWithImages = $relationWithImages->where('images', true)->keys();
             foreach ($relationWithImages as $relation) {
+                trace_log($relation);
                 $subModel = $this->getStringModelRelation($this->model, $relation);
-                //trace_log($subModel->name);
+                trace_log($subModel->name);
                 if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
                     $cloudiList = \Waka\Cloudis\Classes\Cloudi::listCloudis($subModel, $relation);
                     $montages = \Waka\Cloudis\Classes\Cloudi::listMontages($subModel, $relation);
                     $relationImages = $relationImages->merge($cloudiList);
                     $relationImages = $relationImages->merge($montages);
                 }
-                $files = $this->listFiles($subModel, $relation);
+                $files = $this->listFile($subModel, $relation);
             }
         }
         return $relationImages;
