@@ -6,6 +6,7 @@ fields:
 {% for field in fields  %}
     {{field.var}}:
         label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.{{field.var}}
+        span: auto
 {% if field.required %}
         required: true
 {% endif %}

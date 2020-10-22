@@ -1,9 +1,9 @@
 <?php namespace Waka\Utils\Console;
 
 use October\Rain\Scaffold\GeneratorCommand;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 use October\Rain\Support\Collection;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class CreateModelController extends GeneratorCommand
 {
@@ -35,20 +35,20 @@ class CreateModelController extends GeneratorCommand
      */
     protected $stubs = [
         //pour les models
-        'model/model.stub'        => 'models/{{studly_name}}.php',
-        'model/temp_lang.stub'    => 'lang/fr/temp_{{lower_name}}.php',
-        'model/fields.stub'       => 'models/{{lower_name}}/fields.yaml',
-        'model/columns.stub'      => 'models/{{lower_name}}/columns.yaml',
+        'model/model.stub' => 'models/{{studly_name}}.php',
+        'model/temp_lang.stub' => 'lang/fr/temp_{{lower_name}}.php',
+        'model/fields.stub' => 'models/{{lower_name}}/fields.yaml',
+        'model/columns.stub' => 'models/{{lower_name}}/columns.yaml',
         'model/create_table.stub' => 'updates/create_{{snake_plural_name}}_table.php',
         //pour le controller
         'controller/_list_toolbar.stub' => 'controllers/{{lower_ctname}}/_list_toolbar.htm',
-        'controller/config_form.stub'   => 'controllers/{{lower_ctname}}/config_form.yaml',
-        'controller/config_list.stub'   => 'controllers/{{lower_ctname}}/config_list.yaml',
-        'controller/create.stub'        => 'controllers/{{lower_ctname}}/create.htm',
-        'controller/index.stub'         => 'controllers/{{lower_ctname}}/index.htm',
-        'controller/preview.stub'       => 'controllers/{{lower_ctname}}/preview.htm',
-        'controller/update.stub'        => 'controllers/{{lower_ctname}}/update.htm',
-        'controller/controller.stub'    => 'controllers/{{studly_ctname}}.php',
+        'controller/config_form.stub' => 'controllers/{{lower_ctname}}/config_form.yaml',
+        'controller/config_list.stub' => 'controllers/{{lower_ctname}}/config_list.yaml',
+        'controller/create.stub' => 'controllers/{{lower_ctname}}/create.htm',
+        'controller/index.stub' => 'controllers/{{lower_ctname}}/index.htm',
+        'controller/preview.stub' => 'controllers/{{lower_ctname}}/preview.htm',
+        'controller/update.stub' => 'controllers/{{lower_ctname}}/update.htm',
+        'controller/controller.stub' => 'controllers/{{studly_ctname}}.php',
 
     ];
 
@@ -73,14 +73,14 @@ class CreateModelController extends GeneratorCommand
         \Excel::import($importExcel, plugins_path('waka/crsm/updates/files/start.xlsx'));
         $rows = new Collection($importExcel->data->data);
         $config = $importExcel->config->data;
-        
+
         $trads = $rows->where('name', '<>', null)->pluck('name', 'var')->toArray();
-        
+
         $dbs = $rows->where('type', '<>', null)->toArray();
 
         $columns = $rows->where('column', '<>', null)->toArray();
         $fields = $rows->where('field', '<>', null)->toArray();
-        
+
         $titles = $rows->where('title', '<>', null)->pluck('name', 'var')->toArray();
         $appends = $rows->where('append', '<>', null)->pluck('name', 'var')->toArray();
         $dates1 = $rows->where('type', '==', 'date');
@@ -95,21 +95,21 @@ class CreateModelController extends GeneratorCommand
         // $addReorderTrait = $this->ask('Add Reordering trait ? ', false);
         // $addNestedTrait = $this->ask('Nested model  ?', false);
         // $addCloudiTrait = $this->ask('Cloudi Trait model  ?', false);
-        if($config['behav_duplicate']) {
+        if ($config['behav_duplicate']) {
             $this->stubs['controller/config_duplicate.stub'] = 'controllers/{{lower_ctname}}/config_duplicate.yaml';
         }
-        if($config['side_bar']) {
-            unset($this->stubs['controller/update.stub']); 
+        if ($config['side_bar']) {
+            unset($this->stubs['controller/update.stub']);
             $this->stubs['controller/update_sidebar.stub'] = 'controllers/{{lower_ctname}}/update.htm';
         }
-        if($config['behav_reorder']) {
+        if ($config['behav_reorder']) {
             $this->stubs['controller/reorder.stub'] = 'controllers/{{lower_ctname}}/reorder.htm';
             $this->stubs['controller/config_reorder.stub'] = 'controllers/{{lower_ctname}}/config_reorder.yaml';
         }
 
         $all = [
             'name' => $model,
-            'ctname' => $model.'s',
+            'ctname' => $model . 's',
             'author' => $author,
             'plugin' => $plugin,
             //
@@ -127,14 +127,14 @@ class CreateModelController extends GeneratorCommand
 
         ];
 
-        //trace_log($all);
+        trace_log($all);
 
         return $all;
     }
 
     protected function processVars($vars)
     {
-        
+
         $cases = ['upper', 'lower', 'snake', 'studly', 'camel', 'title'];
         $modifiers = ['plural', 'singular', 'title'];
 
