@@ -6,7 +6,7 @@ use Backend\Classes\Controller;
 /**
  * {{title_name}} Back-end Controller
  */
-class {{studly_name}} extends Controller
+class {{studly_ctname}} extends Controller
 {
     public $implement = [
         'Backend.Behaviors.FormController',
@@ -64,7 +64,7 @@ class {{studly_name}} extends Controller
     public function __construct()
     {
         parent::__construct();
-        BackendMenu::setContext('{{studly_author}}.{{studly_plugin}}', '{{lower_plugin}}', '{{lower_ctname}}');
+        BackendMenu::setContext('{{studly_author}}.{{studly_plugin}}', '{{lower_plugin}}', 'side-menu-{{lower_ctname}}');
     }
 {% if configs.side_bar %}
     public function update($id)

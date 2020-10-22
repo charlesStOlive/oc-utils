@@ -2,8 +2,7 @@
     <a
         href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/create') ?>"
         class="btn btn-primary oc-icon-plus">
-        {{ titles.create }}
-        <?= e(trans('{{lower_author}}.{{lower_plugin}}::lang.{{lower_ctname}}.{{ titles.create }}')) ?>
+        <?= e(trans('{{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.create')) ?>
     </a>
 
     <button
