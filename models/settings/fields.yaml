@@ -12,5 +12,5 @@ fields:
         label: waka.utils::lang.settings.activate_task_btn
         type: switch
   activate_user_btn:
-        label: waka.utils::lang.settings.activate_task_btn
+        label: waka.utils::lang.settings.activate_user_btn
         type: switch

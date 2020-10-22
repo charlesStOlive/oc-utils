@@ -2,29 +2,13 @@
 <?php Block::put('form-contents') ?>
 <?php Block::put('breadcrumb') ?>
 <ul>
-    <li><a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_name}}') ?>">{{title_name}}</a></li>
+    <li><a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}') ?>">{{title_name}}</a></li>
     <li><?= e($this->pageTitle) ?></li>
 </ul>
 <?php Block::endPut() ?>
-{% if fireViewEvents %}
-<div class="form-buttons">
-    <?= $this->fireViewEvent('backend.top.update') ?>
-    <?= $this->fireViewEvent('backend.crsm.updateView') ?>
-</div>
-{% endif %}
-<div class="layout-row min-size">
-    <?= $this->formRenderOutsideFields() ?>
-</div>
-
 <div class="layout-row">
-    <?= $this->formRenderPrimaryTabs() ?>
+    <?= $this->formRender() ?>
 </div>
-
-<?php Block::endPut() ?>
-
-<!-- Complimentary sidebar -->
-<?php Block::put('form-sidebar') ?>
-<div class="hide-tabs"><?= $this->formRenderSecondaryTabs() ?></div>
 <div class="form-buttons">
     <div class="loading-indicator-container">
         <button
@@ -32,7 +16,7 @@
             data-request="onSave"
             data-request-data="redirect:0"
             data-hotkey="ctrl+s, cmd+s"
-            data-load-indicator="Saving {{singular_name}}..."
+            data-load-indicator="<?= e(trans('waka.utils::lang.global.save_indicator')) ?>"
             class="btn btn-primary">
             <?= e(trans('waka.utils::lang.global.save')) ?>
         </button>
@@ -41,7 +25,7 @@
             data-request="onSave"
             data-request-data="close:1"
             data-hotkey="ctrl+enter, cmd+enter"
-            data-load-indicator="Saving {{singular_name}}..."
+            data-load-indicator="<?= e(trans('waka.utils::lang.global.save_indicator')) ?>"
             class="btn btn-default">
             <?= e(trans('waka.utils::lang.global.save_close')) ?>
         </button>
@@ -52,14 +36,28 @@
             type="button"
             class="oc-icon-trash-o btn-icon danger pull-right"
             data-request="onDelete"
-            data-load-indicator="Deleting {{singular_name}}..."
-            data-request-confirm="Delete this {{lower_singular_name}}?">
+            data-load-indicator="<?= e(trans('waka.utils::lang.global.delete_indicator')) ?>"
+            data-request-confirm="<?= e(trans('waka.utils::lang.global.delete')) ?>">
         </button>
+        <?= $this->fireViewEvent('backend.top.update') ?>
+        <?= $this->fireViewEvent('backend.down.update') ?>
+        <?= $this->fireViewEvent('backend.update.prod') ?>
         <span class="btn-text">
-            <?= e(trans('waka.utils::lang.global.or')) ?> <a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_name}}') ?>"><?= e(trans('waka.utils::lang.global.cancel')) ?></a>
+            <?= e(trans('waka.utils::lang.global.or')) ?> <a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}') ?>"><?= e(trans('waka.utils::lang.global.cancel')) ?></a>
         </span>
     </div>
 </div>
+<?php Block::endPut() ?>
+
+<?php Block::endPut() ?>
+
+<!-- Complimentary sidebar -->
+<?php Block::put('form-sidebar') ?>
+<div class="hide-tabs">
+    <div id="sidebar_info"><?= $this->makePartial('sidebar_info') ?></div>
+</div>
+
+
 <?php Block::endPut() ?>
 
 <!-- Layout execution -->

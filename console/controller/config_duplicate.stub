@@ -4,11 +4,11 @@
 # ATTENTION LE TITRE NE DOIT PAS AVOIR D ESPACE
 
 # Model Class name
-modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_model}}
+modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}}
 
-name: {{lower_name}}
-title: waka.utils::lang.global.duplicate_the {{studly_model}}
-redirect: backend/{{lower_author}}/{{lower_plugin}}/{{lower_name}}/update/
+name: {{lower_ctname}}
+title: waka.utils::lang.global.duplicate_the {{studly_name}}
+redirect: backend/{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/update/
 
 duplication:
     #Les champs dans le tableau relation seront cloné et attaché au nouveau model 
@@ -24,7 +24,7 @@ duplication:
     #Les champs qui seront modifié dans le formulaire du popup 
     fields:
         name:
-          label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_model}}.name 
+          label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.name 
 
         # _keep:
         #   label: Dupliquer dans ce projet

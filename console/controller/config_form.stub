@@ -3,29 +3,29 @@
 # ===================================
 
 # Record name
-name: {{title_singular_name}}
+name: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.{{titles.form_name}}
 
 # Model Form Field configuration
-form: $/{{lower_author}}/{{lower_plugin}}/models/{{lower_model}}/fields.yaml
+form: $/{{lower_author}}/{{lower_plugin}}/models/{{lower_name}}/fields.yaml
 
 # Model Class name
-modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_model}}
+modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}}
 
 # Default redirect location
-defaultRedirect: {{lower_author}}/{{lower_plugin}}/{{lower_name}}
+defaultRedirect: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}
 
 # Create page
 create:
     title: Create {{title_singular_name}}
-    redirect: {{lower_author}}/{{lower_plugin}}/{{lower_name}}/update/:id
-    redirectClose: {{lower_author}}/{{lower_plugin}}/{{lower_name}}
+    redirect: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/update/:id
+    redirectClose: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}
 
 # Update page
 update:
     title: Edit {{title_singular_name}}
-    redirect: {{lower_author}}/{{lower_plugin}}/{{lower_name}}
-    redirectClose: {{lower_author}}/{{lower_plugin}}/{{lower_name}}
+    redirect: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}
+    redirectClose: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}
 
 # Preview page
 preview:
-    title: Preview {{title_singular_name}}
+    title: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.{{titles.preview_name}}

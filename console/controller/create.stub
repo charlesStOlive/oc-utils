@@ -1,6 +1,6 @@
 <?php Block::put('breadcrumb') ?>
     <ul>
-        <li><a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_name}}') ?>">{{title_name}}</a></li>
+        <li><a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}') ?>">{{title_name}}</a></li>
         <li><?= e($this->pageTitle) ?></li>
     </ul>
 <?php Block::endPut() ?>
@@ -33,7 +33,7 @@
                     <?= e(trans('waka.utils::lang.global.create_close')) ?>
                 </button>
                 <span class="btn-text">
-                    or <a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_name}}') ?>"><?= e(trans('waka.utils::lang.global.cancel')) ?></a>
+                    or <a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}') ?>"><?= e(trans('waka.utils::lang.global.cancel')) ?></a>
                 </span>
             </div>
         </div>
@@ -43,6 +43,6 @@
 <?php else: ?>
 
     <p class="flash-message static error"><?= e($this->fatalError) ?></p>
-    <p><a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_name}}') ?>" class="btn btn-default">Return to {{lower_title_name}} list</a></p>
+    <p><a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}') ?>" class="btn btn-default">Return to {{lower_title_name}} list</a></p>
 
 <?php endif ?>

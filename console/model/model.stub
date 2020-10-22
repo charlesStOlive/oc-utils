@@ -5,18 +5,22 @@ use Model;
 /**
  * {{name}} Model
  */
+
 class {{studly_name}} extends Model
 {
     use \October\Rain\Database\Traits\Validation;
-    {% if addNestedTrait %}
+{% if configs.trait_nested %}
     use \October\Rain\Database\Traits\NestedTree;
-    {% endif %}
-    {% if addSoftDeleteTrait %}
+{% endif %}
+{% if configs.trait_soft_delete %}
     use \October\Rain\Database\Traits\SoftDelete;
-    {% endif %}
-    {% if addReorderTrait %}
+{% endif %}
+{% if configs.trait_reorder %}
     use \October\Rain\Database\Traits\Sortable;
-    {% endif %}
+{% endif %}
+{% if configs.trait_cloudi %}
+    use \Waka\Cloudis\Classes\Traits\Cloudi;
+{% endif %}
 
     /**
      * @var string The database table used by the model.
@@ -36,7 +40,11 @@ class {{studly_name}} extends Model
     /**
      * @var array Validation rules for attributes
      */
-    public $rules = [];
+    public $rules = [
+{% for key,required in requireds %}
+        '{{key}}' => '{{required}}',
+{% endfor %}
+    ];
 
     /**
      * @var array Attributes to be cast to native types
@@ -46,12 +54,20 @@ class {{studly_name}} extends Model
     /**
      * @var array Attributes to be cast to JSON
      */
-    protected $jsonable = [];
+    protected $jsonable = [
+{% for key,json in jsons %}
+        '{{key}}',
+{% endfor %}
+    ];
 
     /**
      * @var array Attributes to be appended to the API representation of the model (ex. toArray())
      */
-    protected $appends = [];
+    protected $appends = [
+{% for key,append in appends %}
+        '{{key}}',
+{% endfor %}
+    ];
 
     /**
      * @var array Attributes to be removed from the API representation of the model (ex. toArray())
@@ -64,9 +80,12 @@ class {{studly_name}} extends Model
     protected $dates = [
         'created_at',
         'updated_at',
-        {% if addSoftDeleteTrait %}
+{% if configs.trait_soft_delete %}
         'deleted_at',
-        {% endif %}
+{% endif %}
+{% for key,date in dates %}
+        '{{key}}',
+{% endfor %}
     ];
 
     /**
@@ -74,6 +93,8 @@ class {{studly_name}} extends Model
      */
     public $hasOne = [];
     public $hasMany = [];
+    public $hasOneThrough = [];
+    public $hasManyThrough = [];
     public $belongsTo = [];
     public $belongsToMany = [];
     public $morphTo = [];
@@ -81,4 +102,14 @@ class {{studly_name}} extends Model
     public $morphMany = [];
     public $attachOne = [];
     public $attachMany = [];
+
+    /**
+    * GETTER
+    **/
+{% for key,getter in getters %}
+   public function get{{ key | camelCase | ucfirst }}Attribute() {
+       return 'a configurer';
+   }
+
+{% endfor %}
 }

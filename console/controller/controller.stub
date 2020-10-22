@@ -11,36 +11,68 @@ class {{studly_name}} extends Controller
     public $implement = [
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController',
-    {% if addDuplicateBehavior %}
-        'Waka.Utils.Behaviors.DuplicateModel',
-    {% endif %}
-    {% if addReorderBehavior %}
+{% if configs.action %}
+         'Waka.Utils.Behaviors.PopupActions',
+{% endif %}
+{% if configs.side_bar %}
+         'Waka.Utils.Behaviors.SidebarInfoBehavior',
+{% endif %}
+{% if configs.behav_word %}
+        'Waka.Worder.Behaviors.WordBehavior',
+{% endif %}
+{% if configs.behav_pdf %}
+        'Waka.Pdfer.Behaviors.PdfBehavior',
+{% endif %}
+{% if configs.behav_email %}
+        'Waka.Mailer.Behaviors.MailBehavior',
+{% endif %}
+{% if configs.behav_mailto %}
+        'Waka.Mailtoer.Behaviors.MailtoBehavior',
+{% endif %}
+{% if configs.behav_imports %}
+         'Waka.ImportExport.Behaviors.ExcelImport',
+{% endif %}
+{% if configs.behav_exports %}
+        'Waka.ImportExport.Behaviors.ExcelExport',
+{% endif %}
+{% if configs.behav_reorder %}
         'Backend.Behaviors.ReorderController',
-    {% endif %}
+{% endif %}
+{% if configs.behav_cloudis %}
+{% endif %}
+{% if configs.duplicate %}
+        'Waka.Utils.Behaviors.DuplicateModel',
+{% endif %}
         
     ];
 
     public $formConfig = 'config_form.yaml';
     public $listConfig = 'config_list.yaml';
-    {% if addDuplicateBehavior %}
+{% if configs.duplicate %}
     public $duplicateConfig = 'config_duplicate.yaml';
 
-    {% endif %}
-    {% if addReorderBehavior %}
+{% endif %}
+{% if configs.behav_reorder %}
     public $reorderConfig  = 'config_reorder.yaml';
 
-    {% endif %}
-    {% if addSideBar %}
-    /**
-    * @var string Body CSS class to add to the layout.
-    */
-    public $bodyClass = 'compact-container';
+{% endif %}
+{% if configs.side_bar %}
+    public $sidebarInfoConfig = 'config_sidebar_info.yaml';
+
+{% endif %}
     
-    {% endif %}
     public function __construct()
     {
         parent::__construct();
-
-        BackendMenu::setContext('{{studly_author}}.{{studly_plugin}}', '{{lower_plugin}}', '{{lower_name}}');
+        BackendMenu::setContext('{{studly_author}}.{{studly_plugin}}', '{{lower_plugin}}', '{{lower_ctname}}');
     }
+{% if configs.side_bar %}
+    public function update($id)
+    {
+        $this->bodyClass = 'compact-container';
+        return $this->asExtension('FormController')->update($id);
+    }
+
+{% endif %}
+
 }

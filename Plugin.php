@@ -39,6 +39,9 @@ class Plugin extends PluginBase
                     return json_encode($twig);
 
                 },
+                'camelCase' => function($twig) {
+                    return camel_case($twig);
+                },
                 'defaultConfig' => function ($twig, $config_name) {
                     $dataFromConfig = \Config('waka.crsm::' . $config_name);
                     //trace_log($dataFromConfig);
@@ -60,11 +63,8 @@ class Plugin extends PluginBase
      */
     public function register()
     {
-        $this->registerConsoleCommand('waka.model', 'Waka\Utils\Console\CreateModel');
         $this->registerConsoleCommand('waka.injector', 'Waka\Utils\Console\CreateInjector');
-        $this->registerConsoleCommand('waka.controller', 'Waka\Utils\Console\CreateController');
-        $this->registerConsoleCommand('waka.content', 'Waka\Utils\Console\CreateContent');
-        $this->registerConsoleCommand('waka.pluginversionshift', 'Waka\Utils\Console\PluginVersionShift');
+        $this->registerConsoleCommand('waka.mc', 'Waka\Utils\Console\CreateModelController');
 
     }
 

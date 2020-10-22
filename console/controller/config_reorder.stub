@@ -3,13 +3,13 @@
 # ===================================
 
 # Reorder Title
-title: Reorder {{ lower_name }}
+title: Reorder {{ lower_ctname }}
 
 # Attribute name
 nameFrom: name
 
 # Model Class name
-modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_model}}
+modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}}
 
 # Toolbar widget configuration
 #toolbar:

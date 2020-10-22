@@ -12,6 +12,14 @@ columns:
     name:
         label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.name
         searchable: true
+    
+
+{% for column in columns  %}
+    {{column.var}}:
+        label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.{{column.var}}
+        searchable: true
+
+{% endfor %} 
     updated_at:
         label: waka.utils::lang.global.updated_at
         type: timetense
