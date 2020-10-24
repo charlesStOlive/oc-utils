@@ -8,11 +8,6 @@ columns:
         label: waka.utils::lang.global.sort_order
         invisible: true
 {% endif %}
-    
-    name:
-        label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.name
-        searchable: true
-    
 
 {% for column in columns  %}
     {{column.var}}:
