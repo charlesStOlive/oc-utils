@@ -39,7 +39,7 @@ class Plugin extends PluginBase
                     return json_encode($twig);
 
                 },
-                'camelCase' => function($twig) {
+                'camelCase' => function ($twig) {
                     return camel_case($twig);
                 },
                 'defaultConfig' => function ($twig, $config_name) {
@@ -65,6 +65,7 @@ class Plugin extends PluginBase
     {
         $this->registerConsoleCommand('waka.injector', 'Waka\Utils\Console\CreateInjector');
         $this->registerConsoleCommand('waka.mc', 'Waka\Utils\Console\CreateModelController');
+        $this->registerConsoleCommand('waka.uicolors', 'Waka\Utils\Console\CreateUiColors');
 
     }
 
