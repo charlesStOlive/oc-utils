@@ -10,6 +10,13 @@ return [
         'job_list_s' => "Taches",
         'job_list_description' => "Liste des taches de l'application",
     ],
+    'popup' => [
+        'traitement_lots' => 'Traitement par lots',
+        'all' => "Tous",
+        'filtered' => "Filtré",
+        'checked' => "Coché",
+        "change_field" => "Modifier le champ",
+    ],
     'global' => [
         'details' => 'Détails',
         'slug' => 'Slug',
