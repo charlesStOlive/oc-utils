@@ -21,7 +21,7 @@ return [
         'details' => 'Détails',
         'slug' => 'Slug',
         'updated_at' => 'MAJ',
-        'placeholder' => '--Choisissez une valeur--',
+        'placeholder' => '--Choisissez--',
         'placeholder_contact' => '--Choisissez un contact--',
         'placeholder_client' => '--Choisissez un client--',
         'sort_order' => 'Ordre',
