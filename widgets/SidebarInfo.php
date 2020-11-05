@@ -1,6 +1,7 @@
 <?php namespace Waka\Utils\Widgets;
 
 use Backend\Classes\WidgetBase;
+use Lang;
 use Waka\Utils\Classes\DataSource;
 
 class SidebarInfo extends WidgetBase
@@ -70,7 +71,7 @@ class SidebarInfo extends WidgetBase
             $field = [
                 'type' => $type,
                 'icon' => $icon,
-                'label' => $label,
+                'label' => lang::get($label),
                 'value' => $value,
                 'cssClass' => $cssClass,
                 'link' => $link,
