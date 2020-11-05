@@ -127,7 +127,7 @@ class CreateModelController extends GeneratorCommand
 
         ];
 
-        trace_log($all);
+        //trace_log($all);
 
         return $all;
     }

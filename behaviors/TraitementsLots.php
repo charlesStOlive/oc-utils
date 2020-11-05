@@ -84,7 +84,7 @@ class TraitementsLots extends ControllerBehavior
         $data = $this->lotsWidget->getSaveData();
         $modelName = $this->getConfig('modelClass');
         $updateArray = [];
-        trace_log($data);
+        //trace_log($data);
 
         $listType = post('listType');
         $listId = null;
