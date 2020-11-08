@@ -1,6 +1,7 @@
 <?php namespace Waka\Utils\Behaviors;
 
 use Backend\Classes\ControllerBehavior;
+use File;
 
 class SideBarAttributesBehavior extends ControllerBehavior
 {
@@ -8,7 +9,8 @@ class SideBarAttributesBehavior extends ControllerBehavior
     /**
      * @inheritDoc
      */
-    protected $requiredProperties = ['sidebarInfoConfig'];
+    protected $requiredProperties = ['sidebarAttributesConfig'];
+    protected $optionalProperties = '$/waka/crsm/config/attributes.yaml';
 
     /**
      * @var array Visible actions in context of the controller
@@ -38,13 +40,16 @@ class SideBarAttributesBehavior extends ControllerBehavior
     public function __construct($controller)
     {
         parent::__construct($controller);
-        //trace_log("construct sideBarAttributes");
-        $this->config = $this->makeConfig($controller->sidebarInfoConfig, $this->requiredConfig);
+        // $tempConfig = $this->mergeConfig($controller->sidebarAttributesConfig, $this->optionalProperties);
+        // trace_log($tempConfig);
+        // $this->config = $this->makeConfig($tempConfig, $this->requiredConfig);
     }
 
     public function initForm($model, $context = null)
     {
-        $config = $this->makeConfig($this->controller->sidebarInfoConfig);
+        $tempConfig = $this->mergeConfig($this->controller->sidebarAttributesConfig, $this->optionalProperties);
+        $config = $this->makeConfig($tempConfig, $this->requiredConfig);
+        //$config = $this->makeConfig($this->controller->sidebarAttributesConfig, $this->requiredConfig);
         $config->model = $model;
         $config->arrayName = 'attributes';
         $this->sidebarAttributes = $this->makeWidget('Waka\Utils\Widgets\SidebarAttributes', $config);

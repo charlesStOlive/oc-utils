@@ -39,7 +39,7 @@ class SidebarAttributes extends WidgetBase
 
         $this->vars['text_info'] = $this->text_info;
         $this->vars['attributesArray'] = $this->cleanModelValues($this->dataSource->getValues());
-        $this->vars['hidden_fields'] = $this->hidden_fields;
+        $this->vars['hidden_fields'] = $this->hidden_fields ? $this->hidden_fields : [];
         $this->vars['IMGSArray'] = $this->getIMG();
         $fncArray = $this->getFNCOutputs();
         $this->vars['FNCSArray'] = $fncArray;
@@ -103,6 +103,9 @@ class SidebarAttributes extends WidgetBase
     }
     public function cleanField($rows, $hiddeArrayFields)
     {
+        if (!$hiddeArrayFields) {
+            return $rows;
+        }
         foreach ($rows as $key => $row) {
             //trace_log("analyse du row : " . $key);
             foreach ($hiddeArrayFields as $hiddenField) {

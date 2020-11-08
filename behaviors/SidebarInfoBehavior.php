@@ -1,10 +1,6 @@
 <?php namespace Waka\Utils\Behaviors;
 
 use Backend\Classes\ControllerBehavior;
-use \System\Traits\ConfigMaker;
-use \Backend\Traits\WidgetMaker;
-
-
 
 class SidebarInfoBehavior extends ControllerBehavior
 {
@@ -24,9 +20,9 @@ class SidebarInfoBehavior extends ControllerBehavior
     public $model;
     public $sidebarInfo;
 
-	//protected $exportExcelWidget;
+    //protected $exportExcelWidget;
 
-	public function __construct($controller)
+    public function __construct($controller)
     {
         parent::__construct($controller);
         /*
@@ -39,5 +35,4 @@ class SidebarInfoBehavior extends ControllerBehavior
         $this->sidebarInfo->bindToController();
     }
 
-    
 }
