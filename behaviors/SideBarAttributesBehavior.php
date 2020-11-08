@@ -40,19 +40,18 @@ class SideBarAttributesBehavior extends ControllerBehavior
     public function __construct($controller)
     {
         parent::__construct($controller);
-        // $tempConfig = $this->mergeConfig($controller->sidebarAttributesConfig, $this->optionalProperties);
-        // trace_log($tempConfig);
-        // $this->config = $this->makeConfig($tempConfig, $this->requiredConfig);
+        $tempConfig = $this->mergeConfig($controller->sidebarAttributesConfig, $this->optionalProperties);
+        $this->config = $this->makeConfig($tempConfig, $this->requiredConfig);
     }
 
     public function initForm($model, $context = null)
     {
         $tempConfig = $this->mergeConfig($this->controller->sidebarAttributesConfig, $this->optionalProperties);
-        $config = $this->makeConfig($tempConfig, $this->requiredConfig);
+        $this->config = $this->makeConfig($tempConfig, $this->requiredConfig);
         //$config = $this->makeConfig($this->controller->sidebarAttributesConfig, $this->requiredConfig);
-        $config->model = $model;
-        $config->arrayName = 'attributes';
-        $this->sidebarAttributes = $this->makeWidget('Waka\Utils\Widgets\SidebarAttributes', $config);
+        $this->config->model = $model;
+        $this->config->arrayName = 'attributes';
+        $this->sidebarAttributes = $this->makeWidget('Waka\Utils\Widgets\SidebarAttributes', $this->config);
         $this->sidebarAttributes->bindToController();
     }
 
