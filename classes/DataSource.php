@@ -53,7 +53,7 @@ class DataSource
         $label = $config['label'] ?? null;
         $this->label = $label ? $label : $this->name;
         //
-        $controller  = $config['controller'] ?? null;
+        $controller = $config['controller'] ?? null;
         $this->controller = $controller ? $controller : strtolower($this->author) . '/' . strtolower($this->plugin) . '/' . str_plural($this->name);
         //
         $this->relations = $config['relations'] ?? null;
@@ -85,7 +85,7 @@ class DataSource
         }
         $this->modelName = $this->model;
         $this->wimages = new Wimages($this->model, $this->relations);
-        
+
     }
     public function getModel($modelId)
     {
@@ -218,8 +218,6 @@ class DataSource
      * FONCTIONS DE RECUPERATION DES IMAGES
      * les fonctions utulisent le trait CloudisKey
      */
-    
-    
 
     // private function getAllDataSourceImage()
     // {
@@ -257,8 +255,6 @@ class DataSource
 
     //     return $allImages;
     // }
-
-    
 
     /**
      * Utils for EMAIL ---------------------------------------------------
@@ -381,7 +377,8 @@ class DataSource
      * Agg
      * retourne un object AggConfig;
      */
-    public function getAggConfig() {
+    public function getAggConfig()
+    {
         if (class_exists('\Waka\Agg\Classes\AggConfig')) {
             return new \Waka\Agg\Classes\AggConfig($this->aggConfig, $this->class);
         } else {
@@ -395,12 +392,12 @@ class DataSource
 
     public function getSrConfig()
     {
-        $dataSource = Config::get('waka.crsm::data_source.src');
+        $dataSource = Config::get('waka.wconfig::data_source.src');
         //trace_log($dataSource);
         if ($dataSource) {
             return Yaml::parseFile(plugins_path() . $dataSource);
         } else {
-            return Yaml::parseFile(plugins_path() . '/waka/crsm/config/datasources.yaml');
+            return Yaml::parseFile(plugins_path() . '/waka/wconfig/config/datasources.yaml');
         }
 
     }

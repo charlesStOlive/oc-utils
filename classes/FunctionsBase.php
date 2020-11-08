@@ -11,9 +11,10 @@ class FunctionsBase
         $this->model = $model;
     }
 
-    public function listFunctionAttributes() {
-        $yamlFile = class_basename($this).'.yaml';
-        return Yaml::parseFile(plugins_path() . '/waka/crsm/functions/'.$yamlFile);
+    public function listFunctionAttributes()
+    {
+        $yamlFile = class_basename($this) . '.yaml';
+        return Yaml::parseFile(plugins_path() . '/waka/wconfig/functions/' . $yamlFile);
     }
 
     public function getFunctionsList()
@@ -37,10 +38,11 @@ class FunctionsBase
         $outputs = $this->findFunction($functions, $value, 'outputs');
         return $outputs;
     }
-    private function findFunction($functions, $value, $column) {
+    private function findFunction($functions, $value, $column)
+    {
         foreach ($functions as $key => $values) {
             if ($key == $value) {
-                $array =  $values[$column] ?? [];
+                $array = $values[$column] ?? [];
                 return $this->recursiveSearchDynamicValue($array);
             }
         }
@@ -57,21 +59,19 @@ class FunctionsBase
             } else {
                 //on regarde si il y a une valeur dynamique
                 $tempValue = $value;
-                if(starts_with($tempValue,'fnc::')) {
-                    $fncName = str_replace('fnc::', "",$tempValue);
-                    if(method_exists($this, $fncName)) {
+                if (starts_with($tempValue, 'fnc::')) {
+                    $fncName = str_replace('fnc::', "", $tempValue);
+                    if (method_exists($this, $fncName)) {
                         $tempValue = $this->{$fncName}();
                     } else {
-                        throw new \SystemException("La méthode ".$fncName." n'esixte pas dans la fonction d'édition");
+                        throw new \SystemException("La méthode " . $fncName . " n'esixte pas dans la fonction d'édition");
                     }
-                }
-                else if(starts_with($tempValue,'config::')) {
-                    $configName = str_replace('config::', "",$tempValue);
-                    $tempValue =  \Config::get($configName);
-                }
-                else if(starts_with($tempValue,'list::')) {
-                    $className = str_replace('list::', "",$tempValue);
-                    $tempValue =  $className::lists('name', 'id');
+                } else if (starts_with($tempValue, 'config::')) {
+                    $configName = str_replace('config::', "", $tempValue);
+                    $tempValue = \Config::get($configName);
+                } else if (starts_with($tempValue, 'list::')) {
+                    $className = str_replace('list::', "", $tempValue);
+                    $tempValue = $className::lists('name', 'id');
                 }
                 $returnArray[$key] = $tempValue;
             }

@@ -26,11 +26,11 @@ class DataSourceList
 
     public static function getSrConfig()
     {
-        $dataSource = Config::get('waka.crsm::data_source.src');
+        $dataSource = Config::get('waka.wconfig::data_source.src');
         if ($dataSource) {
             return Yaml::parseFile(plugins_path() . $dataSource);
         } else {
-            return Yaml::parseFile(plugins_path() . '/waka/crsm/config/datasources.yaml');
+            return Yaml::parseFile(plugins_path() . '/waka/wconfig/config/datasources.yaml');
         }
 
     }

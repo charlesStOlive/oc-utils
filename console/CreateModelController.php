@@ -70,7 +70,7 @@ class CreateModelController extends GeneratorCommand
         // $values = $this->ask('Coller des valeurs excels ', true);
         // trace_log($values);
         $importExcel = new \Waka\Utils\Classes\Imports\ImportModelController($model);
-        \Excel::import($importExcel, plugins_path('waka/crsm/updates/files/start.xlsx'));
+        \Excel::import($importExcel, plugins_path('waka/wconfig/updates/files/start.xlsx'));
         $rows = new Collection($importExcel->data->data);
         $config = $importExcel->config->data;
 

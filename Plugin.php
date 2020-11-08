@@ -43,7 +43,7 @@ class Plugin extends PluginBase
                     return camel_case($twig);
                 },
                 'defaultConfig' => function ($twig, $config_name) {
-                    $dataFromConfig = \Config('waka.crsm::' . $config_name);
+                    $dataFromConfig = \Config('waka.wconfig::' . $config_name);
                     //trace_log($dataFromConfig);
                     return $dataFromConfig;
 
@@ -303,7 +303,7 @@ class Plugin extends PluginBase
                 'icon' => 'icon-wrench',
                 'class' => 'Waka\Utils\Models\Settings',
                 'order' => 150,
-                'permissions' => ['waka.crsm.admin'],
+                'permissions' => ['waka.wconfig.admin'],
             ],
             'joblists' => [
                 'label' => Lang::get('waka.utils::lang.menu.job_list'),
