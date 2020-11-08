@@ -392,7 +392,7 @@ class DataSource
 
     public function getSrConfig()
     {
-        $dataSource = Config::get('waka.wconfig::data_source.src');
+        $dataSource = Config::get('waka.crsm::data_source.src');
         //trace_log($dataSource);
         if ($dataSource) {
             return Yaml::parseFile(plugins_path() . $dataSource);

@@ -10,7 +10,7 @@ class SideBarAttributesBehavior extends ControllerBehavior
      * @inheritDoc
      */
     protected $requiredProperties = ['sidebarAttributesConfig'];
-    protected $optionalProperties = '$/waka/crm/config/attributes.yaml';
+    protected $optionalProperties = '$/waka/wconfig/config/attributes.yaml';
 
     /**
      * @var array Visible actions in context of the controller
