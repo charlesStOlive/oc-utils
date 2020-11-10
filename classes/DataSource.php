@@ -83,6 +83,10 @@ class DataSource
         } else {
             throw new \SystemException('Il manque le test_id dans dataConfig');
         }
+        if (!$this->model) {
+            \Flash::error("Attention le test_id n'existe pas");
+            $this->model = $this->class::first();
+        }
         $this->modelName = $this->model;
         $this->wimages = new Wimages($this->model, $this->relations);
 

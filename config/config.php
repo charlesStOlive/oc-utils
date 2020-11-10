@@ -1,6 +1,18 @@
 <?php
 
 return [
+    'ImageOptions' => [
+        'width' => [
+            'label' => "Largeur",
+            'type' => "text",
+            'span' => 'left',
+        ],
+        'height' => [
+            'label' => "hauteur",
+            'type' => "text",
+            'span' => 'right',
+        ],
+    ],
 
     'scopesType' => [
         'model_value' => [

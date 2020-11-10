@@ -1,6 +1,5 @@
 <?php namespace Waka\Utils\Classes;
 
-use Carbon\Carbon;
 use October\Rain\Support\Collection;
 
 class Wimages
@@ -10,9 +9,8 @@ class Wimages
     private $model;
     protected $relations;
 
-
-
-    public function __construct($model,$relations=[]) {
+    public function __construct($model, $relations = [])
+    {
         $this->model = $model;
         $this->relations = $relations;
     }
@@ -33,14 +31,14 @@ class Wimages
         return $collection->where('key', $key)->first();
     }
 
-
     // public function getOne($dataSource, $key)
     // {
     //     $collection = $this->listAll();
     //     return $collection->where('key', $key)->first();
     // }
 
-    public function listAll() {
+    public function listAll()
+    {
         $allImages = new Collection();
         $cloudiList = $this->listCloudis();
         $montages = $this->listMontages();
@@ -57,23 +55,26 @@ class Wimages
 
         return $allImages;
     }
-    public function listCloudis() {
+    public function listCloudis()
+    {
         if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
-        return \Waka\Cloudis\Classes\Cloudi::listCloudis($this->model);
+            return \Waka\Cloudis\Classes\Cloudi::listCloudis($this->model);
         } else {
             return [];
         }
     }
-    public function listMontages() {
+    public function listMontages()
+    {
         if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
-        return \Waka\Cloudis\Classes\Cloudi::listMontages($this->model);
+            return \Waka\Cloudis\Classes\Cloudi::listMontages($this->model);
         } else {
             return [];
         }
     }
 
-    public function listFile($model=null, $relation=null) {
-        if(!$model) {
+    public function listFile($model = null, $relation = null)
+    {
+        if (!$model) {
             $model = $this->model;
         }
         $modelClassName = get_class($model);
@@ -90,8 +91,8 @@ class Wimages
                     'field' => $key,
                     'type' => 'file',
                     'relation' => $relation,
-                    'key' => $shortName .'_'. $key,
-                    'name' => $shortName . ' : ' . $key.' (Image)',
+                    'key' => $shortName . '_' . $key,
+                    'name' => $shortName . ' : ' . $key . ' (Image)',
                 ];
                 array_push($cloudiKeys, $img);
             }
@@ -99,7 +100,8 @@ class Wimages
         return $cloudiKeys;
     }
 
-    public function listRelation() {
+    public function listRelation()
+    {
         $relationImages = new Collection();
         $relationWithImages = new Collection($this->relations);
         //trace_log($relationWithImages->toArray());
@@ -120,8 +122,6 @@ class Wimages
         }
         return $relationImages;
     }
-
-    
 
     public function getPicturesUrl($dataImages)
     {
@@ -178,7 +178,5 @@ class Wimages
         }
         return $allPictures;
     }
-
-    
 
 }
