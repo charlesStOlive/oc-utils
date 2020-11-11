@@ -55,6 +55,8 @@ return [
         'state' => "Etat",
         'test' => 'test',
         'is_ex' => 'Exemple',
+        "prompt_record" => "Cliquez sur l'incone pour choisir un enregistrement",
+        "find_record" => "Trouver un enregistrement",
     ],
     'datasource' => [
         'title' => 'Source de données',
