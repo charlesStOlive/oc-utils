@@ -1,16 +1,35 @@
-fields:
-  activate_dashboard:
-        label: waka.utils::lang.settings.activate_dashboard
-        type: switch
-  activate_cms:
-        label: waka.utils::lang.settings.activate_cms
-        type: switch
-  activate_builder:
-        label: waka.utils::lang.settings.activate_builder
-        type: switch
-  activate_task_btn:
-        label: waka.utils::lang.settings.activate_task_btn
-        type: switch
-  activate_user_btn:
-        label: waka.utils::lang.settings.activate_user_btn
-        type: switch
+tabs:
+      fields:
+            start_imports:
+                  label: Imports
+                  type: checkboxlist
+                  quickselect: true 
+                  options: listStartImports
+                  tab: Imports
+            start_file:
+                  label: Fichiers source
+                  type: mediafinder
+                  mode: file
+                  tab: Imports
+            activate_dashboard:
+                  label: waka.utils::lang.settings.activate_dashboard
+                  type: switch
+                  tab: button
+            activate_cms:
+                  label: waka.utils::lang.settings.activate_cms
+                  type: switch
+                  tab: button
+            activate_builder:
+                  label: waka.utils::lang.settings.activate_builder
+                  type: switch
+                  tab: button
+            activate_task_btn:
+                  label: waka.utils::lang.settings.activate_task_btn
+                  type: switch
+                  tab: button
+            activate_user_btn:
+                  label: waka.utils::lang.settings.activate_user_btn
+                  type: switch
+                  tab: button
+            
+            

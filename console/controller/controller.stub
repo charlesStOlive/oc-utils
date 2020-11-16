@@ -11,6 +11,9 @@ class {{studly_ctname}} extends Controller
     public $implement = [
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController',
+{% if configs.relation %}
+        'Backend.Behaviors.RelationController',
+{% endif %}
 {% if configs.action %}
          'Waka.Utils.Behaviors.PopupActions',
 {% endif %}
@@ -48,6 +51,10 @@ class {{studly_ctname}} extends Controller
 
     public $formConfig = 'config_form.yaml';
     public $listConfig = 'config_list.yaml';
+{% if configs.relation %}
+    public $relationConfig = 'config_relation.yaml';
+
+{% endif %}
 {% if configs.duplicate %}
     public $duplicateConfig = 'config_duplicate.yaml';
 

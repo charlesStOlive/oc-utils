@@ -1,0 +1,16 @@
+# ===================================
+#  Relation Behavior Config
+# ===================================
+
+
+{{relation_name}}s:
+    label: waka.{{relation_plugin}}::lang.parrain.{{relation_name}}s
+    manage:
+        form: $/waka/{{relation_plugin}}/models/{{relation_name}}/fields.yaml
+    view:
+        list: $/waka/{{relation_plugin}}/models/{{relation_name}}/columns.yaml
+        recordUrl: waka/{{relation_plugin}}/{{relation_name}}/update/:id
+        toolbarButtons: create|delete
+        defaultSort:
+            column: name
+            direction: asc

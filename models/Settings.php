@@ -12,4 +12,15 @@ class Settings extends Model
     // Reference to field configuration
     public $settingsFields = 'fields.yaml';
 
+    public function listStartImports()
+    {
+        $lists = \Config::get('waka.wconfig::start_data');
+        $resultArray = [];
+        foreach ($lists as $key => $list) {
+            $truncate = $list['truncate'] ?? 'pas de truncate';
+            $resultArray[$key] = $key . ' : ' . $truncate;
+        }
+        return $resultArray;
+    }
+
 }

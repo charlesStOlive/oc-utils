@@ -74,6 +74,19 @@ class CreateModelController extends GeneratorCommand
         $rows = new Collection($importExcel->data->data);
         $config = $importExcel->config->data;
 
+        $relationName = null;
+        $pluginRelationName = null;
+
+        if ($config['relation'] ?? false) {
+            $array = explode(',', $config['relation']);
+            $relationName = array_pop($array);
+            $pluginRelationName = array_pop($array);
+        }
+
+        trace_log($config['relation']);
+        trace_log($relationName);
+        trace_log($pluginRelationName);
+
         $trads = $rows->where('name', '<>', null)->pluck('name', 'var')->toArray();
 
         $dbs = $rows->where('type', '<>', null)->toArray();
@@ -89,12 +102,7 @@ class CreateModelController extends GeneratorCommand
         $requireds = $rows->where('required', '<>', null)->pluck('required', 'var')->toArray();
         $jsons = $rows->where('json', '<>', null)->pluck('json', 'var')->toArray();
         $getters = $rows->where('getter', '<>', null)->pluck('json', 'var')->toArray();
-        //$dates = $dates1->merge($dates2);
 
-        // $addSoftDeleteTrait = $this->ask('Add soft delete ? ', true);
-        // $addReorderTrait = $this->ask('Add Reordering trait ? ', false);
-        // $addNestedTrait = $this->ask('Nested model  ?', false);
-        // $addCloudiTrait = $this->ask('Cloudi Trait model  ?', false);
         if ($config['behav_duplicate']) {
             $this->stubs['controller/config_duplicate.stub'] = 'controllers/{{lower_ctname}}/config_duplicate.yaml';
         }
@@ -105,6 +113,11 @@ class CreateModelController extends GeneratorCommand
         if ($config['behav_reorder']) {
             $this->stubs['controller/reorder.stub'] = 'controllers/{{lower_ctname}}/reorder.htm';
             $this->stubs['controller/config_reorder.stub'] = 'controllers/{{lower_ctname}}/config_reorder.yaml';
+        }
+
+        if ($config['relation']) {
+            $this->stubs['controller/_field_relation.stub'] = 'controllers/{{lower_ctname}}/_field_{{relation_name}}s.htm';
+            $this->stubs['controller/config_relation.stub'] = 'controllers/{{lower_ctname}}/config_relation.yaml';
         }
 
         $all = [
@@ -124,6 +137,9 @@ class CreateModelController extends GeneratorCommand
             'requireds' => $requireds,
             'jsons' => $jsons,
             'getters' => $getters,
+            //
+            'relation_name' => $relationName,
+            'relation_plugin' => $pluginRelationName,
 
         ];
 
