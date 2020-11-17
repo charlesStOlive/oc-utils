@@ -14,6 +14,8 @@ class Create{{studly_plural_name}}Table extends Migration
 {% for db in dbs  %}
 {% if db.type == 'liaison_id' %}
             $table->integer('{{db.var}}_id')->unsigned(){% if db.nullable %}->nullable(){%endif%};
+{% elseif db.type == 'string_id' %}
+            $table->string('{{db.var}}_id'){% if db.nullable %}->nullable(){%endif%};
 {% else %}
             $table->{{db.type}}('{{db.var}}'){% if db.nullable %}->nullable(){%endif%};
 {% endif %}

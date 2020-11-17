@@ -92,10 +92,18 @@ class {{studly_name}} extends Model
      * @var array Relations
      */
     public $hasOne = [];
-    public $hasMany = [];
+    public $hasMany = [
+{% for relation in config.hasmany %}
+    '{{relation_name| lowercase}}' => 'Waka\{{plugin_name}}\Models\{{relation_name}}',
+{% endfor %}
+    ];
     public $hasOneThrough = [];
     public $hasManyThrough = [];
-    public $belongsTo = [];
+    public $belongsTo = [
+{% for relation in config.belong %}
+    '{{relation_name| lowercase}}' => 'Waka\{{plugin_name}}\Models\{{relation_name}}',
+{% endfor %}
+    ];
     public $belongsToMany = [];
     public $morphTo = [];
     public $morphOne = [];

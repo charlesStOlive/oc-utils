@@ -1,29 +1,26 @@
 <div data-control="toolbar">
-    <a
-        href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/create') ?>"
-        class="btn btn-primary oc-icon-plus">
+    <a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/create') ?>"
+       class="btn btn-primary oc-icon-plus">
         <?= e(trans('{{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.create')) ?>
     </a>
 
-    <button
-        class="btn btn-danger oc-icon-trash-o"
-        disabled="disabled"
-        onclick="$(this).data('request-data', { checked: $('.control-list').listWidget('getChecked') })"
-        data-request="onDelete"
-        data-request-confirm="Are you sure you want to delete the selected {{title_plural_name}}?"
-        data-trigger-action="enable"
-        data-trigger=".control-list input[type=checkbox]"
-        data-trigger-condition="checked"
-        data-request-success="$(this).prop('disabled', 'disabled')"
-        data-stripe-load-indicator>
+    <button class="btn btn-danger oc-icon-trash-o"
+            disabled="disabled"
+            onclick="$(this).data('request-data', { checked: $('.control-list').listWidget('getChecked') })"
+            data-request="onDelete"
+            data-request-confirm="Are you sure you want to delete the selected {{title_plural_name}}?"
+            data-trigger-action="enable"
+            data-trigger=".control-list input[type=checkbox]"
+            data-trigger-condition="checked"
+            data-request-success="$(this).prop('disabled', 'disabled')"
+            data-stripe-load-indicator>
         <?= e(trans('waka.utils::lang.global.delete_selected')) ?>
     </button>
-    {% if addReorderBehavior %}
-    <a
-        href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/reorder') ?>"
-        class="btn btn-default oc-icon-bars">
+{% if addReorderBehavior %}
+    <a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/reorder') ?>"
+       class="btn btn-default oc-icon-bars">
         <?= e(trans('waka.utils::lang.global.reorder')) ?>
     </a>
-    {% endif %}
+{% endif %}
     <?= $this->fireViewEvent('backend.top.index') ?>
 </div>

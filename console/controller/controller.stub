@@ -11,7 +11,7 @@ class {{studly_ctname}} extends Controller
     public $implement = [
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController',
-{% if configs.relation %}
+{% if configs.hasmany %}
         'Backend.Behaviors.RelationController',
 {% endif %}
 {% if configs.action %}
@@ -79,7 +79,5 @@ class {{studly_ctname}} extends Controller
         $this->bodyClass = 'compact-container';
         return $this->asExtension('FormController')->update($id);
     }
-
 {% endif %}
-
 }
