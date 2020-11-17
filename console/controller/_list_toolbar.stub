@@ -1,7 +1,7 @@
 <div data-control="toolbar">
     <a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/create') ?>"
        class="btn btn-primary oc-icon-plus">
-        <?= e(trans('{{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.create')) ?>
+        <?= e(trans('{{lower_author}}.{{lower_plugin}}::{{lower_name}}.create')) ?>
     </a>
 
     <button class="btn btn-danger oc-icon-trash-o"

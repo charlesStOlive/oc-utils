@@ -1,9 +1,7 @@
 <?php
 
 return [
-    '{{lower_name}}' => [
 {% for key,trad in trads  %}
         '{{key}}' => '{{trad}}',
 {% endfor %} 
-    ],
 ];

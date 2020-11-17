@@ -4,7 +4,7 @@
 
 {% for relation in configs.hasmany %}
 {{relation.relation_name}}s:
-    label: waka.{{relation.plugin_name}}::lang.parrain.{{relation.relation_name}}s
+    label: waka.{{relation.plugin_name}}::parrain.{{relation.relation_name}}s
     manage:
         form: $/waka/{{relation.plugin_name}}/models/{{relation.relation_name}}/fields.yaml
     view:

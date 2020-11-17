@@ -37,7 +37,7 @@ class CreateModelController extends GeneratorCommand
     protected $stubs = [
         //pour les models
         'model/model.stub'              => 'models/{{studly_name}}.php',
-        'model/temp_lang.stub'          => 'lang/fr/temp_{{lower_name}}.php',
+        'model/temp_lang.stub'          => 'lang/fr/{{lower_name}}.php',
         'model/fields.stub'             => 'models/{{lower_name}}/fields.yaml',
         'model/columns.stub'            => 'models/{{lower_name}}/columns.yaml',
         'model/create_table.stub'       => 'updates/create_{{snake_plural_name}}_table.php',
@@ -91,8 +91,9 @@ class CreateModelController extends GeneratorCommand
                 $relationName       = array_pop($array);
                 $pluginRelationName = array_pop($array);
                 $relation           = [
-                    'relation_name' => $item['var'],
-                    'plugin_name'   => $pluginRelationName,
+                    'relation_name'  => $item['var'],
+                    'relation_class' => camel_case($item['var']),
+                    'plugin_name'    => $pluginRelationName,
                 ];
                 $item['belong'] = $relation;
                 return $item;
@@ -101,8 +102,9 @@ class CreateModelController extends GeneratorCommand
                 $relationName       = array_pop($array);
                 $pluginRelationName = array_pop($array);
                 $relation           = [
-                    'relation_name' => $relationName,
-                    'plugin_name'   => $pluginRelationName,
+                    'relation_name'  => $relationName,
+                    'relation_class' => camel_case($relationName),
+                    'plugin_name'    => $pluginRelationName,
                 ];
                 $item['hasmany'] = $relation;
                 return $item;

@@ -3,7 +3,7 @@
 # ===================================
 
 # Record name
-name: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.form_name
+name: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.form_name
 
 # Model Form Field configuration
 form: $/{{lower_author}}/{{lower_plugin}}/models/{{lower_name}}/fields.yaml
@@ -28,4 +28,4 @@ update:
 
 # Preview page
 preview:
-    title: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.preview_name
+    title: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.preview_name

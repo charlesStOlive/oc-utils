@@ -49,23 +49,19 @@ class {{studly_ctname}} extends Controller
         
     ];
 
-    public $formConfig = 'config_form.yaml';
-    public $listConfig = 'config_list.yaml';
-{% if configs.relation %}
+    public $formConfig     = 'config_form.yaml';
+    public $listConfig     = 'config_list.yaml';
+{% if configs.hasmany %}
     public $relationConfig = 'config_relation.yaml';
-
 {% endif %}
 {% if configs.duplicate %}
     public $duplicateConfig = 'config_duplicate.yaml';
-
 {% endif %}
 {% if configs.behav_reorder %}
     public $reorderConfig  = 'config_reorder.yaml';
-
 {% endif %}
 {% if configs.side_bar %}
     public $sidebarInfoConfig = 'config_sidebar_info.yaml';
-
 {% endif %}
     
     public function __construct()
@@ -81,3 +77,4 @@ class {{studly_ctname}} extends Controller
     }
 {% endif %}
 }
+

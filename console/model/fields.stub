@@ -5,8 +5,29 @@
 fields:
 {% for field in fields  %}
     {{field.var}}:
-        label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.{{field.var}}
+        label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.var}}
         span: auto
+{% if field.hasmany %}
+        type: partial
+        path: field_{{field.var}}
+{% endif %}
+{% if field.belong %}
+        type: relation
+        placeholder: waka.utils::lang.global.placeholder
+        nameFrom: name
+{% endif %}
+{% if field.type == 'boolean' %}
+        type: switch
+{% endif %}
+{% if field.type == 'timestamp' %}
+        type: datepicker
+        mode: date
+{% endif %}
+{% if field.type == 'date' %}
+        type: datepicker
+        mode: date
+        ignoreTimezone: true
+{% endif %}
 {% if field.required %}
         required: true
 {% endif %}

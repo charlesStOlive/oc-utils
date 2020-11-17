@@ -24,7 +24,7 @@ duplication:
     #Les champs qui seront modifié dans le formulaire du popup 
     fields:
         name:
-          label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.name 
+          label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.name 
 
         # _keep:
         #   label: Dupliquer dans ce projet

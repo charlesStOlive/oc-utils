@@ -42,7 +42,7 @@ class {{studly_name}} extends Model
      */
     public $rules = [
 {% for key,required in requireds %}
-        '{{key}}' => '{{required}}',
+        '{{key}}' =>    '{{required}}',
 {% endfor %}
     ];
 
@@ -93,15 +93,15 @@ class {{studly_name}} extends Model
      */
     public $hasOne = [];
     public $hasMany = [
-{% for relation in config.hasmany %}
-    '{{relation_name| lowercase}}' => 'Waka\{{plugin_name}}\Models\{{relation_name}}',
+{% for relation in configs.hasmany %}
+        '{{relation.relation_name| lowercase}}s' => 'Waka\{{relation.plugin_name}}\Models\{{relation.relation_class | ucfirst}}',
 {% endfor %}
     ];
     public $hasOneThrough = [];
     public $hasManyThrough = [];
     public $belongsTo = [
-{% for relation in config.belong %}
-    '{{relation_name| lowercase}}' => 'Waka\{{plugin_name}}\Models\{{relation_name}}',
+{% for relation in configs.belong %}
+        '{{relation.relation_name| lowercase}}' => 'Waka\{{relation.plugin_name}}\Models\{{relation.relation_class | ucfirst}}',
 {% endfor %}
     ];
     public $belongsToMany = [];

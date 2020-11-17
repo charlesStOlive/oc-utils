@@ -10,10 +10,26 @@ columns:
 {% endif %}
 
 {% for column in columns  %}
-    {{column.var}}:
-        label: {{lower_author}}.{{lower_plugin}}::lang.{{lower_name}}.{{column.var}}
+{% if column.belong %}
+    {{column.var}}_r:
+        label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{column.var}}
         searchable: true
-
+        relation: {{column.var}}
+        select: name
+{% else %}
+    {{column.var}}:
+        label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{column.var}}
+{% if column.type == 'boolean' %}
+        type: switch
+{% endif %}
+{% if column.type == 'timestamp' %}
+        type: timesince
+{% endif %}
+{% if column.type == 'date' %}
+        type: time
+        ignoreTimezone: true
+{% endif %}
+{% endif %}
 {% endfor %} 
     updated_at:
         label: waka.utils::lang.global.updated_at
