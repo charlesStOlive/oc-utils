@@ -21,11 +21,11 @@ class ImportModelController implements WithMultipleSheets
     public function sheets(): array
     {
         $config = $this->model . '_config';
-        $data = $this->model . '_data';
+        $data   = $this->model . '_data';
 
         return [
             $config => $this->config = new configImport(),
-            $data => $this->data = new dataImport(),
+            $data   => $this->data = new dataImport(),
         ];
     }
 }
@@ -55,18 +55,22 @@ class DataImport implements ToCollection, WithHeadingRow
         $this->data = [];
         foreach ($rows as $row) {
             $obj = [
-                'var' => $row['var'] ?? null,
-                'name' => $row['nom'] ?? null,
-                'type' => $row['type'] ?? null,
-                'column' => $row['colonne'] ?? null,
+                'var'      => $row['var'] ?? null,
+                'name'     => $row['nom'] ?? null,
+                'type'     => $row['type'] ?? null,
+                'column'   => $row['colonne'] ?? null,
                 'nullable' => $row['est_null'] ?? null,
-                'field' => $row['champ'] ?? null,
+                'field'    => $row['champ'] ?? null,
                 'required' => $row['requis'] ?? null,
-                'title' => $row['titre'] ?? null,
-                'append' => $row['append'] ?? null,
-                'json' => $row['json'] ?? null,
-                'getter' => $row['getter'] ?? null,
+                'title'    => $row['titre'] ?? null,
+                'append'   => $row['append'] ?? null,
+                'json'     => $row['json'] ?? null,
+                'getter'   => $row['getter'] ?? null,
                 'relation' => $row['relation'] ?? null,
+                'default'  => $row['default'] ?? null,
+                'span'     => $row['span'] ?? null,
+                'lists'    => $row['lists'] ?? null,
+                'excel'    => $row['excel'] ?? null,
             ];
             array_push($this->data, $obj);
 

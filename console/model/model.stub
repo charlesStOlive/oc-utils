@@ -27,6 +27,13 @@ class {{studly_name}} extends Model
      */
     public $table = '{{lower_author}}_{{lower_plugin}}_{{snake_plural_name}}';
 
+{% if configs.no_timestamps %}
+    /**
+     * @var boolean supprime la gestion des timestamps
+     */
+    public $timestamps = false;
+{% endif %}
+
     /**
      * @var array Guarded fields
      */
@@ -42,7 +49,7 @@ class {{studly_name}} extends Model
      */
     public $rules = [
 {% for key,required in requireds %}
-        '{{key}}' =>    '{{required}}',
+        '{{key}}' => '{{required}}',
 {% endfor %}
     ];
 
@@ -78,8 +85,10 @@ class {{studly_name}} extends Model
      * @var array Attributes to be cast to Argon (Carbon) instances
      */
     protected $dates = [
+{% if not configs.no_timestamps %}
         'created_at',
         'updated_at',
+{% endif %}
 {% if configs.trait_soft_delete %}
         'deleted_at',
 {% endif %}
@@ -94,14 +103,14 @@ class {{studly_name}} extends Model
     public $hasOne = [];
     public $hasMany = [
 {% for relation in configs.hasmany %}
-        '{{relation.relation_name| lowercase}}s' => 'Waka\{{relation.plugin_name}}\Models\{{relation.relation_class | ucfirst}}',
+        '{{relation.relation_name| lowercase}}s' => 'Waka\{{relation.plugin_name| ucfirst }}\Models\{{relation.relation_class | ucfirst}}',
 {% endfor %}
     ];
     public $hasOneThrough = [];
     public $hasManyThrough = [];
     public $belongsTo = [
 {% for relation in configs.belong %}
-        '{{relation.relation_name| lowercase}}' => 'Waka\{{relation.plugin_name}}\Models\{{relation.relation_class | ucfirst}}',
+        '{{relation.relation_name| lowercase}}' => 'Waka\{{relation.plugin_name| ucfirst }}\Models\{{relation.relation_class | ucfirst}}',
 {% endfor %}
     ];
     public $belongsToMany = [];
@@ -112,12 +121,82 @@ class {{studly_name}} extends Model
     public $attachMany = [];
 
     /**
-    * GETTER
-    **/
+     *EVENTS
+     **/
+{% if configs.beforeValidate %}
+    public function beforeValidate()
+    {
+
+    }
+
+{% endif %}
+{% if configs.beforeSave %}
+    public function beforeSave() 
+    {
+
+    }
+
+{% endif %}
+{% if configs.afterSave %}
+    public function afterSave() 
+    {
+
+    }
+
+{% endif %}
+{% if configs.beforeCreate %}
+    public function beforeCreate() 
+    {
+
+    }
+
+{% endif %}
+{% if configs.afterCreate %}
+    public function afterCreate() 
+    {
+
+    }
+
+{% endif %}
+{% if configs.beforeDelete %}
+    public function beforeDelete() 
+    {
+
+    }
+
+{% endif %}
+{% if configs.afterDelete %}
+    public function afterDelete() 
+    {
+
+    }
+
+{% endif %}
+
+    /**
+     * GETTER
+     **/
 {% for key,getter in getters %}
-   public function get{{ key | camelCase | ucfirst }}Attribute() {
+   public function get{{ key | camelCase | ucfirst }}Attribute()
+   {
        return 'a configurer';
    }
 
 {% endfor %}
+
+    /**
+     * LISTS
+     **/
+{% for key,list in configs.lists %}
+    public function {{ list  }}()
+    {
+        return [];
+    }
+
+{% endfor %}
+
+    /**
+     * SCOPES
+     */
+     
 }

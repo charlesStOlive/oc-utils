@@ -49,8 +49,8 @@ class {{studly_ctname}} extends Controller
         
     ];
 
-    public $formConfig     = 'config_form.yaml';
-    public $listConfig     = 'config_list.yaml';
+    public $formConfig = 'config_form.yaml';
+    public $listConfig = 'config_list.yaml';
 {% if configs.hasmany %}
     public $relationConfig = 'config_relation.yaml';
 {% endif %}
@@ -58,7 +58,7 @@ class {{studly_ctname}} extends Controller
     public $duplicateConfig = 'config_duplicate.yaml';
 {% endif %}
 {% if configs.behav_reorder %}
-    public $reorderConfig  = 'config_reorder.yaml';
+    public $reorderConfig = 'config_reorder.yaml';
 {% endif %}
 {% if configs.side_bar %}
     public $sidebarInfoConfig = 'config_sidebar_info.yaml';

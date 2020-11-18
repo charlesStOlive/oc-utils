@@ -1,8 +1,8 @@
 <?php namespace {{studly_author}}\{{studly_plugin}}\Updates;
 
-use Schema;
 use October\Rain\Database\Schema\Blueprint;
 use October\Rain\Database\Updates\Migration;
+use Schema;
 
 class Create{{studly_plural_name}}Table extends Migration
 {
@@ -35,8 +35,9 @@ class Create{{studly_plural_name}}Table extends Migration
             //softDelete
             $table->softDeletes();
 {% endif %}
-            
+{% if not configs.no_timestamps %}
             $table->timestamps();
+{% endif %}
         });
     }
 

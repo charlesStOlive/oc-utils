@@ -6,7 +6,11 @@ fields:
 {% for field in fields  %}
     {{field.var}}:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.var}}
+{% if field.span %}
+        span: {{ field.span }}
+{% else %}
         span: auto
+{% endif %}
 {% if field.hasmany %}
         type: partial
         path: field_{{field.var}}
@@ -18,6 +22,18 @@ fields:
 {% endif %}
 {% if field.type == 'boolean' %}
         type: switch
+        default: true
+{% endif %}
+{% if field.type == 'text' and field.json  %}
+        type: taglist
+{% if field.lists  %}
+        options: {{field.lists}}
+{% else %}
+        options: options: ['1','2']
+{% endif %}
+{% endif %}
+{% if field.type == 'text' and not field.json  %}
+        type: textarea
 {% endif %}
 {% if field.type == 'timestamp' %}
         type: datepicker

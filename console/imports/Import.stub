@@ -1,0 +1,25 @@
+<?php namespace {{studly_author}}\{{studly_plugin}}\Classes\Imports;
+
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}};
+
+class {{studly_ctname}}Import implements ToCollection, WithHeadingRow
+{
+    public function collection(Collection $rows)
+    {
+        foreach ($rows as $row) {
+            ${{name}} = new {{studly_name}}();
+            ${{name}}->id = $row['id'] ?? null;
+{% for excel in excels %}
+{% if excel.type == 'liaison_id' or excel.type == 'string_id' %}
+            ${{name}}->{{excel.var}}_id = $row['{{excel.var}}_id'] ?? null;
+{% else %}
+            ${{name}}->{{excel.var}} = $row['{{excel.var}}'] ?? null;
+{% endif %}
+{% endfor %}
+            ${{name}}->save();
+        }
+    }
+}
