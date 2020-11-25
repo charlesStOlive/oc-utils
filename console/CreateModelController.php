@@ -37,20 +37,20 @@ class CreateModelController extends GeneratorCommand
 
     protected $controllerStubs = [
         'controller/_list_toolbar.stub' => 'controllers/{{lower_ctname}}/_list_toolbar.htm',
-        'controller/config_form.stub'   => 'controllers/{{lower_ctname}}/config_form.yaml',
-        'controller/config_list.stub'   => 'controllers/{{lower_ctname}}/config_list.yaml',
-        'controller/create.stub'        => 'controllers/{{lower_ctname}}/create.htm',
-        'controller/index.stub'         => 'controllers/{{lower_ctname}}/index.htm',
-        'controller/preview.stub'       => 'controllers/{{lower_ctname}}/preview.htm',
-        'controller/update.stub'        => 'controllers/{{lower_ctname}}/update.htm',
-        'controller/controller.stub'    => 'controllers/{{studly_ctname}}.php',
+        'controller/config_form.stub' => 'controllers/{{lower_ctname}}/config_form.yaml',
+        'controller/config_list.stub' => 'controllers/{{lower_ctname}}/config_list.yaml',
+        'controller/create.stub' => 'controllers/{{lower_ctname}}/create.htm',
+        'controller/index.stub' => 'controllers/{{lower_ctname}}/index.htm',
+        'controller/preview.stub' => 'controllers/{{lower_ctname}}/preview.htm',
+        'controller/update.stub' => 'controllers/{{lower_ctname}}/update.htm',
+        'controller/controller.stub' => 'controllers/{{studly_ctname}}.php',
 
     ];
     protected $stubs = [
-        'model/model.stub'        => 'models/{{studly_name}}.php',
-        'model/temp_lang.stub'    => 'lang/fr/{{lower_name}}.php',
-        'model/fields.stub'       => 'models/{{lower_name}}/fields.yaml',
-        'model/columns.stub'      => 'models/{{lower_name}}/columns.yaml',
+        'model/model.stub' => 'models/{{studly_name}}.php',
+        'model/temp_lang.stub' => 'lang/fr/{{lower_name}}.php',
+        'model/fields.stub' => 'models/{{lower_name}}/fields.yaml',
+        'model/columns.stub' => 'models/{{lower_name}}/columns.yaml',
         'model/create_table.stub' => 'updates/create_{{snake_plural_name}}_table.php',
     ];
 
@@ -63,7 +63,7 @@ class CreateModelController extends GeneratorCommand
     {
         $pluginCode = $this->argument('plugin');
 
-        $parts  = explode('.', $pluginCode);
+        $parts = explode('.', $pluginCode);
         $plugin = array_pop($parts);
         $author = array_pop($parts);
 
@@ -71,12 +71,19 @@ class CreateModelController extends GeneratorCommand
 
         // $values = $this->ask('Coller des valeurs excels ', true);
         // trace_log($values);
+
+        $fileName = 'start';
+
+        if ($this->option('file')) {
+            $fileName = $this->option('file');
+        }
+
         $importExcel = new \Waka\Utils\Classes\Imports\ImportModelController($model);
-        \Excel::import($importExcel, plugins_path('waka/wconfig/updates/files/start.xlsx'));
-        $rows   = new Collection($importExcel->data->data);
+        \Excel::import($importExcel, plugins_path('waka/wconfig/updates/files/' . $fileName . '.xlsx'));
+        $rows = new Collection($importExcel->data->data);
         $config = $importExcel->config->data;
 
-        $relationName       = null;
+        $relationName = null;
         $pluginRelationName = null;
 
         // if ($config['relation'] ?? false) {
@@ -88,24 +95,24 @@ class CreateModelController extends GeneratorCommand
         $rows = $rows->map(function ($item, $key) {
             $relation = $item['relation'] ?? null;
             if ($relation && str_contains($relation, ',parent')) {
-                $array              = explode(',', $relation);
-                $relationName       = array_pop($array);
+                $array = explode(',', $relation);
+                $relationName = array_pop($array);
                 $pluginRelationName = array_pop($array);
-                $relation           = [
-                    'relation_name'  => $item['var'],
+                $relation = [
+                    'relation_name' => $item['var'],
                     'relation_class' => camel_case($item['var']),
-                    'plugin_name'    => $pluginRelationName,
+                    'plugin_name' => $pluginRelationName,
                 ];
                 $item['belong'] = $relation;
                 return $item;
             } elseif ($relation) {
-                $array              = explode(',', $relation);
-                $relationName       = array_pop($array);
+                $array = explode(',', $relation);
+                $relationName = array_pop($array);
                 $pluginRelationName = array_pop($array);
-                $relation           = [
-                    'relation_name'  => $relationName,
+                $relation = [
+                    'relation_name' => $relationName,
                     'relation_class' => camel_case($relationName),
-                    'plugin_name'    => $pluginRelationName,
+                    'plugin_name' => $pluginRelationName,
                 ];
                 $item['hasmany'] = $relation;
                 return $item;
@@ -114,9 +121,9 @@ class CreateModelController extends GeneratorCommand
             }
         });
 
-        $config['belong']  = $rows->where('belong', '!=', null)->pluck('belong')->toArray();
+        $config['belong'] = $rows->where('belong', '!=', null)->pluck('belong')->toArray();
         $config['hasmany'] = $rows->where('hasmany', '!=', null)->pluck('hasmany')->toArray();
-        $config['lists']   = $rows->where('lists', '!=', null)->pluck('lists')->toArray();
+        $config['lists'] = $rows->where('lists', '!=', null)->pluck('lists')->toArray();
 
         // trace_log($rows->toArray());
         // trace_log($config);
@@ -126,18 +133,18 @@ class CreateModelController extends GeneratorCommand
         $dbs = $rows->where('type', '<>', null)->toArray();
 
         $columns = $rows->where('column', '<>', null)->toArray();
-        $fields  = $rows->where('field', '<>', null)->toArray();
+        $fields = $rows->where('field', '<>', null)->toArray();
 
         $excels = $rows->where('excel', '<>', null)->toArray();
 
-        $titles    = $rows->where('title', '<>', null)->pluck('name', 'var')->toArray();
-        $appends   = $rows->where('append', '<>', null)->pluck('name', 'var')->toArray();
-        $dates1    = $rows->where('type', '==', 'date');
-        $dates2    = $rows->where('type', '==', 'timestamp');
-        $dates     = $dates1->merge($dates2)->pluck('name', 'var')->toArray();
+        $titles = $rows->where('title', '<>', null)->pluck('name', 'var')->toArray();
+        $appends = $rows->where('append', '<>', null)->pluck('name', 'var')->toArray();
+        $dates1 = $rows->where('type', '==', 'date');
+        $dates2 = $rows->where('type', '==', 'timestamp');
+        $dates = $dates1->merge($dates2)->pluck('name', 'var')->toArray();
         $requireds = $rows->where('required', '<>', null)->pluck('required', 'var')->toArray();
-        $jsons     = $rows->where('json', '<>', null)->pluck('json', 'var')->toArray();
-        $getters   = $rows->where('getter', '<>', null)->pluck('json', 'var')->toArray();
+        $jsons = $rows->where('json', '<>', null)->pluck('json', 'var')->toArray();
+        $getters = $rows->where('getter', '<>', null)->pluck('json', 'var')->toArray();
 
         if (!$this->option('model')) {
             if ($config['behav_duplicate'] && !$this->option('model')) {
@@ -148,7 +155,7 @@ class CreateModelController extends GeneratorCommand
                 $this->stubs['controller/update_sidebar.stub'] = 'controllers/{{lower_ctname}}/update.htm';
             }
             if ($config['behav_reorder'] && !$this->option('model')) {
-                $this->stubs['controller/reorder.stub']        = 'controllers/{{lower_ctname}}/reorder.htm';
+                $this->stubs['controller/reorder.stub'] = 'controllers/{{lower_ctname}}/reorder.htm';
                 $this->stubs['controller/config_reorder.stub'] = 'controllers/{{lower_ctname}}/config_reorder.yaml';
             }
 
@@ -170,24 +177,24 @@ class CreateModelController extends GeneratorCommand
         }
 
         $all = [
-            'name'            => $model,
-            'ctname'          => $model . 's',
-            'author'          => $author,
-            'plugin'          => $plugin,
-            'configs'         => $config,
-            'trads'           => $trads,
-            'dbs'             => $dbs,
-            'columns'         => $columns,
-            'fields'          => $fields,
-            'titles'          => $titles,
-            'appends'         => $appends,
-            'dates'           => $dates,
-            'requireds'       => $requireds,
-            'jsons'           => $jsons,
-            'getters'         => $getters,
-            'excels'          => $excels,
+            'name' => $model,
+            'ctname' => $model . 's',
+            'author' => $author,
+            'plugin' => $plugin,
+            'configs' => $config,
+            'trads' => $trads,
+            'dbs' => $dbs,
+            'columns' => $columns,
+            'fields' => $fields,
+            'titles' => $titles,
+            'appends' => $appends,
+            'dates' => $dates,
+            'requireds' => $requireds,
+            'jsons' => $jsons,
+            'getters' => $getters,
+            'excels' => $excels,
             //
-            'relation_name'   => $relationName,
+            'relation_name' => $relationName,
             'relation_plugin' => $pluginRelationName,
 
         ];
@@ -200,7 +207,7 @@ class CreateModelController extends GeneratorCommand
     protected function processVars($vars)
     {
 
-        $cases     = ['upper', 'lower', 'snake', 'studly', 'camel', 'title'];
+        $cases = ['upper', 'lower', 'snake', 'studly', 'camel', 'title'];
         $modifiers = ['plural', 'singular', 'title'];
 
         foreach ($vars as $key => $var) {
@@ -209,11 +216,11 @@ class CreateModelController extends GeneratorCommand
                  * Apply cases, and cases with modifiers
                  */
                 foreach ($cases as $case) {
-                    $primaryKey        = $case . '_' . $key;
+                    $primaryKey = $case . '_' . $key;
                     $vars[$primaryKey] = $this->modifyString($case, $var);
 
                     foreach ($modifiers as $modifier) {
-                        $secondaryKey        = $case . '_' . $modifier . '_' . $key;
+                        $secondaryKey = $case . '_' . $modifier . '_' . $key;
                         $vars[$secondaryKey] = $this->modifyString([$modifier, $case], $var);
                     }
                 }
@@ -222,7 +229,7 @@ class CreateModelController extends GeneratorCommand
                  * Apply modifiers
                  */
                 foreach ($modifiers as $modifier) {
-                    $primaryKey        = $modifier . '_' . $key;
+                    $primaryKey = $modifier . '_' . $key;
                     $vars[$primaryKey] = $this->modifyString($modifier, $var);
                 }
             } else {
@@ -241,15 +248,15 @@ class CreateModelController extends GeneratorCommand
     public function makeOneStub($stubName, $destinationName, $tempVar)
     {
 
-        $sourceFile         = $this->getSourcePath() . '/' . $stubName;
-        $destinationFile    = $this->getDestinationPath() . '/' . $destinationName;
+        $sourceFile = $this->getSourcePath() . '/' . $stubName;
+        $destinationFile = $this->getDestinationPath() . '/' . $destinationName;
         $destinationContent = $this->files->get($sourceFile);
 
         /*
          * Parse each variable in to the destination content and path
          */
         $destinationContent = Twig::parse($destinationContent, $tempVar);
-        $destinationFile    = Twig::parse($destinationFile, $tempVar);
+        $destinationFile = Twig::parse($destinationFile, $tempVar);
 
         $this->makeDirectory($destinationFile);
 
@@ -286,6 +293,7 @@ class CreateModelController extends GeneratorCommand
         return [
             ['force', null, InputOption::VALUE_NONE, 'Overwrite existing files with generated ones.'],
             ['model', null, InputOption::VALUE_NONE, 'Crée uniquement le model'],
+            ['file', null, InputOption::REQUIRED, 'Fichier'],
         ];
     }
 }
