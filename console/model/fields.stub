@@ -2,9 +2,9 @@
 #  Form Field Definitions
 # ===================================
 
-fields:
+fields:    
 {% for field in fields  %}
-    {{field.var}}:
+    {{field.var}}{% if field.context %}@{{field.context}}{% endif %}:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.var}}
 {% if field.span %}
         span: {{ field.span }}
@@ -20,20 +20,14 @@ fields:
         placeholder: waka.utils::lang.global.placeholder
         nameFrom: name
 {% endif %}
-{% if field.type == 'boolean' %}
+{% if field.type == 'boolean' and not field.field_type %}
         type: switch
-        default: true
 {% endif %}
-{% if field.type == 'text' and field.json  %}
+{% if field.type == 'text' and field.json and not field.field_type  %}
         type: taglist
-{% if field.lists  %}
-        options: {{field.lists}}
-{% else %}
-        options: options: ['1','2']
+{% if not field.lists  %}
+        options: ['1','2']
 {% endif %}
-{% endif %}
-{% if field.type == 'text' and not field.json  %}
-        type: textarea
 {% endif %}
 {% if field.type == 'timestamp' %}
         type: datepicker
@@ -46,6 +40,24 @@ fields:
 {% endif %}
 {% if field.required %}
         required: true
+{% endif %}
+{% if field.field_type %}
+        type: {{ field.field_type }}
+{% endif %}
+{% for foption in field.field_options %}
+        {{foption}}
+{% endfor %}
+{% if field.lists  %}
+        options: {{field.lists}}
+{% endif %}
+{% if field.trigger  %}
+        trigger:
+            action: {{field.trigger.action}}
+            field: {{field.trigger.field}}
+            condition: checked
+{% endif %}
+{% if field.default  %}
+        default: {{field.default}}
 {% endif %}
 
 {% endfor %} 

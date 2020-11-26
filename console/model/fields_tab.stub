@@ -1,0 +1,68 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+tabs:
+    defaultTab: {{ configs.use_tab }}
+    icons: 
+{%for key,value in tabs %}
+        {{key}}: {{value}}
+{% endfor %}
+    fields:    
+{% for field in fields  %}
+        {{field.var}}{% if field.context %}@{{field.context}}{% endif %}:
+            label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.var}}
+{% if field.span %}
+            span: {{ field.span }}
+{% else %}
+            span: auto
+{% endif %}
+{% if field.hasmany %}
+            type: partial
+            path: field_{{field.var}}
+{% endif %}
+{% if field.belong %}
+            type: relation
+            placeholder: waka.utils::lang.global.placeholder
+            nameFrom: name
+{% endif %}
+{% if field.type == 'boolean' and not field.field_type %}
+            type: switch
+{% endif %}
+{% if field.type == 'text' and field.json and not field.field_type  %}
+            type: taglist
+{% if not field.lists  %}
+            options: ['1','2']
+{% endif %}
+{% endif %}
+{% if field.type == 'timestamp' %}
+            type: datepicker
+            mode: date
+{% endif %}
+{% if field.type == 'date' %}
+            type: datepicker
+            mode: date
+            ignoreTimezone: true
+{% endif %}
+{% if field.required %}
+            required: true
+{% endif %}
+{% if field.field_type %}
+            type: {{ field.field_type }}
+{% endif %}
+{% for foption in field.field_options %}
+            {{foption}}
+{% endfor %}
+{% if field.lists  %}
+            options: {{field.lists}}
+{% endif %}
+{% if field.trigger  %}
+            trigger:
+                action: {{field.trigger.action}}
+                field: {{field.trigger.field}}
+                condition: checked
+{% endif %}
+{% if field.default  %}
+            default: {{field.default}}
+{% endif %}
+
+{% endfor %} 

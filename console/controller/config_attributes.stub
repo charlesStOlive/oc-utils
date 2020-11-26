@@ -1,0 +1,15 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: {{studly_name}}
+
+# Model Class name
+modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}}
+type: email
+text_info: "Glissez une valeur dans la zone de saisie"
+
+
+
+

@@ -1,11 +1,18 @@
 <!-- Primary content -->
-<?php Block::put('form-contents') ?>
 <?php Block::put('breadcrumb') ?>
 <ul>
-    <li><a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}') ?>">{{title_name}}</a></li>
+    <li><a href="<?= Backend::url('system/settings/') ?>"><?= e(trans('waka.utils::lang.global.settings')) ?></a></li>
+    <li><a
+           href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}') ?>"><?= e(trans('{{lower_author}}.{{lower_plugin}}::{{lower_name}}.title')) ?></a>
+    </li>
     <li><?= e($this->pageTitle) ?></li>
 </ul>
 <?php Block::endPut() ?>
+<?php Block::put('form-contents') ?>
+<?php if (!$this->fatalError): ?>
+
+<?= Form::open(['class' => 'layout']) ?>
+
 <div class="layout-row">
     <?= $this->formRender() ?>
 </div>
@@ -27,9 +34,9 @@
                 class="btn btn-default">
             <?= e(trans('waka.utils::lang.global.save_close')) ?>
         </button>
-{% if fireViewEvents %}
+        {% if fireViewEvents %}
         <?= $this->fireViewEvent('backend.update.prod') ?>
-{% endif %}
+        {% endif %}
         <button type="button"
                 class="oc-icon-trash-o btn-icon danger pull-right"
                 data-request="onDelete"
@@ -40,20 +47,23 @@
         <?= $this->fireViewEvent('backend.down.update') ?>
         <?= $this->fireViewEvent('backend.update.prod') ?>
         <span class="btn-text">
-            <?= e(trans('waka.utils::lang.global.or')) ?> 
+            <?= e(trans('waka.utils::lang.global.or')) ?>
             <a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}') ?>">
-            <?= e(trans('waka.utils::lang.global.cancel')) ?></a>
+                <?= e(trans('waka.utils::lang.global.cancel')) ?></a>
         </span>
     </div>
 </div>
 <?php Block::endPut() ?>
 
-<?php Block::endPut() ?>
-
 <!-- Complimentary sidebar -->
 <?php Block::put('form-sidebar') ?>
 <div class="hide-tabs">
+    {% if configs.side_bar_attributes %}
+    <div id="sidebar_attributes"><?= $this->attributesRender() ?></div>
+    {% endif %}
+    {% if configs.side_bar_info %}
     <div id="sidebar_info"><?= $this->makePartial('sidebar_info') ?></div>
+    {% endif %}
 </div>
 
 
@@ -65,3 +75,14 @@
 <?= $this->makeLayout('form-with-sidebar') ?>
 <?= Form::close() ?>
 <?php Block::endPut() ?>
+
+<?php else: ?>
+<div class="control-breadcrumb">
+    <?= Block::placeholder('breadcrumb') ?>
+</div>
+<div class="padded-container">
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('backend/users') ?>"
+           class="btn btn-default"><?= e(trans('backend::lang.user.return')) ?></a></p>
+</div>
+<?php endif ?>

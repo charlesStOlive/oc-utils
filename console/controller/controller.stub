@@ -2,6 +2,9 @@
 
 use BackendMenu;
 use Backend\Classes\Controller;
+{% if configs.controller_in_settings %}
+use System\Classes\SettingsManager;
+{% endif %}
 
 /**
  * {{title_name}} Back-end Controller
@@ -15,10 +18,13 @@ class {{studly_ctname}} extends Controller
         'Backend.Behaviors.RelationController',
 {% endif %}
 {% if configs.action %}
-         'Waka.Utils.Behaviors.PopupActions',
+        'Waka.Utils.Behaviors.PopupActions',
 {% endif %}
-{% if configs.side_bar %}
+{% if configs.side_bar_info %}
          'Waka.Utils.Behaviors.SidebarInfoBehavior',
+{% endif %}
+{% if configs.side_bar_attributes %}
+          'waka.Utils.Behaviors.SideBarAttributesBehavior',
 {% endif %}
 {% if configs.behav_word %}
         'Waka.Worder.Behaviors.WordBehavior',
@@ -43,7 +49,7 @@ class {{studly_ctname}} extends Controller
 {% endif %}
 {% if configs.behav_cloudis %}
 {% endif %}
-{% if configs.duplicate %}
+{% if configs.behav_duplicate %}
         'Waka.Utils.Behaviors.DuplicateModel',
 {% endif %}
         
@@ -54,26 +60,47 @@ class {{studly_ctname}} extends Controller
 {% if configs.hasmany %}
     public $relationConfig = 'config_relation.yaml';
 {% endif %}
-{% if configs.duplicate %}
+{% if configs.behav_duplicate %}
     public $duplicateConfig = 'config_duplicate.yaml';
 {% endif %}
 {% if configs.behav_reorder %}
     public $reorderConfig = 'config_reorder.yaml';
 {% endif %}
-{% if configs.side_bar %}
+{% if configs.side_bar_info %}
     public $sidebarInfoConfig = 'config_sidebar_info.yaml';
+{% endif %}
+{% if configs.side_bar_attributes  %}
+    public $sidebarAttributesConfig = 'config_attributes.yaml';    
 {% endif %}
     
     public function __construct()
     {
         parent::__construct();
+{% if configs.controller_in_settings %}
+        BackendMenu::setContext('October.System', 'system', 'settings');
+        SettingsManager::setContext('{{studly_author}}.{{studly_plugin}}', '{{studly_ctname}}');
+{% else %}
         BackendMenu::setContext('{{studly_author}}.{{studly_plugin}}', '{{lower_plugin}}', 'side-menu-{{lower_ctname}}');
+{% endif %}
     }
-{% if configs.side_bar %}
+
+{% if configs.side_bar_attributes or  configs.side_bar_info or  configs.declare_update  %}
     public function update($id)
     {
         $this->bodyClass = 'compact-container';
         return $this->asExtension('FormController')->update($id);
+    }
+
+{% endif %}
+{% if configs.side_bar_attributes or configs.declare_update_onSave  %}
+    public function update_onSave($recordId = null)
+    {
+        $this->asExtension('FormController')->update_onSave($recordId);
+{% if configs.side_bar_attributes  %}
+        return [
+            '#sidebar_attributes' => $this->attributesRender($this->params[0]),
+        ];
+{% endif %}
     }
 {% endif %}
 }

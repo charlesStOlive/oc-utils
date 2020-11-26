@@ -9,7 +9,7 @@ list: $/{{lower_author}}/{{lower_plugin}}/models/{{lower_name}}/columns.yaml
 modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}}
 
 # List Title
-title: Manage {{title_plural_name}}
+title: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.title
 
 # Link URL for each record
 recordUrl: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/update/:id
@@ -34,9 +34,9 @@ showSorting: true
 #     column: created_at
 #     direction: desc
 {% if configs.behav_reorder %}
- defaultSort:
-     column: sort_order
-     direction: asc
+defaultSort:
+    column: sort_order
+    direction: asc
 {% endif %}
 # Display checkboxes next to each record
 showCheckboxes: true

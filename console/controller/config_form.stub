@@ -16,13 +16,13 @@ defaultRedirect: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}
 
 # Create page
 create:
-    title: Create {{title_singular_name}}
+    title: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.create
     redirect: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/update/:id
     redirectClose: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}
 
 # Update page
 update:
-    title: Edit {{title_singular_name}}
+    title: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.update
     redirect: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}
     redirectClose: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}
 

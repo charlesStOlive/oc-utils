@@ -7,7 +7,7 @@
 modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}}
 
 name: {{lower_ctname}}
-title: waka.utils::lang.global.duplicate_the {{studly_name}}
+title: waka.utils::lang.global.duplicate_the{{studly_name}}
 redirect: backend/{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/update/
 
 duplication:

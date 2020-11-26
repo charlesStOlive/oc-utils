@@ -1,6 +1,6 @@
 <?php Block::put('breadcrumb') ?>
 <ul>
-    <li><a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}') ?>">{{title_name}}</a></li>
+    <li><a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}') ?>"><?= e(trans('{{lower_author}}.{{lower_plugin}}::{{lower_name}}.preview_name')) ?></a></li>
     <li><?= e($this->pageTitle) ?></li>
 </ul>
 <?php Block::endPut() ?>

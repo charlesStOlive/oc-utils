@@ -34,6 +34,7 @@ return [
         'save_indicator' => "Sauvegarde en cours",
         'delete' => 'Supprimer',
         'delete_indicator' => "Effacement en cours",
+        "creating_indicator" => "Création en cours",
         'save_close' => 'Sauver & fermer',
         'create' => 'Créer',
         'create_close' => 'Créer & fermer',
@@ -58,6 +59,7 @@ return [
         'is_ex' => 'Exemple',
         "prompt_record" => "Cliquez sur l'icône pour choisir un enregistrement",
         "find_record" => "Trouver un enregistrement",
+        "settings" => "Réglages",
     ],
     'datasource' => [
         'title' => 'Source de données',

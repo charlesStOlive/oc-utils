@@ -93,6 +93,25 @@ class CreateModelController extends GeneratorCommand
         // }
 
         $rows = $rows->map(function ($item, $key) {
+            $trigger = $item['trigger'] ?? null;
+            if ($trigger) {
+                if (starts_with($trigger, '!')) {
+                    $item['trigger'] = [
+                        'field' => str_replace('!', "", $trigger),
+                        'action' => 'hide',
+                    ];
+                } else {
+                    $item['trigger'] = [
+                        'field' => $trigger,
+                        'action' => 'show',
+                    ];
+                }
+            }
+            $options = $item['field_options'] ?? null;
+            if ($options) {
+                $array = explode(',', $options);
+                $item['field_options'] = $array;
+            }
             $relation = $item['relation'] ?? null;
             if ($relation && str_contains($relation, ',parent')) {
                 $array = explode(',', $relation);
@@ -104,7 +123,6 @@ class CreateModelController extends GeneratorCommand
                     'plugin_name' => $pluginRelationName,
                 ];
                 $item['belong'] = $relation;
-                return $item;
             } elseif ($relation) {
                 $array = explode(',', $relation);
                 $relationName = array_pop($array);
@@ -115,10 +133,9 @@ class CreateModelController extends GeneratorCommand
                     'plugin_name' => $pluginRelationName,
                 ];
                 $item['hasmany'] = $relation;
-                return $item;
-            } else {
-                return $item;
             }
+            return $item;
+
         });
 
         $config['belong'] = $rows->where('belong', '!=', null)->pluck('belong')->toArray();
@@ -135,6 +152,16 @@ class CreateModelController extends GeneratorCommand
         $columns = $rows->where('column', '<>', null)->toArray();
         $fields = $rows->where('field', '<>', null)->toArray();
 
+        $tabs = [];
+        foreach ($config as $key => $value) {
+            if (starts_with($key, 'tab::')) {
+                $key = str_replace('tab::', "", $key);
+                $tabs[$key] = $value;
+            }
+
+        }
+        trace_log($tabs);
+
         $excels = $rows->where('excel', '<>', null)->toArray();
 
         $titles = $rows->where('title', '<>', null)->pluck('name', 'var')->toArray();
@@ -147,12 +174,19 @@ class CreateModelController extends GeneratorCommand
         $getters = $rows->where('getter', '<>', null)->pluck('json', 'var')->toArray();
 
         if (!$this->option('model')) {
+            $this->stubs = array_merge($this->stubs, $this->controllerStubs);
             if ($config['behav_duplicate'] && !$this->option('model')) {
                 $this->stubs['controller/config_duplicate.stub'] = 'controllers/{{lower_ctname}}/config_duplicate.yaml';
             }
-            if ($config['side_bar'] && !$this->option('model')) {
+            if ($config['side_bar_attributes'] || $config['side_bar_info']) {
                 unset($this->stubs['controller/update.stub']);
                 $this->stubs['controller/update_sidebar.stub'] = 'controllers/{{lower_ctname}}/update.htm';
+            }
+            if ($config['side_bar_attributes']) {
+                $this->stubs['controller/config_attributes.stub'] = 'controllers/{{lower_ctname}}/config_attributes.yaml';
+            }
+            if ($config['side_bar_info']) {
+                $this->stubs['controller/config_sidebar_info.stub'] = 'controllers/{{lower_ctname}}/config_sidebar_info.yaml';
             }
             if ($config['behav_reorder'] && !$this->option('model')) {
                 $this->stubs['controller/reorder.stub'] = 'controllers/{{lower_ctname}}/reorder.htm';
@@ -169,7 +203,11 @@ class CreateModelController extends GeneratorCommand
                 }
                 $this->stubs['controller/config_relation.stub'] = 'controllers/{{lower_ctname}}/config_relation.yaml';
             }
-            $this->stubs = array_merge($this->stubs, $this->controllerStubs);
+
+        }
+        if ($config['use_tab']) {
+            unset($this->stubs['model/fields.stub']);
+            $this->stubs['model/fields_tab.stub'] = 'models/{{lower_name}}/fields.yaml';
         }
 
         if ($excels) {
@@ -193,6 +231,7 @@ class CreateModelController extends GeneratorCommand
             'jsons' => $jsons,
             'getters' => $getters,
             'excels' => $excels,
+            'tabs' => $tabs,
             //
             'relation_name' => $relationName,
             'relation_plugin' => $pluginRelationName,
@@ -293,7 +332,7 @@ class CreateModelController extends GeneratorCommand
         return [
             ['force', null, InputOption::VALUE_NONE, 'Overwrite existing files with generated ones.'],
             ['model', null, InputOption::VALUE_NONE, 'Crée uniquement le model'],
-            ['file', null, InputOption::REQUIRED, 'Fichier'],
+            ['file', null, InputOption::VALUE_REQUIRED, 'Fichier'],
         ];
     }
 }

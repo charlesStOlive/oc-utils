@@ -2,6 +2,6 @@
 
 return [
 {% for key,trad in trads  %}
-        '{{key}}' => '{{trad}}',
+    '{{key}}' => '{{trad}}',
 {% endfor %} 
 ];
