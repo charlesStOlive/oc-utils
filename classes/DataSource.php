@@ -87,6 +87,10 @@ class DataSource
             // \Flash::error("Attention le test_id n'existe pas");
             $this->model = $this->class::first();
         }
+        if (!$this->model) {
+            // \Flash::error("Attention le test_id n'existe pas");
+            throw new \SystemException("Il n'y a pas de modele disponible pour : " . $this->class);
+        }
         $this->modelName = $this->model;
         $this->wimages = new Wimages($this->model, $this->relations);
 

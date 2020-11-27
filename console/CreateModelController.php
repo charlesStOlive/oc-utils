@@ -80,22 +80,31 @@ class CreateModelController extends GeneratorCommand
         if ($this->option('file')) {
             $fileName = $this->option('file');
         }
-        $make_model = true;
-        $make_Phpcontroller = true;
-        $make_Htmcontroller = true;
-        $make_update = true;
-        $make_lang = true;
-        $make_field = true;
-        $make_attributes = true;
+
+        $maker = [
+            'model' => true,
+            'lang_field_attributes' => true,
+            'update' => true,
+            'controller' => true,
+            'html_file_controller' => true,
+            'excel' => true,
+
+        ];
 
         if ($this->option('option')) {
-            $make_model = $this->confirm('Injecter le modèle', false);
-            $make_controller = $this->confirm('Injecter le controller', false);
-            $make_update = $this->confirm('Injecter le update', false);
-            $make_lang = $this->confirm('Injecter le lang', false);
-            $make_field = $this->confirm('Injecter le field', false);
-            $make_attributes = $this->confirm('Injecter le attributes', false);
-
+            $maker = [
+                'model' => false,
+                'lang_field_attributes' => false,
+                'update' => false,
+                'controller' => false,
+                'html_file_controller' => false,
+                'excel' => false,
+            ];
+            $types = $this->choice('Database type', ['model', 'lang_field_attributes', 'update', 'controller', 'html_file_controller', 'excel'], 0, null, true);
+            trace_log($types);
+            foreach ($types as $type) {
+                $maker[$type] = true;
+            }
         }
 
         $importExcel = new \Waka\Utils\Classes\Imports\ImportModelController($model);
@@ -217,27 +226,23 @@ class CreateModelController extends GeneratorCommand
         $jsons = $rows->where('json', '<>', null)->pluck('json', 'var')->toArray();
         $getters = $rows->where('getter', '<>', null)->pluck('json', 'var')->toArray();
 
-        if ($make_model) {
+        if ($maker['model']) {
             $this->stubs['model/model.stub'] = 'models/{{studly_name}}.php';
         }
-        if ($make_update) {
+        if ($maker['update']) {
             $this->stubs['model/create_table.stub'] = 'updates/create_{{snake_plural_name}}_table.php';
         }
-        if ($make_attributes) {
+        if ($maker['lang_field_attributes']) {
             $this->stubs['model/attributes.stub'] = 'models/{{lower_name}}/attributes.yaml';
-        }
-        if ($make_field) {
             $this->stubs = array_merge($this->stubs, $this->modelYamlstubs);
             if ($config['use_tab']) {
                 unset($this->stubs['model/fields.stub']);
                 $this->stubs['model/fields_tab.stub'] = 'models/{{lower_name}}/fields.yaml';
+                $this->stubs['model/temp_lang.stub'] = 'lang/fr/{{lower_name}}.php';
             }
         }
-        if ($make_lang) {
-            $this->stubs['model/temp_lang.stub'] = 'lang/fr/{{lower_name}}.php';
-        }
 
-        if ($make_Phpcontroller) {
+        if ($maker['controller']) {
             $this->stubs = array_merge($this->stubs, $this->controllerPhpStubs);
             if ($config['behav_duplicate']) {
                 $this->stubs['controller/config_duplicate.stub'] = 'controllers/{{lower_ctname}}/config_duplicate.yaml';
@@ -263,7 +268,7 @@ class CreateModelController extends GeneratorCommand
                 $this->stubs['controller/config_relation.stub'] = 'controllers/{{lower_ctname}}/config_relation.yaml';
             }
 
-            if ($make_Htmcontroller) {
+            if ($maker['html_file_controller']) {
                 $this->stubs = array_merge($this->stubs, $this->controllerHtmStubs);
                 if ($config['side_bar_attributes'] || $config['side_bar_info']) {
                     unset($this->stubs['controller/update.stub']);
@@ -277,7 +282,7 @@ class CreateModelController extends GeneratorCommand
 
         }
 
-        if ($excels) {
+        if ($maker['excel']) {
             $this->stubs['imports/import.stub'] = 'classes/imports/{{studly_ctname}}Import.php';
         }
 

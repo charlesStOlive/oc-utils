@@ -43,6 +43,7 @@ class ImagesList extends FormWidgetBase
 
         $noImage = true;
         $ds = new DataSource($this->model->data_source_id, 'id');
+        trace_log($ds->name);
         $ds->instanciateModel(); // instancie l'exemple
         $imagesList = $ds->wimages->getAllPicturesKey();
         if ($imagesList) {
@@ -76,7 +77,7 @@ class ImagesList extends FormWidgetBase
         $ds->instanciateModel();
 
         //liste des images de la classe depuis le datasource
-        $this->imageWidget->getField('source')->options = $ds->wimages->getAllPicturesKey();;
+        $this->imageWidget->getField('source')->options = $ds->wimages->getAllPicturesKey();
         $this->vars['imageWidget'] = $this->imageWidget;
         return $this->makePartial('popup');
 
@@ -86,8 +87,6 @@ class ImagesList extends FormWidgetBase
     {
         $ds = new DataSource($this->model->data_source_id, 'id');
         $ds->instanciateModel();
-        
-        
 
     }
 
@@ -137,7 +136,7 @@ class ImagesList extends FormWidgetBase
         $data = $datas->where('code', $code)->first();
 
         $this->imageWidget = $this->createFormWidget();
-        $this->imageWidget->getField('source')->options =$ds->wimages->getAllPicturesKey();
+        $this->imageWidget->getField('source')->options = $ds->wimages->getAllPicturesKey();
         // $this->imageWidget->getField('crop')->options = \Config::get('waka.cloudis::ImageOptions.crop.options');
         // $this->imageWidget->getField('gravity')->options = \Config::get('waka.cloudis::ImageOptions.gravity.options');
         $this->imageWidget->getField('code')->value = $data['code'];
