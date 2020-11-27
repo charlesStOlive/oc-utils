@@ -1,0 +1,18 @@
+# ===================================
+#  Lot Behavior Config
+# ===================================
+
+
+# Model Class name
+modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}}
+#Autorisation
+allEnabled: false
+filteredEnabled: true
+#Champs
+form:
+    fields: 
+        # var:
+        #     label: waka.crpf::lang.courrier.courrier_state
+        #     type: relation
+        #     nameFrom: name
+

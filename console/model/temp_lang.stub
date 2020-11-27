@@ -1,7 +1,10 @@
 <?php
 
 return [
-{% for key,trad in trads  %}
-    '{{key}}' => '{{trad}}',
+{% for trad in trads  %}
+    '{{trad.var}}' => '{{trad.name}}',
+{% if trad.comment is not null %}
+    '{{trad.var}}_com' => '{{trad.comment}}',
+{% endif %}
 {% endfor %} 
 ];

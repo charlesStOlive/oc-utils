@@ -21,12 +21,29 @@ class {{studly_name}} extends Model
 {% if configs.trait_cloudi %}
     use \Waka\Cloudis\Classes\Traits\Cloudi;
 {% endif %}
+{% if configs.trait_datasource %}
+    use \Waka\Utils\Classes\Traits\DataSourceHelpers;
+{% endif %}
+{% if configs.trait_workflow %}
+    use \ZeroDaHero\LaravelWorkflow\Traits\WorkflowTrait;
+{% endif %}
 
     /**
      * @var string The database table used by the model.
      */
     public $table = '{{lower_author}}_{{lower_plugin}}_{{snake_plural_name}}';
 
+{% if configs.string_id %}
+    //ID string
+    public $incrementing = false;
+    protected $keyType = 'string';
+{% endif %}
+{% if configs.trait_purgeable %}
+    public $implement = [
+        'October.Rain.Database.Behaviors.Purgeable',
+    ];
+    public $purgeable = ['change_state'];
+{% endif %}
 {% if configs.no_timestamps %}
     /**
      * @var boolean supprime la gestion des timestamps
@@ -50,6 +67,17 @@ class {{studly_name}} extends Model
     public $rules = [
 {% for key,required in requireds %}
         '{{key}}' => '{{required}}',
+{% endfor %}
+    ];
+
+    /**
+     * @var array attributes send to datasource for creating document
+     */
+    public $attributesToDs = [
+{% for field in attributes %}
+{%if field.type is null%}
+        '{{field.var}}',
+{% endif %}
 {% endfor %}
     ];
 
@@ -110,15 +138,27 @@ class {{studly_name}} extends Model
     public $hasManyThrough = [];
     public $belongsTo = [
 {% for relation in configs.belong %}
+{% if relation.type == 'user' %}
+        '{{relation.relation_name| lowercase}}' => '{{relation.relation_class}}',
+{% else %}
         '{{relation.relation_name| lowercase}}' => 'Waka\{{relation.plugin_name| ucfirst }}\Models\{{relation.relation_class | ucfirst}}',
+{% endif %}
 {% endfor %}
     ];
     public $belongsToMany = [];
     public $morphTo = [];
     public $morphOne = [];
     public $morphMany = [];
-    public $attachOne = [];
-    public $attachMany = [];
+    public $attachOne = [
+{% for relation in configs.attachOne %}
+        '{{relation.relation_name| lowercase}}' => '{{relation.relation_class}}',
+{% endfor %}
+    ];
+    public $attachMany = [
+{% for relation in configs.attachMany %}
+        '{{relation.relation_name| lowercase}}' => '{{relation.relation_class}}',
+{% endfor %}
+    ];
 
     /**
      *EVENTS
@@ -174,17 +214,6 @@ class {{studly_name}} extends Model
 {% endif %}
 
     /**
-     * GETTER
-     **/
-{% for key,getter in getters %}
-   public function get{{ key | camelCase | ucfirst }}Attribute()
-   {
-       return 'a configurer';
-   }
-
-{% endfor %}
-
-    /**
      * LISTS
      **/
 {% for key,list in configs.lists %}
@@ -192,11 +221,23 @@ class {{studly_name}} extends Model
     {
         return [];
     }
+{% endfor %}
 
+    /**
+     * GETTER
+     **/
+{% for key,getter in getters %}
+    public function get{{ key | camelCase | ucfirst }}Attribute()
+    {
+        return 'a configurer';
+    }
 {% endfor %}
 
     /**
      * SCOPES
      */
-     
+
+    /**
+     * SETTERS
+     */
 }

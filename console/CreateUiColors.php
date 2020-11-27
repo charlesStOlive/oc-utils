@@ -62,12 +62,12 @@ class CreateUiColors extends GeneratorCommand
      */
     protected function prepareVars()
     {
-        // $primary = $this->ask('primary');
-        // $secondary = $this->ask('secondary');
+        $primary = $this->ask('primary');
+        $secondary = $this->ask('secondary');
 
         return [
-            'primary' => '#659c35',
-            'secondary' => '#be9c00',
+            'primary' => $primary,
+            'secondary' => $secondary,
         ];
     }
 

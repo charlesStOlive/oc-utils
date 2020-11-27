@@ -3,6 +3,7 @@
 use Backend;
 use Event;
 use Lang;
+use System\Classes\CombineAssets;
 use System\Classes\PluginBase;
 use View;
 use Waka\Utils\Classes\DataSourceList;
@@ -66,6 +67,10 @@ class Plugin extends PluginBase
         $this->registerConsoleCommand('waka.injector', 'Waka\Utils\Console\CreateInjector');
         $this->registerConsoleCommand('waka.mc', 'Waka\Utils\Console\CreateModelController');
         $this->registerConsoleCommand('waka.uicolors', 'Waka\Utils\Console\CreateUiColors');
+        CombineAssets::registerCallback(function ($combiner) {
+            $combiner->registerBundle('$/waka/wconfig/assets/css/simple_grid/pdf.less');
+            $combiner->registerBundle('$/waka/wconfig/assets/css/simple_grid/email.less');
+        });
 
     }
 

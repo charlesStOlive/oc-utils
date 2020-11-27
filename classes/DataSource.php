@@ -84,7 +84,7 @@ class DataSource
             throw new \SystemException('Il manque le test_id dans dataConfig');
         }
         if (!$this->model) {
-            \Flash::error("Attention le test_id n'existe pas");
+            // \Flash::error("Attention le test_id n'existe pas");
             $this->model = $this->class::first();
         }
         $this->modelName = $this->model;

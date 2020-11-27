@@ -57,6 +57,8 @@ class DataImport implements ToCollection, WithHeadingRow
             $obj = [
                 'var' => $row['var'] ?? null,
                 'name' => $row['nom'] ?? null,
+                'comment' => $row['comment'] ?? null,
+                'attribute' => $row['attribute'] ?? null,
                 'type' => $row['type'] ?? null,
                 'column' => $row['colonne'] ?? null,
                 'nullable' => $row['est_null'] ?? null,
@@ -75,6 +77,7 @@ class DataImport implements ToCollection, WithHeadingRow
                 'lists' => $row['lists'] ?? null,
                 'trigger' => $row['trigger'] ?? null,
                 'excel' => $row['excel'] ?? null,
+                'version' => $row['version'] ?? null,
             ];
             array_push($this->data, $obj);
 

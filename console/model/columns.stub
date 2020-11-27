@@ -19,6 +19,7 @@ columns:
 {% else %}
     {{column.var}}:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{column.var}}
+{% endif %}
 {% if column.type == 'boolean' %}
         type: switch
 {% endif %}
@@ -29,6 +30,12 @@ columns:
         type: time
         ignoreTimezone: true
 {% endif %}
+{% if column.type is null and column.attribute is not null %}
+        searchable: false
+        sortable: false
+{% endif %}
+{% if column.column == 'invisible' %}
+        invisible: true
 {% endif %}
 {% endfor %} 
     updated_at:

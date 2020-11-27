@@ -16,38 +16,60 @@ tabs:
 {% else %}
             span: auto
 {% endif %}
-{% if field.hasmany %}
+{% if field.field_type and (field.field_type == 'attachMany' or field.field_type == 'attachOne')  %}
+            type: fileupload
+            mode: image
+            imageHeight: 260
+            thumbOptions:
+                mode: auto
+                quality: 90
+                sharpen: 0
+                interlace: false
+                extension: auto
+{% elseif field.field_type and field.field_type == 'recordfinder'  %}
+            type: recordfinder
+            list: ~/plugins/{{lower_author}}/{{lower_plugin}}/models/{{field.var}}/columns_for_{{lower_name}}.yaml
+            recordsPerPage: 10
+            title: waka.utils::lang.global.find_record
+            prompt: waka.utils::lang.global.prompt_record
+            keyFrom: id
+            nameFrom: name
+            useRelation: true
+{% elseif field.field_type  %}
+            type: {{ field.field_type }}
+{% elseif field.hasmany %}
             type: partial
             path: field_{{field.var}}
-{% endif %}
-{% if field.belong %}
+{% elseif field.belong %}
             type: relation
             placeholder: waka.utils::lang.global.placeholder
             nameFrom: name
-{% endif %}
-{% if field.type == 'boolean' and not field.field_type %}
+{% elseif field.hasmany %}
+            type: partial
+            path: field_{{field.var}}
+{% elseif field.belong %}
+            type: relation
+            placeholder: waka.utils::lang.global.placeholder
+            nameFrom: name
+{% elseif field.type == 'boolean' and not field.field_type %}
             type: switch
-{% endif %}
-{% if field.type == 'text' and field.json and not field.field_type  %}
+{% elseif field.type == 'text' and field.json and not field.field_type  %}
             type: taglist
 {% if not field.lists  %}
             options: ['1','2']
 {% endif %}
-{% endif %}
-{% if field.type == 'timestamp' %}
+{% elseif field.type == 'timestamp' %}
             type: datepicker
             mode: date
-{% endif %}
-{% if field.type == 'date' %}
+{% elseif field.type == 'date' %}
             type: datepicker
             mode: date
             ignoreTimezone: true
+{% elseif field.field_type %}
+            type: {{ field.field_type }}
 {% endif %}
 {% if field.required %}
             required: true
-{% endif %}
-{% if field.field_type %}
-            type: {{ field.field_type }}
 {% endif %}
 {% for foption in field.field_options %}
             {{foption}}
@@ -64,5 +86,10 @@ tabs:
 {% if field.default  %}
             default: {{field.default}}
 {% endif %}
-
+{% if field.comment  %}
+            commentAbove: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.var}}_com
+{% endif %}
+{% if field.field != '1'  %}
+            permissions: [{{field.field}}]
+{% endif %}
 {% endfor %} 

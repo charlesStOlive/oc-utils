@@ -21,10 +21,10 @@ class {{studly_ctname}} extends Controller
         'Waka.Utils.Behaviors.PopupActions',
 {% endif %}
 {% if configs.side_bar_info %}
-         'Waka.Utils.Behaviors.SidebarInfoBehavior',
+        'Waka.Utils.Behaviors.SidebarInfoBehavior',
 {% endif %}
 {% if configs.side_bar_attributes %}
-          'waka.Utils.Behaviors.SideBarAttributesBehavior',
+        'waka.Utils.Behaviors.SideBarAttributesBehavior',
 {% endif %}
 {% if configs.behav_word %}
         'Waka.Worder.Behaviors.WordBehavior',
@@ -52,6 +52,9 @@ class {{studly_ctname}} extends Controller
 {% if configs.behav_duplicate %}
         'Waka.Utils.Behaviors.DuplicateModel',
 {% endif %}
+{% if configs.behav_lots %}
+        'Waka.Utils.Behaviors.TraitementsLots',
+{% endif %}
         
     ];
 
@@ -71,6 +74,9 @@ class {{studly_ctname}} extends Controller
 {% endif %}
 {% if configs.side_bar_attributes  %}
     public $sidebarAttributesConfig = 'config_attributes.yaml';    
+{% endif %}
+{% if configs.behav_lots  %}
+    public $lotsConfig = 'config_lots.yaml'; 
 {% endif %}
     
     public function __construct()
