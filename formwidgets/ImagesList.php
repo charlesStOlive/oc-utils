@@ -43,7 +43,7 @@ class ImagesList extends FormWidgetBase
 
         $noImage = true;
         $ds = new DataSource($this->model->data_source_id, 'id');
-        trace_log($ds->name);
+        //trace_log($ds->name);
         $ds->instanciateModel(); // instancie l'exemple
         $imagesList = $ds->wimages->getAllPicturesKey();
         if ($imagesList) {

@@ -101,7 +101,7 @@ class CreateModelController extends GeneratorCommand
                 'excel' => false,
             ];
             $types = $this->choice('Database type', ['model', 'lang_field_attributes', 'update', 'controller', 'html_file_controller', 'excel'], 0, null, true);
-            trace_log($types);
+            //trace_log($types);
             foreach ($types as $type) {
                 $maker[$type] = true;
             }
@@ -195,8 +195,8 @@ class CreateModelController extends GeneratorCommand
         $config['attachMany'] = $rows->where('attachMany', '!=', null)->pluck('attachMany')->toArray();
         $config['lists'] = $rows->where('lists', '!=', null)->pluck('lists')->toArray();
 
-        trace_log($rows->toArray());
-        trace_log($config);
+        /**/trace_log($rows->toArray());
+        /**/trace_log($config);
 
         $trads = $rows->where('name', '<>', null)->toArray();
 
@@ -227,22 +227,26 @@ class CreateModelController extends GeneratorCommand
         $getters = $rows->where('getter', '<>', null)->pluck('json', 'var')->toArray();
 
         if ($maker['model']) {
+            /**/trace_log('on fait le modele');
             $this->stubs['model/model.stub'] = 'models/{{studly_name}}.php';
         }
         if ($maker['update']) {
+            /**/trace_log('on fait le migrateur du modele');
             $this->stubs['model/create_table.stub'] = 'updates/create_{{snake_plural_name}}_table.php';
         }
         if ($maker['lang_field_attributes']) {
+            /**/trace_log('on fait les langues fields et attributs');
             $this->stubs['model/attributes.stub'] = 'models/{{lower_name}}/attributes.yaml';
             $this->stubs = array_merge($this->stubs, $this->modelYamlstubs);
+            $this->stubs['model/temp_lang.stub'] = 'lang/fr/{{lower_name}}.php';
             if ($config['use_tab']) {
                 unset($this->stubs['model/fields.stub']);
                 $this->stubs['model/fields_tab.stub'] = 'models/{{lower_name}}/fields.yaml';
-                $this->stubs['model/temp_lang.stub'] = 'lang/fr/{{lower_name}}.php';
             }
         }
 
         if ($maker['controller']) {
+            /**/trace_log('on fait le controlleur et les configs');
             $this->stubs = array_merge($this->stubs, $this->controllerPhpStubs);
             if ($config['behav_duplicate']) {
                 $this->stubs['controller/config_duplicate.stub'] = 'controllers/{{lower_ctname}}/config_duplicate.yaml';
@@ -268,18 +272,17 @@ class CreateModelController extends GeneratorCommand
                 $this->stubs['controller/config_relation.stub'] = 'controllers/{{lower_ctname}}/config_relation.yaml';
             }
 
-            if ($maker['html_file_controller']) {
-                $this->stubs = array_merge($this->stubs, $this->controllerHtmStubs);
-                if ($config['side_bar_attributes'] || $config['side_bar_info']) {
-                    unset($this->stubs['controller/update.stub']);
-                    $this->stubs['controller/update_sidebar.stub'] = 'controllers/{{lower_ctname}}/update.htm';
-                }
-                if ($config['behav_reorder']) {
-                    $this->stubs['controller/reorder.stub'] = 'controllers/{{lower_ctname}}/reorder.htm';
-                    $this->stubs['controller/config_reorder.stub'] = 'controllers/{{lower_ctname}}/config_reorder.yaml';
-                }
+        }
+        if ($maker['html_file_controller']) {
+            $this->stubs = array_merge($this->stubs, $this->controllerHtmStubs);
+            if ($config['side_bar_attributes'] || $config['side_bar_info']) {
+                unset($this->stubs['controller/update.stub']);
+                $this->stubs['controller/update_sidebar.stub'] = 'controllers/{{lower_ctname}}/update.htm';
             }
-
+            if ($config['behav_reorder']) {
+                $this->stubs['controller/reorder.stub'] = 'controllers/{{lower_ctname}}/reorder.htm';
+                $this->stubs['controller/config_reorder.stub'] = 'controllers/{{lower_ctname}}/config_reorder.yaml';
+            }
         }
 
         if ($maker['excel']) {
