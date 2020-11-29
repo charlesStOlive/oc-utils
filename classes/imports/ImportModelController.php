@@ -30,7 +30,7 @@ class ImportModelController implements WithMultipleSheets
     }
 }
 
-class ConfigImport implements ToCollection
+class ConfigImport implements ToCollection, WithHeadingRow
 {
 
     public $data;
@@ -39,7 +39,7 @@ class ConfigImport implements ToCollection
     {
         $this->data = [];
         foreach ($rows as $row) {
-            $this->data[$row[0]] = $row[1];
+            $this->data[$row['key']] = $row['value'];
         }
         return $this->data;
     }

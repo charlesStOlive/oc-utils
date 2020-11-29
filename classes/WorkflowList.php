@@ -24,11 +24,18 @@ class WorkflowList
 
     public static function getSrConfig()
     {
-        $dataSource = Config::get('waka.wconfig::workflow');
-        if ($dataSource) {
-            return Yaml::parseFile(plugins_path() . $dataSource);
+        $workflows = Config::get('waka.wconfig::workflows');
+        if ($workflows) {
+            $workflowsArray = [];
+            foreach ($workflows as $workflow) {
+                $wk = Yaml::parseFile(plugins_path() . $workflow);
+                $workflowsArray = array_merge($workflowsArray, $wk);
+            }
+            return $workflowsArray;
+
+            //return Yaml::parseFile(plugins_path() . $dataSources[0]);
         } else {
-            return Yaml::parseFile(plugins_path() . '/waka/wconfig/config/workflow.yaml');
+            throw new \SystemException('UImpossible de trouver la vonfig de base datasource');
         }
 
     }

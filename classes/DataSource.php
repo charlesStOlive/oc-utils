@@ -32,6 +32,7 @@ class DataSource
     public $controller;
     public $aggs;
     public $wimages;
+    public $attributesConfig;
 
     public function __construct($id = null, $type_id = "name")
     {
@@ -55,6 +56,8 @@ class DataSource
         //
         $controller = $config['controller'] ?? null;
         $this->controller = $controller ? $controller : strtolower($this->author) . '/' . strtolower($this->plugin) . '/' . str_plural($this->name);
+        //
+        $this->attributesConfig = $config['attributes'] ?? null;
         //
         $this->relations = $config['relations'] ?? null;
         $this->otherRelations = $config['otherRelations'] ?? null;
@@ -173,6 +176,21 @@ class DataSource
     }
 
     /**
+     * RECUPERATION DES FICHIERS ATTRIBUTS
+     */
+    public function getAttributes()
+    {
+
+        //$this->relations
+        // if ($this->otherRelations) {
+        //     trace_log($this->otherRelations);
+        //     $class = new $otherRelation['class'];
+        //     trace_log($this->class);
+        // }
+
+    }
+
+    /**
      * RECUPERATION DES VALEURS DES MODELES ET DE LEURS LIAISON
      */
 
@@ -189,6 +207,10 @@ class DataSource
         }
         return $constructApi;
     }
+
+    /**
+     * Permet d'ajouter un modele donnée totalement exterieur au model en cours sans relashionship
+     */
 
     public function getOtherRelationValues()
     {
@@ -221,48 +243,6 @@ class DataSource
         $constructApi = $this->getValues($modelId);
         return array_dot($constructApi);
     }
-
-    /**
-     * FONCTIONS DE RECUPERATION DES IMAGES
-     * les fonctions utulisent le trait CloudisKey
-     */
-
-    // private function getAllDataSourceImage()
-    // {
-    //     $allImages = new Collection();
-    //     $listsImages = null;
-    //     $listMontages = null;
-
-    //     //si il y a le trait cloudi dans la classe il y a des images à chercher
-    //     if (method_exists($this->model, 'getCloudisList')) {
-    //         $listsImages = $this->model->getCloudisList();
-    //         $listMontages = $this->model->getCloudiMontagesList();
-    //     }
-
-    //     if ($listsImages) {
-    //         $allImages = $allImages->merge($listsImages);
-    //     }
-    //     if ($listMontages) {
-    //         $allImages = $allImages->merge($listMontages);
-    //     }
-    //     $relationWithImages = new Collection($this->relations);
-    //     if ($relationWithImages->count()) {
-    //         $relationWithImages = $relationWithImages->where('image', true)->keys();
-    //         foreach ($relationWithImages as $relation) {
-    //             $subModel = $this->getStringModelRelation($this->model, $relation);
-    //             $listsImages = $subModel->getCloudisList($relation);
-    //             $listMontages = $subModel->getCloudiMontagesList($relation);
-    //             if ($listsImages) {
-    //                 $allImages = $allImages->merge($listsImages);
-    //             }
-    //             if ($listMontages) {
-    //                 $allImages = $allImages->merge($listMontages);
-    //             }
-    //         }
-    //     }
-
-    //     return $allImages;
-    // }
 
     /**
      * Utils for EMAIL ---------------------------------------------------

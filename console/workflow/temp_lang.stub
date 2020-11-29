@@ -1,0 +1,20 @@
+<?php
+return [
+{% for key,trad in trads  %}
+    '{{key}}' => '{{trad}}',
+{% endfor %} 
+    'places' => [
+{% for key,trad in tradPlaces  %}
+        '{{key}}' => '{{trad}}',
+{% endfor %}{% for key,trad in tradPlacesCom  %}
+        '{{key}}_com' => '{{trad}}',
+{% endfor %}
+    ],
+    'trans' => [
+{% for key,trad in tradTrans  %}
+        '{{key}}' => '{{trad}}',
+{% endfor %}{% for key,trad in tradTransCom  %}
+        '{{key}}_com' => '{{trad}}',
+{% endfor %}
+    ]
+];

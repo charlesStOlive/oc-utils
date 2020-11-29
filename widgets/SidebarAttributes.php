@@ -2,7 +2,7 @@
 
 use Backend\Classes\WidgetBase;
 use Waka\Utils\Classes\DataSource;
-use \October\Rain\Support\Collection;
+use Yaml;
 
 class SidebarAttributes extends WidgetBase
 {
@@ -35,11 +35,11 @@ class SidebarAttributes extends WidgetBase
 
     public function render()
     {
+        //trace_log('render');
         $this->dataSource = new DataSource($this->model->data_source_id, 'id');
 
         $this->vars['text_info'] = $this->text_info;
-        $this->vars['attributesArray'] = $this->cleanModelValues($this->dataSource->getValues());
-        $this->vars['hidden_fields'] = $this->hidden_fields ? $this->hidden_fields : [];
+        $this->vars['attributesArray'] = $this->getWattributes();
         $this->vars['IMGSArray'] = $this->getIMG();
         $fncArray = $this->getFNCOutputs();
         $this->vars['FNCSArray'] = $fncArray;
@@ -52,79 +52,88 @@ class SidebarAttributes extends WidgetBase
 
     }
 
-    public function cleanModelValues($array)
+    public function getWattributes()
     {
-        $attributesCollection = new Collection($array);
-
-        $arrays = [];
-        $baseModelName = snake_case($this->dataSource->name);
-
-        if ($this->separate_fields) {
-            foreach ($this->separate_fields as $field) {
-
-                //On enlève de la collection et on range dans new Array la colone trouvé dans separateField
-                $newArray = $attributesCollection->pull($field);
-                // trace_log("new array");
-                // trace_log($newArray);
-
-                $tempObj = [
-                    $baseModelName => [
-                        $field => $newArray,
-                    ],
-
-                ];
-
-                $arrays[$field] = array_dot($tempObj);
-                $arrays[$field] = $this->cleanField($arrays[$field], $this->hidden_fields);
-
+        $attributeArray = [];
+        $pluginName = strtolower($this->dataSource->author . '/' . $this->dataSource->plugin . '\/models');
+        $attributesPath = plugins_path() . '/' . $pluginName . '/' . $this->dataSource->name . '/attributes.yaml';
+        $attributes;
+        if (file_exists($attributesPath)) {
+            $attributes = Yaml::parseFile($attributesPath);
+        } else {
+            $modelAttributeAdresse = $this->dataSource->attributesConfig;
+            $attributes = Yaml::parseFile(plugins_path() . '/' . $modelAttributeAdresse);
+        }
+        $maped = $this->remapAttributes($attributes['attributes'], $this->dataSource->lowerName);
+        //$attributeArray[$this->dataSource->lowerName] = $attributes;
+        $attributeArray[$this->dataSource->lowerName]['values'] = $maped;
+        $attributeArray[$this->dataSource->lowerName]['icon'] = $attributes['icon'];
+        foreach ($this->dataSource->relations as $key => $relation) {
+            $ex = explode('.', $key);
+            $relationName = array_pop($ex);
+            $attributesPath = plugins_path() . '/' . $pluginName . '/' . $relationName . '/attributes.yaml';
+            $attributes;
+            if (file_exists($attributesPath)) {
+                $attributes = Yaml::parseFile($attributesPath);
+            } else {
+                $modelAttributeAdresse = $this->dataSource->attributesConfig;
+                $attributes = Yaml::parseFile(plugins_path() . '/' . $modelAttributeAdresse);
             }
+            $maped = $this->remapAttributes($attributes['attributes'], $relationName, $this->dataSource->lowerName);
+            $attributeArray[$relationName]['values'] = $maped;
+            $attributeArray[$relationName]['icon'] = $attributes['icon'];
         }
-
-        $arrays = array_reverse($arrays);
-
-        $baseArray = [
-            $baseModelName => $attributesCollection->toArray(),
-        ];
-
-        $arrays['base'] = array_dot($baseArray);
-        $arrays['base'] = $this->cleanField($arrays['base'], $this->hidden_fields);
-
-        //trace_log($this->changeName());
-
-        $arrays = array_reverse($arrays);
-
-        return $arrays;
+        trace_log($attributeArray);
+        return $attributeArray;
     }
 
-    public function changeName()
+    public function remapAttributes(array $attributes, $relationOrName, $name = null)
     {
-        //trace_log($this->lang_fields);
-
-    }
-    public function cleanField($rows, $hiddeArrayFields)
-    {
-        if (!$hiddeArrayFields) {
-            return $rows;
+        $transformers = \Config::get('waka.utils::transformers');
+        $documentType = 'twig';
+        if ($this->type == 'word') {
+            $documentType = 'word';
         }
-        foreach ($rows as $key => $row) {
-            //trace_log("analyse du row : " . $key);
-            foreach ($hiddeArrayFields as $hiddenField) {
-                if (str_contains($key, $hiddenField)) {
-                    //trace_log("remove : " . $key);
-                    unset($rows[$key]);
+
+        $mapedResult = [];
+        foreach ($attributes as $key => $attribute) {
+            //trace_log($attribute);
+            $type = $attribute['type'] ?? null;
+            $label = $attribute['label'] ?? null;
+
+            //Gestion du keyName
+            $KeyName;
+            if ($name) {
+                $KeyName = $name . '.' . $relationOrName . '.' . $key;
+            } else {
+                $KeyName = $relationOrName . '.' . $key;
+            }
+
+            //Application de la transformation
+            trace_log("type : " . $type . " | " . $KeyName);
+            if ($type) {
+                $transformer = $transformers['types'][$type][$documentType] ?? null;
+                trace_log($transformer);
+                if ($transformer) {
+                    $KeyName = sprintf($transformer, $KeyName);
+                } else {
+                    $documentTypeTransformer = $transformers[$documentType];
+                    $KeyName = sprintf($documentTypeTransformer, $KeyName);
                 }
+            } else {
+                $documentTypeTransformer = $transformers[$documentType];
+                $KeyName = sprintf($documentTypeTransformer, $KeyName);
             }
-
+            $mapedResult[$KeyName] = $label;
         }
-        // trace_log($rows);
-        // trace_log($this->hidden_fields);
-
-        return $rows;
+        trace_log($mapedResult);
+        return $mapedResult;
 
     }
 
     public function getIMG()
     {
+        //trace_log(get_class($this->model));
         $imgs = $this->model->images;
 
         if (!$imgs) {
@@ -144,6 +153,7 @@ class SidebarAttributes extends WidgetBase
 
     public function getFNCOutputs()
     {
+        $this->dataSource->getAttributes();
         $fncs = $this->model->model_functions;
         if (!$fncs) {
             return [];
@@ -157,33 +167,12 @@ class SidebarAttributes extends WidgetBase
             $outputs = $this->dataSource->getFunctionsOutput($fnc['functionCode']);
             //trace_log($outputs);
             if ($outputs) {
-
-                $relations = $outputs['relations'] ?? null;
-
-                //trace_log($relations);
-
-                if ($relations) {
-                    foreach ($relations as $submodelKey => $submodelValue) {
-                        // trace_log("----" . $code . "----");
-                        // trace_log($submodelKey);
-                        // trace_log($submodelValue);
-                        $modelFinal = $this->getStringRequestRelation($this->dataSource->model, $submodelKey);
-
-                        // //trace_log($modelFinal->with($submodelValue)->get()->toArray());
-                        $dataApi = $modelFinal->with($submodelValue)->get()->first();
-
-                        if ($dataApi) {
-                            $result[$code] = array_dot($dataApi->toArray());
-                            $result[$code] = $this->cleanField($result[$code], $this->hidden_fields);
-                        }
-
-                    }
-                }
-                $models = $outputs['models'] ?? null;
-                if ($models) {
-                    foreach ($models as $model) {
-                        $result[$code] = array_dot($model);
-                        $result[$code] = $this->cleanField($result[$code], $this->hidden_fields);
+                $attributes = $outputs['attributes'] ?? null;
+                if ($attributes) {
+                    foreach ($attributes as $attributeAdresse) {
+                        $attributeArray = Yaml::parseFile(plugins_path() . '/' . $attributeAdresse);
+                        //trace_log($attributeArray);
+                        //$result = array_merge($attributes, $attributeArray);
                     }
                 }
                 $images = $outputs['images'] ?? null;

@@ -67,6 +67,8 @@ class Plugin extends PluginBase
         $this->registerConsoleCommand('waka.injector', 'Waka\Utils\Console\CreateInjector');
         $this->registerConsoleCommand('waka.mc', 'Waka\Utils\Console\CreateModelController');
         $this->registerConsoleCommand('waka.uicolors', 'Waka\Utils\Console\CreateUiColors');
+        $this->registerConsoleCommand('waka.workflow', 'Waka\Utils\Console\CreateWorkflow');
+        $this->registerConsoleCommand('waka.dumpWorkflow', 'Waka\Utils\Console\WorkflowDump');
         CombineAssets::registerCallback(function ($combiner) {
             $combiner->registerBundle('$/waka/wconfig/assets/css/simple_grid/pdf.less');
             $combiner->registerBundle('$/waka/wconfig/assets/css/simple_grid/email.less');

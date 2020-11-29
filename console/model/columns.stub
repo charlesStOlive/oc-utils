@@ -3,6 +3,11 @@
 # ===================================
 
 columns:
+{% if configs.show_id_columns %} 
+    id:
+        label: ID
+        invisible: {{configs.show_id_columns}}
+{% endif %}
 {% if addReorderTrait %}    
     sort_order:
         label: waka.utils::lang.global.sort_order

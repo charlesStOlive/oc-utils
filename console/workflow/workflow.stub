@@ -1,0 +1,43 @@
+{{lower_name}}:
+    type: state_machine
+    metadata: 
+        name: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{configs.name.value}}
+{% if configs.com %}
+        com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{ configs.com.value }}
+{% endif %}
+    marking_store:
+        type: single_state
+        arguments: [{{configs.arguments.value}}]
+    supports: 
+        - \{{studly_author}}\{{studly_plugin}}\Models\{{studly_model}}
+    places:
+{% for place in places %}
+        {{place.var}}:
+            metadata: 
+                label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.var}}
+{% if place.com %}
+                com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.var}}_com
+{% endif %}
+{% endfor %}
+    initial_places: {{ configs.initial_places.value }}  # or set to an array if multiple initial places
+    transitions:
+{% for transition in trans %}
+        {{transition.var}}:
+            metadata: 
+                label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.trans.{{transition.var}}
+{% if transition.com %}
+                com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.trans.{{transition.var}}_com
+{% endif %}{% if transition.functions %}
+                fncs:
+{% for functions in transition.functions %}
+                    {{functions.fnc}}:
+                        type: {{functions.type}}
+{% if functions.arguments %}
+                        args:
+{% for key,arg in functions.arguments %}
+                            {{key}}: {{arg}}
+{% endfor %}{% endif %}
+{% endfor %}{% endif %}
+            from: {{transition.from}}
+            to: {{transition.to}}
+{% endfor %}

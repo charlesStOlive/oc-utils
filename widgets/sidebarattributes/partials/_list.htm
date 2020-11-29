@@ -5,17 +5,21 @@
 <h3>Attributs du modèle</h3>
 <div class="list">
     <?php foreach($attributesArray as $keyCategorie=>$arrayCategories) : ?>
-    <?php if(count($arrayCategories)>1) : ?>
+    <?php if(count($arrayCategories['values'])>1) : ?>
     <div class="callout fade in no-subheader">
         <div class="header">
-            <i class="icon-info"></i>
+            <i class="<?=$arrayCategories['icon']?>"></i>
             <h3><?=$keyCategorie?></h3>
         </div>
         <div class="">
-            <?php foreach($arrayCategories as $key=>$value) : ?>
-            <button type="button" class="btn btn-xs btn-default" style="width:100%" data-control="dragvalue"
-                data-text-value="{{<?=$key?>}}" data-drag-click="true">
-                <?=$key?><br><?=strip_tags(str_limit(' ex :  '.$value, 50))?>
+            <?php foreach($arrayCategories['values'] as $key=>$value) : ?>
+            <button type="button"
+                    class="btn btn btn-default"
+                    style="width:100%"
+                    data-control="dragvalue"
+                    data-text-value="<?=$key?>"
+                    data-drag-click="true">
+                <?= e(trans($value)); ?><br><span style="font-size:0.8em"><?=$key?></span>
             </button>
             <?php endforeach ?>
         </div>
@@ -27,16 +31,28 @@
 <?php foreach($IMGSArray as $value) { ?>
 <div class="list">
     <div>
-        <button style="display:inline" type="button" class="btn btn-xs btn-default" data-control="dragvalue"
-            data-text-value="{{IMG.<?=$value['code']?>.path}}" data-drag-click="true">
+        <button style="display:inline"
+                type="button"
+                class="btn btn-xs btn-default"
+                data-control="dragvalue"
+                data-text-value="{{IMG.<?=$value['code']?>.path}}"
+                data-drag-click="true">
             Adresse image <?=$value['code']?>
         </button>
-        <button style="display:inline" type="button" class="btn btn-xs btn-default" data-control="dragvalue"
-            data-text-value="{{IMG.<?=$value['code']?>.height}}" data-drag-click="true">
+        <button style="display:inline"
+                type="button"
+                class="btn btn-xs btn-default"
+                data-control="dragvalue"
+                data-text-value="{{IMG.<?=$value['code']?>.height}}"
+                data-drag-click="true">
             H <?=$value['code']?>
         </button>
-        <button style="display:inline" type="button" class="btn btn-xs btn-default" data-control="dragvalue"
-            data-text-value="{{IMG.<?=$value['code']?>.width}}" data-drag-click="true">
+        <button style="display:inline"
+                type="button"
+                class="btn btn-xs btn-default"
+                data-control="dragvalue"
+                data-text-value="{{IMG.<?=$value['code']?>.width}}"
+                data-drag-click="true">
             L <?=$value['code']?>
         </button>
     </div>
@@ -48,22 +64,36 @@
 <h4><?=$key?></h4>
 <div class="list">
 
-    <button type="button" class="btn btn-md btn-primary" style="width:100%" data-control="dragvalue" class="bg-a"
-        data-text-value="{%for row in FNC.<?=$key?>%}" data-drag-click="true">
+    <button type="button"
+            class="btn btn-md btn-primary"
+            style="width:100%"
+            data-control="dragvalue"
+            class="bg-a"
+            data-text-value="{%for row in FNC.<?=$key?>%}"
+            data-drag-click="true">
         Code balise <b>ouvrante</b> pour la fonction : <br><?=$key?>
     </button>
 
     <?php foreach($fncs as $subkey=>$value) { ?>
     <?php if (!is_countable($value)) : ?>
-    <button type="button" class="btn btn-xs btn-default" style="width:100%" data-control="dragvalue"
-        data-text-value="{{row.<?=$subkey?>}}" data-drag-click="true">
-        <?=$subkey?><br><?=strip_tags(str_limit(' ex :  '.$value, 50))?>
+    <button type="button"
+            class="btn btn-xs btn-default"
+            style="width:100%"
+            data-control="dragvalue"
+            data-text-value="{{row.<?=$subkey?>}}"
+            data-drag-click="true">
+        en attente
     </button>
     <?php endif ?>
     <?php } ?>
 
-    <button type="button" class="btn btn-xl btn-primary" style="width:100%" data-control="dragvalue" class="bg-a"
-        data-text-value="{%endfor%}" data-drag-click="true">
+    <button type="button"
+            class="btn btn-xl btn-primary"
+            style="width:100%"
+            data-control="dragvalue"
+            class="bg-a"
+            data-text-value="{%endfor%}"
+            data-drag-click="true">
         Code balise <b>fermante</b> pour la fonction : <br><?=$key?>
     </button>
 </div> <?php } ?>

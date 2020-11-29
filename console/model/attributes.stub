@@ -1,6 +1,12 @@
 # ===================================
 #  Form Field Definitions
 # ===================================
+
+{% if configs.attributes_icon %}
+icon: {{configs.attributes_icon}}
+{% else %}
+icon: icon-info
+{% endif %}
 attributes:
 {% for field in attributes  %}
     {{field.var}}:
@@ -9,3 +15,8 @@ attributes:
         type: {{ field.attribute }}
 {% endif %}
 {% endfor %}
+{% if configs.no_timestamps is null %}
+    updated_at:
+        label: waka.utils::lang.global.updated_at
+        type: date-medium
+{% endif %}

@@ -41,5 +41,57 @@ return [
             'config' => 'scope_user_role',
         ],
     ],
+    'transformers' => [
+        'word' => "$\{\%\s}",
+        'twig' => "{{ %s }}",
+        'types' => [
+            'date' => [
+                'word' => '${%s*date}',
+                'twig' => "{{ %s | localeDate('date')}}",
+            ],
+            'date-medium' => [
+                'word' => '${%s*date-medium}',
+                'twig' => "{{ %s | localeDate('date-medium')}}",
+            ],
+            'date-full' => [
+                'word' => '${%s*date-full}',
+                'twig' => "{{ %s | localeDate('date-full')}}",
+            ],
+            'date-tiny' => [
+                'word' => '${%s*date-tiny}',
+                'twig' => "{{ %s | localeDate('date-tiny')}}",
+            ],
+            'date-time' => [
+                'word' => '${%s*date-time}',
+                'twig' => "{{ %s | localeDate('date-time')}}",
+            ],
+            'date-short' => [
+                'word' => '${%s*date-medium}',
+                'twig' => "{{ %s | localeDate('date-short')}}",
+            ],
+            'date-short-time' => [
+                'word' => '${%s*date-short-time}',
+                'twig' => "{{ %s | localeDate('date-short-time')}}",
+            ],
+            'numeric' => [
+                'word' => '${%s*date}',
+                'twig' => "{{ %s | number_format(2, ',', ' ')}} €",
+            ],
+            'euro' => [
+                'word' => '${%s*date}',
+                'twig' => "{{ %s | number_format(2, ',', ' ')}} €",
+            ],
+            'numeric' => [
+                'word' => '${%s*date}',
+                'twig' => "{{ %s | number_format(0, ',', ' ')}} €",
+            ],
+            'switch' => [
+                'word' => '${%s*switch}',
+                'twig' => "{{ %s ? 'Oui' : 'Non' }}",
+            ],
+
+        ],
+
+    ],
 
 ];
