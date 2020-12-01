@@ -60,7 +60,6 @@ class DataImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
     {
         $this->data = [];
         foreach ($rows as $row) {
-            trace_log($row);
             $obj = [
                 'var' => $row['var'] ?? null,
                 'key' => $row['key'] ?? null,
@@ -69,7 +68,7 @@ class DataImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
                 'com' => $row['com'] ?? null,
                 'from' => $row['from'] ?? null,
                 'to' => $row['to'] ?? null,
-                'gard' => $row['gard'] ?? null,
+                'rules' => $row['rules'] ?? null,
                 'fnc_prod' => $row['fnc_prod'] ?? null,
                 'fnc_prod_arg' => $row['fnc_prod_arg'] ?? null,
                 'fnc_prod_val' => $row['fnc_prod_val'] ?? null,

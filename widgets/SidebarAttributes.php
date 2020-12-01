@@ -81,13 +81,14 @@ class SidebarAttributes extends WidgetBase
             }
             $maped = $this->remapAttributes($attributes['attributes'], $relationName, $this->dataSource->lowerName);
             $attributeArray[$relationName]['values'] = $maped;
-            $attributeArray[$relationName]['icon'] = $attributes['icon'];
+            $icon = $attributes['icon'] ?? "icon-info";
+            $attributeArray[$relationName]['icon'] = $icon;
         }
-        trace_log($attributeArray);
+        //trace_log($attributeArray);
         return $attributeArray;
     }
 
-    public function remapAttributes(array $attributes, $relationOrName, $name = null)
+    public function remapAttributes(array $attributes, $relationOrName, $name = null, $row = true)
     {
         $transformers = \Config::get('waka.utils::transformers');
         $documentType = 'twig';
@@ -103,17 +104,22 @@ class SidebarAttributes extends WidgetBase
 
             //Gestion du keyName
             $KeyName;
-            if ($name) {
+            if ($relationOrName == "modelImage") {
+                $KeyName = $key;
+            } elseif ($row && $name) {
+                $KeyName = 'row.' . $relationOrName . '.' . $key;
+            } elseif ($row && !$name) {
+                $KeyName = 'row.' . $key;
+            } elseif ($name) {
                 $KeyName = $name . '.' . $relationOrName . '.' . $key;
             } else {
                 $KeyName = $relationOrName . '.' . $key;
             }
-
             //Application de la transformation
-            trace_log("type : " . $type . " | " . $KeyName);
+            //trace_log("type : " . $type . " | " . $KeyName);
             if ($type) {
                 $transformer = $transformers['types'][$type][$documentType] ?? null;
-                trace_log($transformer);
+                //trace_log($transformer);
                 if ($transformer) {
                     $KeyName = sprintf($transformer, $KeyName);
                 } else {
@@ -126,7 +132,7 @@ class SidebarAttributes extends WidgetBase
             }
             $mapedResult[$KeyName] = $label;
         }
-        trace_log($mapedResult);
+        //trace_log($mapedResult);
         return $mapedResult;
 
     }
@@ -140,15 +146,17 @@ class SidebarAttributes extends WidgetBase
             return [];
         }
         $result = [];
-        foreach ($imgs as $img) {
-            $obj = [
-                'code' => $img['code'],
-                'width' => $img['width'],
-                'height' => $img['height'],
+
+        //remap images
+        $remapImages = [];
+        foreach ($imgs as $key => $img) {
+            $remapImages[$img['code']] = [
+                'label' => $img['code'],
+                'type' => 'modelImage',
             ];
-            array_push($result, $obj);
         }
-        return $result;
+        $attributesImg = $this->remapAttributes($remapImages, 'modelImage');
+        return $attributesImg;
     }
 
     public function getFNCOutputs()
@@ -159,7 +167,6 @@ class SidebarAttributes extends WidgetBase
             return [];
         }
         $result = [];
-        // trace_log($modelTest->toArray());
         // trace_log($this->model->toArray());
         foreach ($fncs as $fnc) {
             $code = $fnc['collectionCode'];
@@ -169,24 +176,33 @@ class SidebarAttributes extends WidgetBase
             if ($outputs) {
                 $attributes = $outputs['attributes'] ?? null;
                 if ($attributes) {
-                    foreach ($attributes as $attributeAdresse) {
+
+                    $temptAttributeArray = [];
+                    foreach ($attributes as $key => $attributeAdresse) {
+                        trace_log($key);
                         $attributeArray = Yaml::parseFile(plugins_path() . '/' . $attributeAdresse);
-                        //trace_log($attributeArray);
-                        //$result = array_merge($attributes, $attributeArray);
+                        if ($key == "main") {
+                            $maped = $this->remapAttributes($attributeArray['attributes'], $code, null, true);
+                        } else {
+                            $maped = $this->remapAttributes($attributeArray['attributes'], $key, $code, true);
+                        }
+                        $temptAttributeArray = array_merge($temptAttributeArray, $maped);
                     }
-                }
-                $images = $outputs['images'] ?? null;
-                if ($images) {
-                    foreach ($images as $image) {
-                        $result[$code][$image . '.path'] = 'IMAGE';
-                    }
+                    $result[$code] = $temptAttributeArray;
+
                 }
                 $values = $outputs['values'] ?? null;
                 if ($values) {
-                    foreach ($values as $key => $value) {
-                        $result[$code][$key] = $value;
+                    $maped = $this->remapAttributes($values, $code);
+                    if ($result[$code] ?? null) {
+                        $result[$code] = array_merge($result[$code], $maped);
+                    } else {
+                        $result[$code] = $maped;
                     }
+
                 }
+                trace_log("result");
+                trace_log($result);
 
             }
         }

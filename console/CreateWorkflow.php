@@ -93,10 +93,27 @@ class CreateWorkflow extends GeneratorCommand
         $rows = new Collection($importExcel->data->data);
         $config = new Collection($importExcel->config->data);
         $configs = $config->toArray();
+
+        $rules = $config->where('type', '==', 'rules');
+        $rules = $rules->map(function ($item, $key) {
+            if ($item['type'] == 'rules') {
+                $item['data'] = explode(',', $item['data']);
+            }
+            return $item;
+        });
+
+        $ruleSetArray = $config->where('type', '==', 'ruleset_name')->first();
+        $ruleSetArray = explode(',', $ruleSetArray['value']);
+        $rulesSets = [];
+        foreach ($ruleSetArray as $ruleSetRowKey) {
+            $set = $rules->filter(function ($item) use ($ruleSetRowKey) {
+                return in_array($ruleSetRowKey, $item['data']);
+            });
+            $rulesSets[$ruleSetRowKey] = $set->lists('value', 'key');
+        }
+        //
         $trads = $config->where('type', '==', 'lang')->lists('data', 'key');
-
-        //trace_log($rows);
-
+        //
         //
         $rows = $rows->map(function ($item, $key) {
             if ($item['type'] != 'trans') {
@@ -109,9 +126,9 @@ class CreateWorkflow extends GeneratorCommand
             $item['functions'] = [];
 
             $fncProd = $item['fnc_prod'] ?? false;
-            trace_log("fncProd : " . $fncProd);
+            //trace_log("fncProd : " . $fncProd);
             if (!empty($fncProd)) {
-                trace_log("Travail sur les fonctions de production");
+                //trace_log("Travail sur les fonctions de production");
                 $fncName = $item['fnc_prod'];
                 $args = $item['fnc_prod_arg'] ?? false;
                 if ($args) {
@@ -138,9 +155,9 @@ class CreateWorkflow extends GeneratorCommand
 
             }
             $fncTrait = $item['fnc_trait'] ?? false;
-            trace_log("fnctrait : " . $fncTrait);
+            //trace_log("fnctrait : " . $fncTrait);
             if (!empty($fncTrait)) {
-                trace_log("Travail sur les fonctions de production");
+                //trace_log("Travail sur les fonctions de production");
                 $fncName = $item['fnc_trait'];
                 $args = $item['fnc_trait_arg'] ?? false;
                 if ($args) {
@@ -177,7 +194,7 @@ class CreateWorkflow extends GeneratorCommand
         $places = $rows->where('type', '==', 'places')->toArray();
         $trans = $rows->where('type', '==', 'trans')->toArray();
 
-        trace_log($trans);
+        //trace_log($trans);
 
         $all = [
             'name' => $name,
@@ -192,6 +209,7 @@ class CreateWorkflow extends GeneratorCommand
             'tradTransCom' => $tradTransCom,
             'places' => $places,
             'trans' => $trans,
+            'rulesSets' => $rulesSets,
         ];
 
         return $all;

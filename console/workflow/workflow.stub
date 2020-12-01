@@ -4,16 +4,23 @@
         name: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{configs.name.value}}
 {% if configs.com %}
         com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{ configs.com.value }}
+        rulesSets:
+{% for key, rulesSet in rulesSets %}
+            {{key}}:
+{% for subkey,set in rulesSet %}
+                {{subkey}}: {{set}}
+{% endfor %}
+{% endfor %}
 {% endif %}
     marking_store:
         type: single_state
         arguments: [{{configs.arguments.value}}]
-    supports: 
+    supports:
         - \{{studly_author}}\{{studly_plugin}}\Models\{{studly_model}}
     places:
 {% for place in places %}
         {{place.var}}:
-            metadata: 
+            metadata:
                 label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.var}}
 {% if place.com %}
                 com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.var}}_com
@@ -27,7 +34,11 @@
                 label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.trans.{{transition.var}}
 {% if transition.com %}
                 com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.trans.{{transition.var}}_com
-{% endif %}{% if transition.functions %}
+{% endif %}
+{% if transition.rules %}
+                rulesSet: {{transition.rules}}
+{% endif %}
+{% if transition.functions %}
                 fncs:
 {% for functions in transition.functions %}
                     {{functions.fnc}}:

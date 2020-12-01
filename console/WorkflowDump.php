@@ -79,7 +79,7 @@ class WorkflowDump extends Command
 
         $dumper = new GraphvizDumper();
 
-        trace_log($dumper);
+        //trace_log($dumper);
 
         $dotCommand = "dot -T$format -o " . storage_path($workflowName . '.' . $format);
 

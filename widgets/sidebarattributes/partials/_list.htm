@@ -28,39 +28,23 @@
     <?php endforeach ?>
 </div>
 <h3>Images du modèle</h3>
-<?php foreach($IMGSArray as $value) { ?>
+<?php foreach($IMGSArray as $key=>$value) { ?>
 <div class="list">
     <div>
         <button style="display:inline"
                 type="button"
                 class="btn btn-xs btn-default"
                 data-control="dragvalue"
-                data-text-value="{{IMG.<?=$value['code']?>.path}}"
+                data-text-value="<?=$key?>"
                 data-drag-click="true">
-            Adresse image <?=$value['code']?>
-        </button>
-        <button style="display:inline"
-                type="button"
-                class="btn btn-xs btn-default"
-                data-control="dragvalue"
-                data-text-value="{{IMG.<?=$value['code']?>.height}}"
-                data-drag-click="true">
-            H <?=$value['code']?>
-        </button>
-        <button style="display:inline"
-                type="button"
-                class="btn btn-xs btn-default"
-                data-control="dragvalue"
-                data-text-value="{{IMG.<?=$value['code']?>.width}}"
-                data-drag-click="true">
-            L <?=$value['code']?>
+            <?=$value?>
         </button>
     </div>
 </div>
 <?php } ?>
 <h3>fonctions du modèle</h3>
 <p class="help-block">Pour chaque fonction vou devez impérativement mettre une balise ouvrante et fermante</p>
-<?php foreach($FNCSArray as $key=>$fncs) { ?>
+<?php foreach($FNCSArray as $key=>$fnc) { ?>
 <h4><?=$key?></h4>
 <div class="list">
 
@@ -74,15 +58,15 @@
         Code balise <b>ouvrante</b> pour la fonction : <br><?=$key?>
     </button>
 
-    <?php foreach($fncs as $subkey=>$value) { ?>
+    <?php foreach($fnc as $subkey=>$value) { ?>
     <?php if (!is_countable($value)) : ?>
     <button type="button"
             class="btn btn-xs btn-default"
             style="width:100%"
             data-control="dragvalue"
-            data-text-value="{{row.<?=$subkey?>}}"
+            data-text-value="<?=$subkey?>"
             data-drag-click="true">
-        en attente
+        <?= e(trans($value)); ?><br><span style="font-size:0.8em"><?=$subkey?></span>
     </button>
     <?php endif ?>
     <?php } ?>

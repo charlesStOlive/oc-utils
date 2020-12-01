@@ -1,3 +1,6 @@
 1.0.1:
     - 'Ajout des jobs lists'
     - create_job_lists_table.php
+1.0.2:
+    - 'Ajout des stateables'
+    - create_stateables_table.php

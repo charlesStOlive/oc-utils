@@ -97,6 +97,7 @@ class Plugin extends PluginBase
             'Waka\Utils\FormWidgets\FunctionsList' => 'functionslist',
             'Waka\Utils\FormWidgets\ScopesList' => 'scopeslist',
             'Waka\Utils\FormWidgets\ImagesList' => 'imageslist',
+            'Waka\Utils\FormWidgets\WorkFlow' => 'workflow',
         ];
     }
 

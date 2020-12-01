@@ -7,16 +7,16 @@
     <?php if(count($arrayCategories)>1) : ?>
     <div class="callout fade in no-subheader">
         <div class="header">
-            <i class="icon-info"></i>
+            <i class="<?=$arrayCategories['icon']?>"></i>
             <h3><?=$keyCategorie?></h3>
         </div>
         <div class="">
-            <?php foreach($arrayCategories as $key=>$value) : ?>
+            <?php foreach($arrayCategories['values'] as $key=>$value) : ?>
             <button type="button"
                     class="btn btn-xm btn-default"
                     style="width:100%"
-                    data-clipboard-text="${<?=$key?><?php if(ends_with($key, '_at')) echo '*date'?>}">
-                $value<br><span style="font-size:0.8em"><?=$key?></span>
+                    data-clipboard-text="<?=$key?>">
+                <?= e(trans($value)); ?><br><span style="font-size:0.8em"><?=$key?></span>
             </button>
             <?php endforeach ?>
         </div>
@@ -25,18 +25,18 @@
     <?php endforeach ?>
 </div>
 <h3>Images du modèle</h3>
-<?php foreach($IMGSArray as $value) : ?>
+<?php foreach($IMGSArray as $key=>$value) : ?>
 <div class="list">
     <button type="button"
             class="btn btn-xs btn-default"
-            data-clipboard-text="${IMG.<?=$value['code']?>.path}">
-        Adresse image <?=$value['code']?>
+            data-clipboard-text="<?=$key?>">
+        <?=$value?>
     </button>
 </div>
 <?php endforeach ?>
 <h3>fonctions du modèle</h3>
 <p class="help-block">Pour chaque fonction vou devez impérativement mettre une balise ouvrante et fermente</p>
-<?php foreach($FNCSArray as $key=>$fncs) { ?>
+<?php foreach($FNCSArray as $key=>$fnc) { ?>
 <h4><?=$key?></h4>
 <div class="list">
     <button type="button"
@@ -46,13 +46,13 @@
         Code balise <b>ouvrante</b> pour la fonction : <br><?=$key?>
     </button>
 
-    <?php foreach($fncs as $subkey=>$value) { ?>
+    <?php foreach($fnc as $subkey=>$value) { ?>
     <?php if (!is_countable($value)) : ?>
     <button type="button"
             class="btn btn-xs btn-default"
             style="width:100%"
-            data-clipboard-text=" ${<?=$key?>.<?=$subkey?><?php if(ends_with($key, '_at')) echo '*date'?>}">
-        en attente
+            data-clipboard-text="<?=$subkey?>">
+        <?= e(trans($value)); ?><br><span style="font-size:0.8em"><?=$subkey?></span>
     </button>
     <?php endif ?>
     <?php } ?>
