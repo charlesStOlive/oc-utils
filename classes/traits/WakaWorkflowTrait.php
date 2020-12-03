@@ -25,19 +25,14 @@ trait WakaWorkflowTrait
                 $changeState = $model->change_state;
                 //trace_log("change_state : " . $changeState);
                 if ($changeState) {
-                    $transitions = $model->workflow_get()->getDefinition()->getTransitions();
-                    foreach ($transitions as $transition) {
-                        if ($transition->getName() == $changeState) {
-                            $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
-                            $rules = $model->getWorkgflowRules($rulesSet);
-                            if ($rules) {
-                                $validation = \Validator::make($model->toArray(), $rules);
-                                if ($validation->fails()) {
-                                    //trace_log($validation->messages());
-                                    throw new \ValidationException(['state_change' => "Impossible de changer d'état, verifiez les champs suivants : " . implode(", ", array_keys($rules))]);
-                                }
-                            }
-                            break;
+                    $transition = self::getTransitionobject($changeState, $model);
+                    $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
+                    $rules = $model->getWorkgflowRules($rulesSet);
+                    if ($rules) {
+                        $validation = \Validator::make($model->toArray(), $rules);
+                        if ($validation->fails()) {
+                            //trace_log($validation->messages());
+                            throw new \ValidationException(['state_change' => "Impossible de changer d'état, verifiez les champs suivants : " . implode(", ", array_keys($rules))]);
                         }
                     }
                     $model->workflow_get()->apply($model, $changeState);
@@ -46,12 +41,40 @@ trait WakaWorkflowTrait
             $model->bindEvent('model.afterSave', function () use ($model) {
                 $changeState = $model->getOriginalPurgeValue('change_state');
                 if ($changeState) {
-                    $state = new \Waka\Utils\Models\StateLog(['name' => $changeState]);
-                    $model->state_logs()->add($state);
+                    //Preparation de l'evenement
+                    $workflowName = $model->workflow_get()->getName();
+                    $transition = self::getTransitionobject($changeState, $model);
+                    $afterSaveFunction = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['fncs'];
+                    $afterSaveFunction = new \October\Rain\Support\Collection($afterSaveFunction);
+                    $fnc = $afterSaveFunction->where('type', 'prod')->toArray();
+                    //$fnc = $afterSaveFunction->where('type', 'prod')->keys()->first();
+
+                    //trace_log($fnc);
+                    //trace_log($attributes);
+                    if ($afterSaveFunction) {
+                        \Event::fire('workflow.' . $workflowName . '.afterModelSaved', [$model, $fnc]);
+                    }
+                    //fin de la sauvegarde evenement
+                    if (!$model->noStateSave) {
+                        $state = new \Waka\Utils\Models\StateLog(['name' => $changeState]);
+                        $model->state_logs()->add($state);
+                    }
+
                 }
             });
         });
 
+    }
+
+    public static function getTransitionobject($changeState, $model)
+    {
+        $transitions = $model->workflow_get()->getDefinition()->getTransitions();
+        foreach ($transitions as $transition) {
+            if ($transition->getName() == $changeState) {
+                return $transition;
+                break;
+            }
+        }
     }
 
     public function listAllWorklowstate()
@@ -77,7 +100,6 @@ trait WakaWorkflowTrait
             return $default;
         }
         return $rulesSets[$rulesSet] ?? null;
-
     }
 
 }

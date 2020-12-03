@@ -8,7 +8,7 @@ class CreateStateteablesTable extends Migration
 {
     public function up()
     {
-        Schema::create('waka_utils_state_logeables', function (Blueprint $table) {
+        Schema::create('waka_utils_state_log', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->string('name');
             $table->integer('state_logeable_id')->nullable();
@@ -19,6 +19,6 @@ class CreateStateteablesTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('waka_utils_stateables');
+        Schema::dropIfExists('waka_utils_state_log');
     }
 }

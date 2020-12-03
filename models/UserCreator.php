@@ -3,16 +3,21 @@
 use Model;
 
 /**
- * JobList Model
+ * Usereable Model
  */
-class StateLog extends Model
+class UserCreator extends Model
 {
     use \October\Rain\Database\Traits\Validation;
 
     /**
      * @var string The database table used by the model.
      */
-    public $table = 'waka_utils_state_log';
+    public $table = 'waka_utils_user_creator';
+
+    /**
+     * @var boolean supprime la gestion des timestamps
+     */
+    public $timestamps = false;
 
     /**
      * @var array Guarded fields
@@ -27,7 +32,9 @@ class StateLog extends Model
     /**
      * @var array Validation rules for attributes
      */
-    public $rules = [];
+    public $rules = [
+        'user' => "required",
+    ];
 
     /**
      * @var array Attributes to be cast to native types
@@ -52,17 +59,17 @@ class StateLog extends Model
     /**
      * @var array Attributes to be cast to Argon (Carbon) instances
      */
-    protected $dates = [
-        'created_at',
-        'updated_at',
-    ];
+    protected $dates = [];
 
     /**
      * @var array Relations
      */
     public $hasOne = [];
     public $hasMany = [];
+    public $hasOneThrough = [];
+    public $hasManyThrough = [];
     public $belongsTo = [
+        'user' => 'Backend\Models\User',
     ];
     public $belongsToMany = [];
     public $morphTo = [];
@@ -70,5 +77,4 @@ class StateLog extends Model
     public $morphMany = [];
     public $attachOne = [];
     public $attachMany = [];
-
 }

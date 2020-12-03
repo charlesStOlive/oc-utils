@@ -88,12 +88,13 @@ class SidebarAttributes extends WidgetBase
         return $attributeArray;
     }
 
-    public function remapAttributes(array $attributes, $relationOrName, $name = null, $row = true)
+    public function remapAttributes(array $attributes, $relationOrName, $name = null, $row = false)
     {
         $transformers = \Config::get('waka.utils::transformers');
         $documentType = 'twig';
         if ($this->type == 'word') {
             $documentType = 'word';
+            $row = false;
         }
 
         $mapedResult = [];
@@ -179,7 +180,7 @@ class SidebarAttributes extends WidgetBase
 
                     $temptAttributeArray = [];
                     foreach ($attributes as $key => $attributeAdresse) {
-                        trace_log($key);
+                        //trace_log($key);
                         $attributeArray = Yaml::parseFile(plugins_path() . '/' . $attributeAdresse);
                         if ($key == "main") {
                             $maped = $this->remapAttributes($attributeArray['attributes'], $code, null, true);
@@ -201,8 +202,8 @@ class SidebarAttributes extends WidgetBase
                     }
 
                 }
-                trace_log("result");
-                trace_log($result);
+                //trace_log("result");
+                //trace_log($result);
 
             }
         }
