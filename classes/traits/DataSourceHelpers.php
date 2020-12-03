@@ -6,4 +6,13 @@ trait DataSourceHelpers
     {
         return \Waka\Utils\Classes\DataSourceList::lists();
     }
+    public function listDataSourceTarget()
+    {
+        trace_log($this->data_source_id);
+        $ds = new \Waka\Utils\Classes\DataSource($this->data_source_id, 'id');
+        $class = new $ds->class;
+        trace_log($class::orderBy('updated_at', 'desc')->limit(200)->get()->lists('name', 'id'));
+        return $class::orderBy('updated_at', 'desc')->limit(200)->get()->lists('name', 'id');
+
+    }
 }

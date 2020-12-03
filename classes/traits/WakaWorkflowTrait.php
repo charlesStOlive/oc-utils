@@ -44,14 +44,15 @@ trait WakaWorkflowTrait
                     //Preparation de l'evenement
                     $workflowName = $model->workflow_get()->getName();
                     $transition = self::getTransitionobject($changeState, $model);
-                    $afterSaveFunction = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['fncs'];
-                    $afterSaveFunction = new \October\Rain\Support\Collection($afterSaveFunction);
-                    $fnc = $afterSaveFunction->where('type', 'prod')->toArray();
+                    $afterSaveFunction = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['fncs'] ?? null;
+
                     //$fnc = $afterSaveFunction->where('type', 'prod')->keys()->first();
 
                     //trace_log($fnc);
                     //trace_log($attributes);
                     if ($afterSaveFunction) {
+                        $afterSaveFunction = new \October\Rain\Support\Collection($afterSaveFunction);
+                        $fnc = $afterSaveFunction->where('type', 'prod')->toArray();
                         \Event::fire('workflow.' . $workflowName . '.afterModelSaved', [$model, $fnc]);
                     }
                     //fin de la sauvegarde evenement

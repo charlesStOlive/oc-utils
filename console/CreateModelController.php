@@ -90,8 +90,10 @@ class CreateModelController extends GeneratorCommand
             'excel' => true,
 
         ];
+        $version = null;
 
         if ($this->option('option')) {
+
             $maker = [
                 'model' => false,
                 'lang_field_attributes' => false,
@@ -104,6 +106,9 @@ class CreateModelController extends GeneratorCommand
             //trace_log($types);
             foreach ($types as $type) {
                 $maker[$type] = true;
+                if ($type == 'update') {
+                    $version = $this->ask('version');
+                }
             }
         }
 
@@ -195,12 +200,14 @@ class CreateModelController extends GeneratorCommand
         $config['attachMany'] = $rows->where('attachMany', '!=', null)->pluck('attachMany')->toArray();
         $config['lists'] = $rows->where('lists', '!=', null)->pluck('lists')->toArray();
 
-        /**/trace_log($rows->toArray());
-        /**/trace_log($config);
+        /**///trace_log($rows->toArray());
+        /**///trace_log($config);
 
         $trads = $rows->where('name', '<>', null)->toArray();
 
-        $dbs = $rows->where('type', '<>', null)->toArray();
+        $dbs = $rows->where('type', '<>', null)->where('version', '==', null)->toArray();
+        $dbVersion = $rows->where('type', '<>', null)->where('version', '==', $version)->toArray();
+        trace_log($dbVersion);
 
         $columns = $rows->where('column', '<>', null)->toArray();
         $fields = $rows->where('field', '<>', null)->toArray();
@@ -225,6 +232,7 @@ class CreateModelController extends GeneratorCommand
         $requireds = $rows->where('required', '<>', null)->pluck('required', 'var')->toArray();
         $jsons = $rows->where('json', '<>', null)->pluck('json', 'var')->toArray();
         $getters = $rows->where('getter', '<>', null)->pluck('json', 'var')->toArray();
+        $purgeables = $rows->where('purgeable', '<>', null)->pluck('purgeable', 'var')->toArray();
 
         if ($maker['model']) {
             /**/trace_log('on fait le modele');
@@ -233,10 +241,16 @@ class CreateModelController extends GeneratorCommand
         if ($maker['update']) {
             /**/trace_log('on fait le migrateur du modele');
             $this->stubs['model/create_table.stub'] = 'updates/create_{{snake_plural_name}}_table.php';
+            trace_log($version);
+            if ($version) {
+                $this->stubs['model/create_update.stub'] = 'updates/create_{{snake_plural_name}}_table_u{{ version }}.php';
+            }
         }
         if ($maker['lang_field_attributes']) {
             /**/trace_log('on fait les langues fields et attributs');
-            $this->stubs['model/attributes.stub'] = 'models/{{lower_name}}/attributes.yaml';
+            if ($config['create_attributes_file'] ?? false) {
+                $this->stubs['model/attributes.stub'] = 'models/{{lower_name}}/attributes.yaml';
+            }
             $this->stubs = array_merge($this->stubs, $this->modelYamlstubs);
             $this->stubs['model/temp_lang.stub'] = 'lang/fr/{{lower_name}}.php';
             if ($config['use_tab']) {
@@ -297,6 +311,8 @@ class CreateModelController extends GeneratorCommand
             'configs' => $config,
             'trads' => $trads,
             'dbs' => $dbs,
+            'dbVersion' => $dbVersion,
+            'version' => $version,
             'columns' => $columns,
             'fields' => $fields,
             'attributes' => $attributes,
@@ -306,6 +322,7 @@ class CreateModelController extends GeneratorCommand
             'requireds' => $requireds,
             'jsons' => $jsons,
             'getters' => $getters,
+            'purgeables' => $purgeables,
             'excels' => $excels,
             'tabs' => $tabs,
             //
@@ -407,6 +424,7 @@ class CreateModelController extends GeneratorCommand
     {
         return [
             ['force', null, InputOption::VALUE_NONE, 'Overwrite existing files with generated ones.'],
+            ['v', null, InputOption::VALUE_REQUIRED, 'Crée un update de version'],
             ['option', null, InputOption::VALUE_NONE, 'Crée uniquement le model'],
             ['file', null, InputOption::VALUE_REQUIRED, 'Fichier'],
         ];

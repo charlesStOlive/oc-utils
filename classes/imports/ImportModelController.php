@@ -69,6 +69,7 @@ class DataImport implements ToCollection, WithHeadingRow
                 'append' => $row['append'] ?? null,
                 'json' => $row['json'] ?? null,
                 'getter' => $row['getter'] ?? null,
+                'purgeable' => $row['purgeable'] ?? null,
                 'relation' => $row['relation'] ?? null,
                 'default' => $row['default'] ?? null,
                 'span' => $row['span'] ?? null,

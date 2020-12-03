@@ -42,7 +42,11 @@ class {{studly_name}} extends Model
     public $implement = [
         'October.Rain.Database.Behaviors.Purgeable',
     ];
-    public $purgeable = ['change_state'];
+    public $purgeable = [
+{% for key,required in purgeables %}
+        '{{key}}',
+{% endfor %}      
+    ];
 {% endif %}
 {% if configs.no_timestamps %}
     /**
