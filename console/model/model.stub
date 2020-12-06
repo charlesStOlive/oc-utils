@@ -25,7 +25,7 @@ class {{studly_name}} extends Model
     use \Waka\Utils\Classes\Traits\DataSourceHelpers;
 {% endif %}
 {% if configs.trait_workflow %}
-    use \ZeroDaHero\LaravelWorkflow\Traits\WorkflowTrait;
+    use \Waka\Utils\Classes\Traits\WakaWorkflowTrait;
 {% endif %}
 
     /**

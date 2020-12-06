@@ -27,17 +27,19 @@ columns:
 {% endif %}
 {% if column.type == 'boolean' %}
         type: switch
-{% endif %}
-{% if column.type == 'timestamp' %}
+{% elseif column.type == 'timestamp' %}
         type: timesince
-{% endif %}
-{% if column.type == 'date' %}
+{% elseif column.type == 'date' %}
         type: time
         ignoreTimezone: true
+{% elseif column.field_type == 'workflow' %}
+        type: workflow
 {% endif %}
 {% if column.type is null and column.attribute is not null %}
         searchable: false
         sortable: false
+{% else %}
+        searchable: true
 {% endif %}
 {% if column.column == 'invisible' %}
         invisible: true

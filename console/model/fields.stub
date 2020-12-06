@@ -30,6 +30,10 @@ fields:
         keyFrom: id
         nameFrom: name
         useRelation: true
+{% elseif field.field_type == 'workflow' %}
+        type: workflow
+        stateFrom: state
+        placeholder: waka.utils::lang.global.placeholder_w
 {% elseif field.field_type  %}
         type: {{ field.field_type }}
 {% elseif field.hasmany %}
@@ -60,8 +64,6 @@ fields:
         type: datepicker
         mode: date
         ignoreTimezone: true
-{% elseif field.field_type %}
-        type: {{ field.field_type }}
 {% endif %}
 {% if field.required %}
         required: true
@@ -84,7 +86,7 @@ fields:
 {% if field.comment  %}
         commentAbove: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.var}}_com
 {% endif %}
-{% if field.field != 1  %}
+{% if field.field != '1'  %}
         permissions: [{{field.field}}]
 {% endif %}
 {% endfor %} 
