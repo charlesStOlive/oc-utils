@@ -69,6 +69,8 @@ class DataImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
                 'from' => $row['from'] ?? null,
                 'to' => $row['to'] ?? null,
                 'rules' => $row['rules'] ?? null,
+                'color' => $row['color'] ?? null,
+                'icon' => $row['icon'] ?? null,
                 'fnc_prod' => $row['fnc_prod'] ?? null,
                 'fnc_prod_arg' => $row['fnc_prod_arg'] ?? null,
                 'fnc_prod_val' => $row['fnc_prod_val'] ?? null,

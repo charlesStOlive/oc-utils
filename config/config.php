@@ -73,17 +73,21 @@ return [
                 'word' => '${%s*date-short-time}',
                 'twig' => "{{%s|localeDate('date-short-time')}}",
             ],
-            'numeric' => [
+            'float' => [
                 'word' => '${%s*numeric}',
-                'twig' => "{{%s| number_format(2, ',', ' ')}} €",
+                'twig' => "{{%s|number_format(2,',','')}} €",
+            ],
+            'int' => [
+                'word' => '${%s*numeric}',
+                'twig' => "{{%s|number_format(0,',','')}}",
             ],
             'euro' => [
                 'word' => '${%s*euro}',
-                'twig' => "{{%s|number_format(2, ',', ' ')}} €",
+                'twig' => "{{%s|number_format(2,',','')}} €",
             ],
-            'numeric' => [
+            'euro-int' => [
                 'word' => '${%s*numeric}',
-                'twig' => "{{%s|number_format(0, ',', ' ')}} €",
+                'twig' => "{{%s|number_format(0,',','')}} €",
             ],
             'switch' => [
                 'word' => '${%s*switch}',

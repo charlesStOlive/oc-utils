@@ -207,7 +207,7 @@ class CreateModelController extends GeneratorCommand
 
         $dbs = $rows->where('type', '<>', null)->where('version', '==', null)->toArray();
         $dbVersion = $rows->where('type', '<>', null)->where('version', '==', $version)->toArray();
-        trace_log($dbVersion);
+        //trace_log($dbVersion);
 
         $columns = $rows->where('column', '<>', null)->toArray();
         $fields = $rows->where('field', '<>', null)->toArray();
@@ -241,7 +241,7 @@ class CreateModelController extends GeneratorCommand
         if ($maker['update']) {
             /**/trace_log('on fait le migrateur du modele');
             $this->stubs['model/create_table.stub'] = 'updates/create_{{snake_plural_name}}_table.php';
-            trace_log($version);
+            //trace_log($version);
             if ($version) {
                 $this->stubs['model/create_update.stub'] = 'updates/create_{{snake_plural_name}}_table_u{{ version }}.php';
             }

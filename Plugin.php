@@ -9,6 +9,7 @@ use View;
 use Waka\Utils\Classes\DataSourceList;
 use Waka\Utils\Columns\BtnActions;
 use Waka\Utils\Columns\CalculColumn;
+use Waka\Utils\Columns\WorkflowColumn;
 use Waka\Utils\Models\Settings;
 
 /**
@@ -84,6 +85,7 @@ class Plugin extends PluginBase
             'euro' => function ($value) {return number_format($value, 2, ',', ' ') . ' €';},
             'euro-int' => function ($value) {return number_format($value, 0, ',', ' ') . ' €';},
             'datasource' => function ($value) {return DataSourceList::getValue($value);},
+            'workflow' => [WorkflowColumn::class, 'render'],
         ];
     }
 
@@ -108,6 +110,16 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
+        \Storage::extend('utils_gd_backup', function ($app, $config) {
+            $client = new \Google_Client();
+            $client->setClientId($config['clientId']);
+            $client->setClientSecret($config['clientSecret']);
+            $client->refreshToken($config['refreshToken']);
+            $service = new \Google_Service_Drive($client);
+            $adapter = new \Hypweb\Flysystem\GoogleDrive\GoogleDriveAdapter($service, $config['folderId']);
+
+            return new \League\Flysystem\Filesystem($adapter);
+        });
 
         /**
          * POur le copier coller
@@ -239,6 +251,20 @@ class Plugin extends PluginBase
         //     //trace_log("Listen : job.error.*");
         //     //trace_log($error);
         // });
+
+        /**
+         * POUR LE WORKFLOW COLUMN
+         */
+        Event::listen('backend.list.extendColumns', function ($widget) {
+            /** @var \Backend\Widgets\Lists $widget */
+            foreach ($widget->config->columns as $name => $config) {
+                if (empty($config['type']) || $config['type'] !== 'workflow') {
+                    continue;
+                }
+                // Store field config here, before that unofficial fields was removed
+                WorkflowColumn::storeFieldConfig($name, $config);
+            }
+        });
 
     }
 

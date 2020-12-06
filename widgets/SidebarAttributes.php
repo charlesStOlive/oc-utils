@@ -55,14 +55,19 @@ class SidebarAttributes extends WidgetBase
     public function getWattributes()
     {
         $attributeArray = [];
-        $pluginName = strtolower($this->dataSource->author . '/' . $this->dataSource->plugin . '\/models');
-        $attributesPath = plugins_path() . '/' . $pluginName . '/' . $this->dataSource->name . '/attributes.yaml';
+
         $attributes;
-        if (file_exists($attributesPath)) {
-            $attributes = Yaml::parseFile($attributesPath);
-        } else {
-            $modelAttributeAdresse = $this->dataSource->attributesConfig;
+        $modelAttributeAdresse = $this->dataSource->attributesConfig;
+        if ($modelAttributeAdresse) {
             $attributes = Yaml::parseFile(plugins_path() . '/' . $modelAttributeAdresse);
+        } else {
+            $pluginName = strtolower($this->dataSource->author . '/' . $this->dataSource->plugin . '\/models');
+            $attributesPath = plugins_path() . '/' . $pluginName . '/' . $this->dataSource->name . '/attributes.yaml';
+            if (file_exists($attributesPath)) {
+                $attributes = Yaml::parseFile($attributesPath);
+            } else {
+                throw new \SystemException('Les attributs ne sont pas correctemrnt configuré.');
+            }
         }
         $maped = $this->remapAttributes($attributes['attributes'], $this->dataSource->lowerName);
         //$attributeArray[$this->dataSource->lowerName] = $attributes;
@@ -71,13 +76,18 @@ class SidebarAttributes extends WidgetBase
         foreach ($this->dataSource->relations as $key => $relation) {
             $ex = explode('.', $key);
             $relationName = array_pop($ex);
-            $attributesPath = plugins_path() . '/' . $pluginName . '/' . $relationName . '/attributes.yaml';
             $attributes;
-            if (file_exists($attributesPath)) {
-                $attributes = Yaml::parseFile($attributesPath);
-            } else {
-                $modelAttributeAdresse = $this->dataSource->attributesConfig;
+            $modelAttributeAdresse = $relation['attributes'] ?? null;
+            if ($modelAttributeAdresse) {
                 $attributes = Yaml::parseFile(plugins_path() . '/' . $modelAttributeAdresse);
+            } else {
+                $pluginName = strtolower($this->dataSource->author . '/' . $this->dataSource->plugin . '\/models');
+                $attributesPath = plugins_path() . '/' . $pluginName . '/' . $relationName . '/attributes.yaml';
+                if (file_exists($attributesPath)) {
+                    $attributes = Yaml::parseFile($attributesPath);
+                } else {
+                    throw new \SystemException('Les attributs ne sont pas correctemrnt configuré.');
+                }
             }
             $maped = $this->remapAttributes($attributes['attributes'], $relationName, $this->dataSource->lowerName);
             $attributeArray[$relationName]['values'] = $maped;
@@ -194,7 +204,7 @@ class SidebarAttributes extends WidgetBase
                 }
                 $values = $outputs['values'] ?? null;
                 if ($values) {
-                    $maped = $this->remapAttributes($values, $code);
+                    $maped = $this->remapAttributes($values, 'row');
                     if ($result[$code] ?? null) {
                         $result[$code] = array_merge($result[$code], $maped);
                     } else {

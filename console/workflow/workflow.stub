@@ -25,6 +25,15 @@
 {% if place.com %}
                 com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.var}}_com
 {% endif %}
+{% if place.rules %}
+                norole: [{{place.rules}}]
+{% endif %}
+{% if place.color %}
+                color: {{place.color}}
+{% endif %}
+{% if place.icon %}
+                icon: {{place.icon}}
+{% endif %}
 {% endfor %}
     initial_places: {{ configs.initial_places.value }}  # or set to an array if multiple initial places
     transitions:

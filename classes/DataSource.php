@@ -33,6 +33,7 @@ class DataSource
     public $aggs;
     public $wimages;
     public $attributesConfig;
+    public $outputName;
 
     public function __construct($id = null, $type_id = "name")
     {
@@ -70,6 +71,8 @@ class DataSource
         //
         $this->editFunctions = $config['editFunctions'] ?? null;
         $this->aggFunctions = $config['aggFunctions'] ?? false;
+
+        $this->outputName = $config['outputName'] ?? 'name';
 
         //
         $config = null;
