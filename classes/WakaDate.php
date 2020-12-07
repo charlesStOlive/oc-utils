@@ -40,7 +40,9 @@ class WakaDate
             $twig = Carbon::parse($twig);
         }
 
-        if (!$timeZone) {
+        $user = \BackendAuth::getUser();
+
+        if (!$timeZone && $user) {
             $timeZone = \Backend\Models\Preference::get('timezone');
         }
         if (!$format) {

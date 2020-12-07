@@ -266,6 +266,9 @@ class Plugin extends PluginBase
             }
         });
 
+        $localeCode = Lang::getLocale();
+        setlocale(LC_TIME, $localeCode . '_' . strtoupper($localeCode) . '.UTF-8');
+
     }
 
     /**

@@ -98,7 +98,7 @@ class Workflow extends FormWidgetBase
         $place = $this->model->state;
         //trace_log($place);
         $noRoles = $this->workflow->getMetadataStore()->getPlaceMetadata($place)['noroles'] ?? null; // string place name
-        trace_log($noRoles);
+        //trace_log($noRoles);
         $user = \BackendAuth::getUser();
         if ($noRoles) {
             if (in_array($user->role->code, $noRoles)) {
