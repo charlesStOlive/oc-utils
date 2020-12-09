@@ -12,7 +12,11 @@ modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}}
 title: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.title
 
 # Link URL for each record
+{% if configs.preview_only %}
+recordUrl: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/preview/:id
+{% else %}
 recordUrl: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/update/:id
+{% endif %}
 
 # Message to display if the list is empty
 noRecordsMessage: backend::lang.list.no_records

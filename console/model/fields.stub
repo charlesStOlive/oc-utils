@@ -34,6 +34,8 @@ fields:
         type: workflow
         stateFrom: state
         placeholder: waka.utils::lang.global.placeholder_w
+{% elseif field.field_type == 'workflow' %}
+        placeholder: waka.utils::lang.global.placeholder
 {% elseif field.field_type  %}
         type: {{ field.field_type }}
 {% elseif field.hasmany %}
@@ -89,4 +91,4 @@ fields:
 {% if field.field != '1'  %}
         permissions: [{{field.field}}]
 {% endif %}
-{% endfor %} 
+{% endfor %}

@@ -6,5 +6,5 @@ return [
 {% if trad.comment is not null %}
     '{{trad.var}}_com' => '{{trad.comment}}',
 {% endif %}
-{% endfor %} 
+{% endfor %}
 ];

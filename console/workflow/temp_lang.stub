@@ -2,7 +2,7 @@
 return [
 {% for key,trad in trads  %}
     '{{key}}' => '{{trad}}',
-{% endfor %} 
+{% endfor %}
     'places' => [
 {% for key,trad in tradPlaces  %}
         '{{key}}' => '{{trad}}',

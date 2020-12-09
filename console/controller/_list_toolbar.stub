@@ -1,9 +1,17 @@
 <div data-control="toolbar">
+{% if configs.create_permission %}
+    <?php if ($this->user->hasAccess('{{configs.create_permission}}')): ?>
+{% endif %}
     <a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/create') ?>"
        class="btn btn-primary oc-icon-plus">
         <?= e(trans('{{lower_author}}.{{lower_plugin}}::{{lower_name}}.create')) ?>
     </a>
-
+{% if configs.create_permission %}
+    <?php endif ?>
+{% endif %}
+{% if configs.delete_permission %}
+    <?php if ($this->user->hasAccess('{{configs.delete_permission}}')): ?>
+{% endif %}
     <button class="btn btn-danger oc-icon-trash-o"
             disabled="disabled"
             onclick="$(this).data('request-data', { checked: $('.control-list').listWidget('getChecked') })"
@@ -16,6 +24,9 @@
             data-stripe-load-indicator>
         <?= e(trans('waka.utils::lang.global.delete_selected')) ?>
     </button>
+{% if configs.delete_permission %}
+    <?php endif ?>
+{%endif%}
 {% if addReorderBehavior %}
     <a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/reorder') ?>"
        class="btn btn-default oc-icon-bars">

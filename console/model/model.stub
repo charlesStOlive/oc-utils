@@ -45,7 +45,7 @@ class {{studly_name}} extends Model
     public $purgeable = [
 {% for key,required in purgeables %}
         '{{key}}',
-{% endfor %}      
+{% endfor %}
     ];
 {% endif %}
 {% if configs.no_timestamps %}
@@ -228,7 +228,7 @@ class {{studly_name}} extends Model
 {% endfor %}
 
     /**
-     * GETTER
+     * GETTERS
      **/
 {% for key,getter in getters %}
     public function get{{ key | camelCase | ucfirst }}Attribute()

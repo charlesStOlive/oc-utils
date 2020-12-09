@@ -13,9 +13,11 @@
 <div class="layout-row">
     <?= $this->formRender() ?>
 </div>
-
 <div class="form-buttons">
     <div class="loading-indicator-container">
+{% if configs.create_permission %}
+        <?php if ($this->user->hasAccess('{{configs.create_permission}}')): ?>
+{%endif%}
         <button type="submit"
                 data-request="onSave"
                 data-hotkey="ctrl+s, cmd+s"
@@ -31,6 +33,9 @@
                 class="btn btn-default">
             <?= e(trans('waka.utils::lang.global.create_close')) ?>
         </button>
+{% if configs.create_permission %}
+        <?php endif ?>
+{%endif%}
         <span class="btn-text">
             or <a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}') ?>">
                 <?= e(trans('waka.utils::lang.global.cancel')) ?></a>

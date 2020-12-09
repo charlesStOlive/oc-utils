@@ -3,12 +3,15 @@
 # ===================================
 
 columns:
-{% if configs.show_id_columns %} 
+{% if configs.show_id_columns %}
     id:
         label: ID
-        invisible: {{configs.show_id_columns}}
+        searchable: true
+{% if configs.id_inivisible %}
+        invisible: true
 {% endif %}
-{% if addReorderTrait %}    
+{% endif %}
+{% if addReorderTrait %}
     sort_order:
         label: waka.utils::lang.global.sort_order
         invisible: true
@@ -34,8 +37,8 @@ columns:
         ignoreTimezone: true
 {% elseif column.field_type == 'workflow' %}
         type: workflow
-{% endif %}
-{% if column.type is null and column.attribute is not null %}
+        searchable: true
+{% elseif column.type is null and column.attribute is not null  %}
         searchable: false
         sortable: false
 {% else %}
@@ -44,7 +47,7 @@ columns:
 {% if column.column == 'invisible' %}
         invisible: true
 {% endif %}
-{% endfor %} 
+{% endfor %}
     updated_at:
         label: waka.utils::lang.global.updated_at
         type: timetense

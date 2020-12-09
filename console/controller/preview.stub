@@ -9,6 +9,9 @@
 
 <div class="form-preview">
     <?= $this->formRenderPreview() ?>
+{% for relation in configs.hasmany %}
+    <?= $this->relationRender('{{relation.relation_name}}s') ?>
+{% endfor %}
 </div>
 
 <?php else: ?>
