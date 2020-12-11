@@ -9,7 +9,7 @@
 
 <div class="form-preview">
     <?= $this->formRenderPreview() ?>
-{% for relation in configs.hasmany %}
+{% for relation in configs.many %}
     <?= $this->relationRender('{{relation.relation_name}}s') ?>
 {% endfor %}
 </div>

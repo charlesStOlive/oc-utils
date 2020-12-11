@@ -41,7 +41,11 @@ showSorting: true
 defaultSort:
     column: sort_order
     direction: asc
-{% endif %}
+{% else %}
+defaultSort:
+    column: updated_at
+    direction: desc
+    {% endif %}
 # Display checkboxes next to each record
 showCheckboxes: true
 

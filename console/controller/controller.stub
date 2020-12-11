@@ -14,7 +14,7 @@ class {{studly_ctname}} extends Controller
     public $implement = [
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController',
-{% if configs.hasmany %}
+{% if configs.many %}
         'Backend.Behaviors.RelationController',
 {% endif %}
 {% if configs.action %}
@@ -60,7 +60,7 @@ class {{studly_ctname}} extends Controller
 
     public $formConfig = 'config_form.yaml';
     public $listConfig = 'config_list.yaml';
-{% if configs.hasmany %}
+{% if configs.many %}
     public $relationConfig = 'config_relation.yaml';
 {% endif %}
 {% if configs.behav_duplicate %}

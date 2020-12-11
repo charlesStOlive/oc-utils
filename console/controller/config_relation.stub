@@ -2,7 +2,7 @@
 # Relation Behavior Config
 # ===================================
 
-{% for relation in configs.hasmany %}
+{% for relation in configs.many %}
 {{relation.relation_name}}s:
     label: waka.{{relation.plugin_name}}::{{lower_name}}.{{relation.relation_name}}s
     manage:

@@ -8,7 +8,7 @@ trait UserCreatorTrait
     /*
      * Constructor
      */
-    public static function bootWorkflowTrait()
+    public static function bootUserCreatorTrait()
     {
         static::extend(function ($model) {
             /*

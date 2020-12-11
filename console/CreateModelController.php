@@ -57,6 +57,8 @@ class CreateModelController extends GeneratorCommand
 
     protected $stubs = [];
 
+    public $pluginObj = [];
+
     /**
      * Prepare variables for stubs.
      *
@@ -67,10 +69,10 @@ class CreateModelController extends GeneratorCommand
         $pluginCode = $this->argument('plugin');
 
         $parts = explode('.', $pluginCode);
-        $plugin = array_pop($parts);
-        $author = array_pop($parts);
+        $this->w_plugin = array_pop($parts);
+        $this->w_author = array_pop($parts);
 
-        $model = $this->argument('model');
+        $this->w_model = $this->argument('model');
 
         // $values = $this->ask('Coller des valeurs excels ', true);
         // trace_log($values);
@@ -112,19 +114,13 @@ class CreateModelController extends GeneratorCommand
             }
         }
 
-        $importExcel = new \Waka\Utils\Classes\Imports\ImportModelController($model);
+        $importExcel = new \Waka\Utils\Classes\Imports\ImportModelController($this->w_model);
         \Excel::import($importExcel, plugins_path('waka/wconfig/updates/files/' . $fileName . '.xlsx'));
         $rows = new Collection($importExcel->data->data);
         $config = $importExcel->config->data;
 
-        $relationName = null;
-        $pluginRelationName = null;
-
-        // if ($config['relation'] ?? false) {
-        //     $array = explode(',', $config['relation']);
-        //     $relationName = array_pop($array);
-        //     $pluginRelationName = array_pop($array);
-        // }
+        // $relationName = null;
+        // $pluginRelationName = null;
 
         $rows = $rows->map(function ($item, $key) {
             $trigger = $item['trigger'] ?? null;
@@ -146,62 +142,37 @@ class CreateModelController extends GeneratorCommand
                 $array = explode(',', $options);
                 $item['field_options'] = $array;
             }
-            $relation = $item['relation'] ?? null;
-            if ($relation && str_contains($relation, ',parent')) {
-                $array = explode(',', $relation);
-                $relationName = array_pop($array);
-                $pluginRelationName = array_pop($array);
-                $relation = [
-                    'relation_name' => $item['var'],
-                    'relation_class' => camel_case($item['var']),
-                    'plugin_name' => $pluginRelationName,
-                ];
-                $item['belong'] = $relation;
-            } elseif ($relation && str_contains($relation, ',user')) {
-                $array = explode(',', $relation);
-                $relationName = array_pop($array);
-                $relation = [
-                    'relation_name' => $item['var'],
-                    'relation_class' => 'Backend\Models\User',
-                    'type' => 'user',
-                ];
-                $item['belong'] = $relation;
-            } elseif ($relation) {
-                $array = explode(',', $relation);
-                $relationName = array_pop($array);
-                $pluginRelationName = array_pop($array);
-                $relation = [
-                    'relation_name' => $relationName,
-                    'relation_class' => camel_case($relationName),
-                    'plugin_name' => $pluginRelationName,
-                ];
-                $item['hasmany'] = $relation;
+
+            $model_opt = $item['model_opt'] ?? null;
+            if ($model_opt) {
+                $arrayOpt = explode(',', $options);
+                $item['append'] = in_array('append', $arrayOpt);
+                $item['json'] = in_array('json', $arrayOpt);
+                $item['getter'] = in_array('getter', $arrayOpt);
+                $item['purgeable'] = in_array('purgeable', $arrayOpt);
             }
+            $options = $item['c_field_opt'] ?? null;
+            if ($options) {
+                $array = explode(',', $options);
+                $item['c_field_opt'] = $array;
+            }
+
+            $item = $this->getRelations($item);
+
             $field_type = $item['field_type'] ?? null;
-            if ($field_type == 'attachMany') {
-                $item['attachMany'] = [
-                    'relation_name' => $item['var'],
-                    'relation_class' => 'System\Models\File',
-                ];
-            }
-            if ($field_type == 'attachOne') {
-                $item['attachOne'] = [
-                    'relation_name' => $item['var'],
-                    'relation_class' => 'System\Models\File',
-                ];
-            }
+
             return $item;
 
         });
 
         $config['belong'] = $rows->where('belong', '!=', null)->pluck('belong')->toArray();
-        $config['hasmany'] = $rows->where('hasmany', '!=', null)->pluck('hasmany')->toArray();
+        $config['many'] = $rows->where('many', '!=', null)->pluck('many')->toArray();
         $config['attachOne'] = $rows->where('attachOne', '!=', null)->pluck('attachOne')->toArray();
         $config['attachMany'] = $rows->where('attachMany', '!=', null)->pluck('attachMany')->toArray();
         $config['lists'] = $rows->where('lists', '!=', null)->pluck('lists')->toArray();
 
-        /**///trace_log($rows->toArray());
-        /**///trace_log($config);
+        // trace_log($rows->toArray());
+        // trace_log($config);
 
         $trads = $rows->where('name', '<>', null)->toArray();
 
@@ -211,6 +182,14 @@ class CreateModelController extends GeneratorCommand
 
         $columns = $rows->where('column', '<>', null)->toArray();
         $fields = $rows->where('field', '<>', null)->toArray();
+        $fields_create = $rows->where('c_field', '<>', null);
+        if ($fields_create) {
+            $fields_create = $fields_create->sortBy('c_field');
+            $fields_create = $fields_create->map(function ($item, $key) {
+                $item['field_options'] = $item['c_field_opt'];
+            });
+            $fields_create = $fields_create->toArray();
+        }
         $attributes = $rows->where('attribute', '<>', null)->toArray();
 
         $tabs = [];
@@ -251,6 +230,9 @@ class CreateModelController extends GeneratorCommand
             if ($config['create_attributes_file'] ?? false) {
                 $this->stubs['model/attributes.stub'] = 'models/{{lower_name}}/attributes.yaml';
             }
+            if ($fields_create) {
+                $this->stubs['model/fields_create.stub'] = 'models/{{lower_name}}/fields_create.yaml';
+            }
             $this->stubs = array_merge($this->stubs, $this->modelYamlstubs);
             $this->stubs['model/temp_lang.stub'] = 'lang/fr/{{lower_name}}.php';
             if ($config['use_tab']) {
@@ -275,11 +257,11 @@ class CreateModelController extends GeneratorCommand
                 $this->stubs['controller/config_lots.stub'] = 'controllers/{{lower_ctname}}/config_lots.yaml';
             }
 
-            if ($config['hasmany']) {
-                foreach ($config['hasmany'] as $relation) {
-                    $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($model) . 's/_field_{{relation_name}}s.htm', $relation);
-                    $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['relation_name'] . '/fields_for_' . strtolower($model) . '.yaml', []);
-                    $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['relation_name'] . '/columns_for_' . strtolower($model) . '.yaml', []);
+            if ($config['many']) {
+                foreach ($config['many'] as $relation) {
+                    $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
+                    $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
+                    $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
                     // $this->stubs['model/fields_for.stub']  = 'models/{{relation_name}}/fields_for_{{lower_name}}.yaml';
                     // $this->stubs['model/columns_for.stub'] = 'models{{relation_name}}/columns_for_{{lower_name}}.yaml';
                 }
@@ -304,10 +286,10 @@ class CreateModelController extends GeneratorCommand
         }
 
         $all = [
-            'name' => $model,
-            'ctname' => $model . 's',
-            'author' => $author,
-            'plugin' => $plugin,
+            'name' => $this->w_model,
+            'ctname' => $this->w_model . 's',
+            'author' => $this->w_author,
+            'plugin' => $this->w_plugin,
             'configs' => $config,
             'trads' => $trads,
             'dbs' => $dbs,
@@ -315,6 +297,7 @@ class CreateModelController extends GeneratorCommand
             'version' => $version,
             'columns' => $columns,
             'fields' => $fields,
+            'fields_create' => $fields_create,
             'attributes' => $attributes,
             'titles' => $titles,
             'appends' => $appends,
@@ -325,15 +308,89 @@ class CreateModelController extends GeneratorCommand
             'purgeables' => $purgeables,
             'excels' => $excels,
             'tabs' => $tabs,
-            //
-            'relation_name' => $relationName,
-            'relation_plugin' => $pluginRelationName,
 
         ];
 
-        //trace_log($all);
+        //trace_log($config);
+        trace_log($all);
 
         return $all;
+    }
+
+    public function getRelations($item)
+    {
+        $relation = $item['relation'] ?? null;
+        if (!$relation) {
+            return $item;
+        }
+        $array = explode('::', $relation);
+        $type = $array[0];
+        $relationClass = $this->getRelationClass($array[1], $item['var']);
+        $options = $this->getRelationOptions($array[2] ?? null);
+        $userRelation = $relationClass == 'Backend\Models\User' ? true : false;
+        if ($type == 'belong') {
+            $item['belong'] = [
+                'relation_name' => $item['var'],
+                'relation_class' => $relationClass,
+                'options' => $options,
+                'userRelation' => $userRelation,
+            ];
+        }
+        if ($type == 'many') {
+            $item['many'] = [
+                'relation_name' => $item['var'],
+                'singular_name' => str_singular($item['var']),
+                'relation_class' => $relationClass,
+                'options' => $options,
+            ];
+        }
+        if ($type == 'attachMany') {
+            $item['attachMany'] = [
+                'relation_name' => $item['var'],
+                'relation_class' => $relationClass,
+            ];
+        }
+        if ($type == 'attachOne') {
+            $item['attachOne'] = [
+                'relation_name' => $item['var'],
+                'relation_class' => $relationClass,
+            ];
+        }
+        return $item;
+    }
+
+    public function getRelationClass($value, $key)
+    {
+        if ($value == 'self') {
+            return ucfirst($this->w_author) . '\\' . ucfirst($this->w_plugin) . '\\Models\\' . ucfirst($key);
+        } elseif ($value == 'user') {
+            return 'Backend\Models\User';
+        } elseif ($value == 'cloudi') {
+            return 'Waka\Cloudis\Models\CloudiFile';
+        } elseif ($value == 'file') {
+            return 'System\Models\File';
+        } else {
+            $parts = explode('.', $value);
+            $r_plugin = array_pop($parts);
+            $r_author = array_pop($parts);
+            return '\\' . ucfirst($r_plugin) . '\\' . ucfirst($r_author) . '\\Models\\' . ucfirst($key);
+        }
+    }
+
+    public function getRelationOptions($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        $parts = explode(',', $value);
+        $options = [];
+
+        //travail sur les deifferents coules key attribute
+        foreach ($parts as $part) {
+            $key_att = explode('.', $value);
+            $options[$key_att[0]] = $key_att[1];
+        }
+        return $options;
     }
 
     protected function processVars($vars)

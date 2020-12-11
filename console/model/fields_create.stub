@@ -8,7 +8,7 @@ tabs:
         {{key}}: {{value}}
 {% endfor %}
     fields:    
-{% for field in fields  %}
+{% for field in fields_create  %}
         {{field.var}}{% if field.context %}@{{field.context}}{% endif %}:
             label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.var}}
 {% if field.span %}

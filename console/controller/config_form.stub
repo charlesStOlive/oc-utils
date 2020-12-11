@@ -19,6 +19,9 @@ create:
     title: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.create
     redirect: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/update/:id
     redirectClose: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}
+{% if fields_create %}
+    form: $/{{lower_author}}/{{lower_plugin}}/models/{{lower_name}}/fields_create.yaml
+{% endif %}
 
 # Update page
 update:

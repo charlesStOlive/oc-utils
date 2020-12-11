@@ -19,7 +19,7 @@ class {{studly_name}} extends Model
     use \October\Rain\Database\Traits\Sortable;
 {% endif %}
 {% if configs.trait_cloudi %}
-    use \Waka\Cloudis\Classes\Traits\Cloudi;
+    use \Waka\Cloudis\Classes\Traits\CloudiTrait;
 {% endif %}
 {% if configs.trait_datasource %}
     use \Waka\Utils\Classes\Traits\DataSourceHelpers;
@@ -134,19 +134,28 @@ class {{studly_name}} extends Model
      */
     public $hasOne = [];
     public $hasMany = [
-{% for relation in configs.hasmany %}
-        '{{relation.relation_name| lowercase}}s' => 'Waka\{{relation.plugin_name| ucfirst }}\Models\{{relation.relation_class | ucfirst}}',
+{% for relation in configs.many %}
+        '{{relation.relation_name| lowercase}}' => [
+            '{{relation.relation_class}}',
+{% if relation.options %}{% for key,option in relation.options %}
+            '{{key}}' => '{{option}}',
+{% endfor %}
+{% endif %}
+            ],
 {% endfor %}
     ];
     public $hasOneThrough = [];
     public $hasManyThrough = [];
     public $belongsTo = [
 {% for relation in configs.belong %}
-{% if relation.type == 'user' %}
-        '{{relation.relation_name| lowercase}}' => '{{relation.relation_class}}',
-{% else %}
-        '{{relation.relation_name| lowercase}}' => 'Waka\{{relation.plugin_name| ucfirst }}\Models\{{relation.relation_class | ucfirst}}',
+        '{{relation.relation_name| lowercase}}' => [
+            '{{relation.relation_class}}',
+{% if relation.options%}
+{% for key,option in relation.options %}
+            '{{key}}' => '{{option}}',
+{% endfor %}
 {% endif %}
+        ],
 {% endfor %}
     ];
     public $belongsToMany = [];

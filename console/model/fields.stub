@@ -36,16 +36,23 @@ fields:
         placeholder: waka.utils::lang.global.placeholder_w
 {% elseif field.field_type == 'workflow' %}
         placeholder: waka.utils::lang.global.placeholder
+{% elseif field.field_type == 'dropdown'  %}
+        type: {{ field.field_type }}
+        placeholder: waka.utils::lang.global.placeholder
 {% elseif field.field_type  %}
         type: {{ field.field_type }}
-{% elseif field.hasmany %}
+{% elseif field.many %}
         type: partial
         path: field_{{field.var}}
 {% elseif field.belong %}
         type: relation
         placeholder: waka.utils::lang.global.placeholder
+{% if field.belong.userRelation %}
+        select: CONCAT(first_name,' ', last_name)
+{% else %}
         nameFrom: name
-{% elseif field.hasmany %}
+{% endif %}
+{% elseif field.many %}
         type: partial
         path: field_{{field.var}}
 {% elseif field.belong %}
@@ -88,7 +95,7 @@ fields:
 {% if field.comment  %}
         commentAbove: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.var}}_com
 {% endif %}
-{% if field.field != '1'  %}
-        permissions: [{{field.field}}]
+{% if field.permissions  %}
+        permissions: [{{field.permissions}}]
 {% endif %}
 {% endfor %}
