@@ -38,13 +38,20 @@ columns:
 {% elseif column.field_type == 'workflow' %}
         type: workflow
         searchable: true
+{% elseif column.field_type == 'action' %}
+        type: waka-btn-actions
+        icon: icon-wrench
+        clickable: false
+        searchable: false
+        sortable: false
+        width: 25px
 {% elseif column.type is null and column.attribute is not null  %}
         searchable: false
         sortable: false
 {% else %}
         searchable: true
 {% endif %}
-{% if column.column == 'invisible' %}
+{% if column.column == '999' %}
         invisible: true
 {% endif %}
 {% endfor %}

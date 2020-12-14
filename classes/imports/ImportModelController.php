@@ -61,7 +61,7 @@ class DataImport implements ToCollection, WithHeadingRow
                 'attribute' => $row['attribute'] ?? null,
                 'type' => $row['type'] ?? null,
                 'column' => $row['colonne'] ?? null,
-                'nullable' => $row['est_null'] ?? null,
+                'not_null' => $row['not_null'] ?? null,
                 'field' => $row['field'] ?? null,
                 'c_field' => $row['c_field'] ?? null,
                 //'context' => $row['context'] ?? null,
@@ -80,6 +80,7 @@ class DataImport implements ToCollection, WithHeadingRow
                 'c_field_opt' => $row['c_field_opt'] ?? null,
                 'lists' => $row['lists'] ?? null,
                 'trigger' => $row['trigger'] ?? null,
+                'tab' => $row['tab'] ?? null,
                 'excel' => $row['excel'] ?? null,
                 'version' => $row['version'] ?? null,
             ];

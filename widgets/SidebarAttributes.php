@@ -172,18 +172,16 @@ class SidebarAttributes extends WidgetBase
 
     public function getFNCOutputs()
     {
-        $this->dataSource->getAttributes();
+
         $fncs = $this->model->model_functions;
         if (!$fncs) {
             return [];
         }
         $result = [];
-        // trace_log($this->model->toArray());
         foreach ($fncs as $fnc) {
             $code = $fnc['collectionCode'];
-
             $outputs = $this->dataSource->getFunctionsOutput($fnc['functionCode']);
-            //trace_log($outputs);
+            trace_log($outputs);
             if ($outputs) {
                 $attributes = $outputs['attributes'] ?? null;
                 if ($attributes) {

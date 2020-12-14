@@ -11,11 +11,13 @@ class Create{{studly_plural_name}}TableU{{version}} extends Migration
         Schema::table('{{lower_author}}_{{lower_plugin}}_{{snake_plural_name}}', function (Blueprint $table) {
 {% for db in dbVersion  %}
 {% if db.type == 'liaison_id' %}
-            $table->integer('{{db.var}}_id')->unsigned(){% if db.nullable %}->nullable(){%endif%};
+            $table->integer('{{db.var}}_id')->unsigned(){% if not db.not_null %}->nullable(){%endif%};
 {% elseif db.type == 'string_id' %}
-            $table->string('{{db.var}}_id'){% if db.nullable %}->nullable(){%endif%};
+            $table->string('{{db.var}}_id'){% if not db.not_null %}->nullable(){%endif%};
+{% elseif db.type == 'double' %}
+            $table->double('{{db.var}}', 15, 2){% if not db.not_null %}->nullable(){%endif%};
 {% else %}
-            $table->{{db.type}}('{{db.var}}'){% if db.nullable %}->nullable(){%endif%}{% if db.default %}->default({{ db.default}}){%endif%};
+            $table->{{db.type}}('{{db.var}}'){% if not db.not_null %}->nullable(){%endif%}{% if db.default %}->default({{ db.default}}){%endif%};
 {% endif %}
 {% endfor %}
         });

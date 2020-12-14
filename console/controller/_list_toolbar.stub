@@ -27,7 +27,7 @@
 {% if configs.delete_permission %}
     <?php endif ?>
 {%endif%}
-{% if addReorderBehavior %}
+{% if configs.behav_reorder %}
     <a href="<?= Backend::url('{{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/reorder') ?>"
        class="btn btn-default oc-icon-bars">
         <?= e(trans('waka.utils::lang.global.reorder')) ?>

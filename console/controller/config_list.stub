@@ -33,6 +33,11 @@ showSetup: true
 # Displays the sorting link on each column
 showSorting: true
 
+{% if configs.behav_reorder and configs.trait_nested  %}
+showTree: true
+treeExpanded: true
+{% endif %}
+
 # Default sorting column
 # defaultSort:
 #     column: created_at

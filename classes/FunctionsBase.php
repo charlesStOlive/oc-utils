@@ -79,4 +79,18 @@ class FunctionsBase
         return $returnArray;
     }
 
+    /**
+     * Méthode pour ajouter des attributs à un array.
+     */
+    public function getAttributesDs($model)
+    {
+        return $model->each(function ($item) {
+            $att = $item->attributesToDs;
+            foreach ($item->attributesToDs as $att) {
+                $item->append($att);
+            }
+        });
+
+    }
+
 }

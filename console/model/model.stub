@@ -27,6 +27,9 @@ class {{studly_name}} extends Model
 {% if configs.trait_workflow %}
     use \Waka\Utils\Classes\Traits\WakaWorkflowTrait;
 {% endif %}
+{% if configs.trait_workflow %}
+    use \Waka\Lp\Classes\Traits\SourceLogTrait;
+{% endif %}
 
     /**
      * @var string The database table used by the model.
@@ -141,7 +144,7 @@ class {{studly_name}} extends Model
             '{{key}}' => '{{option}}',
 {% endfor %}
 {% endif %}
-            ],
+        ],
 {% endfor %}
     ];
     public $hasOneThrough = [];
@@ -161,7 +164,18 @@ class {{studly_name}} extends Model
     public $belongsToMany = [];
     public $morphTo = [];
     public $morphOne = [];
-    public $morphMany = [];
+    public $morphMany = [
+{% for relation in configs.morphmany %}
+        '{{relation.relation_name| lowercase}}' => [
+            '{{relation.relation_class}}',
+{% if relation.options%}
+{% for key,option in relation.options %}
+            '{{key}}' => '{{option}}',
+{% endfor %}
+{% endif %}
+        ],
+{% endfor %}
+    ];
     public $attachOne = [
 {% for relation in configs.attachOne %}
         '{{relation.relation_name| lowercase}}' => '{{relation.relation_class}}',
@@ -253,4 +267,37 @@ class {{studly_name}} extends Model
     /**
      * SETTERS
      */
+ 
+    /**
+     * FILTER FIELDS
+     */
+{% if configs.add_filterfields %}
+    public function filterFields($fields, $context = null)
+    {
+        if (!isset($fields->name)) {
+            return;
+        }
+    }
+
+{% endif %}
+
+    /**
+     * OTHERS
+     */
+{% if configs.trait_nested and  configs.add_parent_value %}
+    public function getThisParentValue($value)
+    {
+        if ($this->{$value}) {
+            return $this->{$value};
+        } else {
+            $parents = $this->getParents()->sortByDesc('nest_depth');
+            foreach ($parents as $parent) {
+                if ($parent->{$value} != null) {
+                    return $parent->{$value};
+                }
+            }
+        }
+    }
+{% endif %}
+    
 }

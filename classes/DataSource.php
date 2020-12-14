@@ -177,22 +177,6 @@ class DataSource
         return $array;
 
     }
-
-    /**
-     * RECUPERATION DES FICHIERS ATTRIBUTS
-     */
-    public function getAttributes()
-    {
-
-        //$this->relations
-        // if ($this->otherRelations) {
-        //     //trace_log($this->otherRelations);
-        //     $class = new $otherRelation['class'];
-        //     //trace_log($this->class);
-        // }
-
-    }
-
     /**
      * RECUPERATION DES VALEURS DES MODELES ET DE LEURS LIAISON
      */
@@ -200,38 +184,53 @@ class DataSource
     public function getModels($modelId = null)
     {
         $this->instanciateModel($modelId);
-
-        $constructApi = null;
-        $embedRelation = $this->getKeyAndEmbed();
-        if ($embedRelation) {
-            $constructApi = $this->class::with($embedRelation)->find($this->model->id);
-        } else {
-            $constructApi = $this->class::find($this->model->id);
+        $constructApi = $this->model;
+        foreach ($this->model->attributesToDs as $tempAppend) {
+            $constructApi->append($tempAppend);
         }
+        $constructApi = $constructApi->toArray();
+        $relation = $this->listRelation();
+        $constructApi = array_merge($constructApi, $relation);
         return $constructApi;
     }
 
-    /**
-     * Permet d'ajouter un modele donnée totalement exterieur au model en cours sans relashionship
-     */
-
-    public function getOtherRelationValues()
+    public function listRelation()
     {
-        if (!$this->otherRelations) {
+        $results = [];
+        $relations = new Collection($this->getKeyAndEmbed());
+        if ($relations->count()) {
+            foreach ($relations as $relation) {
+                $subModel = $this->getStringModelRelation($this->model, $relation);
+                $subModelClassName = get_class($subModel);
+                $subShortName = (new \ReflectionClass($subModelClassName))->getShortName();
+                $relations = new Collection();
+                if ($subModel->attributesToDs) {
+                    foreach ($subModel->attributesToDs as $tempAppend) {
+                        //trace_log($subShortName . ' : ' . $tempAppend);
+                        $subModel->append($tempAppend);
+                    }
+                }
+                $subRelation = explode('.', $relation);
+                if (count($subRelation) == 1) {
+                    $results[$relation] = $subModel->toArray();
+                }
+                if (count($subRelation) == 2) {
+                    $results[$subRelation[0]][$subRelation[1]] = $subModel->toArray();
+                }
+                if (count($subRelation) == 3) {
+                    $results[$subRelation[0]][$subRelation[1]][$subRelation[2]] = $subModel->toArray();
+                }
+
+            }
+            return $results;
+        } else {
             return [];
         }
-        $otherRelation = [];
-        foreach ($this->otherRelations as $key => $otherRelation) {
-            $class = new $otherRelation['class'];
-            $class = $class::first()->toArray();
-            $otherRelation[$key] = $class;
-        }
-        return $otherRelation;
     }
 
     public function getValues($modelId = null, $withInde = true)
     {
-        $dsApi = array_merge($this->getModels($modelId)->toArray(), $this->getOtherRelationValues());
+        $dsApi = array_merge($this->getModels($modelId));
         return $dsApi;
     }
 
@@ -260,11 +259,6 @@ class DataSource
             throw new \ApplicationException("Les contacts ne sont pas correctement configurés.");
         }
 
-        // trace_log("getContact emaildata | ");
-        // trace_log($emailData);
-        // trace_log($this->emails);
-        // trace_log($type);
-
         if (!$emailData) {
             return;
         }
@@ -275,14 +269,6 @@ class DataSource
         } else {
             $contacts = $this->model;
         }
-
-        // trace_log($this->model->name);
-        // trace_log($emailData['relations']);
-
-        // trace_log("liste des relations pour contact");
-        // trace_log($contacts->toArray());
-        // trace_log($contacts['name']);
-        // trace_log(get_class($contacts));
 
         $results = [];
 

@@ -14,10 +14,10 @@ class {{studly_ctname}} extends Controller
     public $implement = [
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController',
-{% if configs.many %}
+{% if configs.many or configs.morphmany  %}
         'Backend.Behaviors.RelationController',
 {% endif %}
-{% if configs.action %}
+{% if configs.behav_action %}
         'Waka.Utils.Behaviors.PopupActions',
 {% endif %}
 {% if configs.side_bar_info %}
@@ -39,7 +39,7 @@ class {{studly_ctname}} extends Controller
         'Waka.Mailtoer.Behaviors.MailtoBehavior',
 {% endif %}
 {% if configs.behav_imports %}
-         'Waka.ImportExport.Behaviors.ExcelImport',
+        'Waka.ImportExport.Behaviors.ExcelImport',
 {% endif %}
 {% if configs.behav_exports %}
         'Waka.ImportExport.Behaviors.ExcelExport',
@@ -60,7 +60,7 @@ class {{studly_ctname}} extends Controller
 
     public $formConfig = 'config_form.yaml';
     public $listConfig = 'config_list.yaml';
-{% if configs.many %}
+{% if configs.many or configs.morphmany  %}
     public $relationConfig = 'config_relation.yaml';
 {% endif %}
 {% if configs.behav_duplicate %}

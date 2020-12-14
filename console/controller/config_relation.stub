@@ -3,13 +3,26 @@
 # ===================================
 
 {% for relation in configs.many %}
-{{relation.relation_name}}s:
-    label: waka.{{relation.plugin_name}}::{{lower_name}}.{{relation.relation_name}}s
+{{relation.relation_name}}:
+    label: waka.{{lower_plugin}}::{{lower_name}}.{{relation.relation_name}}
     manage:
-        form: $/waka/{{relation.plugin_name}}/models/{{relation.relation_name}}/fields_for_{{lower_name}}.yaml
+        form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
     view:
-        list: $/waka/{{relation.plugin_name}}/models/{{relation.relation_name}}/columns_for_{{lower_name}}.yaml
-        recordUrl: waka/{{relation.plugin_name}}/{{relation.relation_name}}s/update/:id
+        list: {{relation.relation_path}}//columns_for_{{lower_name}}.yaml
+        recordUrl: waka/{{lower_plugin}}/{{relation.relation_name}}/update/:id
+        toolbarButtons: create|delete
+        defaultSort:
+            column: name
+            direction: asc
+{% endfor %}
+{% for relation in configs.morphmany %}
+{{relation.relation_name}}:
+    label: waka.{{lower_plugin}}::{{lower_name}}.{{relation.relation_name}}
+    manage:
+        form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
+    view:
+        list: {{relation.relation_path}}//columns_for_{{lower_name}}.yaml
+        recordUrl: waka/{{lower_plugin}}/{{relation.relation_name}}/update/:id
         toolbarButtons: create|delete
         defaultSort:
             column: name

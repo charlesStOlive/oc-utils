@@ -60,6 +60,103 @@ class CreateModelController extends GeneratorCommand
     public $pluginObj = [];
 
     /**
+     * Execute the console command.
+     *
+     * @return bool|null
+     */
+    public function handle()
+    {
+        $this->vars = $this->processVars($this->prepareVars());
+
+        if ($this->maker['model']) {
+            /**/trace_log('on fait le modele');
+            $this->stubs['model/model.stub'] = 'models/{{studly_name}}.php';
+        }
+        if ($this->maker['update']) {
+            /**/trace_log('on fait le migrateur du modele');
+            $this->stubs['model/create_table.stub'] = 'updates/create_{{snake_plural_name}}_table.php';
+            //trace_log($this->version);
+            if ($this->version) {
+                $this->stubs['model/create_update.stub'] = 'updates/create_{{snake_plural_name}}_table_u{{ version }}.php';
+            }
+        }
+        if ($this->maker['lang_field_attributes']) {
+            /**/trace_log('on fait les langues fields et attributs');
+            if (!$this->config['no_attributes_file'] ?? false) {
+                $this->stubs['model/attributes.stub'] = 'models/{{lower_name}}/attributes.yaml';
+            }
+            if ($this->fields_create) {
+                $this->stubs['model/fields_create.stub'] = 'models/{{lower_name}}/fields_create.yaml';
+            }
+            $this->stubs = array_merge($this->stubs, $this->modelYamlstubs);
+            $this->stubs['model/temp_lang.stub'] = 'lang/fr/{{lower_name}}.php';
+            if ($this->config['use_tab']) {
+                unset($this->stubs['model/fields.stub']);
+                $this->stubs['model/fields_tab.stub'] = 'models/{{lower_name}}/fields.yaml';
+            }
+            if ($this->config['belong'] && $this->yaml_for) {
+                foreach ($this->config['belong'] as $relation) {
+                    $this->makeOneStub('model/fields.stub', 'models/' . strtolower($this->w_model) . '/fields_for_' . $relation['relation_name'] . '.yaml', $this->vars);
+                    $this->makeOneStub('model/columns.stub', 'models/' . strtolower($this->w_model) . '/columns_for_' . $relation['relation_name'] . '.yaml', $this->vars);
+                }
+            }
+        }
+
+        if ($this->maker['controller']) {
+            /**/trace_log('on fait le controlleur et les configs');
+            $this->stubs = array_merge($this->stubs, $this->controllerPhpStubs);
+            if ($this->config['behav_duplicate']) {
+                $this->stubs['controller/config_duplicate.stub'] = 'controllers/{{lower_ctname}}/config_duplicate.yaml';
+            }
+            if ($this->config['side_bar_attributes']) {
+                $this->stubs['controller/config_attributes.stub'] = 'controllers/{{lower_ctname}}/config_attributes.yaml';
+            }
+            if ($this->config['side_bar_info']) {
+                $this->stubs['controller/config_sidebar_info.stub'] = 'controllers/{{lower_ctname}}/config_sidebar_info.yaml';
+            }
+            if ($this->config['behav_lots']) {
+                $this->stubs['controller/config_lots.stub'] = 'controllers/{{lower_ctname}}/config_lots.yaml';
+            }
+
+            if ($this->config['many'] || $this->config['morphmany']) {
+                trace_log("yo !");
+                foreach ($this->config['many'] as $relation) {
+                    $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
+                    $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
+                    $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
+                }
+                foreach ($this->config['morphmany'] as $relation) {
+                    $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
+                    $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
+                    $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
+                }
+
+                $this->stubs['controller/config_relation.stub'] = 'controllers/{{lower_ctname}}/config_relation.yaml';
+            }
+
+        }
+        if ($this->maker['html_file_controller']) {
+            $this->stubs = array_merge($this->stubs, $this->controllerHtmStubs);
+            if ($this->config['side_bar_attributes'] || $this->config['side_bar_info']) {
+                unset($this->stubs['controller/update.stub']);
+                $this->stubs['controller/update_sidebar.stub'] = 'controllers/{{lower_ctname}}/update.htm';
+            }
+            if ($this->config['behav_reorder']) {
+                $this->stubs['controller/reorder.stub'] = 'controllers/{{lower_ctname}}/reorder.htm';
+                $this->stubs['controller/config_reorder.stub'] = 'controllers/{{lower_ctname}}/config_reorder.yaml';
+            }
+        }
+
+        if ($this->maker['excel']) {
+            $this->stubs['imports/import.stub'] = 'classes/imports/{{studly_ctname}}Import.php';
+        }
+
+        $this->makeStubs();
+
+        $this->info($this->type . 'created successfully.');
+    }
+
+    /**
      * Prepare variables for stubs.
      *
      * return @array
@@ -83,7 +180,7 @@ class CreateModelController extends GeneratorCommand
             $fileName = $this->option('file');
         }
 
-        $maker = [
+        $this->maker = [
             'model' => true,
             'lang_field_attributes' => true,
             'update' => true,
@@ -92,11 +189,12 @@ class CreateModelController extends GeneratorCommand
             'excel' => true,
 
         ];
-        $version = null;
+        $this->version = null;
+        $this->yaml_for = null;
 
         if ($this->option('option')) {
 
-            $maker = [
+            $this->maker = [
                 'model' => false,
                 'lang_field_attributes' => false,
                 'update' => false,
@@ -107,9 +205,12 @@ class CreateModelController extends GeneratorCommand
             $types = $this->choice('Database type', ['model', 'lang_field_attributes', 'update', 'controller', 'html_file_controller', 'excel'], 0, null, true);
             //trace_log($types);
             foreach ($types as $type) {
-                $maker[$type] = true;
+                $this->maker[$type] = true;
                 if ($type == 'update') {
-                    $version = $this->ask('version');
+                    $this->version = $this->ask('version');
+                }
+                if ($type == 'lang_field_attributes') {
+                    $this->yaml_for = $this->ask('yaml_for');
                 }
             }
         }
@@ -117,7 +218,7 @@ class CreateModelController extends GeneratorCommand
         $importExcel = new \Waka\Utils\Classes\Imports\ImportModelController($this->w_model);
         \Excel::import($importExcel, plugins_path('waka/wconfig/updates/files/' . $fileName . '.xlsx'));
         $rows = new Collection($importExcel->data->data);
-        $config = $importExcel->config->data;
+        $this->config = $importExcel->config->data;
 
         // $relationName = null;
         // $pluginRelationName = null;
@@ -145,7 +246,7 @@ class CreateModelController extends GeneratorCommand
 
             $model_opt = $item['model_opt'] ?? null;
             if ($model_opt) {
-                $arrayOpt = explode(',', $options);
+                $arrayOpt = explode(',', $model_opt);
                 $item['append'] = in_array('append', $arrayOpt);
                 $item['json'] = in_array('json', $arrayOpt);
                 $item['getter'] = in_array('getter', $arrayOpt);
@@ -165,35 +266,39 @@ class CreateModelController extends GeneratorCommand
 
         });
 
-        $config['belong'] = $rows->where('belong', '!=', null)->pluck('belong')->toArray();
-        $config['many'] = $rows->where('many', '!=', null)->pluck('many')->toArray();
-        $config['attachOne'] = $rows->where('attachOne', '!=', null)->pluck('attachOne')->toArray();
-        $config['attachMany'] = $rows->where('attachMany', '!=', null)->pluck('attachMany')->toArray();
-        $config['lists'] = $rows->where('lists', '!=', null)->pluck('lists')->toArray();
+        $this->config['belong'] = $rows->where('belong', '!=', null)->pluck('belong')->toArray();
+        $this->config['many'] = $rows->where('many', '!=', null)->pluck('many')->toArray();
+        $this->config['morphmany'] = $rows->where('morphmany', '!=', null)->pluck('morphmany')->toArray();
+        $this->config['attachOne'] = $rows->where('attachOne', '!=', null)->pluck('attachOne')->toArray();
+        $this->config['attachMany'] = $rows->where('attachMany', '!=', null)->pluck('attachMany')->toArray();
+        $this->config['lists'] = $rows->where('lists', '!=', null)->pluck('lists')->toArray();
 
-        // trace_log($rows->toArray());
-        // trace_log($config);
+        //trace_log($rows->toArray());
+        //trace_log($this->config);
 
         $trads = $rows->where('name', '<>', null)->toArray();
 
         $dbs = $rows->where('type', '<>', null)->where('version', '==', null)->toArray();
-        $dbVersion = $rows->where('type', '<>', null)->where('version', '==', $version)->toArray();
-        //trace_log($dbVersion);
+        $dbVersion = $rows->where('type', '<>', null)->where('version', '==', $this->version)->toArray();
+        trace_log($dbs);
 
-        $columns = $rows->where('column', '<>', null)->toArray();
-        $fields = $rows->where('field', '<>', null)->toArray();
-        $fields_create = $rows->where('c_field', '<>', null);
-        if ($fields_create) {
-            $fields_create = $fields_create->sortBy('c_field');
-            $fields_create = $fields_create->map(function ($item, $key) {
+        $columns = $rows->where('column', '<>', null)->sortBy('column')->toArray();
+        $fields = $rows->where('field', '<>', null)->sortBy('field')->toArray();
+        $this->fields_create = $rows->where('c_field', '<>', null);
+        if ($this->fields_create) {
+            $this->fields_create = $this->fields_create->sortBy('c_field');
+            $this->fields_create = $this->fields_create->map(function ($item, $key) {
                 $item['field_options'] = $item['c_field_opt'];
+                return $item;
             });
-            $fields_create = $fields_create->toArray();
+            $this->fields_create = $this->fields_create->toArray();
         }
+        //trace_log($this->fields_create);
+        //trace_log($fields);
         $attributes = $rows->where('attribute', '<>', null)->toArray();
 
         $tabs = [];
-        foreach ($config as $key => $value) {
+        foreach ($this->config as $key => $value) {
             if (starts_with($key, 'tab::')) {
                 $key = str_replace('tab::', "", $key);
                 $tabs[$key] = $value;
@@ -213,91 +318,19 @@ class CreateModelController extends GeneratorCommand
         $getters = $rows->where('getter', '<>', null)->pluck('json', 'var')->toArray();
         $purgeables = $rows->where('purgeable', '<>', null)->pluck('purgeable', 'var')->toArray();
 
-        if ($maker['model']) {
-            /**/trace_log('on fait le modele');
-            $this->stubs['model/model.stub'] = 'models/{{studly_name}}.php';
-        }
-        if ($maker['update']) {
-            /**/trace_log('on fait le migrateur du modele');
-            $this->stubs['model/create_table.stub'] = 'updates/create_{{snake_plural_name}}_table.php';
-            //trace_log($version);
-            if ($version) {
-                $this->stubs['model/create_update.stub'] = 'updates/create_{{snake_plural_name}}_table_u{{ version }}.php';
-            }
-        }
-        if ($maker['lang_field_attributes']) {
-            /**/trace_log('on fait les langues fields et attributs');
-            if ($config['create_attributes_file'] ?? false) {
-                $this->stubs['model/attributes.stub'] = 'models/{{lower_name}}/attributes.yaml';
-            }
-            if ($fields_create) {
-                $this->stubs['model/fields_create.stub'] = 'models/{{lower_name}}/fields_create.yaml';
-            }
-            $this->stubs = array_merge($this->stubs, $this->modelYamlstubs);
-            $this->stubs['model/temp_lang.stub'] = 'lang/fr/{{lower_name}}.php';
-            if ($config['use_tab']) {
-                unset($this->stubs['model/fields.stub']);
-                $this->stubs['model/fields_tab.stub'] = 'models/{{lower_name}}/fields.yaml';
-            }
-        }
-
-        if ($maker['controller']) {
-            /**/trace_log('on fait le controlleur et les configs');
-            $this->stubs = array_merge($this->stubs, $this->controllerPhpStubs);
-            if ($config['behav_duplicate']) {
-                $this->stubs['controller/config_duplicate.stub'] = 'controllers/{{lower_ctname}}/config_duplicate.yaml';
-            }
-            if ($config['side_bar_attributes']) {
-                $this->stubs['controller/config_attributes.stub'] = 'controllers/{{lower_ctname}}/config_attributes.yaml';
-            }
-            if ($config['side_bar_info']) {
-                $this->stubs['controller/config_sidebar_info.stub'] = 'controllers/{{lower_ctname}}/config_sidebar_info.yaml';
-            }
-            if ($config['behav_lots']) {
-                $this->stubs['controller/config_lots.stub'] = 'controllers/{{lower_ctname}}/config_lots.yaml';
-            }
-
-            if ($config['many']) {
-                foreach ($config['many'] as $relation) {
-                    $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
-                    $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
-                    $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
-                    // $this->stubs['model/fields_for.stub']  = 'models/{{relation_name}}/fields_for_{{lower_name}}.yaml';
-                    // $this->stubs['model/columns_for.stub'] = 'models{{relation_name}}/columns_for_{{lower_name}}.yaml';
-                }
-                $this->stubs['controller/config_relation.stub'] = 'controllers/{{lower_ctname}}/config_relation.yaml';
-            }
-
-        }
-        if ($maker['html_file_controller']) {
-            $this->stubs = array_merge($this->stubs, $this->controllerHtmStubs);
-            if ($config['side_bar_attributes'] || $config['side_bar_info']) {
-                unset($this->stubs['controller/update.stub']);
-                $this->stubs['controller/update_sidebar.stub'] = 'controllers/{{lower_ctname}}/update.htm';
-            }
-            if ($config['behav_reorder']) {
-                $this->stubs['controller/reorder.stub'] = 'controllers/{{lower_ctname}}/reorder.htm';
-                $this->stubs['controller/config_reorder.stub'] = 'controllers/{{lower_ctname}}/config_reorder.yaml';
-            }
-        }
-
-        if ($maker['excel']) {
-            $this->stubs['imports/import.stub'] = 'classes/imports/{{studly_ctname}}Import.php';
-        }
-
         $all = [
             'name' => $this->w_model,
             'ctname' => $this->w_model . 's',
             'author' => $this->w_author,
             'plugin' => $this->w_plugin,
-            'configs' => $config,
+            'configs' => $this->config,
             'trads' => $trads,
             'dbs' => $dbs,
             'dbVersion' => $dbVersion,
-            'version' => $version,
+            'version' => $this->version,
             'columns' => $columns,
             'fields' => $fields,
-            'fields_create' => $fields_create,
+            'fields_create' => $this->fields_create,
             'attributes' => $attributes,
             'titles' => $titles,
             'appends' => $appends,
@@ -310,9 +343,8 @@ class CreateModelController extends GeneratorCommand
             'tabs' => $tabs,
 
         ];
-
-        //trace_log($config);
-        trace_log($all);
+        //trace_log($this->config);
+        //trace_log($all);
 
         return $all;
     }
@@ -326,20 +358,32 @@ class CreateModelController extends GeneratorCommand
         $array = explode('::', $relation);
         $type = $array[0];
         $relationClass = $this->getRelationClass($array[1], $item['var']);
+        $relationPath = $this->getRelationPath($array[1], $item['var']);
         $options = $this->getRelationOptions($array[2] ?? null);
         $userRelation = $relationClass == 'Backend\Models\User' ? true : false;
         if ($type == 'belong') {
             $item['belong'] = [
                 'relation_name' => $item['var'],
                 'relation_class' => $relationClass,
+                'relation_path' => $relationPath,
                 'options' => $options,
                 'userRelation' => $userRelation,
+            ];
+        }
+        if ($type == 'morphmany') {
+            $item['morphmany'] = [
+                'relation_name' => $item['var'],
+                'singular_name' => str_singular($item['var']),
+                'relation_path' => $relationPath,
+                'relation_class' => $relationClass,
+                'options' => $options,
             ];
         }
         if ($type == 'many') {
             $item['many'] = [
                 'relation_name' => $item['var'],
                 'singular_name' => str_singular($item['var']),
+                'relation_path' => $relationPath,
                 'relation_class' => $relationClass,
                 'options' => $options,
             ];
@@ -362,7 +406,7 @@ class CreateModelController extends GeneratorCommand
     public function getRelationClass($value, $key)
     {
         if ($value == 'self') {
-            return ucfirst($this->w_author) . '\\' . ucfirst($this->w_plugin) . '\\Models\\' . ucfirst($key);
+            return ucfirst($this->w_author) . '\\' . ucfirst($this->w_plugin) . '\\Models\\' . ucfirst(camel_case(str_singular($key)));
         } elseif ($value == 'user') {
             return 'Backend\Models\User';
         } elseif ($value == 'cloudi') {
@@ -373,7 +417,21 @@ class CreateModelController extends GeneratorCommand
             $parts = explode('.', $value);
             $r_plugin = array_pop($parts);
             $r_author = array_pop($parts);
-            return '\\' . ucfirst($r_plugin) . '\\' . ucfirst($r_author) . '\\Models\\' . ucfirst($key);
+            return '\\' . ucfirst($r_author) . '\\' . ucfirst($r_plugin) . '\\Models\\' . ucfirst(camel_case(str_singular($key)));
+        }
+    }
+
+    public function getRelationPath($value, $key)
+    {
+        if ($value == 'self') {
+            return '$/' . strtolower($this->w_author) . '/' . strtolower($this->w_plugin) . '/models/' . strtolower(str_singular($key));
+        } elseif ($value == 'user') {
+            return '$/' . strtolower($this->w_author) . '/' . strtolower($this->w_plugin) . '/models/' . strtolower(str_singular($key));
+        } else {
+            $parts = explode('.', $value);
+            $r_plugin = array_pop($parts);
+            $r_author = array_pop($parts);
+            return '$/' . strtolower($r_author) . '/' . strtolower($r_plugin) . '/models/' . strtolower(str_singular($key));
         }
     }
 
@@ -383,11 +441,12 @@ class CreateModelController extends GeneratorCommand
             return null;
         }
         $parts = explode(',', $value);
+
         $options = [];
 
         //travail sur les deifferents coules key attribute
         foreach ($parts as $part) {
-            $key_att = explode('.', $value);
+            $key_att = explode('.', $part);
             $options[$key_att[0]] = $key_att[1];
         }
         return $options;

@@ -11,16 +11,21 @@ fields:
 {% else %}
         span: auto
 {% endif %}
-{% if field.field_type and (field.field_type == 'attachMany' or field.field_type == 'attachOne')  %}
+{% if field.field_type == 'cloudifileupload'  %}
+        type: cloudifileupload
+        mode: image
+        imageHeight: 100
+        imageWidth: 260
+{% elseif field.field_type and (field.field_type == 'attachMany' or field.field_type == 'attachOne')  %}
         type: fileupload
         mode: image
         imageHeight: 260
         thumbOptions:
-            mode: auto
-            quality: 90
-            sharpen: 0
-            interlace: false
-            extension: auto
+        mode: auto
+        quality: 90
+        sharpen: 0
+        interlace: false
+        extension: auto
 {% elseif field.field_type and field.field_type == 'recordfinder'  %}
         type: recordfinder
         list: ~/plugins/{{lower_author}}/{{lower_plugin}}/models/{{field.var}}/columns_for_{{lower_name}}.yaml

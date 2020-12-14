@@ -87,9 +87,14 @@ class Workflow extends FormWidgetBase
      */
     public function getWorkflowPlaceName()
     {
+        trace_log();
         $place = $this->model->state;
+        if (!$place) {
+            $arrayPlaces = $this->workflow->getMarking($this->model)->getPlaces();
+            $place = array_key_first($arrayPlaces);
+        }
         //trace_log($place);
-        $label = $this->workflow->getMetadataStore()->getPlaceMetadata($place)['label']; // string place name
+        $label = $this->workflow->getMetadataStore()->getPlaceMetadata($place)['label'] ?? null; // string place name
         return \Lang::get($label);
     }
 

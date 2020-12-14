@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'civ' => ['Mme/M.' => 'Mme/M.', 'Mme' => 'Mme', 'M.' => 'M.', 'Dr' => 'Dr', 'Pr' => 'Pr'],
     'ImageOptions' => [
         'width' => [
             'label' => "Largeur",
@@ -13,7 +14,6 @@ return [
             'span' => 'right',
         ],
     ],
-
     'scopesType' => [
         'model_value' => [
             'label' => "Restriction depuis une valeur d'un champ",
@@ -101,7 +101,10 @@ return [
                 'word' => '${IMG.%s}',
                 'twig' => "{{IMG.%s.path}}",
             ],
-
+            'htm' => [
+                'word' => '${%s*HTM}',
+                'twig' => "{{%s|raw}}",
+            ],
         ],
 
     ],

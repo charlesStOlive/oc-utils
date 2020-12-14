@@ -81,6 +81,10 @@ class WorkflowColumn
     public function getLabel()
     {
         $place = $this->record->state;
+        if (!$place) {
+            $arrayPlaces = $this->record->workflow_get()->getMarking($this->record)->getPlaces();
+            $place = array_key_first($arrayPlaces);
+        }
         $placeMetadata = $this->record->workflow_get()->getMetadataStore()->getPlaceMetadata($place);
         $icon = null;
         $label = \Lang::get($placeMetadata['label'] ?? $place);

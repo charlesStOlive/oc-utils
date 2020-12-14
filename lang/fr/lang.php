@@ -23,6 +23,7 @@ return [
         'updated_at' => 'MAJ',
         'created_at' => 'Crée-le',
         'placeholder' => '-- Choisissez --',
+        'placeholder_w' => "-- Changez d'état--",
         'placeholder_contact' => '--Choisissez un contact--',
         'placeholder_client' => '--Choisissez un client--',
         'sort_order' => 'Ordre',

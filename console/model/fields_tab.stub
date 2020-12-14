@@ -16,7 +16,12 @@ tabs:
 {% else %}
             span: auto
 {% endif %}
-{% if field.field_type and (field.field_type == 'attachMany' or field.field_type == 'attachOne')  %}
+{% if field.field_type == 'cloudifileupload'  %}
+            type: cloudifileupload
+            mode: image
+            imageHeight: 100
+            imageWidth: 260
+{% elseif field.field_type and (field.field_type == 'attachMany' or field.field_type == 'attachOne')  %}
             type: fileupload
             mode: image
             imageHeight: 260
@@ -58,6 +63,9 @@ tabs:
             nameFrom: name
 {% endif %}
 {% elseif field.many %}
+            type: partial
+            path: field_{{field.var}}
+{% elseif field.morphmany %}
             type: partial
             path: field_{{field.var}}
 {% elseif field.belong %}
@@ -102,5 +110,8 @@ tabs:
 {% endif %}
 {% if field.permissions  %}
             permissions: [{{field.permissions}}]
+{% endif %}
+{% if field.tab  %}
+            tab: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.tab}}
 {% endif %}
 {% endfor %}
