@@ -87,13 +87,11 @@ class Workflow extends FormWidgetBase
      */
     public function getWorkflowPlaceName()
     {
-        //trace_log();
         $place = $this->model->state;
         if (!$place) {
             $arrayPlaces = $this->workflow->getMarking($this->model)->getPlaces();
             $place = array_key_first($arrayPlaces);
         }
-        //trace_log($place);
         $label = $this->workflow->getMetadataStore()->getPlaceMetadata($place)['label'] ?? null; // string place name
         return \Lang::get($label);
     }
@@ -101,9 +99,11 @@ class Workflow extends FormWidgetBase
     public function getWorkflowNoRole()
     {
         $place = $this->model->state;
-        //trace_log($place);
-        $noRoles = $this->workflow->getMetadataStore()->getPlaceMetadata($place)['noroles'] ?? null; // string place name
-        //trace_log($noRoles);
+        if (!$place) {
+            $arrayPlaces = $this->workflow->getMarking($this->model)->getPlaces();
+            $place = array_key_first($arrayPlaces);
+        }
+        $noRoles = $this->workflow->getMetadataStore()->getPlaceMetadata($place)['norole'] ?? null; // string place name
         $user = \BackendAuth::getUser();
         if ($noRoles) {
             if (in_array($user->role->code, $noRoles)) {
