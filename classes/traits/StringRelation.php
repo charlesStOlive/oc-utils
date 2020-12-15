@@ -32,9 +32,12 @@ trait StringRelation
         $parts = explode(".", $relation);
 
         foreach ($parts as $part) {
-            //$relationType = $model->getRelationType($part);
-            //trace_log($relationType);
-            $model = $model->{$part};
+            //trace_log("part : " . $part);
+            if ($model) {
+                $model = $model->{$part};
+            } else {
+                return null;
+            }
         }
         return $model;
     }

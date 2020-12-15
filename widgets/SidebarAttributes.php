@@ -181,7 +181,7 @@ class SidebarAttributes extends WidgetBase
         foreach ($fncs as $fnc) {
             $code = $fnc['collectionCode'];
             $outputs = $this->dataSource->getFunctionsOutput($fnc['functionCode']);
-            trace_log($outputs);
+            //trace_log($outputs);
             if ($outputs) {
                 $attributes = $outputs['attributes'] ?? null;
                 if ($attributes) {

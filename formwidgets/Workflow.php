@@ -87,7 +87,7 @@ class Workflow extends FormWidgetBase
      */
     public function getWorkflowPlaceName()
     {
-        trace_log();
+        //trace_log();
         $place = $this->model->state;
         if (!$place) {
             $arrayPlaces = $this->workflow->getMarking($this->model)->getPlaces();

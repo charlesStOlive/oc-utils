@@ -119,7 +119,7 @@ class CreateModelController extends GeneratorCommand
             }
 
             if ($this->config['many'] || $this->config['morphmany']) {
-                trace_log("yo !");
+                //trace_log("yo !");
                 foreach ($this->config['many'] as $relation) {
                     $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
                     $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
@@ -280,7 +280,7 @@ class CreateModelController extends GeneratorCommand
 
         $dbs = $rows->where('type', '<>', null)->where('version', '==', null)->toArray();
         $dbVersion = $rows->where('type', '<>', null)->where('version', '==', $this->version)->toArray();
-        trace_log($dbs);
+        //trace_log($dbs);
 
         $columns = $rows->where('column', '<>', null)->sortBy('column')->toArray();
         $fields = $rows->where('field', '<>', null)->sortBy('field')->toArray();

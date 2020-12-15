@@ -200,25 +200,29 @@ class DataSource
         $relations = new Collection($this->getKeyAndEmbed());
         if ($relations->count()) {
             foreach ($relations as $relation) {
+                //trace_log($relation);
                 $subModel = $this->getStringModelRelation($this->model, $relation);
-                $subModelClassName = get_class($subModel);
-                $subShortName = (new \ReflectionClass($subModelClassName))->getShortName();
-                $relations = new Collection();
-                if ($subModel->attributesToDs) {
-                    foreach ($subModel->attributesToDs as $tempAppend) {
-                        //trace_log($subShortName . ' : ' . $tempAppend);
-                        $subModel->append($tempAppend);
+                if ($subModel) {
+                    $subModelClassName = get_class($subModel);
+                    $subShortName = (new \ReflectionClass($subModelClassName))->getShortName();
+                    $relations = new Collection();
+                    if ($subModel->attributesToDs) {
+                        foreach ($subModel->attributesToDs as $tempAppend) {
+                            //trace_log($subShortName . ' : ' . $tempAppend);
+                            $subModel->append($tempAppend);
+                        }
                     }
-                }
-                $subRelation = explode('.', $relation);
-                if (count($subRelation) == 1) {
-                    $results[$relation] = $subModel->toArray();
-                }
-                if (count($subRelation) == 2) {
-                    $results[$subRelation[0]][$subRelation[1]] = $subModel->toArray();
-                }
-                if (count($subRelation) == 3) {
-                    $results[$subRelation[0]][$subRelation[1]][$subRelation[2]] = $subModel->toArray();
+                    $subRelation = explode('.', $relation);
+                    if (count($subRelation) == 1) {
+                        $results[$relation] = $subModel->toArray();
+                    }
+                    if (count($subRelation) == 2) {
+                        $results[$subRelation[0]][$subRelation[1]] = $subModel->toArray();
+                    }
+                    if (count($subRelation) == 3) {
+                        $results[$subRelation[0]][$subRelation[1]][$subRelation[2]] = $subModel->toArray();
+                    }
+
                 }
 
             }

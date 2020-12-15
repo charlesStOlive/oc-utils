@@ -21,11 +21,11 @@ fields:
         mode: image
         imageHeight: 260
         thumbOptions:
-        mode: auto
-        quality: 90
-        sharpen: 0
-        interlace: false
-        extension: auto
+            mode: auto
+            quality: 90
+            sharpen: 0
+            interlace: false
+            extension: auto
 {% elseif field.field_type and field.field_type == 'recordfinder'  %}
         type: recordfinder
         list: ~/plugins/{{lower_author}}/{{lower_plugin}}/models/{{field.var}}/columns_for_{{lower_name}}.yaml

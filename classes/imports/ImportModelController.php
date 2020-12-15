@@ -62,6 +62,7 @@ class DataImport implements ToCollection, WithHeadingRow
                 'type' => $row['type'] ?? null,
                 'column' => $row['colonne'] ?? null,
                 'not_null' => $row['not_null'] ?? null,
+                'permissions' => $row['permissions'] ?? null,
                 'field' => $row['field'] ?? null,
                 'c_field' => $row['c_field'] ?? null,
                 //'context' => $row['context'] ?? null,
