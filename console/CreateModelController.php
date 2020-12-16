@@ -415,9 +415,10 @@ class CreateModelController extends GeneratorCommand
             return 'System\Models\File';
         } else {
             $parts = explode('.', $value);
-            $r_plugin = array_pop($parts);
-            $r_author = array_pop($parts);
-            return '\\' . ucfirst($r_author) . '\\' . ucfirst($r_plugin) . '\\Models\\' . ucfirst(camel_case(str_singular($key)));
+            $r_author = $parts[0];
+            $r_plugin = $parts[1];
+            $r_model = $parts[2] ?? camel_case(str_singular($key));
+            return ucfirst($r_author) . '\\' . ucfirst($r_plugin) . '\\Models\\' . ucfirst($r_model);
         }
     }
 
