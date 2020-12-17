@@ -7,9 +7,11 @@
         rulesSets:
 {% for key, rulesSet in rulesSets %}
             {{key}}:
-{% for subkey,set in rulesSet %}
-                {{subkey}}: {{set}}
+                fields: 
+{% for subkey,set in rulesSet.fields %}
+                    {{subkey}}: {{set}}
 {% endfor %}
+                message: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.error_message.{{ key }}
 {% endfor %}
 {% endif %}
     marking_store:

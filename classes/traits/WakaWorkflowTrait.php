@@ -1,5 +1,6 @@
 <?php namespace Waka\Utils\Classes\Traits;
 
+use Lang;
 use \Waka\Informer\Models\Inform;
 
 trait WakaWorkflowTrait
@@ -28,11 +29,11 @@ trait WakaWorkflowTrait
                     $transition = self::getTransitionobject($changeState, $model);
                     $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
                     $rules = $model->getWorkgflowRules($rulesSet);
-                    if ($rules) {
-                        $validation = \Validator::make($model->toArray(), $rules);
+                    if ($rules['fields'] ?? false) {
+                        $validation = \Validator::make($model->toArray(), $rules['fields'] ?? []);
                         if ($validation->fails()) {
                             //trace_log($validation->messages());
-                            throw new \ValidationException(['state_change' => "Impossible de changer d'état, verifiez les champs suivants : " . implode(", ", array_keys($rules))]);
+                            throw new \ValidationException(['state_change' => Lang::get($rules['message'] ?? null)]);
                         }
                     }
                     $model->workflow_get()->apply($model, $changeState);

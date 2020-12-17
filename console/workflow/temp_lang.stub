@@ -16,5 +16,10 @@ return [
 {% endfor %}{% for key,trad in tradTransCom  %}
         '{{key}}_com' => '{{trad}}',
 {% endfor %}
+    ],
+    'error_message' => [
+{% for key,rulesSet in rulesSets  %}
+        '{{key}}' => '{{rulesSet.message}}',
+{% endfor %}
     ]
 ];

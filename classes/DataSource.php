@@ -185,8 +185,11 @@ class DataSource
     {
         $this->instanciateModel($modelId);
         $constructApi = $this->model;
-        foreach ($this->model->attributesToDs as $tempAppend) {
-            $constructApi->append($tempAppend);
+        $attributeToAppend = $this->model->attributesToDs;
+        if ($attributeToAppend) {
+            foreach ($this->model->attributesToDs as $tempAppend) {
+                $constructApi->append($tempAppend);
+            }
         }
         $constructApi = $constructApi->toArray();
         $relation = $this->listRelation();

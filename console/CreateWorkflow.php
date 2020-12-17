@@ -102,16 +102,18 @@ class CreateWorkflow extends GeneratorCommand
             return $item;
         });
 
-        $ruleSetArray = $config->where('type', '==', 'ruleset_name')->first();
-        $ruleSetArray = explode(',', $ruleSetArray['value']);
+        $ruleSetArray = $config->where('type', '==', 'ruleset')->lists('data', 'key');
         $rulesSets = [];
-        foreach ($ruleSetArray as $ruleSetRowKey) {
-            $set = $rules->filter(function ($item) use ($ruleSetRowKey) {
-                return in_array($ruleSetRowKey, $item['data']);
+        foreach ($ruleSetArray as $key => $message) {
+            $set = $rules->filter(function ($item) use ($key) {
+                return in_array($key, $item['data']);
             });
-            $rulesSets[$ruleSetRowKey] = $set->lists('value', 'key');
+            $rulesSets[$key] = [
+                'fields' => $set->lists('value', 'key'),
+                'message' => $message,
+            ];
         }
-        //
+        trace_log($rulesSets);
         $trads = $config->where('type', '==', 'lang')->lists('data', 'key');
         //
         //
