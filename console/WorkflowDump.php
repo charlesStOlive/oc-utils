@@ -19,7 +19,7 @@ class WorkflowDump extends Command
      *
      * @var string
      */
-    protected $name = 'waka:dumpWorkflow';
+    protected $name = 'waka:workflowDump';
 
     /**
      * The console command description.
@@ -81,11 +81,16 @@ class WorkflowDump extends Command
 
         //trace_log($dumper);
 
-        $dotCommand = "dot -T$format -o " . storage_path($workflowName . '.' . $format);
+        $dotCommand = $this->createDotCommand($workflowName, $format);
 
         $process = new Process($dotCommand);
         $process->setInput($dumper->dump($definition));
         $process->mustRun();
+    }
+
+    public function createDotCommand($workflowName, $format)
+    {
+        return "dot -T$format -o " . storage_path($workflowName . '.' . $format);
     }
 
     /**

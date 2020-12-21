@@ -24,11 +24,12 @@ use Symfony\Component\Workflow\Marking;
  */
 class GraphvizDumper implements DumperInterface
 {
+    public $wordWrap;
     // All values should be strings
     protected static $defaultOptions = [
-        'graph' => ['ratio' => 'compress', 'rankdir' => 'LR'],
+        'graph' => ['compress' => 'auto', 'rankdir' => 'TD', 'splines' => 'ortho'],
         'node' => ['fontsize' => '9', 'fontname' => 'Arial', 'color' => '#333333', 'fillcolor' => 'green', 'fixedsize' => 'false', 'width' => '1'],
-        'edge' => ['fontsize' => '9', 'fontname' => 'Arial', 'color' => '#333333', 'arrowhead' => 'normal', 'arrowsize' => '1'],
+        'edge' => ['fontsize' => '12', 'fontname' => 'Arial', 'color' => '#333333', 'arrowhead' => 'normal', 'arrowsize' => '1'],
     ];
 
     /**
@@ -44,9 +45,16 @@ class GraphvizDumper implements DumperInterface
      */
     public function dump(Definition $definition, Marking $marking = null, array $options = [])
     {
+        $this->wordWrap = $options['graph']['rankdir'] == 'TD' ? 30 : 10;
+
+        //trace_log($options['graph']['rankdir']);
+        //trace_log($this->wordWrap);
+
         $places = $this->findPlaces($definition, $marking);
         $transitions = $this->findTransitions($definition);
         $edges = $this->findEdges($definition);
+
+        //trace_log($options);
 
         $options = array_replace_recursive(self::$defaultOptions, $options);
 
@@ -109,15 +117,15 @@ class GraphvizDumper implements DumperInterface
         $transitions = [];
 
         foreach ($definition->getTransitions() as $transition) {
-            $attributes = ['shape' => 'box', 'regular' => true];
+            $attributes = ['shape' => 'box', 'regular' => false];
 
             $backgroundColor = $workflowMetadata->getMetadata('bg_color', $transition);
             if (null !== $backgroundColor) {
-                $attributes['style'] = 'filled';
+                $attributes['style'] = 'dashed';
                 $attributes['fillcolor'] = $backgroundColor;
             }
             $name = $workflowMetadata->getMetadata('label', $transition) ?? $transition->getName();
-            $name = wordwrap(\Lang::get($name), 20, "\n");
+            $name = wordwrap(\Lang::get($name), $this->wordWrap, "\n");
 
             $functions = $workflowMetadata->getMetadata('fncs', $transition) ?? null;
             $completeNameWithFunction = "";
@@ -136,14 +144,22 @@ class GraphvizDumper implements DumperInterface
                     }
 
                     if ($type == 'prod') {
-                        $completeNameWithFunction .= "\n C : " . $fncKeyName;
+                        $completeNameWithFunction .= "\n P: " . $fncKeyName;
                     }
                     if ($type == 'trait') {
-                        $completeNameWithFunction .= "\n W : " . $fncKeyName;
+                        $completeNameWithFunction .= "\n T : " . $fncKeyName;
                     }
                 }
             }
+            $rulesSet = $workflowMetadata->getMetadata('rulesSet', $transition) ?? null;
 
+            if ($rulesSet && $rulesSet != 'none') {
+                //trace_log("rouge = " . $name . " : " . $rulesSet);
+                $attributes['color'] = 'red';
+            } elseif ($rulesSet == 'none') {
+                //trace_log("blanc" . $name);
+                $attributes['color'] = 'grey';
+            }
             $transitions[] = [
                 'attributes' => $attributes,
                 'name' => $name . $completeNameWithFunction,
@@ -169,6 +185,7 @@ class GraphvizDumper implements DumperInterface
             }
 
             $code .= sprintf("  place_%s [label=\"%s\", shape=circle%s];\n", $this->dotize($id), $this->escape($placeName), $this->addAttributes($place['attributes']));
+            //trace_log($code);
         }
 
         return $code;

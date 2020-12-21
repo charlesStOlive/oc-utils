@@ -202,7 +202,7 @@ class SidebarAttributes extends WidgetBase
                 }
                 $values = $outputs['values'] ?? null;
                 if ($values) {
-                    trace_log($values);
+                    //trace_log($values);
                     $maped = $this->remapAttributes($values, $code, null, true);
                     if ($result[$code] ?? null) {
                         $result[$code] = array_merge($result[$code], $maped);

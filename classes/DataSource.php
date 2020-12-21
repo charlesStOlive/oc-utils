@@ -254,6 +254,17 @@ class DataSource
     }
 
     /**
+     * Prend la valeur du workflow
+     */
+    public function getWorkflowState()
+    {
+        if (!$this->model) {
+            throw new ApplicationException('model pas instancié pour la fonction getWorkflowState');
+        }
+        return $this->model->wfPlaceLabel();
+    }
+
+    /**
      * Utils for EMAIL ---------------------------------------------------
      * Fonctions d'identifications des contacts, utilises dans les popup de wakamail
      * getstringrelation est dans le trait StringRelation

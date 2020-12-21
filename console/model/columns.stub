@@ -33,7 +33,7 @@ columns:
 {% elseif column.type == 'timestamp' %}
         type: timesince
 {% elseif column.type == 'date' %}
-        type: time
+        type: date
         ignoreTimezone: true
 {% elseif column.field_type == 'workflow' %}
         type: workflow
@@ -55,6 +55,8 @@ columns:
         invisible: true
 {% endif %}
 {% endfor %}
+{% if configs.no_timestamps is null %}
     updated_at:
         label: waka.utils::lang.global.updated_at
         type: timetense
+{% endif %}

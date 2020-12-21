@@ -1,7 +1,7 @@
 {{lower_name}}:
     type: state_machine
     metadata: 
-        name: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{configs.name.value}}
+        name: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{configs.name.value}}{% else %}{{configs.name.data}}{% endif %} 
 {% if configs.com %}
         com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{ configs.com.value }}
         rulesSets:
@@ -23,9 +23,9 @@
 {% for place in places %}
         {{place.var}}:
             metadata:
-                label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.var}}
+                label: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.var}}{%else%}{{place.lang}}{%endif%} 
 {% if place.com %}
-                com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.var}}_com
+                com: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.var}}_com{%else%}{{place.com}}{%endif%} 
 {% endif %}
 {% if place.rules %}
                 norole: [{{place.rules}}]
@@ -42,9 +42,9 @@
 {% for transition in trans %}
         {{transition.var}}:
             metadata: 
-                label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.trans.{{transition.var}}
+                label: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.trans.{{transition.var}}{%else%}{{transition.lang}}{%endif%} 
 {% if transition.com %}
-                com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.trans.{{transition.var}}_com
+                com: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.trans.{{transition.var}}_com{%else%}{{transition.lang}}{%endif%} 
 {% endif %}
 {% if transition.rules %}
                 rulesSet: {{transition.rules}}

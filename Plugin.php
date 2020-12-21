@@ -41,6 +41,10 @@ class Plugin extends PluginBase
                     return json_encode($twig);
 
                 },
+                'workflow' => function ($twig) {
+                    return $twig->wfPlaceLabel();
+
+                },
                 'camelCase' => function ($twig) {
                     return camel_case($twig);
                 },
@@ -68,13 +72,14 @@ class Plugin extends PluginBase
         $this->registerConsoleCommand('waka.injector', 'Waka\Utils\Console\CreateInjector');
         $this->registerConsoleCommand('waka.mc', 'Waka\Utils\Console\CreateModelController');
         $this->registerConsoleCommand('waka.uicolors', 'Waka\Utils\Console\CreateUiColors');
-        $this->registerConsoleCommand('waka.workflow', 'Waka\Utils\Console\CreateWorkflow');
-        $this->registerConsoleCommand('waka.dumpWorkflow', 'Waka\Utils\Console\WorkflowDump');
+        $this->registerConsoleCommand('waka.workflow', 'Waka\Utils\Console\WorkflowCreate');
+        $this->registerConsoleCommand('waka.workflowDump', 'Waka\Utils\Console\WorkflowDump');
+        //$this->registerConsoleCommand('waka.workflowOnline', 'Waka\Utils\Console\WorkflowOnlineCreate');
+        $this->registerConsoleCommand('waka.workflowOnlineCreate', 'Waka\Utils\Console\WorkflowOnlineDump');
         CombineAssets::registerCallback(function ($combiner) {
             $combiner->registerBundle('$/waka/wconfig/assets/css/simple_grid/pdf.less');
             $combiner->registerBundle('$/waka/wconfig/assets/css/simple_grid/email.less');
         });
-
     }
 
     public function registerListColumnTypes()

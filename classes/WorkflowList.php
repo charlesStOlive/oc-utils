@@ -35,7 +35,7 @@ class WorkflowList
 
             //return Yaml::parseFile(plugins_path() . $dataSources[0]);
         } else {
-            throw new \SystemException('UImpossible de trouver la vonfig de base datasource');
+            throw new \SystemException('UImpossible de trouver la config du workflow');
         }
 
     }

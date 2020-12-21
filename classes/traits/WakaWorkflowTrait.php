@@ -104,4 +104,20 @@ trait WakaWorkflowTrait
         return $rulesSets[$rulesSet] ?? null;
     }
 
+    public function getWfPlaceLabelAttribute($state_column)
+    {
+        $place = $this->model->state;
+
+        if (!$state_column) {
+            $place = $this->model->{$state_column};
+        }
+
+        if (!$place) {
+            $arrayPlaces = $this->workflow->getMarking($this->model)->getPlaces();
+            $place = array_key_first($arrayPlaces);
+        }
+        $label = $this->workflow->getMetadataStore()->getPlaceMetadata($place)['label'] ?? $place; // string place name
+        return \Lang::get($label);
+    }
+
 }

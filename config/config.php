@@ -105,6 +105,10 @@ return [
                 'word' => '${%s*HTM}',
                 'twig' => "{{%s|raw}}",
             ],
+            'md' => [
+                'word' => '${%s*MD}',
+                'twig' => "{{%s|md_safe}}",
+            ],
         ],
 
     ],
