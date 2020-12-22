@@ -36,7 +36,7 @@ class FunctionsList extends FormWidgetBase
     }
     public function getDataSource()
     {
-        return new DataSource($this->model->data_source_id, 'id');
+        return new DataSource($this->model->data_source);
     }
 
     /**

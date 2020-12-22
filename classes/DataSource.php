@@ -17,7 +17,7 @@ class DataSource
     public $name;
     public $author;
     public $plugin;
-    public $id;
+    public $code;
     public $class;
     private $config;
     public $relations;
@@ -35,7 +35,7 @@ class DataSource
     public $attributesConfig;
     public $outputName;
 
-    public function __construct($id = null, $type_id = "name")
+    public function __construct($id = null, $type_id = "code")
     {
         $globalConfig = new Collection($this->getSrConfig());
         $config = $globalConfig->where($type_id, $id)->first();
@@ -44,13 +44,17 @@ class DataSource
         //
         $this->author = $config['author'] ?? null;
         $this->name = $config['name'] ?? null;
-        $this->lowerName = strtolower($this->name);
         $this->plugin = $config['plugin'] ?? null;
         $this->class = $config['class'] ?? null;
+
+        $this->lowerName = strtolower($this->name);
+
+        $this->code = $config['code'] ?? $this->lowerName;
         if (!$this->class) {
             throw new ApplicationException('Erreur data source model');
         }
-        $this->id = $config['id'];
+        //$this->id = $config['id'];
+        $this->code = $config['code'];
         //
         $label = $config['label'] ?? null;
         $this->label = $label ? $label : $this->name;
@@ -114,7 +118,7 @@ class DataSource
     public function getPartialOptions($modelId = null, $productorModel)
     {
 
-        $documents = $productorModel::where('data_source_id', $this->id);
+        $documents = $productorModel::where('data_source', $this->code);
         $this->instanciateModel($modelId);
 
         $optionsList = [];
@@ -136,7 +140,7 @@ class DataSource
     public function getPartialIndexOptions($productorModel, $relation = false)
     {
 
-        $documents = $productorModel::where('data_source_id', $this->id)->get();
+        $documents = $productorModel::where('data_source', $this->code)->get();
 
         if ($relation) {
             $documents = $documents->where('relation', '<>', null);

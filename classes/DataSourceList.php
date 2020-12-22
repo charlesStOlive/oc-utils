@@ -10,15 +10,15 @@ use Yaml;
 class DataSourceList
 {
 
-    public static function lists($valueToShow = 'name', $valueToSave = 'id')
+    public static function lists($valueToShow = 'label', $valueToSave = 'code')
     {
         $result = new Collection(self::getSrConfig());
         return $result->pluck($valueToShow, $valueToSave);
     }
-    public static function getValue($data_source_id)
+    public static function getValue($data_source)
     {
         $result = new Collection(self::getSrConfig());
-        return $result->where('id', $data_source_id)->first()['name'] ?? 'inc';
+        return $result->where('code', $data_source)->first()['label'] ?? 'inc';
     }
     /**
      * GLOBAL

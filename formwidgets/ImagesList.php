@@ -42,7 +42,7 @@ class ImagesList extends FormWidgetBase
     {
 
         $noImage = true;
-        $ds = new DataSource($this->model->data_source_id, 'id');
+        $ds = new DataSource($this->model->data_source);
         //trace_log($ds->name);
         $ds->instanciateModel(); // instancie l'exemple
         $imagesList = $ds->wimages->getAllPicturesKey();
@@ -73,7 +73,7 @@ class ImagesList extends FormWidgetBase
 
     public function onShowImages()
     {
-        $ds = new DataSource($this->model->data_source_id, 'id');
+        $ds = new DataSource($this->model->data_source);
         $ds->instanciateModel();
 
         //liste des images de la classe depuis le datasource
@@ -85,14 +85,14 @@ class ImagesList extends FormWidgetBase
 
     public function onSelectImages()
     {
-        $ds = new DataSource($this->model->data_source_id, 'id');
+        $ds = new DataSource($this->model->data_source);
         $ds->instanciateModel();
 
     }
 
     public function onCreateImageValidation()
     {
-        $ds = new DataSource($this->model->data_source_id, 'id');
+        $ds = new DataSource($this->model->data_source);
         $ds->instanciateModel();
         //mis d'en une collection des données existantes
         $data = [];
@@ -124,7 +124,7 @@ class ImagesList extends FormWidgetBase
     }
     public function onUpdateImage()
     {
-        $ds = new DataSource($this->model->data_source_id, 'id');
+        $ds = new DataSource($this->model->data_source);
         $ds->instanciateModel();
 
         $code = post('code');
@@ -179,7 +179,7 @@ class ImagesList extends FormWidgetBase
     }
     public function onUpdateImageValidation()
     {
-        $ds = new DataSource($this->model->data_source_id, 'id');
+        $ds = new DataSource($this->model->data_source);
         $ds->instanciateModel();
         //On range collection code hidden das oldCollectionCode au cas ou le user change le collectionCode qui est notre clé
         $oldCode = post('oldCode');

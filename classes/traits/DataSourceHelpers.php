@@ -8,8 +8,8 @@ trait DataSourceHelpers
     }
     public function listDataSourceTarget()
     {
-        //trace_log($this->data_source_id);
-        $ds = new \Waka\Utils\Classes\DataSource($this->data_source_id, 'id');
+        //trace_log($this->data_source);
+        $ds = new \Waka\Utils\Classes\DataSource($this->data_source);
         $class = new $ds->class;
         return $class::orderBy('updated_at', 'desc')->limit(200)->get()->lists($ds->outputName, 'id');
 
