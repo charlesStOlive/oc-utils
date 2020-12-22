@@ -5,7 +5,7 @@ use Model;
 /**
  * UserCreateable Model
  */
-class testWf extends Model
+class TestWf extends Model
 {
     use \Waka\Utils\Classes\Traits\WakaWorkflowTrait;
 
