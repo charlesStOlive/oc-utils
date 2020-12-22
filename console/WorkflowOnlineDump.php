@@ -87,7 +87,7 @@ class WorkflowOnlineDump extends WorkflowCreate
 
         $modelId = $this->argument('modelId');
 
-        $callerClass = '\\' . $r_author . '\\' . $r_plugin . '\models\\' . $r_model;
+        $callerClass = '\\' . ucfirst($r_author) . '\\' . ucfirst($r_plugin) . '\models\\' . ucfirst($r_model);
 
         $srcModel = $callerClass::find($modelId);
 

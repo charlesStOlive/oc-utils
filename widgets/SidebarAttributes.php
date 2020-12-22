@@ -62,7 +62,7 @@ class SidebarAttributes extends WidgetBase
             $attributes = Yaml::parseFile(plugins_path() . '/' . $modelAttributeAdresse);
         } else {
             $pluginName = strtolower($this->dataSource->author . '/' . $this->dataSource->plugin . '\/models');
-            $attributesPath = plugins_path() . '/' . $pluginName . '/' . $this->dataSource->name . '/attributes.yaml';
+            $attributesPath = plugins_path() . '/' . $pluginName . '/' . strtolower($this->dataSource->name) . '/attributes.yaml';
             if (file_exists($attributesPath)) {
                 $attributes = Yaml::parseFile($attributesPath);
             } else {
@@ -82,7 +82,7 @@ class SidebarAttributes extends WidgetBase
                 $attributes = Yaml::parseFile(plugins_path() . '/' . $modelAttributeAdresse);
             } else {
                 $pluginName = strtolower($this->dataSource->author . '/' . $this->dataSource->plugin . '\/models');
-                $attributesPath = plugins_path() . '/' . $pluginName . '/' . $relationName . '/attributes.yaml';
+                $attributesPath = plugins_path() . '/' . $pluginName . '/' . strtolower($relationName) . '/attributes.yaml';
                 if (file_exists($attributesPath)) {
                     $attributes = Yaml::parseFile($attributesPath);
                 } else {
