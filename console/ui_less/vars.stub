@@ -1,0 +1,32 @@
+@color-primary: {{primary}};
+@color-secondary: {{secondary}};
+@color-gd: #787978;
+@color-gl: #E0E0E0;
+@color-dark: #2F4250;
+@color-white: #FFF;
+
+
+@pm-step: 0.5rem; 
+@base-margin: 0.1rem;
+
+
+
+@link-color: @color-primary;
+@heading-color: @color-dark;
+@body-bg:@color-white;
+@text-color: @color-gd;
+@header-color: @color-dark;
+@content-bg: @color-white;
+@body-border-color: @color-primary;
+@content-inner-bg: @color-white;
+@subcopy-border-color: @color-gl;
+@footer-color: @color-gd;
+@table-border-color: @color-white;
+@button-text-color: @color-white;
+@button-primary-bg: @color-primary;
+@button-positive-bg: green;
+@button-negative-bg: red;
+@button-warning-bg: orange;
+@panel-bg:  @color-gl;
+@promotion-bg:  @color-gl;
+@promotion-border-color:   @color-white;

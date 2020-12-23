@@ -37,6 +37,7 @@ class CreateUiColors extends GeneratorCommand
         'ui_less/checkbox.stub' => '../../../modules/system/assets/ui/less/checkbox.less',
         'ui_less/global.variables.stub' => '../../../modules/system/assets/ui/less/global.variables.less',
         'ui_less/select.variables.stub' => '../../../modules/system/assets/ui/less/select.variables.less',
+        'ui_less/vars.stub' => '/assets/css/simple_grid/vars.less',
     ];
 
     /**

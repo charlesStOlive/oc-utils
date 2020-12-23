@@ -1,0 +1,11 @@
+**Liste des états**
+{% for place in places %}
+* {{place.lang}}
+{% if place.rules %}
+    * Rôle n'ayant pas accès à cet état : [{{place.rules}}]
+{% endif %}
+{% endfor %}
+**Les jeux de permissions des champs : **
+{% for key, rulesSet in rulesSets %}
+* {{key}}: {{rulesSet.message}}
+{% endfor %}

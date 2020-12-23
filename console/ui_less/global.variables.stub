@@ -98,9 +98,9 @@
 //
 // Colors
 // --------------------------------------------------
-@brand-primary:          #7DC142;
-@brand-secondary:        #2F4250;
-@brand-accent:           #FFCF00;
+@brand-primary:          {{primary}};
+@brand-secondary:        #252525;
+@brand-accent:           {{secondary}};;
 @brand-success:          #31ac5f;
 @brand-info:             #5bc0de;
 @brand-warning:          #f0ad4e;

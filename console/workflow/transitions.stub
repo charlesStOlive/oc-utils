@@ -1,0 +1,13 @@
+**Liste des transitions:**
+{% for transition in trans %}
+* {{transition.lang}}
+{% if transition.rules %}
+    * Appliquer un jeux de contrôle : {{transition.rules}}
+{% endif %}
+{% if transition.functions %}
+    * Liste des fonctions 
+{% for functions in transition.functions %} 
+        * {{functions.fnc}}:
+{% endfor %}
+{% endif %}
+{% endfor %}
