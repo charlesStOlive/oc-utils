@@ -165,7 +165,7 @@ class Plugin extends PluginBase
             }
             return View::make('waka.utils::rapidLinks')->withLinks($model->rapidLinks);
         });
-        Event::listen('backend.update.tools', function ($controller) {
+        Event::listen('backend.top.update', function ($controller) {
             if (in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement)) {
                 $model = $controller->formGetModel();
                 return View::make('waka.utils::duplicatebutton')->withId($model->id);

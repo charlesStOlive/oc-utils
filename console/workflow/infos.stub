@@ -1,0 +1,8 @@
+Les jeux de permissions des champs :
+{% for key, rulesSet in rulesSets %}
+  - {{key}}: {{rulesSet.message}}
+{% endfor %}
+Les fonctions :
+{% for key, fnc in fncs %}
+  - {{key}}: {{fnc}}
+{% endfor %}

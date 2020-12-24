@@ -82,7 +82,7 @@ class {{studly_name}} extends Model
      */
     public $attributesToDs = [
 {% for field in attributes %}
-{%if field.type is null%}
+{%if field.type is null and field.relation is null %}
         '{{field.var}}',
 {% endif %}
 {% endfor %}

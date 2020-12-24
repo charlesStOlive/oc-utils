@@ -108,6 +108,8 @@ class CreateWorkflowDataFromExcel extends CreateBase
             return $item;
         });
 
+        $fncs = $config->where('type', '==', 'fnc')->lists('data', 'key');
+
         $tradPlaces = $rows->where('lang', '<>', null)->where('type', '==', 'places')->lists('lang', 'var');
         $tradPlacesCom = $rows->where('com', '<>', null)->where('type', '==', 'places')->lists('com', 'var');
         $tradTrans = $rows->where('lang', '<>', null)->where('type', '==', 'trans')->lists('lang', 'var');
@@ -130,6 +132,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
             'tradPlacesCom' => $tradPlacesCom,
             'tradTransCom' => $tradTransCom,
             'places' => $places,
+            'fncs' => $fncs,
             'trans' => $trans,
             'rulesSets' => $rulesSets,
             'putTrans' => $putTrans,

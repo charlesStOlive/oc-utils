@@ -24,7 +24,7 @@ use Symfony\Component\Workflow\Marking;
  */
 class GraphvizDumper implements DumperInterface
 {
-    public $wordWrap;
+    public $wordWrap = 30;
     // All values should be strings
     protected static $defaultOptions = [
         'graph' => ['compress' => 'auto', 'rankdir' => 'TD', 'splines' => 'ortho'],
@@ -45,6 +45,7 @@ class GraphvizDumper implements DumperInterface
      */
     public function dump(Definition $definition, Marking $marking = null, array $options = [])
     {
+        //trace_log($options);
         $this->wordWrap = $options['graph']['rankdir'] == 'TD' ? 30 : 10;
 
         //trace_log($options['graph']['rankdir']);

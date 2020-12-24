@@ -47,6 +47,9 @@ class WorkflowOnlineDump extends WorkflowCreate
     protected $stubs = [
         'workflow/workflow.stub' => 'workflow.yaml',
         'workflow/description.stub' => 'workflow.yaml',
+        'workflow/places.stub' => 'places.txt',
+        'workflow/transitions.stub' => 'transitions.txt',
+        'workflow/infos.stub' => 'transitions.txt',
     ];
 
     public function makeStubs()
@@ -133,70 +136,77 @@ class WorkflowOnlineDump extends WorkflowCreate
 
         $dumper = new GraphvizDumper();
 
-        //trace_log($dumper);
-
-        $dotCommand = $this->createDotCommand($workflowSlug, $format);
-
+        //Création de l'image en 16/
+        $dotCommand = $this->createDotCommand($workflowSlug, 'td', $format);
+        $tdOptions = ["graph" => ['rankdir' => 'TD']];
         $process = new Process($dotCommand);
-        $option = $this->getModelOptions($srcModel->options);
-        $process->setInput($dumper->dump($definition, null, $option));
-        $coin = $process->mustRun();
+        $process->setInput($dumper->dump($definition, null, $tdOptions));
+        $process->mustRun();
+
+        $dotCommand = $this->createDotCommand($workflowSlug, 'lr', $format);
+        $lrOptions = ["graph" => ['rankdir' => 'LR']];
+        $process = new Process($dotCommand);
+        $process->setInput($dumper->dump($definition, null, $lrOptions));
+        $process->mustRun();
 
         $srcModel->description = $this->workflowData['workflow/description.stub'];
-        $srcModel->workflow = $this->workflowData['workflow/workflow.stub'];
-        $this->tryCopyImage($srcModel, $format, 2);
-        //trace_log("end");
+        $srcModel->workflow = html_entity_decode($this->workflowData['workflow/workflow.stub'], ENT_QUOTES);
+        $srcModel->places = html_entity_decode($this->workflowData['workflow/places.stub'], ENT_QUOTES);
+        $srcModel->transitions = html_entity_decode($this->workflowData['workflow/transitions.stub'], ENT_QUOTES);
+        $srcModel->infos = html_entity_decode($this->workflowData['workflow/infos.stub'], ENT_QUOTES);
+        $this->tryCopyImage($srcModel, 'td', $format, 2);
+        $this->tryCopyImage($srcModel, 'lr', $format, 2);
 
     }
 
-    public function createDotCommand($workflowSlug, $format)
+    public function createDotCommand($workflowSlug, $type, $format)
     {
-        return "dot -T$format -o " . storage_path('temp/' . $workflowSlug . '.' . $format);
+        return "dot -T$format -o " . storage_path('temp/' . $workflowSlug . '_' . $type . '.' . $format);
     }
 
-    public function tryCopyImage($srcModel, $format, $attemp)
+    public function tryCopyImage($srcModel, $type, $format, $attemp)
     {
-        $filePath = storage_path('temp/' . $srcModel->slug . '.' . $format);
+        $filePath = storage_path('temp/' . $srcModel->slug . '_' . $type . '.' . $format);
         if (file_exists($filePath)) {
-            $srcModel->image = $filePath;
+            $srcModel->{'image_' . $type} = $filePath;
             $srcModel->save();
         } elseif ($attemp > 0) {
             sleep(1);
             $attemp--;
-            $this->tryCopyImage($srcModel, $format, $attemp);
+            $this->tryCopyImage($srcModel, $type, $format, $attemp);
         } else {
             $srcModel->save();
         }
 
     }
-    public function getModelOptions($option)
-    {
-        //trace_log($option);
-        switch ($option) {
-            case 'ortho_LR':
-                # code...
-                return [
-                    'graph' => ['splines' => 'ortho', 'rankdir' => 'LR'],
-                ];
-            case 'ortho_TD':
-                # code...
-                return [
-                    'graph' => ['splines' => 'ortho', 'rankdir' => 'TD'],
-                ];
-            case 'curved_LR':
-                # code...
-                return [
-                    'graph' => ['splines' => 'spline', 'rankdir' => 'LR'],
-                ];
-            case 'curved_TD':
-                # code...
-                return [
-                    'graph' => ['splines' => 'spline', 'rankdir' => 'TD'],
-                ];
-            default:
-                return [];
-        }
-    }
+    // public function getModelOptions($option)
+    // {
+    //     //trace_log($option);
+    //     switch ($option) {
+    //         case 'ortho_LR':
+    //             # code...
+    //             return [
+    //                 'graph' => ['splines' => 'ortho', 'rankdir' => 'LR'],
+    //             ];
+    //         case 'ortho_TD':
+    //             # code...
+    //             return [
+    //                 'graph' => ['splines' => 'ortho', 'rankdir' => 'TD'],
+    //             ];
+    //         case 'curved_LR':
+    //             # code...
+    //             return [
+    //                 'graph' => ['splines' => 'spline', 'rankdir' => 'LR'],
+    //             ];
+    //         case 'curved_TD':
+    //             # code...
+    //             return [
+    //                 'graph' => ['splines' => 'spline', 'rankdir' => 'TD'],
+    //             ];
+    //         default:
+    //             return [];
+    //     }
+    // }
 
     /**
      * Get the console command arguments.
