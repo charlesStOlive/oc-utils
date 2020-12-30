@@ -81,16 +81,16 @@ class WorkflowDump extends Command
 
         //trace_log($dumper);
 
-        $dotCommand = $this->createDotCommand($workflowName, $format);
-
+        $dotCommand = $this->createDotCommand($workflowName, 'td', 'jpeg');
+        $tdOptions = ["graph" => ['rankdir' => 'TD']];
         $process = new Process($dotCommand);
-        $process->setInput($dumper->dump($definition));
+        $process->setInput($dumper->dump($definition, null, $tdOptions));
         $process->mustRun();
     }
 
-    public function createDotCommand($workflowName, $format)
+    public function createDotCommand($workflowSlug, $type, $format)
     {
-        return "dot -T$format -o " . storage_path($workflowName . '.' . $format);
+        return "dot -T$format -o " . storage_path('temp/' . $workflowSlug . '_' . $type . '.' . $format);
     }
 
     /**
