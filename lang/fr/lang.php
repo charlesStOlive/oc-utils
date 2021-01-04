@@ -17,6 +17,12 @@ return [
         'checked' => "Coché",
         "change_field" => "Modifier le champ",
     ],
+    'import' => [
+        "importExcel" => "Importer depuis excel",
+        "importExcel_comment" => "Import les élements selectionnez ci dessus. Veuillez enregistrer vos modifications avant import",
+        "button_import" => "Importer",
+        "import_indicator" => "Import en cours",
+    ],
     'global' => [
         'details' => 'Détails',
         'slug' => 'Slug',

@@ -11,6 +11,10 @@ tabs:
                   type: mediafinder
                   mode: file
                   tab: Imports
+            _launch_import:
+                  type: partial
+                  tab: Imports
+                  path: $/waka/utils/partials/_wconfig_import.htm
             activate_dashboard:
                   label: waka.utils::lang.settings.activate_dashboard
                   type: switch

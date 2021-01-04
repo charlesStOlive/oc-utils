@@ -115,6 +115,7 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
+
         \Storage::extend('utils_gd_backup', function ($app, $config) {
             $client = new \Google_Client();
             $client->setClientId($config['clientId']);
@@ -269,6 +270,22 @@ class Plugin extends PluginBase
                 // Store field config here, before that unofficial fields was removed
                 WorkflowColumn::storeFieldConfig($name, $config);
             }
+        });
+
+        \System\Controllers\Settings::extend(function ($controller) {
+            $controller->addDynamicMethod('onWconfigImport', function () use ($controller) {
+                $user = \BackendAuth::getUser();
+                if (!$user->isSuperUser()) {
+                    return;
+                }
+                $startFile = \Waka\Utils\Models\Settings::get('start_file');
+                if ($startFile) {
+                    \Excel::import(new \Waka\ImportExport\Classes\Imports\SheetsImport, storage_path('app/media/' . $startFile));
+                } else {
+                    throw new \ApplicationException('Le fichier n a pas été trouvé');
+                }
+                return \Redirect::refresh();
+            });
         });
 
         $localeCode = Lang::getLocale();

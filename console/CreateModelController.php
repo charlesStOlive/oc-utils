@@ -117,18 +117,25 @@ class CreateModelController extends GeneratorCommand
             if ($this->config['behav_lots']) {
                 $this->stubs['controller/config_lots.stub'] = 'controllers/{{lower_ctname}}/config_lots.yaml';
             }
+            //trace_log("--MORPHMANY--");
+            //trace_log($this->config['morphmany']);
 
-            if ($this->config['many'] || $this->config['morphmany']) {
-                //trace_log("yo !");
+            if (($this->config['many'] || $this->config['morphmany']) && $this->yaml_for) {
+
                 foreach ($this->config['many'] as $relation) {
                     $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
-                    $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
-                    $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
+                    if ($relation['createYamlRelation']) {
+                        $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
+                        $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
+                    }
+
                 }
                 foreach ($this->config['morphmany'] as $relation) {
                     $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
-                    $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
-                    $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
+                    if ($relation['createYamlRelation']) {
+                        $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
+                        $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
+                    }
                 }
 
                 $this->stubs['controller/config_relation.stub'] = 'controllers/{{lower_ctname}}/config_relation.yaml';
@@ -190,7 +197,7 @@ class CreateModelController extends GeneratorCommand
 
         ];
         $this->version = null;
-        $this->yaml_for = null;
+        $this->yaml_for = true;
 
         if ($this->option('option')) {
 
@@ -268,7 +275,9 @@ class CreateModelController extends GeneratorCommand
 
         $this->config['belong'] = $rows->where('belong', '!=', null)->pluck('belong')->toArray();
         $this->config['many'] = $rows->where('many', '!=', null)->pluck('many')->toArray();
+        $this->config['manythrough'] = $rows->where('manythrough', '!=', null)->pluck('manythrough')->toArray();
         $this->config['morphmany'] = $rows->where('morphmany', '!=', null)->pluck('morphmany')->toArray();
+        $this->config['morphone'] = $rows->where('morphone', '!=', null)->pluck('morphone')->unique('relation_name')->toArray();
         $this->config['attachOne'] = $rows->where('attachOne', '!=', null)->pluck('attachOne')->toArray();
         $this->config['attachMany'] = $rows->where('attachMany', '!=', null)->pluck('attachMany')->toArray();
         $this->config['lists'] = $rows->where('lists', '!=', null)->pluck('lists')->toArray();
@@ -358,7 +367,8 @@ class CreateModelController extends GeneratorCommand
         $array = explode('::', $relation);
         $type = $array[0];
         $relationClass = $this->getRelationClass($array[1], $item['var']);
-        $relationPath = $this->getRelationPath($array[1], $item['var']);
+        $createYamlRelation = $this->createYamlRelation($array[1], $item['var']);
+        $relationPath = $this->getRelationPath($array[1], $item['var'], $createYamlRelation);
         $options = $this->getRelationOptions($array[2] ?? null);
         $userRelation = $relationClass == 'Backend\Models\User' ? true : false;
         if ($type == 'belong') {
@@ -368,6 +378,7 @@ class CreateModelController extends GeneratorCommand
                 'relation_path' => $relationPath,
                 'options' => $options,
                 'userRelation' => $userRelation,
+                'createYamlRelation' => $createYamlRelation,
             ];
         }
         if ($type == 'morphmany') {
@@ -377,6 +388,17 @@ class CreateModelController extends GeneratorCommand
                 'relation_path' => $relationPath,
                 'relation_class' => $relationClass,
                 'options' => $options,
+                'createYamlRelation' => $createYamlRelation,
+            ];
+        }
+        if ($type == 'morphone') {
+            $item['morphone'] = [
+                'relation_name' => $this->getRelationKeyVar($array[1], $item['var']),
+                'relation_class' => $relationClass,
+                'relation_path' => $relationPath,
+                'options' => $options,
+                'userRelation' => $userRelation,
+                'createYamlRelation' => $createYamlRelation,
             ];
         }
         if ($type == 'many') {
@@ -386,6 +408,17 @@ class CreateModelController extends GeneratorCommand
                 'relation_path' => $relationPath,
                 'relation_class' => $relationClass,
                 'options' => $options,
+                'createYamlRelation' => $createYamlRelation,
+            ];
+        }
+        if ($type == 'manythrough') {
+            $item['manythrough'] = [
+                'relation_name' => $item['var'],
+                'singular_name' => str_singular($item['var']),
+                'relation_path' => $relationPath,
+                'relation_class' => $relationClass,
+                'options' => $options,
+                'createYamlRelation' => $createYamlRelation,
             ];
         }
         if ($type == 'attachMany') {
@@ -401,6 +434,32 @@ class CreateModelController extends GeneratorCommand
             ];
         }
         return $item;
+    }
+
+    public function getRelationKeyVar($value, $key)
+    {
+        $parts = explode('.', $value);
+        $r_author = $parts[0];
+        $r_plugin = $parts[1];
+        $r_model = $parts[2] ?? camel_case(str_singular($key));
+        return $r_model;
+    }
+
+    public function createYamlRelation($value, $key)
+    {
+        $returnVar = true;
+        $noYaml = $this->config['no_yaml_for'] ?? "";
+        $yamlInModel = $this->config['yaml_in_model'] ?? "";
+        $noYaml = explode(",", $noYaml);
+        $yamlInModel = explode(",", $yamlInModel);
+        //trace_log($key);
+        if (in_array($key, $noYaml)) {
+            $returnVar = false;
+        }
+        if (in_array($key, $yamlInModel)) {
+            $returnVar = 'inModel';
+        }
+        return $returnVar;
     }
 
     public function getRelationClass($value, $key)
@@ -422,11 +481,13 @@ class CreateModelController extends GeneratorCommand
         }
     }
 
-    public function getRelationPath($value, $key)
+    public function getRelationPath($value, $key, $createYamlRelation)
     {
         if ($value == 'self') {
             return '$/' . strtolower($this->w_author) . '/' . strtolower($this->w_plugin) . '/models/' . strtolower(str_singular($key));
         } elseif ($value == 'user') {
+            return '$/' . strtolower($this->w_author) . '/' . strtolower($this->w_plugin) . '/models/' . strtolower(str_singular($key));
+        } elseif ($createYamlRelation == 'inModel') {
             return '$/' . strtolower($this->w_author) . '/' . strtolower($this->w_plugin) . '/models/' . strtolower(str_singular($key));
         } else {
             $parts = explode('.', $value);

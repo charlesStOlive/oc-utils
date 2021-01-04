@@ -18,7 +18,12 @@ columns:
 {% endif %}
 
 {% for column in columns  %}
-{% if column.belong %}
+{% if column.morphone %}
+    {{column.var}}_r:
+        label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{column.var}}
+        relation: unique
+        select: {{column.var}}
+{% elseif column.belong %}
     {{column.var}}_r:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{column.var}}
         searchable: true
@@ -45,7 +50,7 @@ columns:
         searchable: false
         sortable: false
         width: 25px
-{% elseif column.type is null and column.attribute is not null  %}
+{% elseif column.type is null and column.attribute is not null and column.relation is null  %}
         searchable: false
         sortable: false
 {% else %}

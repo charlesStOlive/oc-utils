@@ -1,0 +1,21 @@
+<div class="callout fade in callout-danger">
+	<div class="header">
+		<i class="icon-warning"></i>
+		<h3>
+			<?=e(trans('waka.utils::lang.import.importExcel'));?>
+		</h3>
+		<p>
+			<?=e(trans('waka.utils::lang.import.importExcel_comment'));?>
+		</p>
+		<div class="loading-indicator-container">
+			<button type="submit"
+					data-request="onWconfigImport"
+					data-request-data="redirect:0"
+					data-load-indicator="<?= e(trans('waka.wconfig::lang.import.import_indicator')) ?>"
+					class="btn btn-primary">
+				<?=e(trans('waka.utils::lang.import.button_import'));?>
+			</button>
+		</div>
+	</div>
+
+</div>

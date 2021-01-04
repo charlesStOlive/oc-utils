@@ -30,6 +30,9 @@ class {{studly_name}} extends Model
 {% if configs.trait_workflow %}
     use \Waka\Lp\Classes\Traits\SourceLogTrait;
 {% endif %}
+{% if configs.trait_tag %}
+    use \Waka\Segator\Classes\Traits\TagTrait;
+{% endif %}
 
     /**
      * @var string The database table used by the model.
@@ -148,7 +151,17 @@ class {{studly_name}} extends Model
 {% endfor %}
     ];
     public $hasOneThrough = [];
-    public $hasManyThrough = [];
+    public $hasManyThrough = [
+{% for relation in configs.manythrough %}
+        '{{relation.relation_name| lowercase}}' => [
+            '{{relation.relation_class}}',
+{% if relation.options %}{% for key,option in relation.options %}
+            '{{key}}' => '{{option}}',
+{% endfor %}
+{% endif %}
+        ],
+{% endfor %}        
+    ];
     public $belongsTo = [
 {% for relation in configs.belong %}
         '{{relation.relation_name| lowercase}}' => [
@@ -163,7 +176,18 @@ class {{studly_name}} extends Model
     ];
     public $belongsToMany = [];
     public $morphTo = [];
-    public $morphOne = [];
+    public $morphOne = [
+{% for relation in configs.morphone %}
+        '{{relation.relation_name| lowercase}}' => [
+            '{{relation.relation_class}}',
+{% if relation.options%}
+{% for key,option in relation.options %}
+            '{{key}}' => '{{option}}',
+{% endfor %}
+{% endif %}
+        ],
+{% endfor %}
+    ];
     public $morphMany = [
 {% for relation in configs.morphmany %}
         '{{relation.relation_name| lowercase}}' => [
