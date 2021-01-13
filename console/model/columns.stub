@@ -56,7 +56,7 @@ columns:
 {% else %}
         searchable: true
 {% endif %}
-{% if column.column == '999' %}
+{% if column.column == '999' or column.hidden_col %}
         invisible: true
 {% endif %}
 {% endfor %}
@@ -64,4 +64,9 @@ columns:
     updated_at:
         label: waka.utils::lang.global.updated_at
         type: timetense
+{% endif %}
+{% if configs.trait_reorder %}
+    sort_order:
+        label: waka.utils::lang.global.sort_order
+        invisible: true
 {% endif %}
