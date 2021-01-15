@@ -277,12 +277,9 @@ class DataSource
     {
         $this->instanciateModel($modelId);
         $emailData = $this->emails[$type] ?? null;
-        if (!$emailData) {
-            throw new \ApplicationException("Les contacts ne sont pas correctement configurés.");
-        }
 
         if (!$emailData) {
-            return;
+            return [];
         }
         $relation = $emailData['relation'] ?? null;
         $contacts;
@@ -295,7 +292,7 @@ class DataSource
         $results = [];
 
         if (!$contacts) {
-            return;
+            return [];
         }
         //On cherche si on a un l'email via la key
         $email = $contacts[$emailData['key']] ?? false;
@@ -391,7 +388,7 @@ class DataSource
 
     public function getSrConfig()
     {
-        $dataSource = Config::get('waka.crsm::data_source.src');
+        $dataSource = Config::get('waka.wconfig::data_source.src');
         //trace_log($dataSource);
         if ($dataSource) {
             return Yaml::parseFile(plugins_path() . $dataSource);

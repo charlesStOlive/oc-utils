@@ -73,6 +73,9 @@ class SidebarAttributes extends WidgetBase
         //$attributeArray[$this->dataSource->lowerName] = $attributes;
         $attributeArray[$this->dataSource->lowerName]['values'] = $maped;
         $attributeArray[$this->dataSource->lowerName]['icon'] = $attributes['icon'];
+        if (!$this->dataSource->relations) {
+            return [];
+        }
         foreach ($this->dataSource->relations as $key => $relation) {
             $ex = explode('.', $key);
             $relationName = array_pop($ex);

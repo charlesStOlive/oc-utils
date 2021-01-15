@@ -26,26 +26,40 @@ class FunctionsBase
         }
         return $data;
     }
-    public function getFunctionAttribute($value)
+    public function getFunctionAttribute($functionCode)
     {
         $functions = $this->listFunctionAttributes();
-        return $this->findFunction($functions, $value, 'attributes');
+        return $this->findFunction($functions, $functionCode, 'attributes');
 
     }
+
     public function getFunctionsOutput($value)
     {
         $functions = $this->listFunctionAttributes();
         $outputs = $this->findFunction($functions, $value, 'outputs');
         return $outputs;
     }
-    private function findFunction($functions, $value, $column)
+
+    private function findFunction($functions, $functionCode, $searchedKey)
     {
-        foreach ($functions as $key => $values) {
-            if ($key == $value) {
-                $array = $values[$column] ?? [];
-                return $this->recursiveSearchDynamicValue($array);
-            }
+        $atttributes = $functions[$functionCode][$searchedKey] ?? null;
+        $valeursExtended = [];
+        $valeurs = [];
+        if (!$atttributes) {
+            throw new SystemException("Erreur attributs d'une fonction d'édition");
         }
+        if ($atttributes['extend'] ?? false) {
+            $extendedFunction = $atttributes['extend'];
+            $atttributesExtended = $functions[$extendedFunction][$searchedKey] ?? null;
+            if (!$atttributesExtended) {
+                throw new SystemException("Erreur attributs d'une fonction d'édition étendu");
+            }
+            $valeursExtended = $this->recursiveSearchDynamicValue($atttributesExtended);
+            unset($atttributes['extend']);
+        }
+        $valeurs = $this->recursiveSearchDynamicValue($atttributes);
+
+        return array_merge($valeursExtended, $valeurs);
 
     }
 
@@ -67,7 +81,7 @@ class FunctionsBase
                         throw new \SystemException("La méthode " . $fncName . " n'esixte pas dans la fonction d'édition");
                     }
                 } else if (starts_with($tempValue, 'config::')) {
-                    $configName = str_replace('config::', "", $tempValue);
+                    $configName = str_replace('config::waka', "waka", $tempValue);
                     $tempValue = \Config::get($configName);
                 } else if (starts_with($tempValue, 'list::')) {
                     $className = str_replace('list::', "", $tempValue);
