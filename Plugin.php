@@ -157,6 +157,10 @@ class Plugin extends PluginBase
             if (!Settings::get('activate_builder')) {
                 $navigationManager->removeMainMenuItem('RainLab.Builder', 'builder');
             }
+            if (!Settings::get('activate_media_btn')) {
+                $navigationManager->removeMainMenuItem('October.Backend', 'media');
+            }
+
         });
 
         Event::listen('backend.down.rapidLinks', function ($controller) {

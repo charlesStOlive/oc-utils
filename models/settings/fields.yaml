@@ -35,5 +35,9 @@ tabs:
                   label: waka.utils::lang.settings.activate_user_btn
                   type: switch
                   tab: button
+            activate_media_btn:
+                  label: waka.utils::lang.settings.activate_media_btn
+                  type: switch
+                  tab: button
             
             

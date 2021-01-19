@@ -155,6 +155,7 @@ return [
         "activate_cms" => "Activer le bouton du CMS",
         "activate_builder" => "Activer le bouton du Builder",
         "activate_task_btn" => "Activer le bouton dynamique de taches",
+        "activate_media_btn" => "Activer le bouton des média",
         "label" => "Utilitaires",
         "description" => "Cachez des éléments",
 
