@@ -34,6 +34,7 @@ class DataSource
     public $wimages;
     public $attributesConfig;
     public $outputName;
+    public $publications;
 
     public function __construct($id = null, $type_id = "code")
     {
@@ -77,6 +78,8 @@ class DataSource
         $this->aggFunctions = $config['aggFunctions'] ?? false;
 
         $this->outputName = $config['outputName'] ?? 'name';
+
+        $this->publications = $config['publications'] ?? [];
 
         //
         $config = null;
@@ -139,7 +142,6 @@ class DataSource
 
     public function getPartialIndexOptions($productorModel, $relation = false)
     {
-
         $documents = $productorModel::where('data_source', $this->code)->get();
 
         if ($relation) {
