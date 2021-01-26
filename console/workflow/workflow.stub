@@ -3,7 +3,7 @@
     metadata: 
         name: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{configs.name.value}}{% else %}{{configs.name.data}}{% endif %} 
 {% if configs.com %}
-        com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{ configs.com.value }}
+        com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{ configs.com.value }} 
         rulesSets:
 {% for key, rulesSet in rulesSets %}
             {{key}}:
@@ -11,7 +11,7 @@
 {% for subkey,set in rulesSet.fields %}
                     {{subkey}}: {{set}}
 {% endfor %}
-                message: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.error_message.{{ key }}
+                message: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.error_message.{{ key }} 
 {% endfor %}
 {% endif %}
     marking_store:
@@ -21,14 +21,17 @@
         - \{{studly_author}}\{{studly_plugin}}\Models\{{studly_model}}
     places:
 {% for place in places %}
-        {{place.var}}:
+        {{place.name}}:
             metadata:
-                label: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.var}}{%else%}{{place.lang}}{%endif%} 
+                label: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.name}}{%else%}{{place.lang}}{%endif%} 
 {% if place.com %}
-                com: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.var}}_com{%else%}{{place.com}}{%endif%} 
+                com: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.name}}_com{%else%}{{place.com}}{%endif%} 
 {% endif %}
 {% if place.rules %}
                 norole: [{{place.rules}}]
+{% endif %}
+{% if place.automatisations %}
+                automatisations: [{{place.automatisations}}]
 {% endif %}
 {% if place.color %}
                 color: {{place.color}}
@@ -40,11 +43,11 @@
     initial_places: {{ configs.initial_places.value }}  # or set to an array if multiple initial places
     transitions:
 {% for transition in trans %}
-        {{transition.var}}:
+        {{transition.name}}:
             metadata: 
-                label: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.trans.{{transition.var}}{%else%}{{transition.lang}}{%endif%} 
+                label: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.trans.{{transition.name}}{%else%}{{transition.lang}}{%endif%} 
 {% if transition.com %}
-                com: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.trans.{{transition.var}}_com{%else%}{{transition.lang}}{%endif%} 
+                com: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.trans.{{transition.name}}_com{%else%}{{transition.lang}}{%endif%} 
 {% endif %}
 {% if transition.rules %}
                 rulesSet: {{transition.rules}}

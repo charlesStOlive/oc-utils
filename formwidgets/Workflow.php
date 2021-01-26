@@ -119,9 +119,12 @@ class Workflow extends FormWidgetBase
         $transitions = $this->workflow->getEnabledTransitions($this->model);
         $possibleTransition = [];
         foreach ($transitions as $transition) {
-            $name = $transition->getName();
-            $label = $this->workflowMetadata->getMetadata('label', $transition) ?? $name;
-            $possibleTransition[$name] = \Lang::get($label);
+            $hidden = $this->workflowMetadata->getMetadata('hidden', $transition) ?? false;
+            if (!$hidden) {
+                $name = $transition->getName();
+                $label = $this->workflowMetadata->getMetadata('label', $transition) ?? $name;
+                $possibleTransition[$name] = \Lang::get($label);
+            }
         }
         return $possibleTransition;
     }

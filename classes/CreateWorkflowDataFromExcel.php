@@ -9,7 +9,8 @@ class CreateWorkflowDataFromExcel extends CreateBase
         $model = $data['model'];
         $author = $data['author'];
         $config = $data['config'];
-        $rows = $data['rows'];
+        $places = $data['places'];
+        $trans = $data['trans'];
         $putTrans = $data['putTrans'];
 
         $configs = $config->toArray();
@@ -37,14 +38,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
         $trads = $config->where('type', '==', 'lang')->lists('data', 'key');
         //
         //
-        $rows = $rows->map(function ($item, $key) {
-            if ($item['type'] != 'trans') {
-                return $item;
-            }
-            $varExiste = $îtem['var'] ?? false;
-            if (empty($item['var'])) {
-                $item['var'] = $item['from'] . '_to_' . $item['to'];
-            }
+        $trans = $trans->map(function ($item, $key) {
             $item['functions'] = [];
 
             $fncProd = $item['fnc_prod'] ?? false;
@@ -105,18 +99,47 @@ class CreateWorkflowDataFromExcel extends CreateBase
                 $item['functions'][$fncName] = $obj;
 
             }
+            $fncGard = $item['fnc_gard'] ?? false;
+            //trace_log("fnctrait : " . $fncTrait);
+            if (!empty($fncGard)) {
+                //trace_log("Travail sur les fonctions de production");
+                $fncName = $item['fnc_gard'];
+                $args = $item['fnc_gard_arg'] ?? false;
+                if ($args) {
+                    $args = explode(',', $args);
+                }
+                $vals = $item['fnc_gard_val'] ?? false;
+                if ($vals) {
+                    $vals = explode(',', $vals);
+                }
+                $argval = [];
+                if (is_countable($args)) {
+                    for ($i = 0; $i < count($args); $i++) {
+                        $argval[$args[$i]] = $vals[$i] ?? null;
+
+                    }
+                }
+
+                $obj = [
+                    'fnc' => $fncName,
+                    'type' => 'gard',
+                    'arguments' => $argval,
+                ];
+                $item['functions'][$fncName] = $obj;
+
+            }
             return $item;
         });
 
         $fncs = $config->where('type', '==', 'fnc')->lists('data', 'key');
 
-        $tradPlaces = $rows->where('lang', '<>', null)->where('type', '==', 'places')->lists('lang', 'var');
-        $tradPlacesCom = $rows->where('com', '<>', null)->where('type', '==', 'places')->lists('com', 'var');
-        $tradTrans = $rows->where('lang', '<>', null)->where('type', '==', 'trans')->lists('lang', 'var');
-        $tradTransCom = $rows->where('com', '<>', null)->where('type', '==', 'trans')->lists('com', 'var');
+        $tradPlaces = $places->where('lang', '<>', null)->lists('lang', 'name');
+        $tradPlacesCom = $places->where('com', '<>', null)->lists('com', 'name');
+        $tradTrans = $trans->where('lang', '<>', null)->lists('lang', 'name');
+        $tradTransCom = $trans->where('com', '<>', null)->lists('com', 'name');
 
-        $places = $rows->where('type', '==', 'places')->toArray();
-        $trans = $rows->where('type', '==', 'trans')->toArray();
+        $places = $places->toArray();
+        $trans = $trans->toArray();
 
         //trace_log($trans);
 
@@ -137,6 +160,8 @@ class CreateWorkflowDataFromExcel extends CreateBase
             'rulesSets' => $rulesSets,
             'putTrans' => $putTrans,
         ];
+
+        trace_log($all);
 
         return $this->processVars($all);
     }

@@ -100,6 +100,10 @@ class GraphvizDumper implements DumperInterface
             if (null !== $label) {
                 $attributes['name'] = $label;
             }
+            $automatisations = $workflowMetadata->getMetadata('automatisations', $place);
+            if (null !== $automatisations) {
+                $attributes['name'] = $attributes['name'] . "\n \n  Auto";
+            }
             $places[$place] = [
                 'attributes' => $attributes,
             ];
@@ -143,13 +147,16 @@ class GraphvizDumper implements DumperInterface
                     } else {
                         $attributes['fillcolor'] = 'green';
                     }
-
+                    if ($type == 'gard') {
+                        $completeNameWithFunction .= "\n G : " . $fncKeyName;
+                    }
                     if ($type == 'prod') {
                         $completeNameWithFunction .= "\n P: " . $fncKeyName;
                     }
                     if ($type == 'trait') {
                         $completeNameWithFunction .= "\n T : " . $fncKeyName;
                     }
+
                 }
             }
             $rulesSet = $workflowMetadata->getMetadata('rulesSet', $transition) ?? null;

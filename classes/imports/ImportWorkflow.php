@@ -11,7 +11,8 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 class ImportWorkflow implements WithMultipleSheets
 {
     public $name;
-    public $data;
+    public $places;
+    public $trans;
     public $config;
 
     public function __construct($name)
@@ -21,12 +22,14 @@ class ImportWorkflow implements WithMultipleSheets
     }
     public function sheets(): array
     {
-        $config = $this->name . '_wonfig';
-        $data = $this->name . '_wata';
+        $places = $this->name . '_places';
+        $trans = $this->name . '_trans';
+        $config = $this->name . '_work';
 
         return [
+            $places => $this->places = new PlacesImport(),
+            $trans => $this->trans = new TransImport(),
             $config => $this->config = new configImport(),
-            $data => $this->data = new dataImport(),
         ];
     }
 }
@@ -51,7 +54,7 @@ class ConfigImport implements ToCollection, WithHeadingRow
     }
 
 }
-class DataImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
+class PlacesImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
 {
 
     public $data;
@@ -61,22 +64,45 @@ class DataImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
         $this->data = [];
         foreach ($rows as $row) {
             $obj = [
-                'var' => $row['var'] ?? null,
-                'key' => $row['key'] ?? null,
-                'type' => $row['type'] ?? null,
+                'name' => $row['name'] ?? null,
                 'lang' => $row['lang'] ?? null,
                 'com' => $row['com'] ?? null,
+                'icon' => $row['icon'] ?? null,
+                'color' => $row['color'] ?? null,
+                'rules' => $row['rules'] ?? null,
+                'automatisations' => $row['automatisations'] ?? null,
+            ];
+            array_push($this->data, $obj);
+        }
+        return $this->data;
+    }
+}
+
+class TransImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
+{
+
+    public $data;
+
+    public function collection(Collection $rows)
+    {
+        $this->data = [];
+        foreach ($rows as $row) {
+            $obj = [
                 'from' => $row['from'] ?? null,
                 'to' => $row['to'] ?? null,
+                'name' => $row['final_name'] ?? null,
+                'lang' => $row['lang'] ?? null,
+                'com' => $row['com'] ?? null,
                 'rules' => $row['rules'] ?? null,
-                'color' => $row['color'] ?? null,
-                'icon' => $row['icon'] ?? null,
                 'fnc_prod' => $row['fnc_prod'] ?? null,
                 'fnc_prod_arg' => $row['fnc_prod_arg'] ?? null,
                 'fnc_prod_val' => $row['fnc_prod_val'] ?? null,
                 'fnc_trait' => $row['fnc_trait'] ?? null,
                 'fnc_trait_arg' => $row['fnc_trait_arg'] ?? null,
                 'fnc_trait_att' => $row['fnc_trait_att'] ?? null,
+                'fnc_gard' => $row['fnc_gard'] ?? null,
+                'fnc_gard_arg' => $row['fnc_gard_arg'] ?? null,
+                'fnc_gard_att' => $row['fnc_gard_att'] ?? null,
             ];
             array_push($this->data, $obj);
         }

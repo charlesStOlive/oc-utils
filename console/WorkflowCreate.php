@@ -90,16 +90,18 @@ class WorkflowCreate extends GeneratorCommand
 
         $importExcel = new \Waka\Utils\Classes\Imports\ImportWorkflow($name);
         \Excel::import($importExcel, plugins_path('waka/wconfig/updates/files/' . $fileName . '.xlsx'));
-        $rows = new Collection($importExcel->data->data);
+        $places = new Collection($importExcel->places->data);
+        $trans = new Collection($importExcel->trans->data);
         $config = new Collection($importExcel->config->data);
 
         $data = [
-            'putTrans' => $putTrans,
+            'putTrans' => $putTrans, //Active la traduction ou pas des codes de place et de transition
             'pluginCode' => $this->wk_pluginCode,
             'plugin' => $this->wk_plugin,
             'author' => $this->wk_author,
             'model' => $this->wk_model,
-            'rows' => $rows,
+            'places' => $places,
+            'trans' => $trans,
             'config' => $config,
         ];
 
