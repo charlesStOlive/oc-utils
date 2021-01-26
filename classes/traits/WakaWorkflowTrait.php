@@ -20,11 +20,12 @@ trait WakaWorkflowTrait
                 'Waka\Utils\Models\StateLog',
                 'name' => 'state_logeable',
                 'table' => 'waka_utils_state_logeable',
+                'delete' => true,
             ];
 
             $model->bindEvent('model.beforeValidate', function () use ($model) {
                 $changeState = $model->change_state;
-                trace_log("change_state : " . $changeState);
+                //trace_log("change_state : " . $changeState);
                 if ($changeState) {
                     $transition = self::getTransitionobject($changeState, $model);
                     $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
@@ -134,19 +135,19 @@ trait WakaWorkflowTrait
         return \Lang::get($label);
     }
 
-    public function getWfAutomatisation()
-    {
-        $place = $this->model->state;
+    // public function getWfAutomatisation()
+    // {
+    //     $place = $this->model->state;
 
-        if (!$place) {
-            $arrayPlaces = $this->workflow->getMarking($this->model)->getPlaces();
-            $place = array_key_first($arrayPlaces);
-        }
-        $automatisation = $this->workflow->getMetadataStore()->getPlaceMetadata($place)['automatisation'] ?? false;
-        if ($automatisation) {
+    //     if (!$place) {
+    //         $arrayPlaces = $this->workflow->getMarking($this->model)->getPlaces();
+    //         $place = array_key_first($arrayPlaces);
+    //     }
+    //     $automatisation = $this->workflow->getMetadataStore()->getPlaceMetadata($place)['automatisation'] ?? false;
+    //     if ($automatisation) {
 
-        }
-        return \Lang::get($label);
-    }
+    //     }
+    //     return \Lang::get($label);
+    // }
 
 }

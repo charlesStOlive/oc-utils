@@ -260,6 +260,10 @@ class DataSource
     }
 
     /**
+     *
+     */
+
+    /**
      * Prend la valeur du workflow
      */
     public function getWorkflowState()
@@ -268,6 +272,13 @@ class DataSource
             throw new ApplicationException('model pas instancié pour la fonction getWorkflowState');
         }
         return $this->model->wfPlaceLabel();
+    }
+
+    public function getStateLogsValues($modelId = null)
+    {
+        $this->instanciateModel($modelId);
+        $results = $this->model->state_logs()->orderBy('created_at')->get()->toArray();
+        return $results;
     }
 
     /**

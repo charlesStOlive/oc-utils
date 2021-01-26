@@ -160,5 +160,8 @@ return [
         "description" => "Cachez des éléments",
 
     ],
+    'side_bar_info' => [
+        'state_history' => "Historique des transitions d'états",
+    ],
 
 ];

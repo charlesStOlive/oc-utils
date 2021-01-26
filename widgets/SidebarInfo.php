@@ -14,6 +14,7 @@ class SidebarInfo extends WidgetBase
     public $config;
     public $model;
     public $fields;
+    private $ds;
 
     public function render()
     {
@@ -26,24 +27,14 @@ class SidebarInfo extends WidgetBase
     {
         $controllerModel = $this->controller->formGetModel();
         $modelId = $controllerModel->id;
+        $this->ds = new DataSource($this->config->model, 'name');
 
-        //$model = get_class($controllerModel)::find($modelId);
-
-        //trace_log($this->config->model);
-
-        $ds = new DataSource($this->config->model, 'name');
-
-        //$dataSource = \Waka\Utils\Models\DataSource::where('model', '=', $this->config->model)->first();
-        $dotedValues = $ds->getSimpleDotedValues($modelId);
-        //trace_log($dotedValues);
-
-        //$returnFields = new ParseFields();
-        //$this->fields = $returnFields->parseFields($model, $this->config->fields);
-        $this->fields = $this->setValues($dotedValues, $this->config->fields);
+        $this->fields = $this->setValues($modelId, $this->config->fields);
     }
 
-    public function setValues($dotedValues, $fields)
+    public function setValues($modelId, $fields)
     {
+        $dotedValues = $this->ds->getSimpleDotedValues($modelId);
         $parsedFields = [];
         foreach ($fields as $field) {
             $type = $field['type'] ?? 'label_value';
@@ -66,6 +57,22 @@ class SidebarInfo extends WidgetBase
             $racine = $field['racine'] ?? null;
             if ($racine && $value) {
                 $link = \Backend::url($field['racine'] . $value);
+            }
+
+            if ($type == 'state_logs') {
+                $value = [];
+                $logs = $this->ds->getStateLogsValues($modelId);
+                if ($logs) {
+                    $src_trad = $field['src_trad'] ?? null;
+                    foreach ($logs as $log) {
+                        $obj = [
+                            'label' => Lang::get($src_trad . $log['name'] ?? null),
+                            'created_at' => $log['created_at'],
+                        ];
+                        array_push($value, $obj);
+                    }
+                }
+
             }
 
             $field = [
