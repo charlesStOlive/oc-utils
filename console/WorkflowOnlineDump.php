@@ -104,7 +104,8 @@ class WorkflowOnlineDump extends WorkflowCreate
 
         $importExcel = new \Waka\Utils\Classes\Imports\ImportWorkflow($workflowName);
         \Excel::import($importExcel, $srcModel->src->getLocalPath());
-        $rows = new Collection($importExcel->data->data);
+        $places = new Collection($importExcel->places->data);
+        $trans = new Collection($importExcel->trans->data);
         $config = new Collection($importExcel->config->data);
 
         $data = [
@@ -113,7 +114,8 @@ class WorkflowOnlineDump extends WorkflowCreate
             'plugin' => "Utils",
             'author' => "Waka",
             'model' => "TestWf",
-            'rows' => $rows,
+            'places' => $places,
+            'trans' => $trans,
             'config' => $config,
         ];
 
