@@ -24,12 +24,12 @@ use Symfony\Component\Workflow\Marking;
  */
 class GraphvizDumper implements DumperInterface
 {
-    public $wordWrap = 30;
+    public $wordWrap = 40;
     // All values should be strings
     protected static $defaultOptions = [
-        'graph' => ['compress' => 'auto', 'rankdir' => 'TD', 'splines' => 'ortho'],
-        'node' => ['fontsize' => '9', 'fontname' => 'Arial', 'color' => '#333333', 'fillcolor' => 'green', 'fixedsize' => 'false', 'width' => '1'],
-        'edge' => ['fontsize' => '12', 'fontname' => 'Arial', 'color' => '#333333', 'arrowhead' => 'normal', 'arrowsize' => '1'],
+        'graph' => ['compress' => 'auto', 'rankdir' => 'TD', 'splines' => 'ortho', 'nodesep' => '0.2', 'ranksep' => '0.2'],
+        'node' => ['fontsize' => '12', 'fontname' => 'Arial', 'color' => '#333333', 'fillcolor' => 'white', 'fixedsize' => 'false', 'width' => '1'],
+        'edge' => ['fontsize' => '12', 'fontname' => 'Arial', 'color' => '#333333', 'arrowhead' => 'normal', 'arrowsize' => '0.5'],
     ];
 
     /**
@@ -46,7 +46,7 @@ class GraphvizDumper implements DumperInterface
     public function dump(Definition $definition, Marking $marking = null, array $options = [])
     {
         //trace_log($options);
-        $this->wordWrap = $options['graph']['rankdir'] == 'TD' ? 30 : 10;
+        $this->wordWrap = $options['graph']['rankdir'] == 'TD' ? 40 : 15;
 
         //trace_log($options['graph']['rankdir']);
         //trace_log($this->wordWrap);
@@ -81,6 +81,7 @@ class GraphvizDumper implements DumperInterface
                 'fillcolor' => '#999999',
                 'color' => '#FFFFFF',
                 'fontcolor' => '#FFFFFF',
+
             ];
             if (\in_array($place, $definition->getInitialPlaces(), true)) {
                 $attributes['style'] = 'filled';
@@ -96,13 +97,13 @@ class GraphvizDumper implements DumperInterface
                 $attributes['fillcolor'] = $backgroundColor;
             }
             $label = \Lang::get($workflowMetadata->getMetadata('label', $place));
-            $label = wordwrap($label, 15, "\n");
+            $label = wordwrap($label, $this->wordWrap, "|");
             if (null !== $label) {
                 $attributes['name'] = $label;
             }
             $automatisations = $workflowMetadata->getMetadata('automatisations', $place);
             if (null !== $automatisations) {
-                $attributes['name'] = $attributes['name'] . "\n \n  Auto";
+                $attributes['automatisations'] = "Automatisation !";
             }
             $places[$place] = [
                 'attributes' => $attributes,
@@ -124,37 +125,40 @@ class GraphvizDumper implements DumperInterface
         foreach ($definition->getTransitions() as $transition) {
             $attributes = ['shape' => 'box', 'regular' => false];
 
-            $backgroundColor = $workflowMetadata->getMetadata('bg_color', $transition);
-            if (null !== $backgroundColor) {
-                $attributes['style'] = 'dashed';
-                $attributes['fillcolor'] = $backgroundColor;
-            }
+            // $backgroundColor = $workflowMetadata->getMetadata('bg_color', $transition);
+            // if (null !== $backgroundColor) {
+            //     $attributes['style'] = 'dashed';
+            //     $attributes['fillcolor'] = $backgroundColor;
+            // }
             $name = $workflowMetadata->getMetadata('label', $transition) ?? $transition->getName();
-            $name = wordwrap(\Lang::get($name), $this->wordWrap, "\n");
+            $name = wordwrap(\Lang::get($name), $this->wordWrap, '|');
 
             $functions = $workflowMetadata->getMetadata('fncs', $transition) ?? null;
             $completeNameWithFunction = "";
+            $gard = null;
+            $prod = null;
+            $trait = null;
+
             if ($functions) {
-                $completeNameWithFunction = "\n";
-                $attributes['fillcolor'] = $backgroundColor;
+                //$attributes['fillcolor'] = $backgroundColor;
                 $attributes['style'] = 'filled';
                 foreach ($functions as $fncKeyName => $function) {
                     $type = $function['type'] ?? null;
-                    if ($type == 'prod' && $attributes['fillcolor'] != 'cyan') {
-                        $attributes['fillcolor'] = 'yellow';
-                    } elseif ($type == 'trait' && $attributes['fillcolor'] != 'yellow') {
-                        $attributes['fillcolor'] = 'cyan';
-                    } else {
-                        $attributes['fillcolor'] = 'green';
-                    }
+                    // if ($type == 'prod' && $attributes['fillcolor'] != 'cyan') {
+                    //     $attributes['fillcolor'] = 'yellow';
+                    // } elseif ($type == 'trait' && $attributes['fillcolor'] != 'yellow') {
+                    //     $attributes['fillcolor'] = 'cyan';
+                    // } else {
+                    //     $attributes['fillcolor'] = 'green';
+                    // }
                     if ($type == 'gard') {
-                        $completeNameWithFunction .= "\n G : " . $fncKeyName;
+                        $gard = "Gard : " . $fncKeyName;
                     }
                     if ($type == 'prod') {
-                        $completeNameWithFunction .= "\n P: " . $fncKeyName;
+                        $prod = "Prod : " . $fncKeyName;
                     }
                     if ($type == 'trait') {
-                        $completeNameWithFunction .= "\n T : " . $fncKeyName;
+                        $trait = "Trait : " . $fncKeyName;
                     }
 
                 }
@@ -170,7 +174,10 @@ class GraphvizDumper implements DumperInterface
             }
             $transitions[] = [
                 'attributes' => $attributes,
-                'name' => $name . $completeNameWithFunction,
+                'name' => $name,
+                'gard' => $gard,
+                'prod' => $prod,
+                'trait' => $trait,
             ];
         }
 
@@ -187,16 +194,37 @@ class GraphvizDumper implements DumperInterface
         foreach ($places as $id => $place) {
             if (isset($place['attributes']['name'])) {
                 $placeName = $place['attributes']['name'];
+                $automatisations = $place['attributes']['automatisations'] ?? null;
                 unset($place['attributes']['name']);
             } else {
                 $placeName = $id;
             }
 
-            $code .= sprintf("  place_%s [label=\"%s\", shape=circle%s];\n", $this->dotize($id), $this->escape($placeName), $this->addAttributes($place['attributes']));
-            //trace_log($code);
+            $code .= sprintf("  place_%s [label=%s, %s];\n", $this->dotize($id), $this->createPlaceLabelTab($placeName, $automatisations), $this->addAttributes($place['attributes']));
+            trace_log($code);
         }
 
         return $code;
+    }
+
+    public function createPlaceLabelTab($placeName, $automatisations)
+    {
+        trace_log($automatisations);
+        $automatisations = $this->createRow($automatisations);
+        $placeName = $this->escape($placeName);
+        $placeName = str_replace('|', '<BR/>', $placeName);
+        $text = sprintf('<<table border="0" style="width:100px" cellborder="0"><tr><td><b>%s</b></td></tr>%s</table>>', $placeName, $automatisations);
+        return $text;
+    }
+
+    public function createRow($name)
+    {
+        if (!$name) {
+            return '';
+        } else {
+            $name = str_replace('|', '<BR>', $name);
+            return sprintf('<tr><td align="left" port="r0">%s</td></tr>', $name);
+        }
     }
 
     /**
@@ -207,10 +235,23 @@ class GraphvizDumper implements DumperInterface
         $code = '';
 
         foreach ($transitions as $i => $place) {
-            $code .= sprintf("  transition_%s [label=\"%s\",%s];\n", $this->dotize($i), $this->escape($place['name']), $this->addAttributes($place['attributes']));
+
+            $code .= sprintf("  transition_%s [label=%s,%s];\n", $this->dotize($i), $this->createTransitionLabelTab($place), $this->addAttributes($place['attributes']));
+            //trace_log($code);
         }
 
         return $code;
+    }
+    public function createTransitionLabelTab($place)
+    {
+        $placeName = $place['name'];
+        $gard = $this->createRow($place['gard'] ?? null);
+        $prod = $this->createRow($place['prod'] ?? null);
+        $trait = $this->createRow($place['trait'] ?? null);
+        $placeName = $this->escape($placeName);
+        $placeName = str_replace('|', '<BR/>', $placeName);
+        $text = sprintf('<<table border="0" style="width:100px" cellborder="0"><tr><td><b>%s</b></td></tr>%s %s %s</table>>', $placeName, $gard, $prod, $trait);
+        return $text;
     }
 
     /**

@@ -71,6 +71,7 @@ class PlacesImport implements ToCollection, WithHeadingRow, WithCalculatedFormul
                 'color' => $row['color'] ?? null,
                 'rules' => $row['rules'] ?? null,
                 'automatisations' => $row['automatisations'] ?? null,
+                'hidden' => $row['hidden'] ?? null,
             ];
             array_push($this->data, $obj);
         }
@@ -94,6 +95,7 @@ class TransImport implements ToCollection, WithHeadingRow, WithCalculatedFormula
                 'lang' => $row['lang'] ?? null,
                 'com' => $row['com'] ?? null,
                 'rules' => $row['rules'] ?? null,
+                'permissions' => $row['permissions'] ?? null,
                 'fnc_prod' => $row['fnc_prod'] ?? null,
                 'fnc_prod_arg' => $row['fnc_prod_arg'] ?? null,
                 'fnc_prod_val' => $row['fnc_prod_val'] ?? null,

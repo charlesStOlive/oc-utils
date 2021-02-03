@@ -1,10 +1,9 @@
-Liste des transitions:
 {% for transition in trans %}
-  - {{transition.lang}}
+- {{transition.lang}}
 {% if transition.rules %}
-    | Appliquer un jeux de contrôle : {{transition.rules}}
+  -- Nom du jeux de contrôle : {{transition.rules}}
 {% endif %}
 {% if transition.functions %}
-    | Liste des fonctions : {% for functions in transition.functions %}{{functions.fnc}}{% if not loop.last %}, {% endif %}{% endfor %} 
+  -- Liste des fonctions : {% for functions in transition.functions %}{{functions.fnc}}{% if not loop.last %}, {% endif %}{% endfor %} 
 {% endif %}
 {% endfor %}
