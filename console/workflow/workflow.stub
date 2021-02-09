@@ -1,15 +1,17 @@
 {{lower_name}}:
     type: state_machine
     metadata: 
-        name: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{configs.name.value}}{% else %}{{configs.name.data}}{% endif %} 
+        name: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{configs.name.key}}{% else %}{{configs.name.label}}{% endif %} 
 {% if configs.com %}
-        com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{ configs.com.value }} 
+        com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{ configs.com.key }} 
         rulesSets:
 {% for key, rulesSet in rulesSets %}
             {{key}}:
                 fields: 
-{% for subkey,set in rulesSet.fields %}
-                    {{subkey}}: {{set}}
+{% for field in rulesSet.fields %}
+                    {{field.key}}: 
+                        require: {{field.value}}
+                        message: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.field_error_message.{{field.key}}
 {% endfor %}
                 message: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.error_message.{{ key }} 
 {% endfor %}
@@ -27,6 +29,9 @@
 {% if place.com %}
                 com: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.name}}_com{%else%}{{place.com}}{%endif%} 
 {% endif %}
+{% if place.alerte %}
+                alerte: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.places.{{place.name}}_alerte{%else%}{{place.alerte}}{%endif%} 
+{% endif %}
 {% if place.rules %}
                 norole: [{{place.rules}}]
 {% endif %}
@@ -38,6 +43,9 @@
 {% endif %}
 {% if place.icon %}
                 icon: {{place.icon}}
+{% endif %}
+{% if place.must_trans %}
+                must_trans: true
 {% endif %}
 {% endfor %}
     initial_places: {{ configs.initial_places.value }}  # or set to an array if multiple initial places
@@ -51,6 +59,9 @@
 {% endif %}
 {% if transition.rules %}
                 rulesSet: {{transition.rules}}
+{% endif %}
+{% if transition.hidden %}
+                hidden: true
 {% endif %}
 {% if transition.functions %}
                 fncs:

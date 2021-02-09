@@ -5,12 +5,17 @@
 model: {{studly_name}}
 
 fields:
+{% if configs.behav_workflow %}
+    state:
+        value: state
+        type: workflow 
+{% endif %}
     section_base:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.title
         type: section
     name:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.name
-        value: parrain.name
+        value: name
     # relation_name:
     #     label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.name
     #     value: relation.name

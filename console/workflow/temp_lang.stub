@@ -8,6 +8,8 @@ return [
         '{{key}}' => '{{trad}}',
 {% endfor %}{% for key,trad in tradPlacesCom  %}
         '{{key}}_com' => '{{trad}}',
+{% endfor %}{% for key,trad in tradPlacesAlertes  %}
+        '{{key}}_alerte' => '{{trad}}',
 {% endfor %}
     ],
     'trans' => [
@@ -20,6 +22,11 @@ return [
     'error_message' => [
 {% for key,rulesSet in rulesSets  %}
         '{{key}}' => '{{rulesSet.message}}',
+{% endfor %}
+    ],
+    'field_error_message' => [
+{% for key,rule in tradFieldRules  %}
+        '{{key}}' => '{{rule}}',
 {% endfor %}
     ]
 ];

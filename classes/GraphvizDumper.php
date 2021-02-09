@@ -201,7 +201,7 @@ class GraphvizDumper implements DumperInterface
             }
 
             $code .= sprintf("  place_%s [label=%s, %s];\n", $this->dotize($id), $this->createPlaceLabelTab($placeName, $automatisations), $this->addAttributes($place['attributes']));
-            trace_log($code);
+            //trace_log($code);
         }
 
         return $code;
@@ -209,7 +209,7 @@ class GraphvizDumper implements DumperInterface
 
     public function createPlaceLabelTab($placeName, $automatisations)
     {
-        trace_log($automatisations);
+        //trace_log($automatisations);
         $automatisations = $this->createRow($automatisations);
         $placeName = $this->escape($placeName);
         $placeName = str_replace('|', '<BR/>', $placeName);

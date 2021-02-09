@@ -1,0 +1,6 @@
+<h2 class="<?=$field->class?>">
+    <?= e(trans('waka.utils::lang.workflow.change_state')) ?>
+    <?php if($field->icon) { ?><i class="<?=$field->icon?>"></i><?php } ?>
+    <?=$field->value?>
+</h2>
+<?php } ?>

@@ -3,4 +3,13 @@
 {% if place.rules %}
   -- Rôle n'ayant pas accès à cet état : [{{place.rules}}]
 {% endif %}
+{% if place.automatisations %}
+  -- Transition automatique : [{{automatisations}}]
+{% endif %}
+{% if place.must_trans %}
+  -- Transition obligatoire
+{% endif %}
+{% if place.hidden %}
+  -- Transition cachée
+{% endif %}
 {% endfor %}

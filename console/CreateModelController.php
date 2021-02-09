@@ -117,6 +117,9 @@ class CreateModelController extends GeneratorCommand
             if ($this->config['behav_lots']) {
                 $this->stubs['controller/config_lots.stub'] = 'controllers/{{lower_ctname}}/config_lots.yaml';
             }
+            if ($this->config['behav_workflow']) {
+                $this->stubs['controller/config_workflow.stub'] = 'controllers/{{lower_ctname}}/config_workflow.yaml';
+            }
             //trace_log("--MORPHMANY--");
             //trace_log($this->config['morphmany']);
 

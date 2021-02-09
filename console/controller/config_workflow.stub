@@ -1,0 +1,6 @@
+modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}}
+baseMode: buttonList
+
+places:
+  brouillon:
+    mode: buttons 

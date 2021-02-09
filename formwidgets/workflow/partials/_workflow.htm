@@ -6,16 +6,17 @@
 <div class="scoreboard">
     <div data-control="toolbar">
         <div class="scoreboard-item title-value">
-            <h4>Etat</h4>
+            <h4><?= e(trans('waka.utils::lang.workflow.state')) ?></h4>
             <p><?=$value?></p>
-            <p class="description">Un texte de description de l'état.</p>
+            <p class="description"><?php if($com) : ?><?= $com ?><?php else : ?>- - - - <?php endif ?></p>
+
         </div>
 
         <div class="scoreboard-item title-value">
-            <h4>Changer d''état</h4>
+            <h4><?= e(trans('waka.utils::lang.workflow.change_state')) ?></h4>
             <!-- Dropdown -->
             <div class="m-t"><?php if ($this->previewMode || $field->readOnly): ?>
-                <h4 style="color: red;">Changement interdit</h4>
+                <h4 style="color: red;"><?= e(trans('waka.utils::lang.workflow.state_change_forbidden')) ?></h4>
                 <?php else: ?>
                 <select id="<?= $field->getId() ?>"
                         name="<?= $field->getName() ?>"

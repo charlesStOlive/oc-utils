@@ -48,6 +48,7 @@ class ConfigImport implements ToCollection, WithHeadingRow
                 'type' => $row['type'] ?? null,
                 'value' => $row['value'] ?? null,
                 'data' => $row['data'] ?? null,
+                'label' => $row['label'] ?? null,
             ];
         }
         return $this->data;
@@ -67,11 +68,12 @@ class PlacesImport implements ToCollection, WithHeadingRow, WithCalculatedFormul
                 'name' => $row['name'] ?? null,
                 'lang' => $row['lang'] ?? null,
                 'com' => $row['com'] ?? null,
+                'alerte' => $row['alerte'] ?? null,
                 'icon' => $row['icon'] ?? null,
                 'color' => $row['color'] ?? null,
                 'rules' => $row['rules'] ?? null,
                 'automatisations' => $row['automatisations'] ?? null,
-                'hidden' => $row['hidden'] ?? null,
+                'must_trans' => $row['hidde_no_trans'] ?? null,
             ];
             array_push($this->data, $obj);
         }
@@ -96,15 +98,13 @@ class TransImport implements ToCollection, WithHeadingRow, WithCalculatedFormula
                 'com' => $row['com'] ?? null,
                 'rules' => $row['rules'] ?? null,
                 'permissions' => $row['permissions'] ?? null,
+                'hidden' => $row['hidden'] ?? null,
                 'fnc_prod' => $row['fnc_prod'] ?? null,
-                'fnc_prod_arg' => $row['fnc_prod_arg'] ?? null,
                 'fnc_prod_val' => $row['fnc_prod_val'] ?? null,
                 'fnc_trait' => $row['fnc_trait'] ?? null,
-                'fnc_trait_arg' => $row['fnc_trait_arg'] ?? null,
-                'fnc_trait_att' => $row['fnc_trait_att'] ?? null,
+                'fnc_trait_val' => $row['fnc_trait_val'] ?? null,
                 'fnc_gard' => $row['fnc_gard'] ?? null,
-                'fnc_gard_arg' => $row['fnc_gard_arg'] ?? null,
-                'fnc_gard_att' => $row['fnc_gard_att'] ?? null,
+                'fnc_gard_val' => $row['fnc_gard_val'] ?? null,
             ];
             array_push($this->data, $obj);
         }

@@ -25,15 +25,16 @@ trait WakaWorkflowTrait
 
             $model->bindEvent('model.beforeValidate', function () use ($model) {
                 $changeState = $model->change_state;
-                //trace_log("change_state : " . $changeState);
+                trace_log("change_state : " . $changeState);
                 if ($changeState) {
                     $transition = self::getTransitionobject($changeState, $model);
                     $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
                     $rules = $model->getWorkgflowRules($rulesSet);
                     if ($rules['fields'] ?? false) {
-                        $validation = \Validator::make($model->toArray(), $rules['fields'] ?? []);
+                        trace_log($rules['fields']['required']);
+                        $validation = \Validator::make($model->toArray(), $rules['fields']['required'] ?? []);
                         if ($validation->fails()) {
-                            //trace_log($validation->messages());
+                            trace_log($validation->messages());
                             throw new \ValidationException(['state_change' => Lang::get($rules['message'] ?? null)]);
                         }
                     }

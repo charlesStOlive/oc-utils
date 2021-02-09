@@ -1,7 +1,9 @@
 <?= Form::open() ?>
 
 <div class="modal-header">
-    <button type="button" class="close" data-dismiss="popup">×</button>
+    <button type="button"
+            class="close"
+            data-dismiss="popup">×</button>
     <h4 class="modal-title">
         Traitement par lot
     </h4>
@@ -12,26 +14,37 @@
         'model' => $model,
     ];
     ?>
-    <div class="radio-field inline-options p-a" style="background-color: white;">
+    <div class="radio-field inline-options p-a"
+         style="background-color: white;">
         <label><?=Lang::get("waka.utils::lang.popup.traitement_lots")?></label>
 
         <?php if($allEnabled) : ?>
         <div class="radio custom-radio">
-            <input name="listType" value="all" type="radio" id="all">
+            <input name="listType"
+                   value="all"
+                   type="radio"
+                   id="all">
             <label for="all"><?=e(trans("waka.utils::lang.popup.all"))?></label>
             <p class="help-block">Nombre : <?=$allCount?> </p>
         </div>
         <?php endIf ?>
         <?php if($filteredEnabled) : ?>
         <div class="radio custom-radio">
-            <input checked="checked" name="listType" value="filtered" type="radio" id="filtered">
+            <input checked="checked"
+                   name="listType"
+                   value="filtered"
+                   type="radio"
+                   id="filtered">
             <label for="filtered"><?=e(trans("waka.utils::lang.popup.filtered"))?></label>
             <p class="help-block">Nombre : <?=$filteredCount?></p>
         </div>
         <?php endIf ?>
 
         <div class="radio custom-radio">
-            <input name="listType" value="checked" type="radio" id="checked">
+            <input name="listType"
+                   value="checked"
+                   type="radio"
+                   id="checked">
             <label for="checked"><?=e(trans("waka.utils::lang.popup.checked"))?></label>
             <p class="help-block">Nombre : <?=$checkedCount?></p>
         </div>
@@ -43,13 +56,16 @@
 
 </div>
 <div class="modal-footer">
-    <button type="submit" data-request="onLotsValidation" class="btn btn-primary">
+    <button type="submit"
+            data-request="onLotsValidation"
+            class="btn btn-primary">
         <?=e(trans("waka.utils::lang.global.validate"))?>
     </button>
-    <button type="button" class="btn btn-default" data-dismiss="popup">
+    <button type="button"
+            class="btn btn-default"
+            data-dismiss="popup">
         <?=e(trans("waka.utils::lang.global.cancel"))?>
     </button>
-</div>
 </div>
 
 <?= Form::close() ?>

@@ -1,0 +1,60 @@
+<div class="modal-header">
+    <button type="button"
+            class="close"
+            data-dismiss="popup">×</button>
+    <h4 class="modal-title">
+        Changer d'état
+    </h4>
+</div>
+
+<div class="modal-body">
+
+    <div class="form-group radio-field is-required">
+        <p class="help-block before-field">Quel transition ?</p>
+        <?php foreach($transitions as $key=>$trans) { ?>
+
+        <div class="radio custom-radio">
+            <input name="radio"
+                   value="<?=$trans['value']?>"
+                   type="radio"
+                   id="radio_<?=$key?>">
+            <label for="radio_<?=$key?>"><?=$trans['label']?></label>
+            <?php if($trans['com'] ?? false) : ?>
+            <p class="help-block"><?=$trans['com']?></p>
+            <?php endif; ?>
+        </div>
+        <?php } ?>
+        <div class="radio custom-radio">
+            <input name="radio"
+                   value="none_trans"
+                   type="radio"
+                   id="radio_999"
+                   checked>
+            <label for="radio_999">Aucune transition</label>
+            <p class="help-block">Sauver sans transitions</p>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit"
+            data-request="onSaveWfValidation"
+            class="btn btn-primary">
+        <?=e(trans("waka.utils::lang.global.validate"))?>
+    </button>
+    <button type="button"
+            class="btn btn-default"
+            data-dismiss="popup">
+        <?=e(trans("waka.utils::lang.global.cancel"))?>
+    </button>
+</div>
+
+<script type="text/javascript">
+    //     $(document).ready(function () {  
+//     if(!$('#actionTools').find('.btn-group').children().length) {
+//         $( "#actionTools" ).remove();
+//     }
+//     if(!$('#actionProd').find('.btn-group').children().length) {
+//         $( "#actionProd" ).remove();
+//     }
+// });
+</script>

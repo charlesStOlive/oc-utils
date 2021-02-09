@@ -163,5 +163,12 @@ return [
     'side_bar_info' => [
         'state_history' => "Historique des transitions d'états",
     ],
+    'workflow' => [
+        'no_state_change' => "Aucune transition",
+        'btn_workflow' => 'Sauver et appliquer une transition',
+        "state_change_forbidden" => "Chamgement interdit",
+        "state" => "Etat",
+        "change_state" => "Changer d'état",
+    ],
 
 ];

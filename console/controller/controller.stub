@@ -49,6 +49,9 @@ class {{studly_ctname}} extends Controller
 {% endif %}
 {% if configs.behav_cloudis %}
 {% endif %}
+{% if configs.behav_workflow %}
+        'Waka.Utils.Behaviors.WorkflowBehavior',
+{% endif %}
 {% if configs.behav_duplicate %}
         'Waka.Utils.Behaviors.DuplicateModel',
 {% endif %}

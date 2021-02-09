@@ -48,7 +48,8 @@ class Workflow extends FormWidgetBase
         $this->initWorkflow();
 
         $this->vars['name'] = $this->formField->getName();
-        $this->vars['value'] = $this->getWorkflowPlaceName();
+        $this->vars['value'] = $this->getWorkflowPlaceNameCom();
+        $this->vars['com'] = $this->getWorkflowPlaceNameCom('com');
         $this->vars['model'] = $this->model;
         $this->formField->options = $this->getWorkFlowOptions();
         $this->vars['field'] = $this->formField;
@@ -85,14 +86,14 @@ class Workflow extends FormWidgetBase
     /**
      * @inheritDoc
      */
-    public function getWorkflowPlaceName()
+    public function getWorkflowPlaceNameCom($type = 'label')
     {
         $place = $this->model->state;
         if (!$place) {
             $arrayPlaces = $this->workflow->getMarking($this->model)->getPlaces();
             $place = array_key_first($arrayPlaces);
         }
-        $label = $this->workflow->getMetadataStore()->getPlaceMetadata($place)['label'] ?? null; // string place name
+        $label = $this->workflow->getMetadataStore()->getPlaceMetadata($place)[$type] ?? null; // string place name
         return \Lang::get($label);
     }
 
