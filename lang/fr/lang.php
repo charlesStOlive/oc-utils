@@ -169,6 +169,7 @@ return [
         "state_change_forbidden" => "Chamgement interdit",
         "state" => "Etat",
         "change_state" => "Changer d'état",
+        "error_place" => "erreur d'état",
     ],
 
 ];

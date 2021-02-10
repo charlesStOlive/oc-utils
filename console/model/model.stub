@@ -118,6 +118,9 @@ class {{studly_name}} extends Model
 {% for key,append in appends %}
         '{{key}}',
 {% endfor %}
+{% if configs.behav_workflow %}
+        'wfPlaceLabel',
+{% endif %}
     ];
 
     /**
@@ -166,7 +169,7 @@ class {{studly_name}} extends Model
 {% endfor %}
 {% endif %}
         ],
-{% endfor %}        
+{% endfor %}
     ];
     public $belongsTo = [
 {% for relation in configs.belong %}

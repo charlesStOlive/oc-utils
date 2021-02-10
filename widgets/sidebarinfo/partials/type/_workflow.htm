@@ -1,5 +1,5 @@
-<h2 class="<?=$field['class'] ?? null?>">
+<p class="<?=$field['class'] ?? 'sb-h2 br-s'?>">
     <?= e(trans('waka.utils::lang.workflow.state')) ?> :
     <?php if($field['icon'] ?? false) { ?><i class="<?=$field['icon'] ?? null?>"></i><?php } ?>
     <?=$field['value'] ?? false ?>
-</h2>
+</p>

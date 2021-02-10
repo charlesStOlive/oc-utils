@@ -122,18 +122,19 @@ trait WakaWorkflowTrait
 
     public function getWfPlaceLabelAttribute($state_column)
     {
-        $place = $this->state;
-
+        //A faire $state_column pour changer la colonne source de l'etat
+        $place = null;
         if ($state_column) {
             $place = $this->model->{$state_column};
+        } else {
+            $place = $this->state;
         }
-
         if (!$place) {
-            $arrayPlaces = $this->workflow->getMarking($this->model)->getPlaces();
-            $place = array_key_first($arrayPlaces);
+            $workflow = $this->workflow_get();
+            $places = $workflow->getDefinition()->getPlaces();
+            $place = array_key_first($places);
         }
         $label = $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['label'] ?? $place; // string place name
-        return \Lang::get($label);
     }
 
     // public function getWfAutomatisation()

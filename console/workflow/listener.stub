@@ -1,0 +1,118 @@
+<?php namespace {{studly_author}}\{{studly_plugin}}\Listeners;
+
+use Carbon\Carbon;
+use Waka\Utils\Classes\Listeners\WorkflowListener;
+
+class Workflow{{studly_name}}Listener extends WorkflowListener
+{
+    /**
+     * Register the listeners for the subscriber.
+     *
+     * @param  Illuminate\Events\Dispatcher  $events
+     */
+    public function subscribe($event)
+    {
+        //Evenement obligatoires
+        $event->listen('workflow.{{lower_name}}.guard', [$this, 'onGuard']);
+        $event->listen('workflow.{{lower_name}}.entered', [$this, 'onEntered']);
+        $event->listen('workflow.{{lower_name}}.afterModelSaved', [$this, 'onAfterSavedFunction']);
+        //Evenement optionels à déclarer ici.
+        //$event->listen('workflow.{{lower_name}}.leave', [$this, 'onLeave']);
+        //$event->listen('workflow.{{lower_name}}.transition', [$this, 'onTransition']);
+        //$event->listen('workflow.{{lower_name}}.enter', [$this, 'onEnter']);
+    }
+
+    /**
+     * Fonctions de Gard
+     * Permet de bloquer ou pas une transition d'état
+     * doit retourner true or false
+     */
+    public function authorized($event, $args = null)
+    {
+        $blocked = false;
+        $model = $event->getSubject();
+        $type = $args['name'];
+        //A terminer
+        return $blocked;
+    }
+    public function compareFieldDate($event, $args = null)
+    {
+        $blocked = false;
+        $model = $event->getSubject();
+        $date = Carbon::now();
+        $field = $args['field'];
+        $mode = $args['mode'];
+        if (!$model->{$field}) {
+            return false;
+        }
+        if ($mode == 'gt') {
+            if ($model->{$field}->gt($date)) {
+                return true;
+            }
+        }
+        if ($mode == 'lt') {
+            if ($model->{$field}->lt($date)) {
+                return true;
+            }
+        }
+        if ($mode == 'gte') {
+            if ($model->{$field}->gte($date)) {
+                return true;
+            }
+        }
+        if ($mode == 'lte') {
+            //trace_log($model->{$field});
+            //trace_log($date);
+            if ($model->{$field}->lte($date)) {
+                return true;
+            }
+        }
+
+        return $blocked;
+    }
+
+    /**
+     * FONCTIONS DE TRAITEMENT PEUVENT ETRE APPL DANS LES FONCTIONS CLASSIQUES
+     */
+
+    public function cleanData($event, $args = null)
+    {
+        //trace_log('nettoyage des donnes');
+    }
+    public function removeValue($event, $args = null)
+    {
+        $blocked = false;
+        $model = $event->getSubject();
+        $field = $args['field'];
+        $model->{$field} = null;
+    }
+
+    /**
+     * Fonctions de production de doc, pdf, etc.
+     * passe par l'evenement afterModelSaved
+     * 2 arguements $model et $arg
+     * Ici les valeurs ne peuvent plus être modifié il faut passer par un traitement
+     */
+
+    public function sendNotification($model, $args = null)
+    {
+        $subject = $model->name;
+        $modelId = $model->id;
+        $model = $model->toArray();
+        $model = compact('model');
+        $dotedModel = array_dot($model);
+
+        //trace_log($dotedModel);
+
+        $code = $args['code'];
+
+        $datasEmail = [
+            'emails' => $model->responsable->email,
+            'subject' => "Notification de tâche",
+        ];
+        /**///trace_log($code . ' | ' . $toTarget . ' | ' . $to . ' | ');
+        $mail = new \Waka\Mailer\Classes\MailCreator($code, true);
+        $mail->renderMail($modelId, $datasEmail);
+    }
+
+}

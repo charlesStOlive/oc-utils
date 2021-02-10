@@ -13,6 +13,7 @@ class WorkflowCreate extends GeneratorCommand
     public $wk_plugin;
     public $wk_author;
     public $wk_model;
+    public $remover;
 
     /**
      * The console command name.
@@ -45,6 +46,7 @@ class WorkflowCreate extends GeneratorCommand
         'workflow/workflow.stub' => 'config/{{lower_name}}_w.yaml',
         'workflow/temp_lang.stub' => 'lang/fr/{{lower_name}}_w.php',
         'workflow/wf_errors.stub' => 'lang/fr/{{lower_name}}_wf_errors.php',
+        'workflow/listener.stub' => ' listener/Workflow{{lower_name}}Listener.php',
     ];
 
     /**
@@ -87,6 +89,26 @@ class WorkflowCreate extends GeneratorCommand
 
         if ($this->option('file')) {
             $fileName = $this->option('file');
+        }
+
+        if ($this->option('option')) {
+            $this->remover = [
+                'workflow/workflow.stub' => true,
+                'workflow/temp_lang.stub' => true,
+                'workflow/wf_errors.stub' => true,
+                'workflow/listener.stub' => true,
+            ];
+            $types = $this->choice('Stub à creer', ['workflow/workflow.stub', 'workflow/temp_lang.stub', 'workflow/wf_errors.stub', 'workflow/listener.stub'], 0, null, true);
+            //trace_log($types);
+            foreach ($types as $type) {
+                $this->remover[$type] = false;
+            }
+            foreach ($this->remover as $key => $remove) {
+                if ($remove) {
+                    unset($this->stubs[$key]);
+                }
+            }
+
         }
 
         $importExcel = new \Waka\Utils\Classes\Imports\ImportWorkflow($name);
