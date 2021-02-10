@@ -44,6 +44,7 @@ class WorkflowCreate extends GeneratorCommand
     protected $stubs = [
         'workflow/workflow.stub' => 'config/{{lower_name}}_w.yaml',
         'workflow/temp_lang.stub' => 'lang/fr/{{lower_name}}_w.php',
+        'workflow/wf_errors.stub' => 'lang/fr/{{lower_name}}_wf_errors.php',
     ];
 
     /**

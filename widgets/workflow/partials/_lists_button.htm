@@ -2,11 +2,12 @@
     <div class="dropdown dropup m-b">
         <a href="#"
            data-toggle="dropdown"
-           class="btn btn-primary oc-icon-external-link"><?= e(trans('waka.utils::lang.workflow.btn_workflow')) ?> :
+           class="btn btn-primary oc-icon-floppy-o"><?= e(trans('waka.utils::lang.workflow.btn_workflow')) ?>
         </a>
         <ul class="dropdown-menu dropup"
             role="menu"
             data-dropdown-title="lien rapide">
+
             <?php foreach ($transitions as $key => $trans): ?>
             <li role="presentation"><a href="javascript:;"
                    role="menuitem"
@@ -17,6 +18,7 @@
                <?= e(trans('waka.utils::lang.global.save_indicator')) ?>"
                    data-toggle="dropdown"><?= e($trans['label']) ?></a></li>
             <?php endforeach ?>
+
             <li role="presentation"><a href="javascript:;"
                    role="menuitem"
                    tabindex="-1"

@@ -81,6 +81,9 @@ class {{studly_ctname}} extends Controller
 {% if configs.behav_lots  %}
     public $lotsConfig = 'config_lots.yaml'; 
 {% endif %}
+{% if configs.behav_workflow  %}
+    public $workflowConfig  = 'config_workflow.yaml'; 
+{% endif %}
     
     public function __construct()
     {

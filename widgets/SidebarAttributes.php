@@ -58,8 +58,10 @@ class SidebarAttributes extends WidgetBase
 
         $attributes;
         $modelAttributeAdresse = $this->dataSource->attributesConfig;
+        //trace_log($modelAttributeAdresse);
         if ($modelAttributeAdresse) {
             $attributes = Yaml::parseFile(plugins_path() . '/' . $modelAttributeAdresse);
+            //trace_log($attributes);
         } else {
             $pluginName = strtolower($this->dataSource->author . '/' . $this->dataSource->plugin . '\/models');
             $attributesPath = plugins_path() . '/' . $pluginName . '/' . strtolower($this->dataSource->name) . '/attributes.yaml';
@@ -70,34 +72,35 @@ class SidebarAttributes extends WidgetBase
             }
         }
         $maped = $this->remapAttributes($attributes['attributes'], $this->dataSource->lowerName);
+        //trace_log($maped);
         //$attributeArray[$this->dataSource->lowerName] = $attributes;
         $attributeArray[$this->dataSource->lowerName]['values'] = $maped;
         $attributeArray[$this->dataSource->lowerName]['icon'] = $attributes['icon'];
-        if (!$this->dataSource->relations) {
-            return [];
-        }
-        foreach ($this->dataSource->relations as $key => $relation) {
-            $ex = explode('.', $key);
-            $relationName = array_pop($ex);
-            $attributes;
-            $modelAttributeAdresse = $relation['attributes'] ?? null;
-            if ($modelAttributeAdresse) {
-                $attributes = Yaml::parseFile(plugins_path() . '/' . $modelAttributeAdresse);
-            } else {
-                $pluginName = strtolower($this->dataSource->author . '/' . $this->dataSource->plugin . '\/models');
-                $attributesPath = plugins_path() . '/' . $pluginName . '/' . strtolower($relationName) . '/attributes.yaml';
-                if (file_exists($attributesPath)) {
-                    $attributes = Yaml::parseFile($attributesPath);
+        if ($this->dataSource->relations) {
+            foreach ($this->dataSource->relations as $key => $relation) {
+                $ex = explode('.', $key);
+                $relationName = array_pop($ex);
+                $attributes;
+                $modelAttributeAdresse = $relation['attributes'] ?? null;
+                if ($modelAttributeAdresse) {
+                    $attributes = Yaml::parseFile(plugins_path() . '/' . $modelAttributeAdresse);
                 } else {
-                    throw new \SystemException('Les attributs ne sont pas correctemrnt configuré.');
+                    $pluginName = strtolower($this->dataSource->author . '/' . $this->dataSource->plugin . '\/models');
+                    $attributesPath = plugins_path() . '/' . $pluginName . '/' . strtolower($relationName) . '/attributes.yaml';
+                    if (file_exists($attributesPath)) {
+                        $attributes = Yaml::parseFile($attributesPath);
+                    } else {
+                        throw new \SystemException('Les attributs ne sont pas correctemrnt configuré.');
+                    }
                 }
+                $maped = $this->remapAttributes($attributes['attributes'], $relationName, $this->dataSource->lowerName);
+                $attributeArray[$relationName]['values'] = $maped;
+                $icon = $attributes['icon'] ?? "icon-info";
+                $attributeArray[$relationName]['icon'] = $icon;
             }
-            $maped = $this->remapAttributes($attributes['attributes'], $relationName, $this->dataSource->lowerName);
-            $attributeArray[$relationName]['values'] = $maped;
-            $icon = $attributes['icon'] ?? "icon-info";
-            $attributeArray[$relationName]['icon'] = $icon;
+            //trace_log($attributeArray);
         }
-        //trace_log($attributeArray);
+
         return $attributeArray;
     }
 

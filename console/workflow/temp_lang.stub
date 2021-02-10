@@ -24,9 +24,4 @@ return [
         '{{key}}' => '{{rulesSet.message}}',
 {% endfor %}
     ],
-    'field_error_message' => [
-{% for key,rule in tradFieldRules  %}
-        '{{key}}' => '{{rule}}',
-{% endfor %}
-    ]
 ];

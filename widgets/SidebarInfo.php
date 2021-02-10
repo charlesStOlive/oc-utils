@@ -75,6 +75,10 @@ class SidebarInfo extends WidgetBase
 
             }
 
+            if ($racine && $value) {
+                $link = \Backend::url($field['racine'] . $value);
+            }
+
             $field = [
                 'type' => $type,
                 'icon' => $icon,

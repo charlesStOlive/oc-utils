@@ -9,11 +9,9 @@
             {{key}}:
                 fields: 
 {% for field in rulesSet.fields %}
-                    {{field.key}}: 
-                        require: {{field.value}}
-                        message: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.field_error_message.{{field.key}}
+                    {{field.key}}: {{field.value}}              
 {% endfor %}
-                message: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.error_message.{{ key }} 
+                messages: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_wf_errors
 {% endfor %}
 {% endif %}
     marking_store:

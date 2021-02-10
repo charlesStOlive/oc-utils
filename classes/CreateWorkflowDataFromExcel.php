@@ -108,8 +108,8 @@ class CreateWorkflowDataFromExcel extends CreateBase
                     $vals = explode(',', $vals);
                 }
                 $argval = [];
-                trace_log($args);
-                trace_log($vals);
+                //trace_log($args);
+                //trace_log($vals);
                 if (is_countable($args)) {
                     for ($i = 0; $i < count($args); $i++) {
                         $argval[$args[$i]] = $vals[$i] ?? null;
@@ -132,7 +132,8 @@ class CreateWorkflowDataFromExcel extends CreateBase
 
         //Travail sur les langues
         $trads = $config->where('type', '==', 'lang')->lists('label', 'key');
-        $tradFieldRules = $config->where('type', '==', 'rules')->lists('label', 'key');
+        $tradFieldRules = $config->where('type', '==', 'rules')->toArray();
+        //trace_log($tradFieldRules);
         $tradPlaces = $places->where('lang', '<>', null)->lists('lang', 'name');
         $tradPlacesAlertes = $places->where('alerte', '<>', null)->lists('alerte', 'name');
         $tradPlacesCom = $places->where('com', '<>', null)->lists('com', 'name');

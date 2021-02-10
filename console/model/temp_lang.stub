@@ -7,4 +7,9 @@ return [
     '{{trad.var}}_com' => '{{trad.comment}}',
 {% endif %}
 {% endfor %}
+    'e' => [
+{% for key,error in errors %}
+        '{{key}}' => '{{error}}',
+{% endfor %}
+    ],     
 ];

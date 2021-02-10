@@ -80,6 +80,9 @@ class CreateModelController extends GeneratorCommand
                 $this->stubs['model/create_update.stub'] = 'updates/create_{{snake_plural_name}}_table_u{{ version }}.php';
             }
         }
+        if ($this->maker['lang_field_attributes'] || $this->maker['only_langue']) {
+            $this->stubs['model/temp_lang.stub'] = 'lang/fr/{{lower_name}}.php';
+        }
         if ($this->maker['lang_field_attributes']) {
             /**/trace_log('on fait les langues fields et attributs');
             if (!$this->config['no_attributes_file'] ?? false) {
@@ -89,7 +92,7 @@ class CreateModelController extends GeneratorCommand
                 $this->stubs['model/fields_create.stub'] = 'models/{{lower_name}}/fields_create.yaml';
             }
             $this->stubs = array_merge($this->stubs, $this->modelYamlstubs);
-            $this->stubs['model/temp_lang.stub'] = 'lang/fr/{{lower_name}}.php';
+
             if ($this->config['use_tab']) {
                 unset($this->stubs['model/fields.stub']);
                 $this->stubs['model/fields_tab.stub'] = 'models/{{lower_name}}/fields.yaml';
@@ -193,6 +196,7 @@ class CreateModelController extends GeneratorCommand
         $this->maker = [
             'model' => true,
             'lang_field_attributes' => true,
+            'only_langue' => false,
             'update' => true,
             'controller' => true,
             'html_file_controller' => true,
@@ -207,12 +211,13 @@ class CreateModelController extends GeneratorCommand
             $this->maker = [
                 'model' => false,
                 'lang_field_attributes' => false,
+                'only_langue' => false,
                 'update' => false,
                 'controller' => false,
                 'html_file_controller' => false,
                 'excel' => false,
             ];
-            $types = $this->choice('Database type', ['model', 'lang_field_attributes', 'update', 'controller', 'html_file_controller', 'excel'], 0, null, true);
+            $types = $this->choice('Database type', ['model', 'lang_field_attributes', 'only_langue', 'update', 'controller', 'html_file_controller', 'excel'], 0, null, true);
             //trace_log($types);
             foreach ($types as $type) {
                 $this->maker[$type] = true;
@@ -309,6 +314,7 @@ class CreateModelController extends GeneratorCommand
         //trace_log($fields);
         $attributes = $rows->where('attribute', '<>', null)->toArray();
 
+        //Recherche des tables dans la config
         $tabs = [];
         foreach ($this->config as $key => $value) {
             if (starts_with($key, 'tab::')) {
@@ -316,6 +322,15 @@ class CreateModelController extends GeneratorCommand
                 $tabs[$key] = $value;
             }
 
+        }
+
+        //Construction d'un array errors à partir de config, il sera utiliser dans le fichier de lang du midele
+        $errors = [];
+        foreach ($this->config as $key => $value) {
+            if (starts_with($key, 'e.')) {
+                $key = str_replace('e.', "", $key);
+                $errors[$key] = $value;
+            }
         }
 
         $excels = $rows->where('excel', '<>', null)->toArray();
@@ -329,6 +344,8 @@ class CreateModelController extends GeneratorCommand
         $jsons = $rows->where('json', '<>', null)->pluck('json', 'var')->toArray();
         $getters = $rows->where('getter', '<>', null)->pluck('json', 'var')->toArray();
         $purgeables = $rows->where('purgeable', '<>', null)->pluck('purgeable', 'var')->toArray();
+
+        //trace_log($errors);
 
         $all = [
             'name' => $this->w_model,
@@ -353,6 +370,7 @@ class CreateModelController extends GeneratorCommand
             'purgeables' => $purgeables,
             'excels' => $excels,
             'tabs' => $tabs,
+            'errors' => $errors,
 
         ];
         //trace_log($this->config);

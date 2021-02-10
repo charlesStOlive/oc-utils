@@ -80,6 +80,12 @@ class {{studly_name}} extends Model
 {% endfor %}
     ];
 
+    public $customMessages = [
+{% for key,error in errors %}
+        '{{key}}.required' => '{{lower_author}}.{{lower_plugin}}::{{lower_name}}.e.{{key}}',
+{% endfor %}
+    ];
+
     /**
      * @var array attributes send to datasource for creating document
      */

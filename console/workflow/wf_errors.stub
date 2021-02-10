@@ -1,0 +1,6 @@
+<?php
+return [
+{% for rule in tradFieldRules  %}
+        '{{rule.key}}.{{rule.value}}' => '{{rule.label}}',
+{% endfor %}
+];

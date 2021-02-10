@@ -21,6 +21,9 @@
     <?php if ($this->user->hasAccess('{{configs.save_permission}}')): ?>
 {%endif%}
     <div class="loading-indicator-container">
+{% if configs.behav_workflow %}
+        <div id="workflowBtn"><?= $this->makePartial('$/waka/utils/widgets/workflow/partials/caller.htm') ?></div>
+{% else %}
         <button type="submit"
                 data-request="onSave"
                 data-request-data="redirect:0"
@@ -37,6 +40,7 @@
                 class="btn btn-default">
             <?= e(trans('waka.utils::lang.global.save_close')) ?>
         </button>
+{% endif %}
 {% if configs.save_permission %}
     <?php endif ?>
 {%endif%}

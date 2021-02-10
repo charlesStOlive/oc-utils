@@ -18,12 +18,14 @@ class Workflow extends WidgetBase
         $this->prepareVars();
         $this->vars['modelId'] = $this->model->id;
         $transitions = $this->getWorkFlowTransitions();
-        if (count($transitions)) {
-            $this->vars['transitions'] = $this->getWorkFlowTransitions();
-            return $this->makePartial('lists_button');
-        } else {
-            return $this->makePartial('buttons');
-        }
+        // if (count($transitions)) {
+        //     $this->vars['transitions'] = $this->getWorkFlowTransitions();
+        //     return $this->makePartial('lists_button');
+        // } else {
+        //     return $this->makePartial('buttons');
+        // }
+        $this->vars['transitions'] = $this->getWorkFlowTransitions();
+        return $this->makePartial('lists_button');
 
     }
 

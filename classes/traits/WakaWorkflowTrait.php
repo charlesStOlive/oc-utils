@@ -25,17 +25,17 @@ trait WakaWorkflowTrait
 
             $model->bindEvent('model.beforeValidate', function () use ($model) {
                 $changeState = $model->change_state;
-                trace_log("change_state : " . $changeState);
+                //trace_log("change_state : " . $changeState);
                 if ($changeState) {
                     $transition = self::getTransitionobject($changeState, $model);
                     $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
                     $rules = $model->getWorkgflowRules($rulesSet);
                     if ($rules['fields'] ?? false) {
-                        trace_log($rules['fields']['required']);
-                        $validation = \Validator::make($model->toArray(), $rules['fields']['required'] ?? []);
+                        //trace_log($rules);
+                        $validation = \Validator::make($model->toArray(), $rules['fields'] ?? [], Lang::get($rules['messages']));
                         if ($validation->fails()) {
-                            trace_log($validation->messages());
-                            throw new \ValidationException(['state_change' => Lang::get($rules['message'] ?? null)]);
+                            //trace_log($validation->messages());
+                            throw new \ValidationException(['state_change' => $validation->messages()->first()]);
                         }
                     }
                     $model->workflow_get()->apply($model, $changeState);
@@ -122,9 +122,9 @@ trait WakaWorkflowTrait
 
     public function getWfPlaceLabelAttribute($state_column)
     {
-        $place = $this->model->state;
+        $place = $this->state;
 
-        if (!$state_column) {
+        if ($state_column) {
             $place = $this->model->{$state_column};
         }
 
@@ -132,7 +132,7 @@ trait WakaWorkflowTrait
             $arrayPlaces = $this->workflow->getMarking($this->model)->getPlaces();
             $place = array_key_first($arrayPlaces);
         }
-        $label = $this->workflow->getMetadataStore()->getPlaceMetadata($place)['label'] ?? $place; // string place name
+        $label = $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['label'] ?? $place; // string place name
         return \Lang::get($label);
     }
 
