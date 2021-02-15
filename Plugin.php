@@ -163,12 +163,12 @@ class Plugin extends PluginBase
 
         });
 
-        Event::listen('backend.down.rapidLinks', function ($controller) {
+        Event::listen('backend.tools', function ($controller) {
             $model = $controller->formGetModel();
-            if (!$model->rapidLinks) {
-                throw new \ApplicationException("l'attributs rapidLinks ( getRapidLinksAttribute)  est manquant dans " . get_class($model));
+            if ($model->rapidLinks) {
+                return View::make('waka.utils::rapidLinks')->withLinks($model->rapidLinks);
             }
-            return View::make('waka.utils::rapidLinks')->withLinks($model->rapidLinks);
+
         });
         Event::listen('backend.top.update', function ($controller) {
             if (in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement)) {

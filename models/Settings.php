@@ -15,6 +15,10 @@ class Settings extends Model
     public function listStartImports()
     {
         $lists = \Config::get('waka.wconfig::start_data');
+        if (!$lists) {
+            return [];
+        }
+
         $resultArray = [];
         foreach ($lists as $key => $list) {
             $truncate = $list['truncate'] ?? 'pas de truncate';

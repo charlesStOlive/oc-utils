@@ -26,7 +26,7 @@ create:
 # Update page
 update:
     title: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.update
-    redirect: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}
+    redirect: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/update/:id
     redirectClose: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}
 
 # Preview page

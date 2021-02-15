@@ -332,5 +332,17 @@ class {{studly_name}} extends Model
         }
     }
 {% endif %}
+{% if configs.rapid_links %}
+    public function getRapidLinksAttribute()
+    {
+        return [
+            [
+                "name" => "Relation Name",
+                "href" => url('relations/' . $this->slug),
+                "target" => "_blank",
+            ],
+        ];
+    }
+{% endif %}
     
 }
