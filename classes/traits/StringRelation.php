@@ -32,9 +32,16 @@ trait StringRelation
         $parts = explode(".", $relation);
 
         foreach ($parts as $part) {
-            //trace_log("part : " . $part);
+            // trace_log("part : " . $part);
+            // trace_log($model ? 'model OK' : 'model pas ok');
             if ($model) {
-                $model = $model->{$part};
+                // trace_log("nom du modele " . $model->name);
+                $tempModel = $model->{$part};
+                if (!$tempModel && $model->methodExists('getThisParentValue')) {
+                    $model = $model->getThisParentValue($part);
+                } else {
+                    $model = $tempModel;
+                }
             } else {
                 return null;
             }
