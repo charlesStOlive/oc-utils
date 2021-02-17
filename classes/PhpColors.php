@@ -26,7 +26,7 @@ class PhpColors
 
     }
 
-    public static function startFromColor($newColor, $secondary = null)
+    public static function startFromColor($newColor, $secondary = null, $gd = null, $gl = null)
     {
         $primary = $newColor;
         //trace_log($primary);
@@ -34,14 +34,23 @@ class PhpColors
         self::$primary = $primary;
         self::$complementary = "#" . $color1->complementary();
         if ($secondary) {
-            //trace_log("Secondary : " . $secondary);
             self::$secondary = $secondary;
         } else {
             self::$secondary = self::$complementary;
         }
 
-        self::$gd = '#363636';
-        self::$gl = '#CDCDCD';
+        if ($gd) {
+            self::$gd = $gd;
+
+        } else {
+            self::$gd = '#363636';
+        }
+
+        if ($gl) {
+            self::$gl = $gl;
+        } else {
+            self::$gl = '#CDCDCD';
+        }
 
     }
 

@@ -3,6 +3,7 @@
 use Backend;
 use Event;
 use Lang;
+use Mexitek\PHPColors\Color;
 use System\Classes\CombineAssets;
 use System\Classes\PluginBase;
 use View;
@@ -57,6 +58,35 @@ class Plugin extends PluginBase
                 'colorArray' => function ($twig, $color1) {
                     $colorArray = [];
                     return $colorArray;
+                },
+            ],
+            'functions' => [
+                // Using an inline closure
+                'getColor' => function ($color, $mode = "rgba", $transform = null, $factor = 0.1) {
+                    trace_log($color);
+                    $color = new Color($color);
+                    switch ($transform) {
+                        case 'complementary':
+                            $color = $color->complementary();
+                            break;
+                        case 'lighten':
+                            $color = $color->lighten($factor);
+                            break;
+                        case 'darken':
+                            $color = $color->darken($factor);
+                            break;
+                    }
+                    $finalColor = $color;
+                    if (is_string($color)) {
+                        $finalColor = new Color($color);
+                    }
+                    switch ($mode) {
+                        case 'rgba':
+                            return $finalColor->getRgb();
+                        case 'string':
+                            return '#' . $finalColor->getHex();
+                    }
+
                 },
             ],
         ];
