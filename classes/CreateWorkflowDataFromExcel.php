@@ -128,7 +128,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
             return $item;
         });
 
-        $fncs = $config->where('type', '==', 'fnc')->lists('data', 'key');
+        $fncs = $config->where('type', '==', 'fnc')->lists('label', 'key');
 
         //Travail sur les langues
         $trads = $config->where('type', '==', 'lang')->lists('label', 'key');
