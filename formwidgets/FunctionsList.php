@@ -112,7 +112,7 @@ class FunctionsList extends FormWidgetBase
 
         if ($attributes) {
             foreach ($attributes as $key => $value) {
-                    $this->attributeWidget->addFields([$key => $value]);
+                $this->attributeWidget->addFields([$key => $value]);
             }
 
         }
@@ -173,7 +173,7 @@ class FunctionsList extends FormWidgetBase
         //trace_log($data);
 
         //création du widget
-        
+
         $this->attributeWidget->getField('collectionCode')->value = $data['collectionCode'];
         $this->attributeWidget->getField('name')->value = $data['name'];
 
