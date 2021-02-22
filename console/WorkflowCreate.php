@@ -112,7 +112,7 @@ class WorkflowCreate extends GeneratorCommand
         }
 
         $importExcel = new \Waka\Utils\Classes\Imports\ImportWorkflow($name);
-        \Excel::import($importExcel, plugins_path('waka/wconfig/updates/files/' . $fileName . '.xlsx'));
+        \Excel::import($importExcel, plugins_path('wcli/wconfig/updates/files/' . $fileName . '.xlsx'));
         $places = new Collection($importExcel->places->data);
         $trans = new Collection($importExcel->trans->data);
         $config = new Collection($importExcel->config->data);

@@ -50,7 +50,7 @@ class Plugin extends PluginBase
                     return camel_case($twig);
                 },
                 'defaultConfig' => function ($twig, $config_name) {
-                    $dataFromConfig = \Config('waka.wconfig::' . $config_name);
+                    $dataFromConfig = \Config('wcli.wconfig::' . $config_name);
                     //trace_log($dataFromConfig);
                     return $dataFromConfig;
 
@@ -107,8 +107,8 @@ class Plugin extends PluginBase
         //$this->registerConsoleCommand('waka.workflowOnline', 'Waka\Utils\Console\WorkflowOnlineCreate');
         $this->registerConsoleCommand('waka.workflowOnlineCreate', 'Waka\Utils\Console\WorkflowOnlineDump');
         CombineAssets::registerCallback(function ($combiner) {
-            $combiner->registerBundle('$/waka/wconfig/assets/css/simple_grid/pdf.less');
-            $combiner->registerBundle('$/waka/wconfig/assets/css/simple_grid/email.less');
+            $combiner->registerBundle('$/wcli/wconfig/assets/css/simple_grid/pdf.less');
+            $combiner->registerBundle('$/wcli/wconfig/assets/css/simple_grid/email.less');
         });
     }
 
@@ -396,7 +396,7 @@ class Plugin extends PluginBase
                 'icon' => 'icon-wrench',
                 'class' => 'Waka\Utils\Models\Settings',
                 'order' => 150,
-                'permissions' => ['waka.wconfig.admin'],
+                'permissions' => ['wcli.wconfig.admin'],
             ],
             'joblists' => [
                 'label' => Lang::get('waka.utils::lang.menu.job_list'),

@@ -14,7 +14,7 @@ class FunctionsBase
     public function listFunctionAttributes()
     {
         $yamlFile = class_basename($this) . '.yaml';
-        return Yaml::parseFile(plugins_path() . '/waka/wconfig/functions/' . $yamlFile);
+        return Yaml::parseFile(plugins_path() . '/wcli/wconfig/functions/' . $yamlFile);
     }
 
     public function getFunctionsList()

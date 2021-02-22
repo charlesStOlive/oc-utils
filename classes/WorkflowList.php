@@ -24,7 +24,7 @@ class WorkflowList
 
     public static function getSrConfig()
     {
-        $workflows = Config::get('waka.wconfig::workflows');
+        $workflows = Config::get('wcli.wconfig::workflows');
         if ($workflows) {
             $workflowsArray = [];
             foreach ($workflows as $workflow) {

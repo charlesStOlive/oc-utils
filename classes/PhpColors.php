@@ -15,7 +15,7 @@ class PhpColors
     public static function start()
     {
         //trace_log("start");
-        $configColors = \Config::get('waka.wconfig::colors');
+        $configColors = \Config::get('wcli.wconfig::colors');
         $primary = $configColors['primary'];
         $color1 = new Color($primary);
         self::$primary = $primary;

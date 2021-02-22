@@ -14,7 +14,7 @@ class Settings extends Model
 
     public function listStartImports()
     {
-        $lists = \Config::get('waka.wconfig::start_data');
+        $lists = \Config::get('wcli.wconfig::start_data');
         if (!$lists) {
             return [];
         }

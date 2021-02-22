@@ -97,7 +97,7 @@ class WorkflowOnlineDump extends WorkflowCreate
         // trace_log($srcModel->name);
         // trace_log($srcModel->workflow_name);
         // trace_log($srcModel->src->getLocalPath());
-        // trace_log(plugins_path('waka/wconfig/updates/files/workflow.xlsx'));
+        // trace_log(plugins_path('wcli/wconfig/updates/files/workflow.xlsx'));
 
         $workflowName = $srcModel->workflow_name;
         $workflowSlug = $srcModel->slug;

@@ -231,7 +231,7 @@ class CreateModelController extends GeneratorCommand
         }
 
         $importExcel = new \Waka\Utils\Classes\Imports\ImportModelController($this->w_model);
-        \Excel::import($importExcel, plugins_path('waka/wconfig/updates/files/' . $fileName . '.xlsx'));
+        \Excel::import($importExcel, plugins_path('wcli/wconfig/updates/files/' . $fileName . '.xlsx'));
         $rows = new Collection($importExcel->data->data);
         $this->config = $importExcel->config->data;
 
