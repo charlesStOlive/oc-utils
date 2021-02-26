@@ -4,12 +4,12 @@
 
 {% for relation in configs.many %}
 {{relation.relation_name}}:
-    label: waka.{{lower_plugin}}::{{lower_name}}.{{relation.relation_name}}
+    label: {{relation.detail.author}}.{{relation.detail.plugin}}::{{lower_name}}.{{relation.relation_name}}
     manage:
         form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
     view:
-        list: {{relation.relation_path}}//columns_for_{{lower_name}}.yaml
-        recordUrl: waka/{{lower_plugin}}/{{relation.relation_name}}/update/:id
+        list: {{relation.relation_path}}/columns_for_{{lower_name}}.yaml
+        recordUrl: {{relation.detail.author}}/{{relation.detail.plugin}}/{{relation.detail.model}}/update/:id
         toolbarButtons: create|delete
         defaultSort:
             column: name
@@ -17,12 +17,12 @@
 {% endfor %}
 {% for relation in configs.morphmany %}
 {{relation.relation_name}}:
-    label: waka.{{lower_plugin}}::{{lower_name}}.{{relation.relation_name}}
+    label:{{relation.detail.author}}.{{relation.detail.plugin}}::{{lower_name}}.{{relation.relation_name}}
     manage:
         form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
     view:
-        list: {{relation.relation_path}}//columns_for_{{lower_name}}.yaml
-        recordUrl: waka/{{lower_plugin}}/{{relation.relation_name}}/update/:id
+        list: {{relation.relation_path}}/columns_for_{{lower_name}}.yaml
+        recordUrl: {{relation.detail.author}}/{{relation.detail.plugin}}//{{relation.detail.model}}/update/:id
         toolbarButtons: create|delete
         defaultSort:
             column: name

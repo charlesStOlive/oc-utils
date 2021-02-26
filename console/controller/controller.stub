@@ -14,6 +14,7 @@ class {{studly_ctname}} extends Controller
     public $implement = [
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController',
+        'Waka.Utils.Behaviors.BtnsBehavior',
 {% if configs.many or configs.morphmany  %}
         'Backend.Behaviors.RelationController',
 {% endif %}
@@ -58,11 +59,16 @@ class {{studly_ctname}} extends Controller
 {% if configs.behav_lots %}
         'Waka.Utils.Behaviors.TraitementsLots',
 {% endif %}
-        
+{% if configs.behav_cloud_pdf %}
+        'Waka.Cloud.Behaviors.CloudPdf',
+{% endif %}
+{% if configs.behav_cloud_word %}
+        'Waka.Cloud.Behaviors.CloudWord',
+{% endif %}
     ];
-
     public $formConfig = 'config_form.yaml';
     public $listConfig = 'config_list.yaml';
+    public $btnsConfig = 'config_btns.yaml';
 {% if configs.many or configs.morphmany  %}
     public $relationConfig = 'config_relation.yaml';
 {% endif %}
@@ -82,9 +88,11 @@ class {{studly_ctname}} extends Controller
     public $lotsConfig = 'config_lots.yaml'; 
 {% endif %}
 {% if configs.behav_workflow  %}
-    public $workflowConfig  = 'config_workflow.yaml'; 
+    public $workflowConfig = 'config_workflow.yaml'; 
 {% endif %}
-    
+
+    //FIN DE LA CONFIG AUTO
+
     public function __construct()
     {
         parent::__construct();

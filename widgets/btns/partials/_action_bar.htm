@@ -1,0 +1,33 @@
+<div class="loading-indicator-container">
+    <!-- AFFICHE LE WORKFLOW SI ATIVE SINON LES BOUTON CLASSIQUE -->
+    <?= $this->renderWorkflowOrBtn() ?>
+    <?php if($btns) : ?>
+    <!--SI IL Y A DES BOUTONS -->
+    <?php foreach($btns as $btn) : ?>
+    <?php if($btn['btns'] ?? false) : ?>
+    <!--SI LE BOUTON A DES SOUS BOUTON C EST UN GROUPE -->
+    <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'container' => false, 'isLot' => false]);?>
+    <?php else : ?>
+    <!--SINON C EST UN BOUTON SEUL -->
+    <button href="javascript:;"
+            class="btn btn-secondary <?=$btn['icon'] ?? null?>"
+            data-request-data="modelId:<?=$modelId?>, model:'<?=$modelClass?>'"
+            data-control="popup"
+            data-handler="<?=$btn['ajaxCaller'] ??''?>">
+        <?= e(trans($btn['label'] ?? 'Inc'))?>
+    </button>
+    <?php endif ?>
+    <?php endforeach ?>
+
+
+    <?php if($partials) : ?>
+    <?php foreach($partials as $partial) : ?>
+    <?= $this->makePartial($partial['url']);?>
+    <?php endforeach ?>
+    <?php endif ?>
+
+    <?php if(!$hasWorkflow) : ?>
+    <?= $this->makePartial('partial_btn_delete');?>
+    <?php endif ?>
+    <?php endif ?>
+</div>

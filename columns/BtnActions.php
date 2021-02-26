@@ -1,7 +1,6 @@
 <?php namespace Waka\Utils\Columns;
 
 use Backend\Classes\ListColumn;
-use Lang;
 use Model;
 
 class BtnActions
@@ -27,9 +26,9 @@ class BtnActions
      */
     public static function storeFieldConfig($field, array $config)
     {
-       //trace_log(self::$defaultFieldConfig);
+        //trace_log(self::$defaultFieldConfig);
         self::$listConfig[$field] = array_merge(self::$defaultFieldConfig, $config, ['name' => $field]);
-       //trace_log(self::$listConfig[$field]);
+        //trace_log(self::$listConfig[$field]);
     }
 
     /**
@@ -42,8 +41,8 @@ class BtnActions
     public static function render($value, ListColumn $column, Model $record)
     {
         $field = new self($value, $column, $record);
-        
-            return '
+
+        return '
 <a href="javascript:;"
     data-control="popup"
     data-size="huge"
@@ -52,7 +51,7 @@ class BtnActions
     title="Actions">
     <i class="icon-wrench icon-lg"></i>
 </a>
-';   
+';
     }
 
     /**
@@ -80,9 +79,9 @@ class BtnActions
         $modelClass = str_replace('\\', '\\\\', get_class($this->record));
 
         $data = [
-            "id: {$this->record->{$this->record->getKeyName()}}",
+            "modelId: {$this->record->{$this->record->getKeyName()}}",
             "field: '$this->name'",
-            "model: '$modelClass'"
+            "modelClass: '$modelClass'",
         ];
 
         if (post('page')) {

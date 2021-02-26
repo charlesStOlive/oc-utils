@@ -1,0 +1,17 @@
+<?php if($btns) : ?>
+<div style="display:inline-flex">
+    <?php foreach($btns as $btn) : ?>
+    <?php if($btn['btns'] ?? false) : ?>
+    <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'container' => true, 'isLot' => true]);?>
+    <?php else : ?>
+    <button href="javascript:;"
+            class="btn btn-secondary <?=$btn['icon'] ?? null?>"
+            data-request-data="modelClass:'<?=$modelClass?>'"
+            data-request="<?=$btn['ajaxInlineCaller'] ??''?>">
+        <?= e(trans($btn['label'] ?? 'Inc'))?>
+    </button>
+    <?php endif ?>
+
+    <?php endforeach ?>
+</div>
+<?php endif ?>

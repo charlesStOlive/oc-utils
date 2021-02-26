@@ -39,6 +39,7 @@ class CreateModelController extends GeneratorCommand
 
         'controller/config_form.stub' => 'controllers/{{lower_ctname}}/config_form.yaml',
         'controller/config_list.stub' => 'controllers/{{lower_ctname}}/config_list.yaml',
+        'controller/config_btns.stub' => 'controllers/{{studly_ctname}}/config_btns.yaml',
         'controller/controller.stub' => 'controllers/{{studly_ctname}}.php',
 
     ];
@@ -108,19 +109,19 @@ class CreateModelController extends GeneratorCommand
         if ($this->maker['controller']) {
             /**/trace_log('on fait le controlleur et les configs');
             $this->stubs = array_merge($this->stubs, $this->controllerPhpStubs);
-            if ($this->config['behav_duplicate']) {
+            if ($this->config['behav_duplicate'] ?? false) {
                 $this->stubs['controller/config_duplicate.stub'] = 'controllers/{{lower_ctname}}/config_duplicate.yaml';
             }
-            if ($this->config['side_bar_attributes']) {
+            if ($this->config['side_bar_attributes'] ?? false) {
                 $this->stubs['controller/config_attributes.stub'] = 'controllers/{{lower_ctname}}/config_attributes.yaml';
             }
-            if ($this->config['side_bar_info']) {
+            if ($this->config['side_bar_info'] ?? false) {
                 $this->stubs['controller/config_sidebar_info.stub'] = 'controllers/{{lower_ctname}}/config_sidebar_info.yaml';
             }
-            if ($this->config['behav_lots']) {
+            if ($this->config['behav_lots'] ?? false) {
                 $this->stubs['controller/config_lots.stub'] = 'controllers/{{lower_ctname}}/config_lots.yaml';
             }
-            if ($this->config['behav_workflow']) {
+            if ($this->config['behav_workflow'] ?? false) {
                 $this->stubs['controller/config_workflow.stub'] = 'controllers/{{lower_ctname}}/config_workflow.yaml';
             }
             //trace_log("--MORPHMANY--");
@@ -216,6 +217,7 @@ class CreateModelController extends GeneratorCommand
                 'controller' => false,
                 'html_file_controller' => false,
                 'excel' => false,
+
             ];
             $types = $this->choice('Database type', ['model', 'lang_field_attributes', 'only_langue', 'update', 'controller', 'html_file_controller', 'excel'], 0, null, true);
             //trace_log($types);
@@ -225,6 +227,9 @@ class CreateModelController extends GeneratorCommand
                     $this->version = $this->ask('version');
                 }
                 if ($type == 'lang_field_attributes') {
+                    $this->yaml_for = $this->ask('yaml_for');
+                }
+                if ($type == 'controller') {
                     $this->yaml_for = $this->ask('yaml_for');
                 }
             }
@@ -390,6 +395,7 @@ class CreateModelController extends GeneratorCommand
         $relationClass = $this->getRelationClass($array[1], $item['var']);
         $createYamlRelation = $this->createYamlRelation($array[1], $item['var']);
         $relationPath = $this->getRelationPath($array[1], $item['var'], $createYamlRelation);
+        $relationDetail = $this->getRelationDetail($array[1], $item['var']);
         $options = $this->getRelationOptions($array[2] ?? null);
         $userRelation = $relationClass == 'Backend\Models\User' ? true : false;
         if ($type == 'belong') {
@@ -400,6 +406,8 @@ class CreateModelController extends GeneratorCommand
                 'options' => $options,
                 'userRelation' => $userRelation,
                 'createYamlRelation' => $createYamlRelation,
+                'detail' => $relationDetail,
+
             ];
         }
         if ($type == 'morphmany') {
@@ -410,6 +418,7 @@ class CreateModelController extends GeneratorCommand
                 'relation_class' => $relationClass,
                 'options' => $options,
                 'createYamlRelation' => $createYamlRelation,
+                'detail' => $relationDetail,
             ];
         }
         if ($type == 'morphone') {
@@ -420,6 +429,7 @@ class CreateModelController extends GeneratorCommand
                 'options' => $options,
                 'userRelation' => $userRelation,
                 'createYamlRelation' => $createYamlRelation,
+                'detail' => $relationDetail,
             ];
         }
         if ($type == 'many') {
@@ -430,6 +440,7 @@ class CreateModelController extends GeneratorCommand
                 'relation_class' => $relationClass,
                 'options' => $options,
                 'createYamlRelation' => $createYamlRelation,
+                'detail' => $relationDetail,
             ];
         }
         if ($type == 'manythrough') {
@@ -440,6 +451,7 @@ class CreateModelController extends GeneratorCommand
                 'relation_class' => $relationClass,
                 'options' => $options,
                 'createYamlRelation' => $createYamlRelation,
+                'detail' => $relationDetail,
             ];
         }
         if ($type == 'attachMany') {
@@ -502,10 +514,47 @@ class CreateModelController extends GeneratorCommand
         }
     }
 
+    public function getRelationDetail($value, $key)
+    {
+        if ($value == 'self') {
+            return [
+                'author' => strtolower($this->w_author),
+                'plugin' => strtolower($this->w_plugin),
+                'model' => strtolower(camel_case($key)),
+            ];
+        } elseif ($value == 'user') {
+            return [
+                'author' => null,
+                'Backend' => 'Backend',
+                'model' => 'user',
+            ];
+        } elseif ($value == 'cloudi') {
+            return [
+                'author' => 'waka',
+                'Backend' => 'cloudi',
+                'model' => 'cloudifile',
+            ];
+        } elseif ($value == 'file') {
+            return [
+                'author' => null,
+                'Backend' => 'system',
+                'model' => 'file',
+            ];
+        } else {
+            $parts = explode('.', $value);
+            $r_model = $parts[2] ?? $key;
+            return [
+                'author' => strtolower($parts[0]),
+                'plugin' => strtolower($parts[1]),
+                'model' => strtolower($r_model),
+            ];
+        }
+    }
+
     public function getRelationPath($value, $key, $createYamlRelation)
     {
         if ($value == 'self') {
-            return '$/' . strtolower($this->w_author) . '/' . strtolower($this->w_plugin) . '/models/' . strtolower(str_singular($key));
+            return '$/' . strtolower($this->w_author) . '/' . strtolower($this->w_plugin) . '/models/' . strtolower(camel_case(str_singular($key)));
         } elseif ($value == 'user') {
             return '$/' . strtolower($this->w_author) . '/' . strtolower($this->w_plugin) . '/models/' . strtolower(str_singular($key));
         } elseif ($createYamlRelation == 'inModel') {
@@ -514,7 +563,7 @@ class CreateModelController extends GeneratorCommand
             $parts = explode('.', $value);
             $r_plugin = array_pop($parts);
             $r_author = array_pop($parts);
-            return '$/' . strtolower($r_author) . '/' . strtolower($r_plugin) . '/models/' . strtolower(str_singular($key));
+            return '$/' . strtolower($r_author) . '/' . strtolower($r_plugin) . '/models/' . strtolower(camel_case(str_singular($key)));
         }
     }
 

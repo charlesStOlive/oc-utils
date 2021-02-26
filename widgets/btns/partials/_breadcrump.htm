@@ -1,0 +1,20 @@
+<div>
+    <button type="button"
+            style="margin-left: auto;"
+            class="oc-icon-backward btn-icon  pull-right"
+            onclick="history.go(-1); return false">
+    </button>
+</div>
+<ul>
+    <?php if($breadcrump['inSettings'] ?? false) :  ?>
+    <li><a href="<?= Backend::url('system/settings/') ?>">
+            <?= e(trans('waka.utils::lang.global.settings')) ?>
+        </a></li>
+    <?php endif ?>
+    <li><a href="<?= Backend::url($breadcrump['indexUrl'] ?? 'Inc') ?>">
+            <?= e(trans($breadcrump['indexlabel'] ?? 'Inc')) ?>
+        </a></li>
+    <li>
+        <?= e(trans($breadcrump['title'] ?? 'Inc')) ?>
+    </li>
+</ul>

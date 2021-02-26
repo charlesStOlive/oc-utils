@@ -200,32 +200,32 @@ class Plugin extends PluginBase
             }
 
         });
-        Event::listen('backend.top.update', function ($controller) {
-            if (in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement)) {
-                $model = $controller->formGetModel();
-                return View::make('waka.utils::duplicatebutton')->withId($model->id);
-            }
+        // Event::listen('backend.top.update', function ($controller) {
+        //     if (in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement)) {
+        //         $model = $controller->formGetModel();
+        //         return View::make('waka.utils::duplicatebutton')->withId($model->id);
+        //     }
 
-        });
-        Event::listen('popup.actions.tools', function ($controller, $model, $id) {
-            if (in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement)) {
-                return View::make('waka.utils::duplicatebuttoncontent')->withId($id);
-            }
+        // });
+        // Event::listen('popup.actions.tools', function ($controller, $model, $id) {
+        //     if (in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement)) {
+        //         return View::make('waka.utils::duplicatebuttoncontent')->withId($id);
+        //     }
 
-        });
-        Event::listen('backend.top.index', function ($controller) {
-            $user = \BackendAuth::getUser();
-            //trace_log($user->hasAccess('waka.importexport.imp.*'));
+        // });
+        // Event::listen('backend.top.index', function ($controller) {
+        //     $user = \BackendAuth::getUser();
+        //     //trace_log($user->hasAccess('waka.importexport.imp.*'));
 
-            // if (!$user->hasAccess('waka.importexport.imp.*')) {
-            //     //trace_log("false");
-            //     return;
-            // }
-            //trace_log("ok");
-            if (in_array('Waka.Utils.Behaviors.TraitementsLots', $controller->implement)) {
-                return View::make('waka.utils::lotsbutton');
-            }
-        });
+        //     // if (!$user->hasAccess('waka.importexport.imp.*')) {
+        //     //     //trace_log("false");
+        //     //     return;
+        //     // }
+        //     //trace_log("ok");
+        //     if (in_array('Waka.Utils.Behaviors.TraitementsLots', $controller->implement)) {
+        //         return View::make('waka.utils::lotsbutton');
+        //     }
+        // });
         Event::listen('job.create.*', function ($event, $params) {
             $userId = \BackendAuth::getUser()->id;
             $jobId = $params[0];

@@ -2,6 +2,14 @@
 
 return [
     'civ' => ['Mme/M.' => 'Mme/M.', 'Mme' => 'Mme', 'M.' => 'M.', 'Dr' => 'Dr', 'Pr' => 'Pr'],
+    'btns' => [
+        'duplicate' => [
+            'label' => 'Duplicate',
+            'ajaxCaller' => 'onLoadDuplicateForm',
+            'ajaxInlineCaller' => 'onLoadDuplicateContentForm',
+            'icon' => 'oc-icon-files-o',
+        ],
+    ],
     'ImageOptions' => [
         'width' => [
             'label' => "Largeur",

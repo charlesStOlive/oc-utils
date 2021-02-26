@@ -1,0 +1,8 @@
+<button class="btn btn-secondary oc-icon-file-excel-o"
+        data-trigger-action="enable"
+        data-control="popup"
+        data-handler="onExportLotPopupForm"
+        onclick="$(this).data('request-data', { checked: $('.control-list').listWidget('getChecked'), modelClass:'<?=$modelClass?>' })"
+        data-toggle="dropdown">
+    <?= e(trans('waka.utils::lang.global.lot'))?>
+</button>
