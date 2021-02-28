@@ -185,5 +185,9 @@ return [
         'send' => 'Envoyer',
         'tools' => 'Outils',
     ],
+    'duplicateBehavior' => [
+        'title' => "Dupliquer",
+
+    ],
 
 ];

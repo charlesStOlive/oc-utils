@@ -45,7 +45,7 @@ class DuplicateModel extends ControllerBehavior
     {
         //$this->model = $this->exportGetModel();
         $title = $this->getConfig('title');
-        $this->vars['modelId'] = post('id');
+        $this->vars['modelId'] = post('modelId');
         return $this->makePartial('$/waka/utils/behaviors/duplicatemodel/_duplicate_form.htm');
 
     }
@@ -53,7 +53,7 @@ class DuplicateModel extends ControllerBehavior
     public function onLoadDuplicateContentForm()
     {
         $title = $this->getConfig('title');
-        $this->vars['modelId'] = post('id');
+        $this->vars['modelId'] = post('modelId');
         return [
             '#popupActionContent' => $this->makePartial('$/waka/utils/behaviors/duplicatemodel/_duplicate_content.htm'),
         ];
@@ -90,8 +90,10 @@ class DuplicateModel extends ControllerBehavior
         $relations = $this->getConfig('duplication[relations]');
         //$relationsManyToMany = new Collection($this->getConfig('duplication[relationsManyToMany]'));
 
-        $modelName = $this->getConfig('modelClass');
-        $sourceModel = $modelName::find(post('id'));
+        $modelClass = $this->getConfig('modelClass');
+        trace_log($this->getConfig('modelClass'));
+        trace_log(post('modelId'));
+        $sourceModel = $modelClass::find(post('modelId'));
         $cloneModel = $sourceModel->replicate();
 
         if ($transformations) {
