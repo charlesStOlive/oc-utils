@@ -78,13 +78,7 @@ class Btns extends WidgetBase
             }
         }
         //trace_log($toolBar);
-        $this->vars['createBtn'] = $toolBar['create']['show'] ?? false;
-        $this->vars['createBtnLabel'] = $toolBar['create']['label'] ?? 'Créer';
-        $this->vars['createBtnUrl'] = $toolBar['create']['url'] ?? '#';
-        $this->vars['reorderUrl'] = $toolBar['reorder']['url'] ?? false;
-        $this->vars['DeleteBtn'] = $toolBar['delete']['show'] ?? false;
-        $this->vars['reorder'] = $toolBar['reorder']['show'] ?? false;
-        $this->vars['reorderUrl'] = $toolBar['reorder']['url'] ?? false;
+        $this->vars['base'] = $toolBar['base'] ?? false;
         $this->vars['isLot'] = true;
         $this->vars['hasLot'] = $toolBar['config_lot'] ?? false;
         $this->vars['partials'] = $toolBar['partials'] ?? null;

@@ -16,17 +16,18 @@ breadcrump:
 
 ###TOOL_BAR
 tool_bar:
-    create: 
-        show: true
-        permissions: [{{configs.save_permission}}]
-        url: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/create
-    redorder: 
-        show: true
-        permissions: []
-        url: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/reorder
-    delete: 
-        show: true
-        permissions: [{{configs.delete_permission}}]
+    base:
+        create: 
+            show: true
+            permissions: [{{configs.save_permission}}]
+            url: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/create
+        redorder: 
+            show: true
+            permissions: []
+            url: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/reorder
+        delete: 
+            show: true
+            permissions: [{{configs.delete_permission}}]
     config_btns:
             format: all
             btns:

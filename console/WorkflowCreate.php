@@ -46,7 +46,7 @@ class WorkflowCreate extends GeneratorCommand
         'workflow/workflow.stub' => 'config/{{lower_name}}_w.yaml',
         'workflow/temp_lang.stub' => 'lang/fr/{{lower_name}}_w.php',
         'workflow/wf_errors.stub' => 'lang/fr/{{lower_name}}_wf_errors.php',
-        'workflow/listener.stub' => ' listener/Workflow{{lower_name}}Listener.php',
+        'workflow/listener.stub' => 'listeners/Workflow{{lower_name}}Listener.php',
     ];
 
     /**

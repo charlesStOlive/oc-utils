@@ -75,6 +75,7 @@ return [
         "prompt_record" => "Cliquez sur l'icône pour choisir un enregistrement",
         "find_record" => "Trouver un enregistrement",
         "settings" => "Réglages",
+
     ],
     'datasource' => [
         'title' => 'Source de données',
@@ -188,6 +189,11 @@ return [
     'duplicateBehavior' => [
         'title' => "Dupliquer",
 
+    ],
+    'page' => [
+        'access_denied' => [
+            'label' => 'Accès impossible',
+        ],
     ],
 
 ];

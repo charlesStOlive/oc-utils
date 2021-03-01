@@ -16,6 +16,9 @@ trait WakaWorkflowTrait
             /*
              * Define relationships
              */
+
+            array_push($model->appends, 'wfPlaceLabel');
+
             $model->morphMany['state_logs'] = [
                 'Waka\Utils\Models\StateLog',
                 'name' => 'state_logeable',
@@ -120,12 +123,12 @@ trait WakaWorkflowTrait
         return $rulesSets[$rulesSet] ?? null;
     }
 
-    public function getWfPlaceLabelAttribute($state_column)
+    public function getWfPlaceLabelAttribute($state_column = null)
     {
         //A faire $state_column pour changer la colonne source de l'etat
         $place = null;
         if ($state_column) {
-            $place = $this->model->{$state_column};
+            $place = $this->{$state_column};
         } else {
             $place = $this->state;
         }
@@ -134,7 +137,9 @@ trait WakaWorkflowTrait
             $places = $workflow->getDefinition()->getPlaces();
             $place = array_key_first($places);
         }
+        trace_log($place);
         $label = $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['label'] ?? $place; // string place name
+        return Lang::get($label);
     }
 
     // public function getWfAutomatisation()

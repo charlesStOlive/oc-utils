@@ -11,7 +11,7 @@
     <!--SINON C EST UN BOUTON SEUL -->
     <button href="javascript:;"
             class="btn btn-secondary <?=$btn['icon'] ?? null?>"
-            data-request-data="modelId:<?=$modelId?>, model:'<?=$modelClass?>'"
+            data-request-data="modelId:<?=$modelId?>, modelClass:'<?=$modelClass?>'"
             data-control="popup"
             data-handler="<?=$btn['ajaxCaller'] ??''?>">
         <?= e(trans($btn['label'] ?? 'Inc'))?>
