@@ -80,7 +80,7 @@ class Btns extends WidgetBase
         //trace_log($toolBar);
         $this->vars['base'] = $toolBar['base'] ?? false;
         $this->vars['isLot'] = true;
-        $this->vars['hasLot'] = $toolBar['config_lot'] ?? false;
+        $this->vars['hasLot'] = $toolBar['config_lot']['btns'] ?? false;
         $this->vars['partials'] = $toolBar['partials'] ?? null;
         $this->vars['btns'] = $this->getBtns($toolBar['config_btns'] ?? null);
         return $this->makePartial('tool_bar');
