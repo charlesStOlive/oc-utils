@@ -47,7 +47,6 @@ class DuplicateModel extends ControllerBehavior
         $title = $this->getConfig('title');
         $this->vars['modelId'] = post('modelId');
         return $this->makePartial('$/waka/utils/behaviors/duplicatemodel/_duplicate_form.htm');
-
     }
 
     public function onLoadDuplicateContentForm()
@@ -109,7 +108,6 @@ class DuplicateModel extends ControllerBehavior
                 if (!starts_with($key, '_') && $data[$key]) {
                     $cloneModel[$key] = $data[$key];
                 }
-
             }
         }
 
@@ -148,7 +146,6 @@ class DuplicateModel extends ControllerBehavior
         Flash::info("Duplication effectuée");
         return Redirect::to($this->getConfig('redirect') . $cloneModel->id);
         //return true;
-
     }
 
     public function exportGetModel()
@@ -165,5 +162,4 @@ class DuplicateModel extends ControllerBehavior
 
         return $this->model = new $modelClass;
     }
-
 }

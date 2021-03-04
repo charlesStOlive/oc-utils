@@ -76,7 +76,6 @@ class WorkflowOnlineDump extends WorkflowCreate
         $sourceFile = $this->getSourcePath() . '/' . $stubName;
         $destinationContent = $this->files->get($sourceFile);
         return Twig::parse($destinationContent, $this->vars);
-
     }
 
     public function handle()
@@ -133,7 +132,9 @@ class WorkflowOnlineDump extends WorkflowCreate
 
         $subject = new $class;
         $workflow = Workflow::get(
-            $subject, $workflowName);
+            $subject,
+            $workflowName
+        );
         $definition = $workflow->getDefinition();
 
         $dumper = new GraphvizDumper();
@@ -158,7 +159,6 @@ class WorkflowOnlineDump extends WorkflowCreate
         $srcModel->infos = html_entity_decode($this->workflowData['workflow/infos.stub'], ENT_QUOTES);
         $this->tryCopyImage($srcModel, 'td', $format, 2);
         $this->tryCopyImage($srcModel, 'lr', $format, 2);
-
     }
 
     public function createDotCommand($workflowSlug, $type, $format)
@@ -179,7 +179,6 @@ class WorkflowOnlineDump extends WorkflowCreate
         } else {
             $srcModel->save();
         }
-
     }
     // public function getModelOptions($option)
     // {

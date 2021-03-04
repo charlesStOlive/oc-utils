@@ -37,7 +37,6 @@ class BaseField
         } else {
             return Lang::get($this->config['label']);
         }
-
     }
 
     public function parseRelation($valueFrom = null)

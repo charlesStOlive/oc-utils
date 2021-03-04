@@ -40,11 +40,9 @@ class Plugin extends PluginBase
                 'localeDate' => [new \Waka\Utils\Classes\WakaDate, 'localeDate'],
                 'toJson' => function ($twig) {
                     return json_encode($twig);
-
                 },
                 'workflow' => function ($twig) {
                     return $twig->wfPlaceLabel();
-
                 },
                 'camelCase' => function ($twig) {
                     return camel_case($twig);
@@ -53,7 +51,6 @@ class Plugin extends PluginBase
                     $dataFromConfig = \Config('wcli.wconfig::' . $config_name);
                     //trace_log($dataFromConfig);
                     return $dataFromConfig;
-
                 },
                 'colorArray' => function ($twig, $color1) {
                     $colorArray = [];
@@ -86,7 +83,6 @@ class Plugin extends PluginBase
                         case 'string':
                             return '#' . $finalColor->getHex();
                     }
-
                 },
             ],
         ];
@@ -117,9 +113,15 @@ class Plugin extends PluginBase
         return [
             'waka-btn-actions' => [BtnActions::class, 'render'],
             'waka-calcul' => [CalculColumn::class, 'render'],
-            'euro' => function ($value) {return number_format($value, 2, ',', ' ') . ' €';},
-            'euro-int' => function ($value) {return number_format($value, 0, ',', ' ') . ' €';},
-            'datasource' => function ($value) {return DataSourceList::getValue($value);},
+            'euro' => function ($value) {
+                return number_format($value, 2, ',', ' ') . ' €';
+            },
+            'euro-int' => function ($value) {
+                return number_format($value, 0, ',', ' ') . ' €';
+            },
+            'datasource' => function ($value) {
+                return DataSourceList::getValue($value);
+            },
             'workflow' => [WorkflowColumn::class, 'render'],
         ];
     }
@@ -167,7 +169,6 @@ class Plugin extends PluginBase
                 $pluginUrl = url('/plugins/waka/utils');
                 \Block::append('body', '<script type="text/javascript" src="' . $pluginUrl . '/assets/js/backendnotifications.js"></script>');
             }
-
         });
 
         \Event::listen('backend.menu.extendItems', function ($navigationManager) {
@@ -190,7 +191,6 @@ class Plugin extends PluginBase
             if (!Settings::get('activate_media_btn')) {
                 $navigationManager->removeMainMenuItem('October.Backend', 'media');
             }
-
         });
 
         Event::listen('backend.tools', function ($controller) {
@@ -198,7 +198,6 @@ class Plugin extends PluginBase
             if ($model->rapidLinks) {
                 return View::make('waka.utils::rapidLinks')->withLinks($model->rapidLinks);
             }
-
         });
         // Event::listen('backend.top.update', function ($controller) {
         //     if (in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement)) {
@@ -271,7 +270,6 @@ class Plugin extends PluginBase
             $joblist->end_at = date("Y-m-d H:i:s");
             $joblist->state = 'Terminé';
             $joblist->save();
-
         });
         \Queue::failing(function ($jobFailed) {
             $id = $jobFailed->job->getJobId();
@@ -324,7 +322,6 @@ class Plugin extends PluginBase
 
         $localeCode = Lang::getLocale();
         setlocale(LC_TIME, $localeCode . '_' . strtoupper($localeCode) . '.UTF-8');
-
     }
 
     /**

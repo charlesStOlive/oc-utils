@@ -68,7 +68,6 @@ class TraitementsLots extends ControllerBehavior
         }
         if ($checkedCount) {
             Session::put('lots.checkedIds', $checkedIds);
-
         }
         $this->vars['checkedCount'] = $checkedCount;
 
@@ -93,7 +92,6 @@ class TraitementsLots extends ControllerBehavior
         } elseif ($listType == 'checked') {
             $listId = Session::get('modelImportExportLog.checkedIds');
         } elseif ($listType == 'all') {
-
         }
         Session::forget('modelImportExportLog.listId');
         Session::forget('modelImportExportLog.checkedIds');
@@ -121,7 +119,6 @@ class TraitementsLots extends ControllerBehavior
         Flash::info("Traitement effectué");
         return Redirect::refresh();
         //return true;
-
     }
 
     public function createLotsWidgetFormWidget()
@@ -179,6 +176,5 @@ class TraitementsLots extends ControllerBehavior
         return [
             'fields' => $fields->sortBy('wk_order')->toArray(),
         ];
-
     }
 }

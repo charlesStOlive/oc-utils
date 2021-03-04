@@ -99,7 +99,6 @@ class JobList extends Model
             return $query;
         }
         return $query->where('user_id', $user->id);
-
     }
     public function scopeState($query, $state)
     {
@@ -112,6 +111,5 @@ class JobList extends Model
         if ($state == 'run') {
             return $query->whereIn('state', ['En cours', 'Attente']);
         }
-
     }
 }

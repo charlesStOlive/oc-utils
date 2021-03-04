@@ -1,11 +1,13 @@
 (function () {
     let lastPolledAt = new Date();
 
-    function handleError(err) {
+    function handleError(err)
+    {
         //console.error(err);
     }
 
-    function loadCount() {
+    function loadCount()
+    {
         return fetch('/api/utils/', {
             header: {
                 'Content-Type': 'application/json'
@@ -89,7 +91,8 @@
 
 
 
-    function activityWatcher() {
+    function activityWatcher()
+    {
 
         //The number of seconds that have passed
         //since the user was active.
@@ -107,13 +110,13 @@
                 loadCount();
                 icone.classList.remove('icone_pause');
             } else {
-
                 icone.classList.add('icone_pause');
             }
         }, 3000);
 
         //The function that will be called whenever a user is active
-        function activity() {
+        function activity()
+        {
             //reset the secondsSinceLastActivity variable
             //back to 0
             secondsSinceLastActivity = 0;

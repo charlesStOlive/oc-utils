@@ -38,7 +38,6 @@ class Btns extends WidgetBase
             $this->vars['modelId'] = $modelId;
             return $this->makePartial('container_bar');
         }
-
     }
 
     public function renderWorkflowOrBtn()
@@ -51,7 +50,6 @@ class Btns extends WidgetBase
         } else {
             return $this->makePartial('sub/base_buttons');
         }
-
     }
 
     public function renderBreadcrump()
@@ -84,7 +82,6 @@ class Btns extends WidgetBase
         $this->vars['partials'] = $toolBar['partials'] ?? null;
         $this->vars['btns'] = $this->getBtns($toolBar['config_btns'] ?? null);
         return $this->makePartial('tool_bar');
-
     }
 
     public function renderLot()
@@ -114,7 +111,7 @@ class Btns extends WidgetBase
                     $btns[$key][$keyopt] = $opt;
                 }
             }
-        } else if ($format == 'grouped') {
+        } elseif ($format == 'grouped') {
             //Création des boutons groupé
             foreach ($groups as $key => $icon) {
                 $subbtns = $collection->where('group', $key)->toArray();
@@ -142,7 +139,6 @@ class Btns extends WidgetBase
                     $btns[$key][$keyopt] = $opt;
                 }
             }
-
         } else {
             $subBtn = [];
             foreach ($collection->toArray() as $key => $prod) {
@@ -159,10 +155,8 @@ class Btns extends WidgetBase
                     'btns' => $subBtn,
                 ];
             }
-
         }
         return $btns;
-
     }
 
     public function loadAssets()
@@ -191,5 +185,4 @@ class Btns extends WidgetBase
         }
         return $objTransition;
     }
-
 }

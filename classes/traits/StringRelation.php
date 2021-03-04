@@ -66,5 +66,4 @@ trait StringRelation
         }
         return $relatedModel;
     }
-
 }

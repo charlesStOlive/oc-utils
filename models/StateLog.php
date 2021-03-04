@@ -70,5 +70,4 @@ class StateLog extends Model
     public $morphMany = [];
     public $attachOne = [];
     public $attachMany = [];
-
 }

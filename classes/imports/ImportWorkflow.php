@@ -18,7 +18,6 @@ class ImportWorkflow implements WithMultipleSheets
     public function __construct($name)
     {
         $this->name = $name;
-
     }
     public function sheets(): array
     {
@@ -53,7 +52,6 @@ class ConfigImport implements ToCollection, WithHeadingRow
         }
         return $this->data;
     }
-
 }
 class PlacesImport implements ToCollection, WithHeadingRow, WithCalculatedFormulas
 {
@@ -110,5 +108,4 @@ class TransImport implements ToCollection, WithHeadingRow, WithCalculatedFormula
         }
         return $this->data;
     }
-
 }

@@ -59,7 +59,6 @@ class CreateWorkflowDataFromExcel extends CreateBase
                 if (is_countable($args)) {
                     for ($i = 0; $i < count($args); $i++) {
                         $argval[$args[$i]] = $vals[$i] ?? null;
-
                     }
                 }
 
@@ -69,7 +68,6 @@ class CreateWorkflowDataFromExcel extends CreateBase
                     'arguments' => $argval,
                 ];
                 $item['functions'][$fncName] = $obj;
-
             }
             $fncTrait = $item['fnc_trait'] ?? false;
             //trace_log("fnctrait : " . $fncTrait);
@@ -85,7 +83,6 @@ class CreateWorkflowDataFromExcel extends CreateBase
                 if (is_countable($args)) {
                     for ($i = 0; $i < count($args); $i++) {
                         $argval[$args[$i]] = $vals[$i] ?? null;
-
                     }
                 }
 
@@ -95,7 +92,6 @@ class CreateWorkflowDataFromExcel extends CreateBase
                     'arguments' => $argval,
                 ];
                 $item['functions'][$fncName] = $obj;
-
             }
             $fncGard = $item['fnc_gard'] ?? false;
             //trace_log("fnctrait : " . $fncTrait);
@@ -113,7 +109,6 @@ class CreateWorkflowDataFromExcel extends CreateBase
                 if (is_countable($args)) {
                     for ($i = 0; $i < count($args); $i++) {
                         $argval[$args[$i]] = $vals[$i] ?? null;
-
                     }
                 }
 
@@ -123,7 +118,6 @@ class CreateWorkflowDataFromExcel extends CreateBase
                     'arguments' => $argval,
                 ];
                 $item['functions'][$fncName] = $obj;
-
             }
             return $item;
         });
@@ -181,7 +175,5 @@ class CreateWorkflowDataFromExcel extends CreateBase
             return $args;
         }
         return null;
-
     }
-
 }

@@ -32,7 +32,5 @@ class DataSourceList
         } else {
             return Yaml::parseFile(plugins_path() . '/wcli/wconfig/config/datasources.yaml');
         }
-
     }
-
 }

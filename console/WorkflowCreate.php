@@ -108,7 +108,6 @@ class WorkflowCreate extends GeneratorCommand
                     unset($this->stubs[$key]);
                 }
             }
-
         }
 
         $importExcel = new \Waka\Utils\Classes\Imports\ImportWorkflow($name);

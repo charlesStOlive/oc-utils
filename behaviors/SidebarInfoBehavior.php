@@ -34,5 +34,4 @@ class SidebarInfoBehavior extends ControllerBehavior
         $this->sidebarInfo->config = $this->makeConfig($controller->sidebarInfoConfig, $this->requiredConfig);
         $this->sidebarInfo->bindToController();
     }
-
 }

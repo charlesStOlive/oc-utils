@@ -157,9 +157,7 @@ class Wattributes
                 'width' => $options['width'],
                 'height' => $options['height'],
             ];
-
         }
         return $allPictures;
     }
-
 }

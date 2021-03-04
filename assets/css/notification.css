@@ -22,7 +22,7 @@
 
 
 .rotate_counter {
-    animation: rotate 3s linear infinite!important; 
+    animation: rotate 3s linear infinite!important;
 }
 @keyframes rotate{
     to{ transform: rotate(360deg); }

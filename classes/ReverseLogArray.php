@@ -33,10 +33,9 @@ class ReverseLogArray
                 } else {
                     trigger_error("Unknown array.");
                 }
-            } else if ($expecting == 1 && $trim == '(') {
+            } elseif ($expecting == 1 && $trim == '(') {
                 $expecting = 2;
-            } else if ($expecting == 2 && preg_match('/^\[(.+?)\] \=\> (.+)$/', $trim, $matches)) // array element
-            {
+            } elseif ($expecting == 2 && preg_match('/^\[(.+?)\] \=\> (.+)$/', $trim, $matches)) { // array element
                 list($fullMatch, $key, $element) = $matches;
                 if (trim($element) == 'Array') {
                     $topArray[$key] = array();
@@ -47,8 +46,7 @@ class ReverseLogArray
                 } else {
                     $topArray[$key] = $element;
                 }
-            } else if ($expecting == 2 && $trim == ')') // end current array
-            {
+            } elseif ($expecting == 2 && $trim == ')') { // end current array
                 if (empty($arrayStack)) {
                     $result = $topArray;
                 } else // pop into parent array
@@ -62,10 +60,10 @@ class ReverseLogArray
                 }
             }
             // Added this to allow for multi line strings.
-            else if (!empty($trim) && $expecting == 2) {
+            elseif (!empty($trim) && $expecting == 2) {
                 // Expecting close parent or element, but got just a string
                 $topArray[$key] .= "\n" . $line;
-            } else if (!empty($trim)) {
+            } elseif (!empty($trim)) {
                 $result = $line;
             }
         }
@@ -73,5 +71,4 @@ class ReverseLogArray
         $output = implode("\n", $lines);
         return $result;
     }
-
 }

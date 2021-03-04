@@ -73,5 +73,4 @@ class SideBarAttributesBehavior extends ControllerBehavior
 
         return $this->sidebarAttributes->render();
     }
-
 }

@@ -49,7 +49,6 @@ class SidebarAttributes extends WidgetBase
         } else {
             return $this->makePartial('list');
         }
-
     }
 
     public function getWattributes()
@@ -151,7 +150,6 @@ class SidebarAttributes extends WidgetBase
         }
         //trace_log($mapedResult);
         return $mapedResult;
-
     }
 
     public function getIMG()
@@ -191,7 +189,6 @@ class SidebarAttributes extends WidgetBase
             if ($outputs) {
                 $attributes = $outputs['attributes'] ?? null;
                 if ($attributes) {
-
                     $temptAttributeArray = [];
                     foreach ($attributes as $key => $attributeAdresse) {
                         //trace_log($key);
@@ -204,7 +201,6 @@ class SidebarAttributes extends WidgetBase
                         $temptAttributeArray = array_merge($temptAttributeArray, $maped);
                     }
                     $result[$code] = $temptAttributeArray;
-
                 }
                 $values = $outputs['values'] ?? null;
                 if ($values) {
@@ -215,11 +211,9 @@ class SidebarAttributes extends WidgetBase
                     } else {
                         $result[$code] = $maped;
                     }
-
                 }
                 //trace_log("result");
                 //trace_log($result);
-
             }
         }
 
@@ -231,5 +225,4 @@ class SidebarAttributes extends WidgetBase
         $this->addCss('css/sidebarattributes.css', 'Waka.Utils');
         $this->addJs('js/clipboard.min.js', 'Waka.Utils');
     }
-
 }

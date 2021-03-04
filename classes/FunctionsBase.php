@@ -30,7 +30,6 @@ class FunctionsBase
     {
         $functions = $this->listFunctionAttributes();
         return $this->findFunction($functions, $functionCode, 'attributes');
-
     }
 
     public function getFunctionsOutput($value)
@@ -60,7 +59,6 @@ class FunctionsBase
         $valeurs = $this->recursiveSearchDynamicValue($atttributes);
 
         return array_merge($valeursExtended, $valeurs);
-
     }
 
     private function recursiveSearchDynamicValue(array $array)
@@ -80,10 +78,10 @@ class FunctionsBase
                     } else {
                         throw new \SystemException("La méthode " . $fncName . " n'esixte pas dans la fonction d'édition");
                     }
-                } else if (starts_with($tempValue, 'config::')) {
+                } elseif (starts_with($tempValue, 'config::')) {
                     $configName = str_replace('config::waka', "waka", $tempValue);
                     $tempValue = \Config::get($configName);
-                } else if (starts_with($tempValue, 'list::')) {
+                } elseif (starts_with($tempValue, 'list::')) {
                     $className = str_replace('list::', "", $tempValue);
                     $tempValue = $className::lists('name', 'id');
                 }
@@ -104,7 +102,5 @@ class FunctionsBase
                 $item->append($att);
             }
         });
-
     }
-
 }

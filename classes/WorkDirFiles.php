@@ -17,7 +17,6 @@ class WorkDirFiles
         if ($disk == 'unkown') {
             $this->storageDir = '/';
             $this->storagePath = '/';
-
         }
     }
 
@@ -92,5 +91,4 @@ class WorkDirFiles
             return false;
         }
     }
-
 }

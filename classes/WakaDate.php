@@ -15,7 +15,6 @@ class WakaDate
             }
         }
         return $date;
-
     }
     public function countWorkingDays($date, $date2)
     {
@@ -28,7 +27,6 @@ class WakaDate
             }
         }
         return $number;
-
     }
     public function localeDate($twig, $format = null, $timeZone = null)
     {
@@ -75,5 +73,4 @@ class WakaDate
 
         return $twig->formatLocalized($format);
     }
-
 }

@@ -72,7 +72,6 @@ class SidebarInfo extends WidgetBase
                         array_push($value, $obj);
                     }
                 }
-
             }
 
             if ($racine && $value) {
@@ -91,12 +90,10 @@ class SidebarInfo extends WidgetBase
             array_push($parsedFields, $field);
         }
         return $parsedFields;
-
     }
 
     public function loadAssets()
     {
         $this->addCss('css/sidebarinfo.css', 'Waka.Utils');
     }
-
 }

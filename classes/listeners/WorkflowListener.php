@@ -39,7 +39,6 @@ class WorkflowListener
      */
     public function onLeave($event)
     {
-
     }
 
     /**
@@ -55,7 +54,6 @@ class WorkflowListener
      */
     public function onEnter($event)
     {
-
     }
 
     /**
@@ -101,12 +99,10 @@ class WorkflowListener
         foreach ($fncs->toArray() as $fnc => $attributes) {
             if (method_exists($this, $fnc)) {
                 $this->{$fnc}($event, $attributes['args'] ?? null);
-
             } else {
                 throw new \SystemException("la fonction : " . $fnc . " n'existe pas dans l'ecouteur d'evenement du workflow");
             }
         }
-
     }
 
     public function launchGardFunction($event)
@@ -124,7 +120,5 @@ class WorkflowListener
                 throw new \SystemException("la fonction : " . $fnc . " n'existe pas dans l'ecouteur d'evenement du workflow");
             }
         }
-
     }
-
 }

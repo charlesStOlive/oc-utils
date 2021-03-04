@@ -37,7 +37,5 @@ class WorkflowList
         } else {
             throw new \SystemException('UImpossible de trouver la config du workflow');
         }
-
     }
-
 }

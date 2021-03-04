@@ -57,7 +57,6 @@ class FunctionsList extends FormWidgetBase
         //trace_log($this->getLoadValue());
         $this->vars['values'] = $this->getLoadValue();
         $this->vars['model'] = $this->model;
-
     }
 
     /**
@@ -87,7 +86,6 @@ class FunctionsList extends FormWidgetBase
         $this->vars['functionList'] = $fnc_class->getFunctionsList();
 
         return $this->makePartial('popup');
-
     }
 
     public function onChooseFunction()
@@ -114,7 +112,6 @@ class FunctionsList extends FormWidgetBase
             foreach ($attributes as $key => $value) {
                 $this->attributeWidget->addFields([$key => $value]);
             }
-
         }
 
         $this->vars['attributeWidget'] = $this->attributeWidget;
@@ -124,7 +121,6 @@ class FunctionsList extends FormWidgetBase
         return [
             '#functionAttribute' => $this->makePartial('attributes'),
         ];
-
     }
     public function onCreateFunctionValidation()
     {
@@ -187,9 +183,7 @@ class FunctionsList extends FormWidgetBase
                 } else {
                     $this->attributeWidget->getField($key)->value = $data[$key] ?? null;
                 }
-
             }
-
         }
 
         $this->vars['collectionCode'] = $collectionCode;
@@ -197,7 +191,6 @@ class FunctionsList extends FormWidgetBase
         $this->vars['attributeWidget'] = $this->attributeWidget;
 
         return $this->makePartial('popup_update');
-
     }
     public function onDeleteFunction()
     {
@@ -220,7 +213,6 @@ class FunctionsList extends FormWidgetBase
         return [
             '#list' => $this->makePartial('list', ['values' => $updatedDatas]),
         ];
-
     }
     public function onUpdateFunctionValidation()
     {

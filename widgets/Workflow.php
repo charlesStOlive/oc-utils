@@ -26,7 +26,6 @@ class Workflow extends WidgetBase
         // }
         $this->vars['transitions'] = $this->getWorkFlowTransitions();
         return $this->makePartial('lists_button');
-
     }
 
     public function prepareVars()
@@ -61,5 +60,4 @@ class Workflow extends WidgetBase
         }
         return $objTransition;
     }
-
 }

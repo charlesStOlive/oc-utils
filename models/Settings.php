@@ -26,5 +26,4 @@ class Settings extends Model
         }
         return $resultArray;
     }
-
 }

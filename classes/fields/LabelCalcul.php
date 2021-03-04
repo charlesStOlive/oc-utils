@@ -39,6 +39,5 @@ class LabelCalcul extends BaseField
         // // $total = $calcul->operate2Rows($val1, $val2);
         // //trace_log($total);
         // return $this->value = $total;
-
     }
 }

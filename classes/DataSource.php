@@ -90,8 +90,7 @@ class DataSource
     {
         if ($id) {
             $this->model = $this->class::find($id);
-
-        } else if ($this->testId) {
+        } elseif ($this->testId) {
             $this->model = $this->class::find($this->testId);
         } else {
             throw new \SystemException('Il manque le test_id dans dataConfig');
@@ -106,7 +105,6 @@ class DataSource
         }
         $this->modelName = $this->model;
         $this->wimages = new Wimages($this->model, $this->relations);
-
     }
     public function getModel($modelId)
     {
@@ -181,7 +179,6 @@ class DataSource
             }
         }
         return $array;
-
     }
     /**
      * RECUPERATION DES VALEURS DES MODELES ET DE LEURS LIAISON
@@ -231,9 +228,7 @@ class DataSource
                     if (count($subRelation) == 3) {
                         $results[$subRelation[0]][$subRelation[1]][$subRelation[2]] = $subModel->toArray();
                     }
-
                 }
-
             }
             return $results;
         } else {
@@ -322,7 +317,6 @@ class DataSource
         }
         //trace_log($results);
         return $results;
-
     }
 
     /**
@@ -408,7 +402,6 @@ class DataSource
         } else {
             return Yaml::parseFile(plugins_path() . '/wcli/wconfig/config/datasources.yaml');
         }
-
     }
 
     public function getControllerUrlAttribute()
@@ -422,5 +415,4 @@ class DataSource
     {
         return $this->config[$key];
     }
-
 }

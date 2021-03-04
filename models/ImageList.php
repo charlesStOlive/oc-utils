@@ -59,7 +59,8 @@ class ImageList extends Model
     public $attachOne = [];
     public $attachMany = [];
 
-    public function listCrop() {
+    public function listCrop()
+    {
         if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
             //trace_log(\Config::get('waka.cloudis::ImageOptions.crop'));
             return \Config::get('waka.cloudis::ImageOptions.crop.options');
@@ -75,13 +76,14 @@ class ImageList extends Model
         }
     }
 
-    public function listGravity() {
+    public function listGravity()
+    {
         if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
             //trace_log(\Config::get('waka.cloudis::ImageOptions.gravity'));
                 return \Config::get('waka.cloudis::ImageOptions.gravity.options');
-            } else {
-                return [];
-            }
+        } else {
+            return [];
+        }
     }
 
     public function filterFields($fields, $context = null)
@@ -93,6 +95,5 @@ class ImageList extends Model
         //     $fields->source_url->hidden = false;
         //     $fields->git_branch->hidden = true;
         // }
-        
     }
 }

@@ -36,7 +36,6 @@ class Scopes
                 $model = $this->getStringModelRelation($model, $scope['target']);
             }
             switch ($scope['scopeKey']) {
-
                 case 'model_value':
                     $ck = $this->getSingleValueValidation($model, $scope);
                     if ($ck) {
@@ -77,7 +76,6 @@ class Scopes
                         $this->checkedOK++;
                     }
                     break;
-
             }
         }
         return $this->checkedOK == $this->checked;
@@ -122,7 +120,6 @@ class Scopes
         $valueFromScope = $scope['scope_value'];
 
         return $valueFromModel == $valueFromScope;
-
     }
     private function getMultipleValueValidation($model, $scope)
     {
@@ -143,7 +140,6 @@ class Scopes
         } else {
             return false;
         }
-
     }
     private function getRelationValidation($model, $scope)
     {
@@ -156,7 +152,6 @@ class Scopes
         }
 
         return boolVal($model->{$relation}->count());
-
     }
     private function getBoolValueValidation($model, $scope)
     {
@@ -181,5 +176,4 @@ class Scopes
         $userRoleId = \BackendAuth::getUser()->role_id;
         return in_array($userRoleId, $scope);
     }
-
 }

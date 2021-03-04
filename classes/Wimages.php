@@ -174,9 +174,7 @@ class Wimages
                 'width' => $options['width'],
                 'height' => $options['height'],
             ];
-
         }
         return $allPictures;
     }
-
 }

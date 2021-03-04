@@ -53,7 +53,6 @@ class ImagesList extends FormWidgetBase
         $this->vars['name'] = $this->formField->getName();
         $this->vars['values'] = $this->getLoadValue();
         $this->vars['model'] = $this->model;
-
     }
 
     /**
@@ -80,14 +79,12 @@ class ImagesList extends FormWidgetBase
         $this->imageWidget->getField('source')->options = $ds->wimages->getAllPicturesKey();
         $this->vars['imageWidget'] = $this->imageWidget;
         return $this->makePartial('popup');
-
     }
 
     public function onSelectImages()
     {
         $ds = new DataSource($this->model->data_source);
         $ds->instanciateModel();
-
     }
 
     public function onCreateImageValidation()
@@ -150,7 +147,6 @@ class ImagesList extends FormWidgetBase
         $this->vars['oldSource'] = $source;
 
         return $this->makePartial('popup_update');
-
     }
     public function onDeleteImage()
     {
@@ -175,7 +171,6 @@ class ImagesList extends FormWidgetBase
         return [
             '#listimagesoptions' => $this->makePartial('listimagesoptions', ['values' => $updatedDatas]),
         ];
-
     }
     public function onUpdateImageValidation()
     {

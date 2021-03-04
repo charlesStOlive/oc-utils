@@ -57,7 +57,6 @@ class Workflow extends FormWidgetBase
         $this->vars['noRole'] = $this->getWorkflowNoRole();
         //$this->vars['options'] = $this->getWorkFlowData();
         //$this->vars['datas'] = $this->getWorkFlowData();
-
     }
 
     // /**
@@ -112,7 +111,6 @@ class Workflow extends FormWidgetBase
             }
         }
         return false;
-
     }
 
     public function getWorkFlowOptions()
@@ -146,5 +144,4 @@ class Workflow extends FormWidgetBase
     {
         return $value;
     }
-
 }

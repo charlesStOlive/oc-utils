@@ -48,7 +48,6 @@ class ScopesList extends FormWidgetBase
         //trace_log($this->getLoadValue());
         $this->vars['values'] = $this->getLoadValue();
         $this->vars['model'] = $this->model;
-
     }
 
     /**
@@ -74,7 +73,6 @@ class ScopesList extends FormWidgetBase
         $this->vars['scopesType'] = $this->scopesType;
 
         return $this->makePartial('popup');
-
     }
 
     public function onChooseScope()
@@ -89,7 +87,6 @@ class ScopesList extends FormWidgetBase
         return [
             '#scopeAttribute' => $this->makePartial('attributes'),
         ];
-
     }
     public function onCreateScopeValidation()
     {
@@ -143,7 +140,6 @@ class ScopesList extends FormWidgetBase
             if ($field) {
                 $attributeWidget->getField($key)->value = $value;
             }
-
         }
 
         $this->vars['scopeKey'] = $scopeKey;
@@ -151,7 +147,6 @@ class ScopesList extends FormWidgetBase
         $this->vars['attributeWidget'] = $attributeWidget;
 
         return $this->makePartial('popup_update');
-
     }
     public function onDeleteScope()
     {
@@ -174,7 +169,6 @@ class ScopesList extends FormWidgetBase
         return [
             '#scopeList' => $this->makePartial('list', ['values' => $updatedDatas]),
         ];
-
     }
     public function onUpdateScopeValidation()
     {
@@ -193,7 +187,6 @@ class ScopesList extends FormWidgetBase
                 $datas[$key] = $widgetArray;
                 $datas[$key]['scopeCode'] = $scopeCode;
                 $datas[$key]['scopeKey'] = $scopeKey;
-
             }
         }
 

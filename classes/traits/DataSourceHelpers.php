@@ -12,6 +12,5 @@ trait DataSourceHelpers
         $ds = new \Waka\Utils\Classes\DataSource($this->data_source);
         $class = new $ds->class;
         return $class::orderBy('updated_at', 'desc')->limit(200)->get()->lists($ds->outputName, 'id');
-
     }
 }

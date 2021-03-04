@@ -16,7 +16,6 @@ class ImportModelController implements WithMultipleSheets
     public function __construct($model)
     {
         $this->model = $model;
-
     }
     public function sheets(): array
     {
@@ -43,7 +42,6 @@ class ConfigImport implements ToCollection, WithHeadingRow
         }
         return $this->data;
     }
-
 }
 class DataImport implements ToCollection, WithHeadingRow
 {
@@ -87,9 +85,7 @@ class DataImport implements ToCollection, WithHeadingRow
                 'version' => $row['version'] ?? null,
             ];
             array_push($this->data, $obj);
-
         }
         return $this->data;
     }
-
 }

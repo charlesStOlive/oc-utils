@@ -74,7 +74,9 @@ class WorkflowDump extends Command
 
         $subject = new $class;
         $workflow = Workflow::get(
-            $subject, $workflowName);
+            $subject,
+            $workflowName
+        );
         $definition = $workflow->getDefinition();
 
         $dumper = new GraphvizDumper();

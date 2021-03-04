@@ -160,7 +160,6 @@ class GraphvizDumper implements DumperInterface
                     if ($type == 'trait') {
                         $trait = "Trait : " . $fncKeyName;
                     }
-
                 }
             }
             $rulesSet = $workflowMetadata->getMetadata('rulesSet', $transition) ?? null;
@@ -235,7 +234,6 @@ class GraphvizDumper implements DumperInterface
         $code = '';
 
         foreach ($transitions as $i => $place) {
-
             $code .= sprintf("  transition_%s [label=%s,%s];\n", $this->dotize($i), $this->createTransitionLabelTab($place), $this->addAttributes($place['attributes']));
             //trace_log($code);
         }
@@ -296,12 +294,14 @@ class GraphvizDumper implements DumperInterface
 
         foreach ($edges as $edge) {
             if ('from' === $edge['direction']) {
-                $code .= sprintf("  place_%s -> transition_%s [style=\"solid\"];\n",
+                $code .= sprintf(
+                    "  place_%s -> transition_%s [style=\"solid\"];\n",
                     $this->dotize($edge['from']),
                     $this->dotize($edge['transition_number'])
                 );
             } else {
-                $code .= sprintf("  transition_%s -> place_%s [style=\"solid\"];\n",
+                $code .= sprintf(
+                    "  transition_%s -> place_%s [style=\"solid\"];\n",
                     $this->dotize($edge['transition_number']),
                     $this->dotize($edge['to'])
                 );
@@ -316,7 +316,8 @@ class GraphvizDumper implements DumperInterface
      */
     protected function startDot(array $options): string
     {
-        return sprintf("digraph workflow {\n  %s\n  node [%s];\n  edge [%s];\n\n",
+        return sprintf(
+            "digraph workflow {\n  %s\n  node [%s];\n  edge [%s];\n\n",
             $this->addOptions($options['graph']),
             $this->addOptions($options['node']),
             $this->addOptions($options['edge'])

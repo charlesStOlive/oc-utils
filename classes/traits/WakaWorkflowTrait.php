@@ -66,11 +66,9 @@ trait WakaWorkflowTrait
                         $state = new \Waka\Utils\Models\StateLog(['name' => $changeState]);
                         $model->state_logs()->add($state);
                     }
-
                 }
             });
         });
-
     }
 
     public static function getTransitionobject($changeState, $model)
@@ -156,5 +154,4 @@ trait WakaWorkflowTrait
     //     }
     //     return \Lang::get($label);
     // }
-
 }

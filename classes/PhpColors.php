@@ -23,7 +23,6 @@ class PhpColors
         self::$secondary = $configColors['secondary'];
         self::$gd = $configColors['gd'];
         self::$gl = $configColors['gl'];
-
     }
 
     public static function startFromColor($newColor, $secondary = null, $gd = null, $gl = null)
@@ -41,7 +40,6 @@ class PhpColors
 
         if ($gd) {
             self::$gd = $gd;
-
         } else {
             self::$gd = '#363636';
         }
@@ -51,7 +49,6 @@ class PhpColors
         } else {
             self::$gl = '#CDCDCD';
         }
-
     }
 
     public static function getDegrade($qty, $chosenColor = "primary", $newColor = null, $newSecondaryColor = null)
@@ -96,7 +93,6 @@ class PhpColors
                 $var = $i * $step;
                 $colorArray->push(['color' => '#' . $color->darken($var)]);
             }
-
         } else {
             //trace_log('dark');
             $lightLevel = $lightPossibility['L'];
@@ -108,10 +104,8 @@ class PhpColors
                 // $tempColor = new Color($color->lighten($var));
                 // trace_log($tempColor->getHsl());
             }
-
         }
         return $colorArray->pluck('color')->toArray();
-
     }
     public static function getSeparate($qty, $newColor = null, $newSecondaryColor = null)
     {
@@ -141,7 +135,6 @@ class PhpColors
         $glColor = new Color(self::$gl);
 
         if ($qty > 3) {
-
             $red = "#" . $glColor->mix('#ff0000', 25);
             $blue = "#" . $glColor->mix('#0000ff', 25);
             $yellow = "#" . $glColor->mix('#FFFF00', 25);
@@ -155,7 +148,6 @@ class PhpColors
             $colorArray->push(['color' => $orange]);
             $colorArray->push(['color' => $green]);
             $colorArray->push(['color' => $purple]);
-
         }
 
         if ($qty > 9) {
@@ -183,10 +175,8 @@ class PhpColors
             $colorArray->push(['color' => $c_orange]);
             $colorArray->push(['color' => $c_green]);
             $colorArray->push(['color' => $c_purple]);
-
         }
 
         return $colorArray->pluck('color')->take($qty)->toArray();
     }
-
 }

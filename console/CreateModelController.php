@@ -131,14 +131,12 @@ class CreateModelController extends GeneratorCommand
             //trace_log($this->config['morphmany']);
 
             if (($this->config['many'] || $this->config['morphmany']) && $this->yaml_for) {
-
                 foreach ($this->config['many'] as $relation) {
                     $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
                     if ($relation['createYamlRelation']) {
                         $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
                         $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
                     }
-
                 }
                 foreach ($this->config['morphmany'] as $relation) {
                     $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
@@ -150,7 +148,6 @@ class CreateModelController extends GeneratorCommand
 
                 $this->stubs['controller/config_relation.stub'] = 'controllers/{{lower_ctname}}/config_relation.yaml';
             }
-
         }
         if ($this->maker['html_file_controller']) {
             $this->stubs = array_merge($this->stubs, $this->controllerHtmStubs);
@@ -211,7 +208,6 @@ class CreateModelController extends GeneratorCommand
         $this->yaml_for = true;
 
         if ($this->option('option')) {
-
             $this->maker = [
                 'model' => false,
                 'lang_field_attributes' => false,
@@ -288,7 +284,6 @@ class CreateModelController extends GeneratorCommand
             $field_type = $item['field_type'] ?? null;
 
             return $item;
-
         });
 
         $this->config['belong'] = $rows->where('belong', '!=', null)->pluck('belong')->toArray();
@@ -331,7 +326,6 @@ class CreateModelController extends GeneratorCommand
                 $key = str_replace('tab::', "", $key);
                 $tabs[$key] = $value;
             }
-
         }
 
         //Construction d'un array errors à partir de config, il sera utiliser dans le fichier de lang du midele

@@ -41,5 +41,4 @@ class WorkflowBehavior extends ControllerBehavior
             $model->change_state = post('change_state');
         }
     }
-
 }

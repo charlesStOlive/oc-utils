@@ -115,7 +115,6 @@ class ColorPickerAnalyser extends FormWidgetBase
                 // trace_log("normal ----------------------------------------");
                 // trace_log($this->model->{$this->colorsFrom}()->get()->toArray());
                 return $availableColors = ColorPalette::getPalette($path, 6, 10);
-
             }
         } elseif ($path) {
             $path = storage_path('app/media/' . $this->model[$this->colorsFrom]);

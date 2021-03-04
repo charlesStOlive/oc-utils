@@ -2,7 +2,7 @@
 
 trait IconsList
 {
-	public function iconsAutumnList($value, $formData)
+    public function iconsAutumnList($value, $formData)
     {
         return [
             'icon-adjust' => ['adjust', 'icon-adjust'],
