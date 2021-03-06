@@ -10,15 +10,15 @@ class Scopes
     public $checked;
     public $checkedOk;
 
-    public function __construct($doc, $target = null)
+    public function __construct($productor, $model = null)
     {
-        $this->scopes = $doc->scopes;
-        $this->target = $target;
-        $this->mode = $doc->is_scope;
+        $this->scopes = $productor->scopes;
+        $this->model = $model;
+        $this->mode = $productor->is_scope;
     }
     public function checkScopes()
     {
-        if (!$this->target) {
+        if (!$this->model) {
             throw new \ApplicationException("Il manque le modèle cible pour l'analyse des scopes");
         }
         $this->checked = 0;
@@ -31,10 +31,11 @@ class Scopes
 
         foreach ($this->scopes as $scope) {
             $this->checked++;
-            $model = $this->target;
+            $model = $this->model;
             if (!$scope['self']) {
                 $model = $this->getStringModelRelation($model, $scope['target']);
             }
+            //trace_log($scope['scopeKey']);
             switch ($scope['scopeKey']) {
                 case 'model_value':
                     $ck = $this->getSingleValueValidation($model, $scope);
@@ -105,6 +106,8 @@ class Scopes
                         $this->checkedOK++;
                     }
                     break;
+                default:
+                    return true;
             }
         }
 
@@ -143,7 +146,9 @@ class Scopes
     }
     private function getRelationValidation($model, $scope)
     {
+        //trace_log('getRelationValidation');
         $relation = $scope['scope_relation'] ?? false;
+        //trace_log($relation);
         if (!$relation) {
             return false;
         }

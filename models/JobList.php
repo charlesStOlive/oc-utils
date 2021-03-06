@@ -77,39 +77,4 @@ class JobList extends Model
     /**
      * GETTER
      */
-
-    public function getDateDiffAttribute()
-    {
-        if (!$this->started_at) {
-            return null;
-        }
-        if (!$this->end_at) {
-            return null;
-        }
-        return $this->started_at->diffInSeconds($this->end_at);
-    }
-
-    /**
-     * Scopes
-     */
-    public function scopeOnlyUser($query, $filter = true)
-    {
-        $user = \BackendAuth::getUser();
-        if (!$user || !$filter) {
-            return $query;
-        }
-        return $query->where('user_id', $user->id);
-    }
-    public function scopeState($query, $state)
-    {
-        if ($state == 'end') {
-            return $query->where('state', 'Terminé');
-        }
-        if ($state == 'error') {
-            return $query->where('state', 'Erreur');
-        }
-        if ($state == 'run') {
-            return $query->whereIn('state', ['En cours', 'Attente']);
-        }
-    }
 }

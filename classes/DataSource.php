@@ -81,7 +81,6 @@ class DataSource
 
         $this->publications = $config['publications'] ?? [];
 
-        //
         $config = null;
         //
     }
@@ -116,7 +115,7 @@ class DataSource
      * TRAVAIL SUR LES PRODUCTOR
      */
 
-    public function getPartialOptions($modelId = null, $productorModel)
+    public function getProductorOptions($productorModel, $modelId = null)
     {
 
         $documents = $productorModel::where('data_source', $this->code);
@@ -414,5 +413,26 @@ class DataSource
     public function getConfigValue($key)
     {
         return $this->config[$key];
+    }
+
+    public function getPublicationsType()
+    {
+        return $this->publications['types'];
+    }
+
+    public function getPublicationsTypeLabel($key)
+    {
+        return $this->publications['types'][$key] ?? 'Inconnu';
+    }
+
+    public function getPublicationsFromType($class)
+    {
+        //Si il y a un point c est un attach many ou attachone
+        $classIsNotProductor = strpos($class, '.');
+        if (!$classIsNotProductor) {
+            return $this->getPartialIndexOptions($class);
+        } else {
+            return null;
+        }
     }
 }

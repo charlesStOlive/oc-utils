@@ -8,3 +8,7 @@
     - 'Ajout des systhemes user et usercreateable'
     - create_user_creator_table.php
     - create_user_on_table.php
+1.0.4:
+    - 'Suppresiondes jobs, deplacé dans wakajob'
+    - create_user_creator_table.php
+    - create_user_on_table.php

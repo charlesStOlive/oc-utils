@@ -90,8 +90,8 @@ class DuplicateModel extends ControllerBehavior
         //$relationsManyToMany = new Collection($this->getConfig('duplication[relationsManyToMany]'));
 
         $modelClass = $this->getConfig('modelClass');
-        trace_log($this->getConfig('modelClass'));
-        trace_log(post('modelId'));
+        //trace_log($this->getConfig('modelClass'));
+        //trace_log(post('modelId'));
         $sourceModel = $modelClass::find(post('modelId'));
         $cloneModel = $sourceModel->replicate();
 

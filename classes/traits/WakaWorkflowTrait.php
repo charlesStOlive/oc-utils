@@ -135,7 +135,7 @@ trait WakaWorkflowTrait
             $places = $workflow->getDefinition()->getPlaces();
             $place = array_key_first($places);
         }
-        trace_log($place);
+        //trace_log($place);
         $label = $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['label'] ?? $place; // string place name
         return Lang::get($label);
     }

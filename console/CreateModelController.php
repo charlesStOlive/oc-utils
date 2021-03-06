@@ -234,7 +234,7 @@ class CreateModelController extends GeneratorCommand
             }
         }
 
-        trace_log($this->maker);
+        //trace_log($this->maker);
 
         $importExcel = new \Waka\Utils\Classes\Imports\ImportModelController($this->w_model);
         \Excel::import($importExcel, plugins_path('wcli/wconfig/updates/files/' . $fileName . '.xlsx'));
@@ -578,7 +578,7 @@ class CreateModelController extends GeneratorCommand
         //travail sur les deifferents coules key attribute
         foreach ($parts as $part) {
             $key_att = explode('.', $part);
-            trace_log($key_att);
+            //trace_log($key_att);
             $options[$key_att[0]] = $key_att[1];
         }
         return $options;

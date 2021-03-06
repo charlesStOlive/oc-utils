@@ -159,17 +159,7 @@ class Plugin extends PluginBase
             return new \League\Flysystem\Filesystem($adapter);
         });
 
-        /**
-         * POur le copier coller
-         */
-        Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
-            $controller->addCss('/plugins/waka/utils/assets/css/notification.css');
-            $user = \BackendAuth::getUser();
-            if ($user->hasAccess('waka.jobList.*') && Settings::get('activate_task_btn')) {
-                $pluginUrl = url('/plugins/waka/utils');
-                \Block::append('body', '<script type="text/javascript" src="' . $pluginUrl . '/assets/js/backendnotifications.js"></script>');
-            }
-        });
+        
 
         \Event::listen('backend.menu.extendItems', function ($navigationManager) {
             //trace_log($navigationManager->getActiveMainMenuItem());
@@ -199,97 +189,7 @@ class Plugin extends PluginBase
                 return View::make('waka.utils::rapidLinks')->withLinks($model->rapidLinks);
             }
         });
-        // Event::listen('backend.top.update', function ($controller) {
-        //     if (in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement)) {
-        //         $model = $controller->formGetModel();
-        //         return View::make('waka.utils::duplicatebutton')->withId($model->id);
-        //     }
-
-        // });
-        // Event::listen('popup.actions.tools', function ($controller, $model, $id) {
-        //     if (in_array('Waka.Utils.Behaviors.DuplicateModel', $controller->implement)) {
-        //         return View::make('waka.utils::duplicatebuttoncontent')->withId($id);
-        //     }
-
-        // });
-        // Event::listen('backend.top.index', function ($controller) {
-        //     $user = \BackendAuth::getUser();
-        //     //trace_log($user->hasAccess('waka.importexport.imp.*'));
-
-        //     // if (!$user->hasAccess('waka.importexport.imp.*')) {
-        //     //     //trace_log("false");
-        //     //     return;
-        //     // }
-        //     //trace_log("ok");
-        //     if (in_array('Waka.Utils.Behaviors.TraitementsLots', $controller->implement)) {
-        //         return View::make('waka.utils::lotsbutton');
-        //     }
-        // });
-        Event::listen('job.create.*', function ($event, $params) {
-            $userId = \BackendAuth::getUser()->id;
-            $jobId = $params[0];
-            $name = $params[1];
-            $joblist = new Models\JobList();
-            $joblist->id = $jobId;
-            $joblist->user_id = $userId;
-            $joblist->name = $name;
-            $joblist->state = 'Attente';
-            $joblist->save();
-        });
-
-        // Ecouteur de job et enregistrement
-        Event::listen('job.start.*', function ($event, $params) {
-            $job = $params[0];
-            $name = $params[1];
-            //trace_log("evenement job.start");
-            //trace_log($job->getJobId());
-            //trace_log($name);
-            $id = $job->getJobId();
-            $joblist = Models\JobList::find($id);
-            if (!$joblist) {
-                return;
-            }
-
-            if ($name) {
-                $joblist->name = $name;
-            }
-            $joblist->payload = $job->payload();
-            $joblist->attempts = $job->attempts();
-            $joblist->state = 'En cours';
-            $joblist->started_at = date("Y-m-d H:i:s");
-            $joblist->save();
-        });
-        Event::listen('job.end.*', function ($event, $params) {
-            $job = $params[0];
-            $id = $job->getJobId();
-            $joblist = Models\JobList::find($id);
-            if (!$joblist) {
-                return;
-            }
-
-            $joblist->end_at = date("Y-m-d H:i:s");
-            $joblist->state = 'Terminé';
-            $joblist->save();
-        });
-        \Queue::failing(function ($jobFailed) {
-            $id = $jobFailed->job->getJobId();
-            $joblist = Models\JobList::find($id);
-            if (!$joblist) {
-                /* */trace_log("job inconnu! : " . $jobFailed->job->getJobId());
-                return;
-            }
-            $joblist->end_at = date("Y-m-d H:i:s");
-            $joblist->state = 'Erreur';
-            $joblist->errors = $jobFailed->exception;
-
-            $joblist->save();
-            //
-        });
-        // Event::listen('job.error.*', function ($error) {
-        //     //trace_log("Listen : job.error.*");
-        //     //trace_log($error);
-        // });
-
+        
         /**
          * POUR LE WORKFLOW COLUMN
          */
@@ -359,23 +259,6 @@ class Plugin extends PluginBase
 
     public function registerNavigation()
     {
-        $showNotification = true;
-
-        if (!Settings::get('activate_task_btn')) {
-            return [];
-        }
-
-        return [
-            'notification' => [
-                'label' => Lang::get("waka.utils::lang.menu.job_list_s"),
-                'url' => Backend::url('waka/utils/joblists'),
-                'icon' => 'icon-refresh',
-                'order' => 500,
-                'counter' => 0,
-                'permissions' => ['waka.jobList.*'],
-                'counterLabel' => Lang::get('waka.utils::lang.joblist.btn_counter_label'),
-            ],
-        ];
     }
 
     /**
