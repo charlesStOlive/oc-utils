@@ -87,6 +87,9 @@ class DataSource
 
     public function instanciateModel($id = null)
     {
+        if ($this->model) {
+            return;
+        }
         if ($id) {
             $this->model = $this->class::find($id);
         } elseif ($this->testId) {
@@ -343,7 +346,7 @@ class DataSource
         return $fn->getFunctionsOutput($fnc);
     }
     /**
-     * retourne simplement le function class. mis en fonction pour ajouter l'application exeption sans nuire à la lisibitilé de la fonction getFunctionsCollections
+     * retourn simplement le function class. mis en fonction pour ajouter l'application exeption sans nuire à la lisibitilé de la fonction getFunctionsCollections
      */
     public function getFunctionClass()
     {

@@ -149,6 +149,7 @@ class Scopes
         //trace_log('getRelationValidation');
         $relation = $scope['scope_relation'] ?? false;
         //trace_log($relation);
+        //trace_log($model->{$relation});
         if (!$relation) {
             return false;
         }
