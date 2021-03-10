@@ -17,7 +17,7 @@ class {{studly_ctname}}Import implements ToCollection, WithHeadingRow
             ${{name}}->{{excel.var}}_id = $row['{{excel.var}}_id'] ?? null;
 {% elseif excel.json %}
             ${{name}}->{{excel.var}} = json_decode($row['{{excel.var}}'] ?? null);
-{% else %}
+{% elseif excel.type is not null %}
             ${{name}}->{{excel.var}} = $row['{{excel.var}}'] ?? null;
 {% endif %}
 {% endfor %}

@@ -50,9 +50,12 @@ columns:
         searchable: false
         sortable: false
         width: 25px
-{% elseif column.type is null and column.attribute is not null and column.relation is null  %}
+{% elseif column.type is null and column.relation is null  %}
         searchable: false
         sortable: false
+{% if column.field_type %}
+        type: {{column.field_type}}
+{% endif %}
 {% else %}
         searchable: true
 {% endif %}

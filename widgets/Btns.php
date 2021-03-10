@@ -70,7 +70,7 @@ class Btns extends WidgetBase
         if (!$secondaryLabel) {
             $toolBar = $this->config->tool_bar;
         } else {
-            $toolBar = $this->config->tool_bar['base']['secondary'][$secondaryLabel] ?? false;
+            $toolBar = $this->config->tool_bar['secondary'][$secondaryLabel] ?? false;
             if (!$toolBar) {
                 throw new \ApplicationException('La bare secondary est mal configure dans config_btns');
             }

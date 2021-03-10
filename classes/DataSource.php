@@ -40,6 +40,9 @@ class DataSource
     {
         $globalConfig = new Collection($this->getSrConfig());
         $config = $globalConfig->where($type_id, $id)->first();
+        if(!$config) {
+            throw new ApplicationException("La configuration n' a pas été trouvé pour la clef :  ".$id." du type ".$type_id);
+        }
         //
         $this->config = $config;
         //
@@ -52,7 +55,7 @@ class DataSource
 
         $this->code = $config['code'] ?? $this->lowerName;
         if (!$this->class) {
-            throw new ApplicationException('Erreur data source model');
+            throw new ApplicationException('Erreur data source model class non défini');
         }
         //$this->id = $config['id'];
         $this->code = $config['code'];

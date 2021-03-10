@@ -75,6 +75,8 @@ return [
         "prompt_record" => "Cliquez sur l'icône pour choisir un enregistrement",
         "find_record" => "Trouver un enregistrement",
         "settings" => "Réglages",
+        "btn_add_row" => "Ajouter une ligne",
+        "btn_delete_row" => "Supprimer une ligne"
 
     ],
     'datasource' => [

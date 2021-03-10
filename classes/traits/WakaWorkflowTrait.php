@@ -18,6 +18,7 @@ trait WakaWorkflowTrait
              */
 
             array_push($model->appends, 'wfPlaceLabel');
+            array_push($model->purgeable, 'change_state');
 
             $model->morphMany['state_logs'] = [
                 'Waka\Utils\Models\StateLog',
