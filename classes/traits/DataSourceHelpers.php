@@ -8,6 +8,9 @@ trait DataSourceHelpers
     }
     public function listDataSourceTarget()
     {
+        if(!$this->data_source) {
+            return [];
+        }
         //trace_log($this->data_source);
         $ds = new \Waka\Utils\Classes\DataSource($this->data_source);
         $class = new $ds->class;

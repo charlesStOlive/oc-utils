@@ -35,7 +35,9 @@ class SidebarAttributes extends WidgetBase
 
     public function render()
     {
-        //trace_log('render');
+        if(!$this->model->has_ds) {
+            return $this->makePartial('empty');
+        }
         $this->dataSource = new DataSource($this->model->data_source);
 
         $this->vars['text_info'] = $this->text_info;

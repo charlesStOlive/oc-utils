@@ -24,8 +24,11 @@ trait WakaWorkflowTrait
                 'Waka\Utils\Models\StateLog',
                 'name' => 'state_logeable',
                 'table' => 'waka_utils_state_logeable',
-                'delete' => true,
             ];
+
+            $model->bindEvent('model.beforeDelete', function () use ($model) {
+                $model->state_logs()->delete();
+            });
 
             $model->bindEvent('model.beforeValidate', function () use ($model) {
                 $changeState = $model->change_state;
