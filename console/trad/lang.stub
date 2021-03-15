@@ -1,0 +1,30 @@
+<?php
+return [
+{% for key,trad in data  %}
+{% if trad is iterable %}
+    '{{key|trim}}' => [
+{% for s_key,s_trad in trad  %}
+{% if s_trad is iterable %}
+        '{{s_key|trim}}' => [
+{% for s_s_key,s_s_trad in s_trad  %}
+{% if s_s_trad is iterable %}
+            '{{s_s_key|trim}}' => [
+{% for s_s_s_key,s_s_s_trad in s_s_trad  %}
+                '{{s_s_s_key|trim}}' => "{{s_s_s_trad|trim}}",
+{% endfor %}
+            ],
+{% else %}
+            '{{s_s_key|trim}}' => "{{s_s_trad|trim}}",
+{% endif %}
+{% endfor %}
+        ],
+{% else %}
+        '{{s_key|trim}}' => "{{s_trad|trim}}",
+{% endif %}
+{% endfor %}
+    ],
+{% else %}
+    '{{key|trim}}' => "{{trad|trim}}",
+{% endif %}
+{% endfor %}    
+];
