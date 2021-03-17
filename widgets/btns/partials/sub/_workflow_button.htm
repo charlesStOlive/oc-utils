@@ -9,23 +9,27 @@
             data-dropdown-title="lien rapide">
 
             <?php foreach ($transitions as $key => $trans): ?>
-            <li role="presentation"><a href="javascript:;"
+            <li role="presentation">
+                <a href="javascript:;"
                    role="menuitem"
                    tabindex="-1"
                    data-request="onSave"
                    data-request-data="change_state:'<?= e($trans['value']) ?>';refresh:1"
-                   data-load-indicator="
-               <?= e(trans('waka.utils::lang.global.save_indicator')) ?>"
-                   data-toggle="dropdown"><?= e($trans['label']) ?></a></li>
+                   <?php if ($trans['com']) : ?>data-request-confirm=" <?= e(trans($trans['com']))?>" <?php endif ?>
+                   data-load-indicator="<?= e(trans('waka.utils::lang.global.save_indicator')) ?>"
+                   data-toggle="dropdown">
+                    <?= e($trans['label']) ?>
+                </a>
+            </li>
             <?php endforeach ?>
             <li role="presentation"><a href="javascript:;"
                    role="menuitem"
                    tabindex="-1"
                    data-request="onSave"
-                   data-request-data="change_state:''"
+                   data-request-data=" change_state:''"
                    data-load-indicator="
          <?= e(trans('waka.utils::lang.global.save_indicator')) ?>"
-                   data-toggle="dropdown"><b><?= e(trans('waka.utils::lang.workflow.no_state_change')) ?></b></a></li>
+                   data-toggle="dropdown"><b><?= e(trans('waka.utils::lang.workflow.no_state_change')) ?> </b></a></li>
         </ul>
     </div>
 </div>

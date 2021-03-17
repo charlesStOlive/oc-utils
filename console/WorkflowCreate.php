@@ -85,11 +85,22 @@ class WorkflowCreate extends GeneratorCommand
 
         $this->wk_model = $model = $this->argument('model');
 
-        $fileName = 'workflow';
+        $fileName = 'start';
 
-        if ($this->option('file')) {
-            $fileName = $this->option('file');
+        if ($this->argument('src')) {
+            $fileName = $this->argument('src');
         }
+        $startPath = null;
+        trace_log($this->w_author);
+        if($this->w_author == 'waka') {
+            $startPath = env('SRC_WAKA');
+        } 
+        if($this->w_author == 'wcli') {
+            trace_log(env('SRC_WCLI','merde'));
+            $startPath = env('SRC_WCLI');
+        }
+
+        $filePath =  $startPath.'/'.$fileName.'.xlsx';
 
         if ($this->option('option')) {
             $this->remover = [
@@ -172,6 +183,7 @@ class WorkflowCreate extends GeneratorCommand
             ['name', InputArgument::REQUIRED, 'The name of the workflow'],
             ['plugin', InputArgument::REQUIRED, 'The name of the plugin. Eg: RainLab.Blog'],
             ['model', InputArgument::REQUIRED, 'The name of the model. Eg: Post'],
+            ['src', InputArgument::REQUIRED, 'The name of the model. Eg: Post'],
         ];
     }
 
@@ -185,7 +197,6 @@ class WorkflowCreate extends GeneratorCommand
         return [
             ['force', null, InputOption::VALUE_NONE, 'Overwrite existing files with generated ones.'],
             ['option', null, InputOption::VALUE_NONE, 'Crée uniquement le model'],
-            ['file', null, InputOption::VALUE_REQUIRED, 'Fichier'],
         ];
     }
 }

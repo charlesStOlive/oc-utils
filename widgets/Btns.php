@@ -176,9 +176,11 @@ class Btns extends WidgetBase
             if (!$hidden) {
                 $name = $transition->getName();
                 $label = $workflowMetadata->getMetadata('label', $transition) ?? $name;
+                $com = $workflowMetadata->getMetadata('com', $transition) ?? null;
                 $object = [
                     'value' => $name,
                     'label' => \Lang::get($label),
+                    'com' => $com,
                 ];
                 array_push($objTransition, $object);
             }

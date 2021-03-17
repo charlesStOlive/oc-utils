@@ -17,6 +17,7 @@ class Workflow extends FormWidgetBase
     public $stateFrom = "state";
     public $workflow;
     public $workflowMetadata;
+    public $mode = "edit";
 
     /**
      * @inheritDoc
@@ -25,7 +26,7 @@ class Workflow extends FormWidgetBase
     {
         $this->fillFromConfig([
             'output',
-            'type',
+            'mode',
             'workflowName',
             'stateFrom',
         ]);
@@ -37,7 +38,11 @@ class Workflow extends FormWidgetBase
     public function render()
     {
         $this->prepareVars();
-        return $this->makePartial('workflow');
+        if($this->mode == "read") {
+            return $this->makePartial('read');
+        } else {
+            return $this->makePartial('workflow');
+        }
     }
 
     /**
@@ -142,6 +147,11 @@ class Workflow extends FormWidgetBase
      */
     public function getSaveValue($value)
     {
-        return $value;
+        if($this->mode == "edit") {
+            return $value;
+        } else {
+            return \Backend\Classes\FormField::NO_SAVE_DATA;
+        }
+        
     }
 }

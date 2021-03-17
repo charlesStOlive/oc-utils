@@ -177,6 +177,7 @@ class CreateModelController extends GeneratorCommand
      */
     protected function prepareVars()
     {
+        trace_log("start");
         $pluginCode = $this->argument('plugin');
 
         $parts = explode('.', $pluginCode);
@@ -190,9 +191,20 @@ class CreateModelController extends GeneratorCommand
 
         $fileName = 'start';
 
-        if ($this->option('file')) {
-            $fileName = $this->option('file');
+        if ($this->argument('src')) {
+            $fileName = $this->argument('src');
         }
+        $startPath = null;
+        trace_log($this->w_author);
+        if($this->w_author == 'waka') {
+            $startPath = env('SRC_WAKA');
+        } 
+        if($this->w_author == 'wcli') {
+            trace_log(env('SRC_WCLI','merde'));
+            $startPath = env('SRC_WCLI');
+        }
+
+        $filePath =  $startPath.'/'.$fileName.'.xlsx';
 
         $this->maker = [
             'model' => true,
@@ -237,7 +249,7 @@ class CreateModelController extends GeneratorCommand
         //trace_log($this->maker);
 
         $importExcel = new \Waka\Utils\Classes\Imports\ImportModelController($this->w_model);
-        \Excel::import($importExcel, plugins_path('wcli/wconfig/updates/files/' . $fileName . '.xlsx'));
+        \Excel::import($importExcel, $filePath);
         $rows = new Collection($importExcel->data->data);
         $this->config = $importExcel->config->data;
 
@@ -660,6 +672,7 @@ class CreateModelController extends GeneratorCommand
         return [
             ['plugin', InputArgument::REQUIRED, 'The name of the plugin. Eg: RainLab.Blog'],
             ['model', InputArgument::REQUIRED, 'The name of the model. Eg: Post'],
+            ['src', InputArgument::REQUIRED, 'The name of the model. Eg: Post'],
         ];
     }
 
