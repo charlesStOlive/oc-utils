@@ -4,12 +4,12 @@ return [
 {% for trad in trads  %}
     '{{trad.var}}' => "{{trad.name | raw }}",
 {% if trad.comment is not null %}
-    '{{trad.var}}_com' => '{{trad.comment | raw}}',
+    '{{trad.var}}_com' => "{{trad.comment | raw}}",
 {% endif %}
 {% endfor %}
     'e' => [
 {% for key,error in errors %}
-        '{{key}}' => '{{error | raw}}',
+        '{{key}}' => "{{error | raw}}",
 {% endfor %}
     ],     
 ];

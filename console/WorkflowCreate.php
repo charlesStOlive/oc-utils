@@ -91,11 +91,10 @@ class WorkflowCreate extends GeneratorCommand
             $fileName = $this->argument('src');
         }
         $startPath = null;
-        trace_log($this->w_author);
-        if($this->w_author == 'waka') {
+        if($this->wk_author == 'waka') {
             $startPath = env('SRC_WAKA');
         } 
-        if($this->w_author == 'wcli') {
+        if($this->wk_author == 'wcli') {
             trace_log(env('SRC_WCLI','merde'));
             $startPath = env('SRC_WCLI');
         }
@@ -122,7 +121,7 @@ class WorkflowCreate extends GeneratorCommand
         }
 
         $importExcel = new \Waka\Utils\Classes\Imports\ImportWorkflow($name);
-        \Excel::import($importExcel, plugins_path('wcli/wconfig/updates/files/' . $fileName . '.xlsx'));
+        \Excel::import($importExcel, $filePath);
         $places = new Collection($importExcel->places->data);
         $trans = new Collection($importExcel->trans->data);
         $config = new Collection($importExcel->config->data);
