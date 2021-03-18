@@ -16,7 +16,10 @@ fields:
         mode: image
         imageHeight: 100
         imageWidth: 260
-{% elseif field.field_type and (field.field_type == 'attachMany' or field.field_type == 'attachOne')  %}
+{% elseif field.field_type and (field.field_type == 'fileupload')  %}
+        type: fileupload
+        mode: file
+{% elseif field.field_type and (field.field_type == 'imgupload')  %}
         type: fileupload
         mode: image
         imageHeight: 260

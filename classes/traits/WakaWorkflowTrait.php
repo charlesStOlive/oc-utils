@@ -41,7 +41,7 @@ trait WakaWorkflowTrait
                         //trace_log($rules);
                         $validation = \Validator::make($model->toArray(), $rules['fields'] ?? [], Lang::get($rules['messages']));
                         if ($validation->fails()) {
-                            //trace_log($validation->messages());
+                            trace_log($validation->messages());
                             throw new \ValidationException(['state_change' => $validation->messages()->first()]);
                         }
                     }

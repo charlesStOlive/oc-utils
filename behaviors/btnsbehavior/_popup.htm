@@ -18,7 +18,7 @@
     <div class="control-toolbar">
         <div class="toolbar-item toolbar-primary">
             <div id="actionProd">
-                <?= $this->btnsWidget->renderBar('list', $modelId) ?>
+                <?= $this->btnsWidget->renderBar('update','list', $modelId) ?>
             </div>
         </div>
     </div>
@@ -30,12 +30,12 @@
 <?= Form::close() ?>
 
 <script type="text/javascript">
-    // $(document).ready(function () {  
-    // if(!$('#actionTools').find('.btn-group').children().length) {
-    //     $( "#actionTools" ).remove();
-    // }
-    // if(!$('#actionProd').find('.btn-group').children().length) {
-    //     $( "#actionProd" ).remove();
-    // }
+// $(document).ready(function () {  
+// if(!$('#actionTools').find('.btn-group').children().length) {
+//     $( "#actionTools" ).remove();
+// }
+// if(!$('#actionProd').find('.btn-group').children().length) {
+//     $( "#actionProd" ).remove();
+// }
 });
 </script>

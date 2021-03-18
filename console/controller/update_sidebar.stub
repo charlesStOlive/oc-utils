@@ -12,7 +12,7 @@
 </div>
 <div class="form-buttons">
     <div class="loading-indicator-container">
-        <?= $this->btnsWidget->renderBar() ?>
+        <?= $this->btnsWidget->renderBar('update') ?>
     </div>
 </div>
 <?php Block::endPut() ?>

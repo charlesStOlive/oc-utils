@@ -1,6 +1,6 @@
 <div class="loading-indicator-container">
     <!-- AFFICHE LE WORKFLOW SI ATIVE SINON LES BOUTON CLASSIQUE -->
-    <?= $this->renderWorkflowOrBtn() ?>
+    <?= $this->renderWorkflowOrBtn($context) ?>
     <?php if($btns) : ?>
     <!--SI IL Y A DES BOUTONS -->
     <?php foreach($btns as $btn) : ?>

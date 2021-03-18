@@ -14,17 +14,21 @@ class Btns extends WidgetBase
     public $model;
     public $fields;
     public $format;
+    public $context;
+    public $user;
 
-    public function prepareComonVars()
+    public function prepareComonVars($context)
     {
+        $this->context = $context;
+        $this->vars['context'] = $this->context;
         $this->vars['modelClass'] = str_replace('\\', '\\\\', $this->config->modelClass);
-        $this->vars['user'] = \BackendAuth::getUser();
+        $this->vars['user'] = $this->user = \BackendAuth::getUser();
         $this->vars['hasWorkflow'] = $this->config->workflow;
     }
 
-    public function renderBar($mode = 'update', $modelId = null)
+    public function renderBar($context = 'update', $mode = 'update', $modelId = null)
     {
-        $this->prepareComonVars();
+        $this->prepareComonVars($context);
         $configBtns = $this->config->action_bar['config_btns'] ?? null;
         $this->vars['mode'] = $mode;
         $this->vars['partials'] = $this->config->action_bar['partials'] ?? null;
@@ -40,21 +44,21 @@ class Btns extends WidgetBase
         }
     }
 
-    public function renderWorkflowOrBtn()
+    public function renderWorkflowOrBtn($context = null)
     {
-        $this->prepareComonVars();
+        $this->prepareComonVars($context);
         $hasWorkflow = $this->config->workflow;
         if ($hasWorkflow) {
             $this->vars['transitions'] = $this->getWorkFlowTransitions();
-            return $this->makePartial('sub/workflow_button');
+            return $this->makePartial('sub/workflow_part');
         } else {
             return $this->makePartial('sub/base_buttons');
         }
     }
 
-    public function renderBreadcrump()
+    public function renderBreadcrump($context = null)
     {
-        $this->prepareComonVars();
+        $this->prepareComonVars($context);
         if ($this->config->breadcrump) {
             $this->vars['breadcrump'] = $this->config->breadcrump;
             return $this->makePartial('breadcrump');
@@ -63,9 +67,9 @@ class Btns extends WidgetBase
         }
     }
 
-    public function renderToolBar($secondaryLabel = false)
+    public function renderToolBar($context = null, $secondaryLabel = false)
     {
-        $this->prepareComonVars();
+        $this->prepareComonVars($context);
         $toolBar = null;
         if (!$secondaryLabel) {
             $toolBar = $this->config->tool_bar;
@@ -76,12 +80,32 @@ class Btns extends WidgetBase
             }
         }
         //trace_log($toolBar);
-        $this->vars['base'] = $toolBar['base'] ?? false;
+        $base = $toolBar['base'] ?? false;
+        if($base) {
+            $base = $this->getPermissions($base);
+            trace_log($base);
+        }
+        $this->vars['base'] = $base;
         $this->vars['isLot'] = true;
         $this->vars['hasLot'] = $toolBar['config_lot']['btns'] ?? false;
         $this->vars['partials'] = $toolBar['partials'] ?? null;
         $this->vars['btns'] = $this->getBtns($toolBar['config_btns'] ?? null);
         return $this->makePartial('tool_bar');
+    }
+    private function getPermissions($btns) {
+        $btnWithPermission = [];
+        foreach($btns as $key=>$btn) {
+            $permissionGranted = false;
+            $permission = $btn['permissions'] ?? null;
+            if(!$permission) {
+               $permissionGranted = true;
+            } else {
+                $permissionGranted = $this->user->hasAccess($permission);
+            }
+            $btn['permissions']  = $permissionGranted;
+            $btnWithPermission[$key] = $btn;
+        }
+        return $btnWithPermission;
     }
 
     public function renderLot()
@@ -95,6 +119,9 @@ class Btns extends WidgetBase
 
     public function getBtns($configurator)
     {
+        if($this->context != 'update') {
+            return [];
+        }
         if (!$configurator) {
             return null;
         }
