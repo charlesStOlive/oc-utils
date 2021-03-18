@@ -16,7 +16,6 @@ columns:
         label: waka.utils::lang.global.sort_order
         invisible: true
 {% endif %}
-
 {% for column in columns  %}
 {% if column.morphone %}
     {{column.var}}_r:
@@ -40,7 +39,7 @@ columns:
 {% elseif column.type == 'date' %}
         type: date
         ignoreTimezone: true
-{% elseif column.field_type == 'workflow' %}
+{% elseif column.field_type == 'workflow' or column.attribute == 'workflow'  %}
         type: workflow
         searchable: true
 {% elseif column.field_type == 'action' %}
