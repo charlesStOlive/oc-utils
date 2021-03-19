@@ -177,7 +177,7 @@ class CreateModelController extends GeneratorCommand
      */
     protected function prepareVars()
     {
-        trace_log("start");
+        //trace_log("start");
         $pluginCode = $this->argument('plugin');
 
         $parts = explode('.', $pluginCode);
@@ -195,12 +195,12 @@ class CreateModelController extends GeneratorCommand
             $fileName = $this->argument('src');
         }
         $startPath = null;
-        trace_log($this->w_author);
+        //trace_log($this->w_author);
         if($this->w_author == 'waka') {
             $startPath = env('SRC_WAKA');
         } 
         if($this->w_author == 'wcli') {
-            trace_log(env('SRC_WCLI','merde'));
+            //trace_log(env('SRC_WCLI','merde'));
             $startPath = env('SRC_WCLI');
         }
 

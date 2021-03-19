@@ -108,7 +108,7 @@ class PluginTrad extends GeneratorCommand
             $content = include $file;
             $tradContent = include $fileLangName;
             $content = $this->array_diff_key_recursive($content, $tradContent);
-            trace_log($content);
+            //trace_log($content);
         } else {
             $content = new Collection(include $file);
         }

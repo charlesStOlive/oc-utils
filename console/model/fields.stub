@@ -106,4 +106,7 @@ fields:
 {% if field.permissions  %}
         permissions: [{{field.permissions}}]
 {% endif %}
+{% if field.tab  %}
+            tab: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.tab}}
+{% endif %}
 {% endfor %}

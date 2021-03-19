@@ -95,7 +95,7 @@ class WorkflowCreate extends GeneratorCommand
             $startPath = env('SRC_WAKA');
         } 
         if($this->wk_author == 'wcli') {
-            trace_log(env('SRC_WCLI','merde'));
+            //trace_log(env('SRC_WCLI','merde'));
             $startPath = env('SRC_WCLI');
         }
 
@@ -118,6 +118,8 @@ class WorkflowCreate extends GeneratorCommand
                     unset($this->stubs[$key]);
                 }
             }
+        } else {
+           unset($this->stubs['workflow/listener.stub']); 
         }
 
         $importExcel = new \Waka\Utils\Classes\Imports\ImportWorkflow($name);

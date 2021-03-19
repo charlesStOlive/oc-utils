@@ -423,6 +423,10 @@ class DataSource
 
     public function getPublicationsType()
     {
+        $publications = $this->publications['types'] ?? false;
+        if(!$publications) {
+             throw new \ApplicationException("Il manque la configuration des publications dans le datasource");
+        }
         return $this->publications['types'];
     }
 

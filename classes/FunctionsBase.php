@@ -45,13 +45,13 @@ class FunctionsBase
         $valeursExtended = [];
         $valeurs = [];
         if (!$atttributes) {
-            throw new SystemException("Erreur attributs d'une fonction d'édition");
+            throw new \SystemException("Erreur attributs d'une fonction d'édition");
         }
         if ($atttributes['extend'] ?? false) {
             $extendedFunction = $atttributes['extend'];
             $atttributesExtended = $functions[$extendedFunction][$searchedKey] ?? null;
             if (!$atttributesExtended) {
-                throw new SystemException("Erreur attributs d'une fonction d'édition étendu");
+                throw new \SystemException("Erreur attributs d'une fonction d'édition étendu");
             }
             $valeursExtended = $this->recursiveSearchDynamicValue($atttributesExtended);
             unset($atttributes['extend']);

@@ -83,7 +83,7 @@ class Btns extends WidgetBase
         $base = $toolBar['base'] ?? false;
         if($base) {
             $base = $this->getPermissions($base);
-            trace_log($base);
+            //trace_log($base);
         }
         $this->vars['base'] = $base;
         $this->vars['isLot'] = true;
@@ -96,12 +96,15 @@ class Btns extends WidgetBase
         $btnWithPermission = [];
         foreach($btns as $key=>$btn) {
             $permissionGranted = false;
+            
             $permission = $btn['permissions'] ?? null;
+            //trace_log($permission);
             if(!$permission) {
                $permissionGranted = true;
             } else {
                 $permissionGranted = $this->user->hasAccess($permission);
             }
+            //trace_log($permissionGranted);
             $btn['permissions']  = $permissionGranted;
             $btnWithPermission[$key] = $btn;
         }

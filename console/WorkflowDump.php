@@ -67,8 +67,8 @@ class WorkflowDump extends Command
             throw new Exception("Workflow $workflowName is not configured.");
         }
 
-        trace_log($config[$workflowName]['supports']);
-        trace_log($class);
+        //trace_log($config[$workflowName]['supports']);
+        //trace_log($class);
 
 
         if (false === array_search($class, $config[$workflowName]['supports'])) {
