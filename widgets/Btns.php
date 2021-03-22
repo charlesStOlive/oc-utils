@@ -34,6 +34,8 @@ class Btns extends WidgetBase
         $this->vars['partials'] = $this->config->action_bar['partials'] ?? null;
         if ($mode == 'update') {
             $model = $this->controller->formGetModel();
+            trace_log("No role : ".$model->hasNoRole());
+            $this->vars['norole'] = $model->hasNoRole();
             $this->vars['btns'] = $this->getBtns($configBtns);
             $this->vars['modelId'] = $model->id;
             return $this->makePartial('action_bar');
@@ -207,10 +209,12 @@ class Btns extends WidgetBase
                 $name = $transition->getName();
                 $label = $workflowMetadata->getMetadata('label', $transition) ?? $name;
                 $com = $workflowMetadata->getMetadata('com', $transition) ?? null;
+                $redirect = $workflowMetadata->getMetadata('redirect', $transition) ?? null;
                 $object = [
                     'value' => $name,
                     'label' => \Lang::get($label),
                     'com' => $com,
+                    'redirect' => $redirect,
                 ];
                 array_push($objTransition, $object);
             }

@@ -125,6 +125,28 @@ trait WakaWorkflowTrait
         return $rulesSets[$rulesSet] ?? null;
     }
 
+    public function hasNoRole() {
+        $user = \BackendAuth::getUser();
+        $place = null;
+        $place = $this->state;
+        if (!$place) {
+            $workflow = $this->workflow_get();
+            $places = $workflow->getDefinition()->getPlaces();
+            $place = array_key_first($places);
+        }
+        trace_log($place);
+
+        $noRoleCode = $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['norole'] ?? []; // string place name
+        trace_log($noRoleCode);
+        trace_log($user->role->code);
+        
+        if(in_array($user->role->code, $noRoleCode))  {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function getWfPlaceLabelAttribute($state_column = null)
     {
         //A faire $state_column pour changer la colonne source de l'etat

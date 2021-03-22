@@ -94,6 +94,7 @@ class TransImport implements ToCollection, WithHeadingRow, WithCalculatedFormula
                 'name' => $row['final_name'] ?? null,
                 'lang' => $row['lang'] ?? null,
                 'com' => $row['com'] ?? null,
+                'redirect' => $row['redirect'] ?? null,
                 'rules' => $row['rules'] ?? null,
                 'permissions' => $row['permissions'] ?? null,
                 'hidden' => $row['hidden'] ?? null,

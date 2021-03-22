@@ -175,9 +175,9 @@ return [
         'state_history' => "Historique des transitions d'états",
     ],
     'workflow' => [
-        'no_state_change' => "Aucune transition",
+        'no_state_change' => "Aucune transitions",
         'btn_workflow' => 'Sauver et appliquer une transition',
-        "state_change_forbidden" => "Chamgement interdit",
+        "state_change_forbidden" => "Modifications et transitions interdites",
         "state" => "Etat",
         "change_state" => "Changer d'état",
         "error_place" => "erreur d'état",

@@ -1,6 +1,10 @@
 <div class="loading-indicator-container">
     <!-- AFFICHE LE WORKFLOW SI ATIVE SINON LES BOUTON CLASSIQUE -->
+    <?php if(!$norole) : ?>
     <?= $this->renderWorkflowOrBtn($context) ?>
+    <?php else : ?>
+    <?= $this->makePartial('sub/no_wf_role');?>
+    <?php endif ?>
     <?php if($btns) : ?>
     <!--SI IL Y A DES BOUTONS -->
     <?php foreach($btns as $btn) : ?>
