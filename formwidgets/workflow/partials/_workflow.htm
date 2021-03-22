@@ -16,7 +16,8 @@
             <h4><?= e(trans('waka.utils::lang.workflow.change_state')) ?></h4>
             <!-- Dropdown -->
             <div class="m-t"><?php if ($this->previewMode || $field->readOnly): ?>
-                <h4 style="color: red;"><?= e(trans('waka.utils::lang.workflow.state_change_forbidden')) ?></h4>
+                <a class="btn btn-default oc-icon-lock" href="#" disabled
+                   role="button"><?=e(trans('waka.utils::lang.workflow.state_change_forbidden'))?></a>
                 <?php else: ?>
                 <select id="<?= $field->getId() ?>"
                         name="<?= $field->getName() ?>"

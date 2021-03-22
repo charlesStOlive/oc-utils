@@ -59,8 +59,9 @@ class Workflow extends FormWidgetBase
         $this->vars['model'] = $this->model;
         $this->formField->options = $this->getWorkFlowOptions();
         $this->vars['field'] = $this->formField;
-        $this->formField->readOnly = $this->getWorkflowNoRole();
-        $this->vars['noRole'] = $this->getWorkflowNoRole();
+        trace_log("No role : ".$this->model->hasNoRole());
+        $this->formField->readOnly = $this->model->hasNoRole();
+        $this->vars['noRole'] = $this->model->hasNoRole();
         //$this->vars['options'] = $this->getWorkFlowData();
         //$this->vars['datas'] = $this->getWorkFlowData();
     }
@@ -100,23 +101,6 @@ class Workflow extends FormWidgetBase
         }
         $label = $this->workflow->getMetadataStore()->getPlaceMetadata($place)[$type] ?? null; // string place name
         return \Lang::get($label);
-    }
-
-    public function getWorkflowNoRole()
-    {
-        $place = $this->model->state;
-        if (!$place) {
-            $arrayPlaces = $this->workflow->getMarking($this->model)->getPlaces();
-            $place = array_key_first($arrayPlaces);
-        }
-        $noRoles = $this->workflow->getMetadataStore()->getPlaceMetadata($place)['norole'] ?? null; // string place name
-        $user = \BackendAuth::getUser();
-        if ($noRoles) {
-            if (in_array($user->role->code, $noRoles)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public function getWorkFlowOptions()
