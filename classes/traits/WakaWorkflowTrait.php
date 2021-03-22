@@ -134,11 +134,11 @@ trait WakaWorkflowTrait
             $places = $workflow->getDefinition()->getPlaces();
             $place = array_key_first($places);
         }
-        trace_log($place);
+        //trace_log($place);
 
         $noRoleCode = $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['norole'] ?? []; // string place name
-        trace_log($noRoleCode);
-        trace_log($user->role->code);
+        //trace_log($noRoleCode);
+        //trace_log($user->role->code);
         
         if(in_array($user->role->code, $noRoleCode))  {
             return true;

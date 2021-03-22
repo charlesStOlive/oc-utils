@@ -150,7 +150,7 @@ class Plugin extends PluginBase
     public function boot()
     {
         Event::listen('backend.page.beforeDisplay', function($controller, $action, $params) {
-            trace_log('/plugins/waka/utils/assets/css/waka.css');
+            //trace_log('/plugins/waka/utils/assets/css/waka.css');
             $controller->addCss('/plugins/waka/utils/assets/css/waka.css');
         });
 

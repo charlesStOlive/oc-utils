@@ -34,7 +34,7 @@ class Btns extends WidgetBase
         $this->vars['partials'] = $this->config->action_bar['partials'] ?? null;
         if ($mode == 'update') {
             $model = $this->controller->formGetModel();
-            trace_log("No role : ".$model->hasNoRole());
+            //trace_log("No role : ".$model->hasNoRole());
             $this->vars['norole'] = $model->hasNoRole();
             $this->vars['btns'] = $this->getBtns($configBtns);
             $this->vars['modelId'] = $model->id;

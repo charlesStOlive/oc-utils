@@ -32,7 +32,7 @@ class WorkflowBehavior extends ControllerBehavior
         $this->workflowWidget->alias = 'workflow';
         $this->controller = $controller;
         $this->user = $controller->user;
-        trace_log($controller->user);
+        //trace_log($controller->user);
         $this->workflowWidget->model = $controller->formGetModel();
         $this->workflowWidget->config = $this->config = $this->makeConfig($controller->workflowConfig, $this->requiredConfig);
         $this->workflowWidget->bindToController();
