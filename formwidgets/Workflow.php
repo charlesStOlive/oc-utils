@@ -55,6 +55,7 @@ class Workflow extends FormWidgetBase
         $this->vars['name'] = $this->formField->getName();
         $this->vars['value'] = $this->getWorkflowPlaceNameCom();
         $this->vars['com'] = $this->getWorkflowPlaceNameCom('com');
+        $this->vars['icon'] = $this->getWorkflowPlaceNameCom('icon');
         $this->vars['model'] = $this->model;
         $this->formField->options = $this->getWorkFlowOptions();
         $this->vars['field'] = $this->formField;

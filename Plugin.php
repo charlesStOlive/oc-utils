@@ -104,6 +104,7 @@ class Plugin extends PluginBase
         //$this->registerConsoleCommand('waka.workflowOnline', 'Waka\Utils\Console\WorkflowOnlineCreate');
         $this->registerConsoleCommand('waka.workflowOnlineCreate', 'Waka\Utils\Console\WorkflowOnlineDump');
         CombineAssets::registerCallback(function ($combiner) {
+            $combiner->registerBundle('$/waka/utils/assets/css/waka.less');
             $combiner->registerBundle('$/wcli/wconfig/assets/css/simple_grid/pdf.less');
             $combiner->registerBundle('$/wcli/wconfig/assets/css/simple_grid/email.less');
         });
@@ -148,6 +149,10 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
+        Event::listen('backend.page.beforeDisplay', function($controller, $action, $params) {
+            trace_log('/plugins/waka/utils/assets/css/waka.css');
+            $controller->addCss('/plugins/waka/utils/assets/css/waka.css');
+        });
 
         \Storage::extend('utils_gd_backup', function ($app, $config) {
             $client = new \Google_Client();

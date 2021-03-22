@@ -1,0 +1,347 @@
+@import "variables";
+
+@font-face {
+  font-family: '@{icomoon-font-family}';
+  src:
+    url('@{icomoon-font-path}/@{icomoon-font-family}.ttf?b2x5pb') format('truetype'),
+    url('@{icomoon-font-path}/@{icomoon-font-family}.woff?b2x5pb') format('woff'),
+    url('@{icomoon-font-path}/@{icomoon-font-family}.svg?b2x5pb#@{icomoon-font-family}') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block}
+
+[class^="wicon-"], [class*=" wicon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: '@{icomoon-font-family}' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale}
+
+[class^="icon-"],
+[class*=" icon-"] {
+    &.pull-left {
+        margin-right: .3em;
+    }
+    &.pull-right {
+        margin-left: .3em;
+    }
+}
+
+//
+// Prefixed icons ("oc-")
+//
+
+[class^="oc-wicon-"],
+[class*=" oc-wicon-"] {
+    &:before {
+        display: inline-block;
+        margin-right: 8px;
+        font-family: '@{icomoon-font-family}' !important;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        vertical-align: baseline;
+    }
+    &.empty:before {
+        margin-right: 0;
+  }
+}
+
+.wicon-box:before {  content: "\e906"}
+.wicon-archive:before {  content: "\e907"}
+.wicon-uniE93E:before {  content: "\e93e"}
+.wicon-folder:before {  content: "\e908"}
+.wicon-folder-add:before {  content: "\e909"}
+.wicon-folder-settings:before {  content: "\e90b"}
+.wicon-folder-check:before {  content: "\e90c"}
+.wicon-list:before {  content: "\e90d"}
+.wicon-settings:before {  content: "\e91b"}
+.wicon-book:before {  content: "\e91c"}
+.wicon-checkmark:before {  content: "\e920"}
+.wicon-checkbox-checked:before {  content: "\e921"}
+.wicon-checkbox:before {  content: "\e928"}
+.wicon-book1:before {  content: "\e929"}
+.wicon-phone-landscape:before {  content: "\e92a"}
+.wicon-newspaper:before {  content: "\e92b"}
+.wicon-map:before {  content: "\e92c"}
+.wicon-atom:before {  content: "\e92d"}
+.wicon-syringe:before {  content: "\e92e"}
+.wicon-health:before {  content: "\e92f"}
+.wicon-pill:before {  content: "\e930"}
+.wicon-lab:before {  content: "\e931"}
+.wicon-bars:before {  content: "\e932"}
+.wicon-chart:before {  content: "\e933"}
+.wicon-open-book:before {  content: "\e901"}
+.wicon-address:before {  content: "\e900"}
+.wicon-archive1:before {  content: "\e902"}
+.wicon-colours:before {  content: "\e934"}
+.wicon-folder-images:before {  content: "\e935"}
+.wicon-folder-music:before {  content: "\e936"}
+.wicon-folder-video:before {  content: "\e937"}
+.wicon-folder1:before {  content: "\e939"}
+.wicon-power-plug:before {  content: "\e93a"}
+.wicon-clipboard-edit:before {  content: "\e93f"}
+.wicon-clipboard-add:before {  content: "\e903"}
+.wicon-clipboard-remove:before {  content: "\e904"}
+.wicon-clipboard:before {  content: "\e905"}
+.wicon-clipboard-download:before {  content: "\e941"}
+.wicon-clipboard-upload:before {  content: "\e942"}
+.wicon-clipboard-checked:before {  content: "\e943"}
+.wicon-clipboard-text:before {  content: "\e944"}
+.wicon-clipboard-list:before {  content: "\e945"}
+.wicon-note:before {  content: "\e90a"}
+.wicon-note-add:before {  content: "\e938"}
+.wicon-note-remove:before {  content: "\e93b"}
+.wicon-note-text:before {  content: "\e95b"}
+.wicon-note-list:before {  content: "\e95c"}
+.wicon-note-checked:before {  content: "\e95d"}
+.wicon-note-important:before {  content: "\e95e"}
+.wicon-notebook:before {  content: "\e946"}
+.wicon-notebook1:before {  content: "\e95f"}
+.wicon-notebook2:before {  content: "\e960"}
+.wicon-notebook3:before {  content: "\e961"}
+.wicon-notebook-text:before {  content: "\e962"}
+.wicon-notebook-list:before {  content: "\e963"}
+.wicon-document:before {  content: "\e964"}
+.wicon-document-text1:before {  content: "\e965"}
+.wicon-document-text2:before {  content: "\e966"}
+.wicon-document-download:before {  content: "\e947"}
+.wicon-document-upload:before {  content: "\e948"}
+.wicon-document-bookmark:before {  content: "\e967"}
+.wicon-document-diagrams:before {  content: "\e949"}
+.wicon-document-table:before {  content: "\e94a"}
+.wicon-document-movie:before {  content: "\e94b"}
+.wicon-document-graph:before {  content: "\e94c"}
+.wicon-document-text:before {  content: "\e94d"}
+.wicon-document-code:before {  content: "\e94e"}
+.wicon-document-cloud:before {  content: "\e968"}
+.wicon-document-star:before {  content: "\e94f"}
+.wicon-document-unlocked:before {  content: "\e969"}
+.wicon-document-locked:before {  content: "\e96a"}
+.wicon-document-error:before {  content: "\e950"}
+.wicon-document-cancel:before {  content: "\e951"}
+.wicon-document-checked:before {  content: "\e952"}
+.wicon-document-add:before {  content: "\e953"}
+.wicon-document-remove:before {  content: "\e954"}
+.wicon-document-forbidden:before {  content: "\e955"}
+.wicon-document-information:before {  content: "\e956"}
+.wicon-inbox:before {  content: "\e96b"}
+.wicon-inboxes:before {  content: "\e96c"}
+.wicon-inbox-document-text:before {  content: "\e96d"}
+.wicon-inbox-download:before {  content: "\e96e"}
+.wicon-inbox-upload:before {  content: "\e96f"}
+.wicon-folder-download:before {  content: "\e970"}
+.wicon-folder-upload:before {  content: "\e971"}
+.wicon-folder-unlocked:before {  content: "\e972"}
+.wicon-folder-locked:before {  content: "\e973"}
+.wicon-folder-search:before {  content: "\e974"}
+.wicon-folder-error:before {  content: "\e975"}
+.wicon-folder-cancel:before {  content: "\e976"}
+.wicon-folder-checked:before {  content: "\e977"}
+.wicon-folder-add1:before {  content: "\e978"}
+.wicon-folder-remove:before {  content: "\e979"}
+.wicon-folder-forbidden:before {  content: "\e97a"}
+.wicon-package:before {  content: "\e90e"}
+.wicon-package1:before {  content: "\e90f"}
+.wicon-wicon-box:before {  content: "\e910"}
+.wicon-box1:before {  content: "\e911"}
+.wicon-box-filled:before {  content: "\e912"}
+.wicon-box-filled1:before {  content: "\e913"}
+.wicon-box2:before {  content: "\e914"}
+.wicon-box3:before {  content: "\e916"}
+.wicon-box4:before {  content: "\e917"}
+.wicon-box5:before {  content: "\e918"}
+.wicon-box-bookmark:before {  content: "\e919"}
+.wicon-box-bookmark1:before {  content: "\e91a"}
+.wicon-clipboard-move:before {  content: "\e957"}
+.wicon-target-arrow:before {  content: "\e93c"}
+.wicon-target:before {  content: "\e93d"}
+.wicon-sailing-boat-water:before {  content: "\e91d"}
+.wicon-sailing-boat-water1:before {  content: "\e91e"}
+.wicon-stars:before {  content: "\e958"}
+.wicon-full-moon:before {  content: "\e97b"}
+.wicon-crescent:before {  content: "\e97c"}
+.wicon-half-moon:before {  content: "\e97d"}
+.wicon-gibbous-moon:before {  content: "\e97e"}
+.wicon-moon:before {  content: "\e97f"}
+.wicon-gibbous-moon1:before {  content: "\e980"}
+.wicon-half-moon1:before {  content: "\e981"}
+.wicon-crescent1:before {  content: "\e982"}
+.wicon-compass:before {  content: "\e91f"}
+.wicon-adobe:before {  content: "\e983"}
+.wicon-wicon-microsoftexcel:before {  content: "\e923"}
+.wicon-microsoftonedrive:before {  content: "\e922"}
+.wicon-microsoftoutlook:before {  content: "\e924"}
+.wicon-microsoftpowerpoint:before {  content: "\e925"}
+.wicon-microsoftword:before {  content: "\e926"}
+.wicon-salesforce:before {  content: "\e927"}
+.wicon-visualstudiocode:before {  content: "\e984"}
+.wicon-windows:before {  content: "\e985"}
+.wicon-zhihu:before {  content: "\e986"}
+.wicon-pencil:before {  content: "\e959"}
+.wicon-pencil2:before {  content: "\e95a"}
+.wicon-dice:before {  content: "\e915"}
+.wicon-coin-dollar:before {  content: "\e987"}
+.wicon-coin-euro:before {  content: "\e988"}
+.wicon-calculator:before {  content: "\e940"}
+.wicon-smile:before {  content: "\e9e1"}
+.wicon-sad:before {  content: "\e9e5"}
+.wicon-confused:before {  content: "\e9f5"}
+.wicon-neutral:before {  content: "\e9f7"}
+.wicon-make-group:before {  content: "\ea58"}
+.wicon-insert-template:before {  content: "\ea72"}
+.wicon-google-drive:before {  content: "\ea8f"}
+
+.oc-wicon-box:before {  content: "\e906"}
+.oc-wicon-archive:before {  content: "\e907"}
+.oc-wicon-uniE93E:before {  content: "\e93e"}
+.oc-wicon-folder:before {  content: "\e908"}
+.oc-wicon-folder-add:before {  content: "\e909"}
+.oc-wicon-folder-settings:before {  content: "\e90b"}
+.oc-wicon-folder-check:before {  content: "\e90c"}
+.oc-wicon-list:before {  content: "\e90d"}
+.oc-wicon-settings:before {  content: "\e91b"}
+.oc-wicon-book:before {  content: "\e91c"}
+.oc-wicon-checkmark:before {  content: "\e920"}
+.oc-wicon-checkbox-checked:before {  content: "\e921"}
+.oc-wicon-checkbox:before {  content: "\e928"}
+.oc-wicon-book1:before {  content: "\e929"}
+.oc-wicon-phone-landscape:before {  content: "\e92a"}
+.oc-wicon-newspaper:before {  content: "\e92b"}
+.oc-wicon-map:before {  content: "\e92c"}
+.oc-wicon-atom:before {  content: "\e92d"}
+.oc-wicon-syringe:before {  content: "\e92e"}
+.oc-wicon-health:before {  content: "\e92f"}
+.oc-wicon-pill:before {  content: "\e930"}
+.oc-wicon-lab:before {  content: "\e931"}
+.oc-wicon-bars:before {  content: "\e932"}
+.oc-wicon-chart:before {  content: "\e933"}
+.oc-wicon-open-book:before {  content: "\e901"}
+.oc-wicon-address:before {  content: "\e900"}
+.oc-wicon-archive1:before {  content: "\e902"}
+.oc-wicon-colours:before {  content: "\e934"}
+.oc-wicon-folder-images:before {  content: "\e935"}
+.oc-wicon-folder-music:before {  content: "\e936"}
+.oc-wicon-folder-video:before {  content: "\e937"}
+.oc-wicon-folder1:before {  content: "\e939"}
+.oc-wicon-power-plug:before {  content: "\e93a"}
+.oc-wicon-clipboard-edit:before {  content: "\e93f"}
+.oc-wicon-clipboard-add:before {  content: "\e903"}
+.oc-wicon-clipboard-remove:before {  content: "\e904"}
+.oc-wicon-clipboard:before {  content: "\e905"}
+.oc-wicon-clipboard-download:before {  content: "\e941"}
+.oc-wicon-clipboard-upload:before {  content: "\e942"}
+.oc-wicon-clipboard-checked:before {  content: "\e943"}
+.oc-wicon-clipboard-text:before {  content: "\e944"}
+.oc-wicon-clipboard-list:before {  content: "\e945"}
+.oc-wicon-note:before {  content: "\e90a"}
+.oc-wicon-note-add:before {  content: "\e938"}
+.oc-wicon-note-remove:before {  content: "\e93b"}
+.oc-wicon-note-text:before {  content: "\e95b"}
+.oc-wicon-note-list:before {  content: "\e95c"}
+.oc-wicon-note-checked:before {  content: "\e95d"}
+.oc-wicon-note-important:before {  content: "\e95e"}
+.oc-wicon-notebook:before {  content: "\e946"}
+.oc-wicon-notebook1:before {  content: "\e95f"}
+.oc-wicon-notebook2:before {  content: "\e960"}
+.oc-wicon-notebook3:before {  content: "\e961"}
+.oc-wicon-notebook-text:before {  content: "\e962"}
+.oc-wicon-notebook-list:before {  content: "\e963"}
+.oc-wicon-document:before {  content: "\e964"}
+.oc-wicon-document-text1:before {  content: "\e965"}
+.oc-wicon-document-text2:before {  content: "\e966"}
+.oc-wicon-document-download:before {  content: "\e947"}
+.oc-wicon-document-upload:before {  content: "\e948"}
+.oc-wicon-document-bookmark:before {  content: "\e967"}
+.oc-wicon-document-diagrams:before {  content: "\e949"}
+.oc-wicon-document-table:before {  content: "\e94a"}
+.oc-wicon-document-movie:before {  content: "\e94b"}
+.oc-wicon-document-graph:before {  content: "\e94c"}
+.oc-wicon-document-text:before {  content: "\e94d"}
+.oc-wicon-document-code:before {  content: "\e94e"}
+.oc-wicon-document-cloud:before {  content: "\e968"}
+.oc-wicon-document-star:before {  content: "\e94f"}
+.oc-wicon-document-unlocked:before {  content: "\e969"}
+.oc-wicon-document-locked:before {  content: "\e96a"}
+.oc-wicon-document-error:before {  content: "\e950"}
+.oc-wicon-document-cancel:before {  content: "\e951"}
+.oc-wicon-document-checked:before {  content: "\e952"}
+.oc-wicon-document-add:before {  content: "\e953"}
+.oc-wicon-document-remove:before {  content: "\e954"}
+.oc-wicon-document-forbidden:before {  content: "\e955"}
+.oc-wicon-document-information:before {  content: "\e956"}
+.oc-wicon-inbox:before {  content: "\e96b"}
+.oc-wicon-inboxes:before {  content: "\e96c"}
+.oc-wicon-inbox-document-text:before {  content: "\e96d"}
+.oc-wicon-inbox-download:before {  content: "\e96e"}
+.oc-wicon-inbox-upload:before {  content: "\e96f"}
+.oc-wicon-folder-download:before {  content: "\e970"}
+.oc-wicon-folder-upload:before {  content: "\e971"}
+.oc-wicon-folder-unlocked:before {  content: "\e972"}
+.oc-wicon-folder-locked:before {  content: "\e973"}
+.oc-wicon-folder-search:before {  content: "\e974"}
+.oc-wicon-folder-error:before {  content: "\e975"}
+.oc-wicon-folder-cancel:before {  content: "\e976"}
+.oc-wicon-folder-checked:before {  content: "\e977"}
+.oc-wicon-folder-add1:before {  content: "\e978"}
+.oc-wicon-folder-remove:before {  content: "\e979"}
+.oc-wicon-folder-forbidden:before {  content: "\e97a"}
+.oc-wicon-package:before {  content: "\e90e"}
+.oc-wicon-package1:before {  content: "\e90f"}
+.oc-wicon-wicon-box:before {  content: "\e910"}
+.oc-wicon-box1:before {  content: "\e911"}
+.oc-wicon-box-filled:before {  content: "\e912"}
+.oc-wicon-box-filled1:before {  content: "\e913"}
+.oc-wicon-box2:before {  content: "\e914"}
+.oc-wicon-box3:before {  content: "\e916"}
+.oc-wicon-box4:before {  content: "\e917"}
+.oc-wicon-box5:before {  content: "\e918"}
+.oc-wicon-box-bookmark:before {  content: "\e919"}
+.oc-wicon-box-bookmark1:before {  content: "\e91a"}
+.oc-wicon-clipboard-move:before {  content: "\e957"}
+.oc-wicon-target-arrow:before {  content: "\e93c"}
+.oc-wicon-target:before {  content: "\e93d"}
+.oc-wicon-sailing-boat-water:before {  content: "\e91d"}
+.oc-wicon-sailing-boat-water1:before {  content: "\e91e"}
+.oc-wicon-stars:before {  content: "\e958"}
+.oc-wicon-full-moon:before {  content: "\e97b"}
+.oc-wicon-crescent:before {  content: "\e97c"}
+.oc-wicon-half-moon:before {  content: "\e97d"}
+.oc-wicon-gibbous-moon:before {  content: "\e97e"}
+.oc-wicon-moon:before {  content: "\e97f"}
+.oc-wicon-gibbous-moon1:before {  content: "\e980"}
+.oc-wicon-half-moon1:before {  content: "\e981"}
+.oc-wicon-crescent1:before {  content: "\e982"}
+.oc-wicon-compass:before {  content: "\e91f"}
+.oc-wicon-adobe:before {  content: "\e983"}
+.oc-wicon-wicon-microsoftexcel:before {  content: "\e923"}
+.oc-wicon-microsoftonedrive:before {  content: "\e922"}
+.oc-wicon-microsoftoutlook:before {  content: "\e924"}
+.oc-wicon-microsoftpowerpoint:before {  content: "\e925"}
+.oc-wicon-microsoftword:before {  content: "\e926"}
+.oc-wicon-salesforce:before {  content: "\e927"}
+.oc-wicon-visualstudiocode:before {  content: "\e984"}
+.oc-wicon-windows:before {  content: "\e985"}
+.oc-wicon-zhihu:before {  content: "\e986"}
+.oc-wicon-pencil:before {  content: "\e959"}
+.oc-wicon-pencil2:before {  content: "\e95a"}
+.oc-wicon-dice:before {  content: "\e915"}
+.oc-wicon-coin-dollar:before {  content: "\e987"}
+.oc-wicon-coin-euro:before {  content: "\e988"}
+.oc-wicon-calculator:before {  content: "\e940"}
+.oc-wicon-smile:before {  content: "\e9e1"}
+.oc-wicon-sad:before {  content: "\e9e5"}
+.oc-wicon-confused:before {  content: "\e9f5"}
+.oc-wicon-neutral:before {  content: "\e9f7"}
+.oc-wicon-make-group:before {  content: "\ea58"}
+.oc-wicon-insert-template:before {  content: "\ea72"}
+.oc-wicon-google-drive:before {  content: "\ea8f"}
