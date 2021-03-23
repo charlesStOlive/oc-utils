@@ -35,7 +35,7 @@ class BtnsBehavior extends ControllerBehavior
     {
         $this->vars['modelClass'] = post('modelClass');
         $this->vars['modelId'] = post('modelId');
-        return $this->makePartial('$/waka/utils/behaviors/btnsBehavior/_popup.htm');
+        return $this->makePartial('$/waka/utils/behaviors/btnsbehavior/_popup.htm');
     }
 
     public function formBeforeSave($model)
