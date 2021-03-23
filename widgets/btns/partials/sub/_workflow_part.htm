@@ -1,3 +1,4 @@
+<?php if (!$noRole) : ?>
 <?php if ($context == 'create') : ?>
 <div>
     <?= $this->makePartial('sub/workflow_buttons');?>
@@ -5,4 +6,7 @@
 <?php else : ?>
 <?= $this->makePartial('sub/btn_save_icon');?>
 <?= $this->makePartial('sub/workflow_dd_button');?>
+<?php endif ?>
+<?php else : ?>
+<?= $this->makePartial('sub/no_wf_role');?>
 <?php endif ?>

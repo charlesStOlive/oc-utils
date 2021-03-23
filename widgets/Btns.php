@@ -34,8 +34,6 @@ class Btns extends WidgetBase
         $this->vars['partials'] = $this->config->action_bar['partials'] ?? null;
         if ($mode == 'update') {
             $model = $this->controller->formGetModel();
-            //trace_log("No role : ".$model->hasNoRole());
-            $this->vars['norole'] = $model->hasNoRole();
             $this->vars['btns'] = $this->getBtns($configBtns);
             $this->vars['modelId'] = $model->id;
             return $this->makePartial('action_bar');
@@ -51,6 +49,8 @@ class Btns extends WidgetBase
         $this->prepareComonVars($context);
         $hasWorkflow = $this->config->workflow;
         if ($hasWorkflow) {
+            $model = $this->controller->formGetModel();
+            $this->vars['noRole'] = $model->hasNoRole();
             $this->vars['transitions'] = $this->getWorkFlowTransitions();
             return $this->makePartial('sub/workflow_part');
         } else {
@@ -115,7 +115,7 @@ class Btns extends WidgetBase
 
     public function renderLot()
     {
-        $this->prepareComonVars();
+        $this->prepareComonVars('list');
         $configBtns = $this->config->tool_bar['lot'] ?? null;
         $this->vars['hasWorkflow'] = $this->config->workflow;
         $this->vars['btns'] = $this->getBtns($this->config->tool_bar['config_lot'] ?? null);

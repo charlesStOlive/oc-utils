@@ -284,16 +284,16 @@ class Plugin extends PluginBase
                 'order' => 150,
                 'permissions' => ['wcli.wconfig.admin'],
             ],
-            'joblists' => [
-                'label' => Lang::get('waka.utils::lang.menu.job_list'),
-                'description' => Lang::get('waka.utils::lang.menu.job_list_description'),
-                'category' => Lang::get('waka.utils::lang.menu.settings_category'),
-                'icon' => 'icon-tasks',
-                'url' => Backend::url('waka/utils/joblists'),
-                'order' => 170,
-                'counter' => 10,
-                'permissions' => ['waka.jobList.admin'],
-            ],
+            // 'joblists' => [
+            //     'label' => Lang::get('waka.utils::lang.menu.job_list'),
+            //     'description' => Lang::get('waka.utils::lang.menu.job_list_description'),
+            //     'category' => Lang::get('waka.utils::lang.menu.settings_category'),
+            //     'icon' => 'icon-tasks',
+            //     'url' => Backend::url('waka/utils/joblists'),
+            //     'order' => 170,
+            //     'counter' => 10,
+            //     'permissions' => ['waka.jobList.admin'],
+            // ],
 
         ];
     }

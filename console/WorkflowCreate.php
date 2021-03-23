@@ -100,6 +100,7 @@ class WorkflowCreate extends GeneratorCommand
         }
 
         $filePath =  $startPath.'/'.$fileName.'.xlsx';
+        trace_log($filePath);
 
         if ($this->option('option')) {
             $this->remover = [
