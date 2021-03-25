@@ -1,10 +1,10 @@
 aaaa<div style="align-items: flex-start; display:inline-block;margin-right:15px">
-    <div class="dropdown dropup">
+    <div class="dropdown <?php if(!$container) : ?>dropup<?php endif ?>">
         <a href="#"
            data-toggle="dropdown"
            class="btn btn-secondary <?=$databtn['icon'] ?? null?>"><?= e(trans($databtn['label'])) ?>
         </a>
-        <ul class="dropdown-menu <?php if(!$container) : ?>dropup<?php endif ?>"
+        <ul class="dropdown-menu"
             role="menu"
             data-dropdown-title="<?= e(trans('waka.utils::lang.production.production')) ?>">
             <?php foreach($databtn['btns'] as $subbtn) : ?>
