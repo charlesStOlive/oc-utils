@@ -72,7 +72,7 @@ class SidebarAttributes extends WidgetBase
                 throw new \SystemException('Les attributs ne sont pas correctemrnt configuré.');
             }
         }
-        $maped = $this->remapAttributes($attributes['attributes'], $this->dataSource->lowerName);
+        $maped = $this->remapAttributes($attributes['attributes'], $this->dataSource->code);
         //trace_log($maped);
         //$attributeArray[$this->dataSource->lowerName] = $attributes;
         $attributeArray[$this->dataSource->lowerName]['values'] = $maped;
@@ -94,7 +94,7 @@ class SidebarAttributes extends WidgetBase
                         throw new \SystemException('Les attributs ne sont pas correctemrnt configuré.');
                     }
                 }
-                $maped = $this->remapAttributes($attributes['attributes'], $relationName, $this->dataSource->lowerName);
+                $maped = $this->remapAttributes($attributes['attributes'], $relationName, $this->dataSource->code);
                 $attributeArray[$relationName]['values'] = $maped;
                 $icon = $attributes['icon'] ?? "icon-info";
                 $attributeArray[$relationName]['icon'] = $icon;
