@@ -72,15 +72,17 @@ class SidebarAttributes extends WidgetBase
                 throw new \SystemException('Les attributs ne sont pas correctemrnt configuré.');
             }
         }
-        $maped = $this->remapAttributes($attributes['attributes'], $this->dataSource->code);
+        $maped = $this->remapAttributes($attributes['attributes'], 'ds');
         //trace_log($maped);
         //$attributeArray[$this->dataSource->lowerName] = $attributes;
         $attributeArray[$this->dataSource->lowerName]['values'] = $maped;
         $attributeArray[$this->dataSource->lowerName]['icon'] = $attributes['icon'];
         if ($this->dataSource->relations) {
             foreach ($this->dataSource->relations as $key => $relation) {
+                //trace_log("key ".$key);
                 $ex = explode('.', $key);
                 $relationName = array_pop($ex);
+                //trace_log("Relation name : ".$relationName);
                 $attributes;
                 $modelAttributeAdresse = $relation['attributes'] ?? null;
                 if ($modelAttributeAdresse) {
@@ -94,7 +96,7 @@ class SidebarAttributes extends WidgetBase
                         throw new \SystemException('Les attributs ne sont pas correctemrnt configuré.');
                     }
                 }
-                $maped = $this->remapAttributes($attributes['attributes'], $relationName, $this->dataSource->code);
+                $maped = $this->remapAttributes($attributes['attributes'], $key, 'ds');
                 $attributeArray[$relationName]['values'] = $maped;
                 $icon = $attributes['icon'] ?? "icon-info";
                 $attributeArray[$relationName]['icon'] = $icon;

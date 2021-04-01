@@ -48,11 +48,12 @@ class Btns extends WidgetBase
     {
         $this->prepareComonVars($context);
         $hasWorkflow = $this->config->workflow;
+        $hasWorkflow = $this->config->workflow;
         if ($hasWorkflow) {
             $model = $this->controller->formGetModel();
             $this->vars['noRole'] = $model->hasNoRole();
             $this->vars['transitions'] = $this->getWorkFlowTransitions();
-            return $this->makePartial('sub/workflow_part');
+            return $this->makePartial('workflow/workflow_part');
         } else {
             return $this->makePartial('sub/base_buttons');
         }
@@ -210,10 +211,12 @@ class Btns extends WidgetBase
                 $label = $workflowMetadata->getMetadata('label', $transition) ?? $name;
                 $com = $workflowMetadata->getMetadata('com', $transition) ?? null;
                 $redirect = $workflowMetadata->getMetadata('redirect', $transition) ?? null;
+                $icon = $workflowMetadata->getMetadata('icon', $transition) ?? null;
                 $object = [
                     'value' => $name,
                     'label' => \Lang::get($label),
                     'com' => $com,
+                    'icon' => $icon,
                     'redirect' => $redirect,
                 ];
                 array_push($objTransition, $object);

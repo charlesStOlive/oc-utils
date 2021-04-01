@@ -84,11 +84,13 @@ class CreateModelController extends GeneratorCommand
         if ($this->maker['lang_field_attributes'] || $this->maker['only_langue']) {
             $this->stubs['model/temp_lang.stub'] = 'lang/fr/{{lower_name}}.php';
         }
-        if ($this->maker['lang_field_attributes']) {
-            /**/trace_log('on fait les langues fields et attributs');
+        if ($this->maker['lang_field_attributes'] || $this->maker['only_attribute']) {
             if (!$this->config['no_attributes_file'] ?? false) {
                 $this->stubs['model/attributes.stub'] = 'models/{{lower_name}}/attributes.yaml';
             }
+        }
+        if ($this->maker['lang_field_attributes']) {
+            /**/trace_log('on fait les langues fields et attributs');
             if ($this->fields_create) {
                 $this->stubs['model/fields_create.stub'] = 'models/{{lower_name}}/fields_create.yaml';
             }
@@ -210,6 +212,7 @@ class CreateModelController extends GeneratorCommand
             'model' => true,
             'lang_field_attributes' => true,
             'only_langue' => false,
+            'only_attribute' => false,
             'update' => true,
             'controller' => true,
             'html_file_controller' => true,
@@ -230,7 +233,7 @@ class CreateModelController extends GeneratorCommand
                 'excel' => false,
 
             ];
-            $types = $this->choice('Database type', ['model', 'lang_field_attributes', 'only_langue', 'update', 'controller', 'html_file_controller', 'excel'], 0, null, true);
+            $types = $this->choice('Database type', ['model', 'lang_field_attributes', 'only_langue', 'only_attribute', 'update', 'controller', 'html_file_controller', 'excel'], 0, null, true);
             //trace_log($types);
             foreach ($types as $type) {
                 $this->maker[$type] = true;

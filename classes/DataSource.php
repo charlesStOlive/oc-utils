@@ -247,10 +247,15 @@ class DataSource
         return $dsApi;
     }
 
-    public function getDotedValues($modelId = null)
+    public function getDotedValues($modelId = null, $forceSourceName = false)
     {
         $constructApi = $this->getValues($modelId);
-        $api[snake_case($this->name)] = $constructApi;
+        $api = [];
+        if($forceSourceName) {
+            $api[$forceSourceName] = $constructApi;
+        } else {
+             $api[snake_case($this->name)] = $constructApi;
+        }
         return array_dot($api);
     }
     public function getSimpleDotedValues($modelId = null)

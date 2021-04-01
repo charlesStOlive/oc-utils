@@ -2,10 +2,10 @@
 <button type="submit"
         data-request="onSave"
         data-hotkey="ctrl+s, cmd+s"
-        data-request-data="<?= $trans['redirect'] ? '\''.$trans['redirect'] .';\'' : null?>change_state:'<?= e($trans['value']) ?>'"
+        data-request-data="<?= $trans['redirect'] ? $trans['redirect'] .',' : null?>change_state:'<?= e($trans['value']) ?>'"
         <?php if ($trans['com']) : ?>data-request-confirm=" <?= e(trans($trans['com']))?>" <?php endif ?>
         data-load-indicator="<?= e(trans('waka.utils::lang.global.save_indicator')) ?>"
-        class="btn btn-primary">
+        class="btn btn-primary <?= $trans['icon'] ? $trans['icon'] : null ?>">
     <?= e($trans['label']) ?>
 </button>
 <?php endforeach ?>
