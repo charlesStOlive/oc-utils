@@ -4,7 +4,7 @@ use October\Rain\Database\Schema\Blueprint;
 use October\Rain\Database\Updates\Migration;
 use Schema;
 
-class CreateJobListsTable extends Migration
+class DeleteJobListsTable extends Migration
 {
     public function up()
     {

@@ -10,4 +10,4 @@
     - create_user_on_table.php
 1.0.4:
     - 'Suppresiondes jobs, deplacé dans wakajob'
-    - delete_job_lists.php
+    - delete_job_lists_table.php
