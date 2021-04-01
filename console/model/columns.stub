@@ -58,7 +58,7 @@ columns:
 {% else %}
         searchable: true
 {% endif %}
-{% if column.column == '999' or column.hidden_col %}
+{% if column.column == '999' or column.opt_col == "hide" %}
         invisible: true
 {% endif %}
 {% endfor %}

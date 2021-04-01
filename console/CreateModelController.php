@@ -227,6 +227,7 @@ class CreateModelController extends GeneratorCommand
                 'model' => false,
                 'lang_field_attributes' => false,
                 'only_langue' => false,
+                'only_attribute' => false,
                 'update' => false,
                 'controller' => false,
                 'html_file_controller' => false,

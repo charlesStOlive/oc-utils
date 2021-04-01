@@ -65,6 +65,12 @@ class {{studly_ctname}} extends Controller
 {% if configs.behav_cloud_word %}
         'Waka.Cloud.Behaviors.CloudWord',
 {% endif %}
+{% if configs.behav_calcultags %}
+        'Waka.Segator.Behaviors.CalculTags',
+{% endif %}
+{% if configs.beahav_aggregator %}
+        'Waka.Agg.Behaviors.AggCreator',
+{% endif %}
     ];
     public $formConfig = 'config_form.yaml';
     public $listConfig = 'config_list.yaml';
