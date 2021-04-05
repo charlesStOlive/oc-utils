@@ -4,12 +4,18 @@
 
 <?php if (!$this->fatalError): ?>
 
-<div class="form-preview">
+<?= Form::open(['class' => 'layout']) ?>
+
+<div class="layout-row">
     <?= $this->formRenderPreview() ?>
-{% for relation in configs.many %}
-    <?= $this->relationRender('{{relation.relation_name}}') ?>
-{% endfor %}
 </div>
+<div class="form-buttons">
+    <div class="loading-indicator-container">
+        <?= $this->btnsWidget->renderBar('preview') ?>
+    </div>
+</div>
+
+<?= Form::close() ?>
 
 <?php else: ?>
 

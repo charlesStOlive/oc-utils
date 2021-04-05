@@ -14,9 +14,19 @@
 .w-toolbar {
     display:flex;
 }
+.w-actionbar {
+    align-items: flex-start; 
+    display:inline-flex;
+}
 
 @media (max-width: @screen-sm) {
     .w-toolbar {
         display:block;
+    }
+    .w-actionbar {
+        display:block;
+    }
+    .w-actionbar > .dropdown {
+        margin-top: 5px;
     }
 }

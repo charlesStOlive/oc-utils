@@ -301,4 +301,5 @@
 .txt_warning >textarea {background-color:#fccf95}
 .txt_success >textarea {background-color:#c9faa0}
 .w-toolbar {display:flex}
-@media (max-width:768px) {.w-toolbar {display:block }}
+.w-actionbar {align-items:flex-start;display:inline-flex}
+@media (max-width:768px) {.w-toolbar {display:block }.w-actionbar {display:block }.w-actionbar >.dropdown {margin-top:5px }}

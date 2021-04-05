@@ -43,7 +43,7 @@
         <?php foreach($btns as $btn) : ?>
         <?php if($btn['btns'] ?? false) : ?>
         <!--SI LE BOUTON A DES SOUS BOUTON C EST UN GROUPE -->
-        <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'container' => false, 'isLot' => true, 'dropup' => false]);?>
+        <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'popupAction' => false, 'isLot' => true, 'dropup' => false]);?>
         <?php else : ?>
         <!--SINON C EST UN BOUTON SEUL -->
         <button href="javascript:;"

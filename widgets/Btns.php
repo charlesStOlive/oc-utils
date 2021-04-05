@@ -38,14 +38,17 @@ class Btns extends WidgetBase
             $this->vars['modelId'] = $model->id;
             return $this->makePartial('action_bar');
         } else {
-            $this->vars['btns'] = $this->getBtns($configBtns);
+            $this->vars['btns'] = $this->getBtns($configBtns, true);
             $this->vars['modelId'] = $modelId;
-            return $this->makePartial('container_bar');
+            return $this->makePartial('action_container');
         }
     }
 
     public function renderWorkflowOrBtn($context = null)
     {
+        if($context == 'preview') {
+            return null;
+        }
         $this->prepareComonVars($context);
         $hasWorkflow = $this->config->workflow;
         $hasWorkflow = $this->config->workflow;
@@ -123,7 +126,7 @@ class Btns extends WidgetBase
         return $this->makePartial('container_lot');
     }
 
-    public function getBtns($configurator)
+    public function getBtns($configurator, $isInContainer = false)
     {
         // if($this->context != 'update') {
         //     return [];
@@ -134,6 +137,40 @@ class Btns extends WidgetBase
         $btns = [];
         $groups = $configurator['groups'] ?? [];
         $collection = new Collection($configurator['btns']);
+
+        //Nettoyage des boutons, suppresion de ceux qui n'ont pas d'ajaxInline pour les boutons dans l'action container
+        if($isInContainer) {
+            $collection = $collection->reject(function ($item) {
+                $configFromPlugins = \Config::get($item['config']);
+                $ajaxInlineCaller = $configFromPlugins['ajaxInlineCaller'] ?? false;
+                return !$ajaxInlineCaller;
+            });
+        }
+
+        //nettoyage permissions
+        trace_log($collection->toArray());
+        $collection = $collection->reject(function ($item) {
+                $configFromPlugins = \Config::get($item['config']);
+                $mergedConfig = array_merge($configFromPlugins, $item);
+                $permissions = $mergedConfig['permissions'] ?? false;
+                if(!$permissions) {
+                    //Si il n' y a pas de jeux de permission on ne rejete rien
+                    return false;
+                }
+                trace_log($permissions);
+                trace_log($this->user->login);
+                trace_log($this->user->hasAccess($permissions));
+                $this->user->hasAccess($permissions);               
+                if (!$this->user->hasAccess($permissions)) {
+                    //Pas de permission donc true on reject
+                     trace_log("rejet");
+                    return true;
+                } else {
+                    trace_log("Je ne rejete pas");
+                    return false;
+                }
+            });
+        trace_log($collection->toArray());
         $format = $configurator['format'] ?? 'unique';
         if ($format == 'all') {
             //Création des boutons séparés

@@ -1,34 +1,28 @@
-<div style="align-items: flex-start; display:inline-block;margin-right:15px">
-    <div class="dropdown <?php if($dropup) : ?>dropup<?php endif ?>">
-        <a href="#"
-           data-toggle="dropdown"
-           class="btn btn-secondary <?=$databtn['icon'] ?? null?>"><?= e(trans($databtn['label'])) ?>
-        </a>
-        <ul class="dropdown-menu"
-            role="menu"
-            data-dropdown-title="<?= e(trans('waka.utils::lang.production.production')) ?>">
-            <?php foreach($databtn['btns'] as $subbtn) : ?>
-            <?php $inlineExiste = $subbtn['ajaxInlineCaller'] ?? false;?>
-            <?php if($container && !$inlineExiste) : ?>
-            <!--On affiche pas le bouton -->
-            <?php else : ?>
-            <li role="presentation">
-                <a href="javascript:;"
-                   role="menuitem"
-                   tabindex="-1"
-                   data-request-data="<?php if(!$isLot) :?>modelId:<?=$modelId?><?php endif ?>, modelClass:'<?=$modelClass?>'"
-                   <?php if($container) : ?>
-                   data-request="<?=$subbtn['ajaxInlineCaller']?>"
-                   <?php else : ?>
-                   data-control="popup"
-                   data-handler="<?=$subbtn['ajaxCaller']?>"
-                   <?php endif ?>
-                   data-toggle="dropdown"><?= e(trans($subbtn['label'] ?? 'Inc'))?>
-                </a>
-            </li>
-            <?php endif ?>
-            <?php endforeach ?>
+<div class="dropdown <?php if($dropup) : ?>dropup<?php endif ?>">
+    <a href="#"
+       data-toggle="dropdown"
+       class="btn btn-secondary <?=$databtn['icon'] ?? null?>"><?= e(trans($databtn['label'])) ?>
+    </a>
+    <ul class="dropdown-menu" style="<?php if($popupAction) :?>margin-left: 15px;<?php endif ?>"
+        role="menu"
+        data-dropdown-title="<?= e(trans('waka.utils::lang.production.production')) ?>">
+        <?php foreach($databtn['btns'] as $subbtn) : ?>
+        <?php $inlineExiste = $subbtn['ajaxInlineCaller'] ?? false?>
+        <li role="presentation">
+            <a href="javascript:;"
+               role="menuitem"
+               tabindex="-1"
+               data-request-data="<?php if(!$isLot) :?>modelId:<?=$modelId?><?php endif ?>, modelClass:'<?=$modelClass?>'"
+               <?php if($popupAction) : ?>
+               data-request="<?=$subbtn['ajaxInlineCaller']?>"
+               <?php else : ?>
+               data-control="popup"
+               data-handler="<?=$subbtn['ajaxCaller']?>"
+               <?php endif ?>
+               data-toggle="dropdown"><?= e(trans($subbtn['label'] ?? 'Inc'))?>
+            </a>
+        </li>
+        <?php endforeach ?>
 
-        </ul>
-    </div>
+    </ul>
 </div>

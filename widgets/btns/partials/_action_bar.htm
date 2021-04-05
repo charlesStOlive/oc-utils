@@ -2,22 +2,25 @@
     <!-- AFFICHE LE WORKFLOW SI ATIVE SINON LES BOUTON CLASSIQUE -->
     <?= $this->renderWorkflowOrBtn($context) ?>
     <?php if($btns) : ?>
-    <!--SI IL Y A DES BOUTONS -->
-    <?php foreach($btns as $btn) : ?>
-    <?php if($btn['btns'] ?? false) : ?>
-    <!--SI LE BOUTON A DES SOUS BOUTON C EST UN GROUPE -->
-    <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'container' => false, 'isLot' => false, 'dropup' =>true]);?>
-    <?php else : ?>
-    <!--SINON C EST UN BOUTON SEUL -->
-    <button href="javascript:;"
-            class="btn btn-secondary <?=$btn['icon'] ?? null?>"
-            data-request-data="modelId:<?=$modelId?>, modelClass:'<?=$modelClass?>'"
-            data-control="popup"
-            data-handler="<?=$btn['ajaxCaller'] ??''?>">
-        <?= e(trans($btn['label'] ?? 'Inc'))?>
-    </button>
-    <?php endif ?>
-    <?php endforeach ?>
+    <!--IL Y A DES BOUTONS -->
+    <div class="w-actionbar">
+        <?php foreach($btns as $btn) : ?>
+
+        <?php if($btn['btns'] ?? false) : ?>
+        <!--SI LE BOUTON A DES SOUS BOUTON C EST UN GROUPE -->
+        <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'popupAction' => false, 'isLot' => false, 'dropup' =>true]);?>
+        <?php else : ?>
+        <!--SINON C EST UN BOUTON SEUL -->
+        <button href="javascript:;"
+                class="btn btn-secondary <?=$btn['icon'] ?? null?>"
+                data-request-data="modelId:<?=$modelId?>, modelClass:'<?=$modelClass?>'"
+                data-control="popup"
+                data-handler="<?=$btn['ajaxCaller'] ??''?>">
+            <?= e(trans($btn['label'] ?? 'Inc'))?>
+        </button>
+        <?php endif ?>
+        <?php endforeach ?>
+    </div>
 
 
     <?php if($partials) : ?>
