@@ -18,9 +18,6 @@ class {{studly_ctname}} extends Controller
 {% if configs.many or configs.morphmany  %}
         'Backend.Behaviors.RelationController',
 {% endif %}
-{% if configs.behav_action %}
-        'Waka.Utils.Behaviors.PopupActions',
-{% endif %}
 {% if configs.side_bar_info %}
         'Waka.Utils.Behaviors.SidebarInfoBehavior',
 {% endif %}

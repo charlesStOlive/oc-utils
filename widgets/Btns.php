@@ -125,9 +125,9 @@ class Btns extends WidgetBase
 
     public function getBtns($configurator)
     {
-        if($this->context != 'update') {
-            return [];
-        }
+        // if($this->context != 'update') {
+        //     return [];
+        // }
         if (!$configurator) {
             return null;
         }

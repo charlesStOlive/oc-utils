@@ -11,7 +11,7 @@
 </div>
 <div class="form-buttons">
     <div class="loading-indicator-container">
-        <?= $this->btnsWidget->'update') ?>
+        <?= $this->btnsWidget->renderBar('update') ?>
     </div>
 </div>
 

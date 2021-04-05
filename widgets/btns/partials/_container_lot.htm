@@ -1,8 +1,8 @@
-<div>aaaaaaa aaaaa</div><?php if($btns) : ?>
+<?php if($btns) : ?>
 <div style="display:inline-flex">
     <?php foreach($btns as $btn) : ?>
     <?php if($btn['btns'] ?? false) : ?>
-    <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'container' => true, 'isLot' => true]);?>
+    <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'container' => true, 'isLot' => true, 'dropup' =>false]);?>
     <?php else : ?>
     <button href="javascript:;"
             class="btn btn-secondary <?=$btn['icon'] ?? null?>"

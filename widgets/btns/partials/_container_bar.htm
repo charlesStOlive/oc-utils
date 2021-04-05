@@ -2,7 +2,7 @@
 <div style="display:inline-flex">
     <?php foreach($btns as $btn) : ?>
     <?php if($btn['btns'] ?? false) : ?>
-    <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'container' => true, 'isLot' => false]);?>
+    <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'container' => true, 'isLot' => false, 'dropup' =>false]);?>
     <?php else : ?>
     <button href="javascript:;"
             class="btn btn-secondary <?=$btn['icon'] ?? null?>"

@@ -1,5 +1,22 @@
 @import "style";
+@import "media";
 
 .txt_memo > textarea {
     background-color : #fbface;
+}
+.txt_warning > textarea {
+    background-color : #fccf95;
+}
+.txt_success > textarea {
+    background-color : #c9faa0;
+}
+
+.w-toolbar {
+    display:flex;
+}
+
+@media (max-width: @screen-sm) {
+    .w-toolbar {
+        display:block;
+    }
 }

@@ -1,66 +1,67 @@
-<div data-control="toolbar">
-    <?php if($base['create']['show'] ?? false) : ?>
-    <?php if($base['create']['show'] && $base['create']['permissions']) : ?>
-    <a href="<?= Backend::url($base['create']['url'] ?? '#') ?>"
-       class="btn  <?=$base['create']['class'] ?? 'btn-primary'?> <?=$base['create']['icon'] ?? ''?>">
-        <?= e(trans($base['create']['label'] ?? 'waka.utils::lang.global.create')) ?>
-    </a>
-    <?php endif ?>
-    <?php endif ?>
-    <?php if($base['delete']['show'] ?? false ) : ?>
-    <?php if($base['delete']['permissions']) : ?>
-    <button class="btn btn-danger oc-icon-trash-o"
-            disabled="disabled"
-            onclick="$(this).data('request-data', { checked: $('.control-list').listWidget('getChecked') })"
-            data-request="onDelete"
-            data-request-confirm="<?= e(trans('waka.utils::lang.global.delete_confirm')) ?>"
-            data-trigger-action="enable"
-            data-trigger=".control-list input[type=checkbox]"
-            data-trigger-condition="checked"
-            data-request-success="$(this).prop('disabled', 'disabled')"
-            data-stripe-load-indicator>
-        <?= e(trans($base['delete']['label'] ?? 'waka.utils::lang.global.delete_selected')) ?>
-    </button>
-    <?php endif ?>
-    <?php endif ?>
-    <?php if($base['reorder']['show'] ?? false) : ?>
-    <?php if($base['reorder']['permissions']) : ?>
-    <a href="<?= Backend::url($reorderUrl) ?>"
-       class="btn btn-default oc-icon-bars">
-        <?= e(trans('waka.utils::lang.global.reorder')) ?>
-    </a>
-    <?php endif ?>
-    <?php endif ?>
-    <?php if($hasLot) : ?>
-    <?= $this->makePartial('sub/btn_lot')?>
-    <?php endif ?>
-
-    <?php if($btns) : ?>
-    <!--SI IL Y A DES BOUTONS -->
-    <?php foreach($btns as $btn) : ?>
-    <?php if($btn['btns'] ?? false) : ?>
-    <!--SI LE BOUTON A DES SOUS BOUTON C EST UN GROUPE -->
-    <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'container' => false, 'isLot' => true]);?>
-    <?php else : ?>
-    <!--SINON C EST UN BOUTON SEUL -->
-    <button href="javascript:;"
-            class="btn btn-secondary <?=$btn['icon'] ?? null?>"
-            data-request-data="model:'<?=$modelClass?>'"
-            data-control="popup"
-            data-handler="<?=$btn['ajaxCaller'] ??''?>">
-        <?= e(trans($btn['label'] ?? 'Inc'))?>
-    </button>
-    <?php endif ?>
-    <?php endforeach ?>
-    <?php endif ?>
-
-
-    <?php if($partials) : ?>
-    <?php foreach($partials as $partial) : ?>
-    <?= $this->makePartial($partial['url']);?>
-    <?php endforeach ?>
-    <?php endif ?>
+<div class="w-toolbar">
+    <div data-control="toolbar">
+        <?php if($base['create']['show'] ?? false) : ?>
+        <?php if($base['create']['show'] && $base['create']['permissions']) : ?>
+        <a href="<?= Backend::url($base['create']['url'] ?? '#') ?>"
+           class="btn  <?=$base['create']['class'] ?? 'btn-primary'?> <?=$base['create']['icon'] ?? ''?>">
+            <?= e(trans($base['create']['label'] ?? 'waka.utils::lang.global.create')) ?>
+        </a>
+        <?php endif ?>
+        <?php endif ?>
+        <?php if($base['delete']['show'] ?? false ) : ?>
+        <?php if($base['delete']['permissions']) : ?>
+        <button class="btn btn-danger oc-icon-trash-o"
+                disabled="disabled"
+                onclick="$(this).data('request-data', { checked: $('.control-list').listWidget('getChecked') })"
+                data-request="onDelete"
+                data-request-confirm="<?= e(trans('waka.utils::lang.global.delete_confirm')) ?>"
+                data-trigger-action="enable"
+                data-trigger=".control-list input[type=checkbox]"
+                data-trigger-condition="checked"
+                data-request-success="$(this).prop('disabled', 'disabled')"
+                data-stripe-load-indicator>
+            <?= e(trans($base['delete']['label'] ?? 'waka.utils::lang.global.delete_selected')) ?>
+        </button>
+        <?php endif ?>
+        <?php endif ?>
+        <?php if($base['reorder']['show'] ?? false) : ?>
+        <?php if($base['reorder']['permissions']) : ?>
+        <a href="<?= Backend::url($reorderUrl) ?>"
+           class="btn btn-default oc-icon-bars">
+            <?= e(trans('waka.utils::lang.global.reorder')) ?>
+        </a>
+        <?php endif ?>
+        <?php endif ?>
+        <?php if($hasLot) : ?>
+        <?= $this->makePartial('sub/btn_lot')?>
+        <?php endif ?>
+        <?= $this->fireViewEvent('backend.top.index') ?>
+    </div>
+    <div>
+        <?php if($btns) : ?>
+        <!--SI IL Y A DES BOUTONS -->
+        <?php foreach($btns as $btn) : ?>
+        <?php if($btn['btns'] ?? false) : ?>
+        <!--SI LE BOUTON A DES SOUS BOUTON C EST UN GROUPE -->
+        <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'container' => false, 'isLot' => true, 'dropup' => false]);?>
+        <?php else : ?>
+        <!--SINON C EST UN BOUTON SEUL -->
+        <button href="javascript:;"
+                class="btn btn-secondary <?=$btn['icon'] ?? null?>"
+                data-request-data="modelClass:'<?=$modelClass?>'"
+                data-control="popup"
+                data-handler="<?=$btn['ajaxCaller'] ??''?>">
+            <?= e(trans($btn['label'] ?? 'Inc'))?>
+        </button>
+        <?php endif ?>
+        <?php endforeach ?>
+        <?php endif ?>
 
 
-    <?= $this->fireViewEvent('backend.top.index') ?>
+        <?php if($partials) : ?>
+        <?php foreach($partials as $partial) : ?>
+        <?= $this->makePartial($partial['url']);?>
+        <?php endforeach ?>
+        <?php endif ?>
+    </div>
 </div>
