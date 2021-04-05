@@ -148,7 +148,7 @@ class Btns extends WidgetBase
         }
 
         //nettoyage permissions
-        trace_log($collection->toArray());
+        //trace_log($collection->toArray());
         $collection = $collection->reject(function ($item) {
                 $configFromPlugins = \Config::get($item['config']);
                 $mergedConfig = array_merge($configFromPlugins, $item);
@@ -157,20 +157,20 @@ class Btns extends WidgetBase
                     //Si il n' y a pas de jeux de permission on ne rejete rien
                     return false;
                 }
-                trace_log($permissions);
-                trace_log($this->user->login);
-                trace_log($this->user->hasAccess($permissions));
+                //trace_log($permissions);
+                //trace_log($this->user->login);
+                //trace_log($this->user->hasAccess($permissions));
                 $this->user->hasAccess($permissions);               
                 if (!$this->user->hasAccess($permissions)) {
                     //Pas de permission donc true on reject
-                     trace_log("rejet");
+                     //trace_log("rejet");
                     return true;
                 } else {
-                    trace_log("Je ne rejete pas");
+                    //trace_log("Je ne rejete pas");
                     return false;
                 }
             });
-        trace_log($collection->toArray());
+        //trace_log($collection->toArray());
         $format = $configurator['format'] ?? 'unique';
         if ($format == 'all') {
             //Création des boutons séparés
