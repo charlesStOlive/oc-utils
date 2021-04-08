@@ -1,6 +1,10 @@
 <?php namespace Waka\Utils\Behaviors;
 
 use Backend\Classes\ControllerBehavior;
+use Redirect;
+use Backend;
+use October\Rain\Router\Helper as RouterHelper;
+use Session;
 
 class WorkflowBehavior extends ControllerBehavior
 {
@@ -49,6 +53,53 @@ class WorkflowBehavior extends ControllerBehavior
     {
         if (post('change_state') != '') {
             $model->change_state = post('change_state');
+        }
+        if (post('try') != '') {
+            $tryToChangeStates = post('try');
+            $wfMetadataStore = $model->workflow_get()->getMetadataStore();
+            $tryToChangeStates = explode(',',$tryToChangeStates);
+            $transitionChosen = null;
+            foreach($tryToChangeStates as $try) {
+                $transition = $model::getTransitionobject($try, $model);
+                $transitionMetaData = $wfMetadataStore->getTransitionMetadata($transition);
+                $rulesSet = $transitionMetaData['rulesSet'] ?? null;
+                $rules = $model->getWorkgflowRules($rulesSet);
+                $error = 0;
+                foreach($rules['fields'] as $key=>$rule) {
+                    if(!$model[$key]) {
+                        $error++;
+                    }
+                }
+                if(!$error) {
+                    $model->change_state = $try;
+                    \Session::put('wf_redirect', $transitionMetaData['redirect']);
+                    break;
+                }
+            }
+        }
+    }
+        
+
+    public function update_onSave($recordId = null, $context = null)
+    {
+        $redirect = \Session::pull('wf_redirect');
+        trace_log($redirect);
+        if($redirect) {
+            $this->controller->asExtension('FormController')->update_onSave($recordId, $context);
+            if($redirect == "refresh:1") {
+                    $redirect =  Redirect::refresh();
+                }
+                $redirectUrl = null;
+                if ($redirect == "close:1") {
+                    $redirectUrl = $this->controller->formGetRedirectUrl('update-close', $model);
+                }
+
+                if ($redirect == "redirect:1") {
+                    $redirectUrl = $this->controller->formGetRedirectUrl($context, $model);
+                }
+        } else {
+            return $this->controller->asExtension('FormController')->update_onSave($recordId, $context);
+
         }
     }
 }

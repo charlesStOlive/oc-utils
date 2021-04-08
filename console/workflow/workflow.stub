@@ -33,8 +33,11 @@
 {% if place.rules %}
                 norole: [{{place.rules}}]
 {% endif %}
-{% if place.automatisations %}
-                automatisations: [{{place.automatisations}}]
+{% if place.cron_auto %}
+                cron_auto: [{{place.cron_auto}}]
+{% endif %}
+{% if place.form_auto %}
+                form_auto: [{{place.form_auto}}]
 {% endif %}
 {% if place.color %}
                 color: {{place.color}}

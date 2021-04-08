@@ -181,6 +181,12 @@ return [
         "state" => "Etat",
         "change_state" => "Changer d'état",
         "error_place" => "erreur d'état",
+        'popup' => [
+            'confirm_title' => "Confirmation",
+            'transition' => "Transition : ",
+            'next_place_label' => "Prochain état : ",
+            'save_no_transition' => "Votre modèle sera sauvé sans appliquer de transition.",
+        ],
     ],
     'prod' => [
         'production' => "Production",

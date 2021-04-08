@@ -28,16 +28,23 @@ class Btns extends WidgetBase
 
     public function renderBar($context = 'update', $mode = 'update', $modelId = null)
     {
+        //trace_log($context);
         $this->prepareComonVars($context);
         $configBtns = $this->config->action_bar['config_btns'] ?? null;
         $this->vars['mode'] = $mode;
         $this->vars['partials'] = $this->config->action_bar['partials'] ?? null;
-        if ($mode == 'update') {
+        if ($context == 'update') {
             $model = $this->controller->formGetModel();
             $this->vars['btns'] = $this->getBtns($configBtns);
             $this->vars['modelId'] = $model->id;
             return $this->makePartial('action_bar');
-        } else {
+        } elseif ($context == 'create') {
+            $model = $this->controller->formGetModel();
+            $this->vars['btns'] = null;
+            $this->vars['modelId'] = $model->id;
+            return $this->makePartial('action_bar');
+        }
+         else {
             $this->vars['btns'] = $this->getBtns($configBtns, true);
             $this->vars['modelId'] = $modelId;
             return $this->makePartial('action_container');
@@ -51,15 +58,62 @@ class Btns extends WidgetBase
         }
         $this->prepareComonVars($context);
         $hasWorkflow = $this->config->workflow;
-        $hasWorkflow = $this->config->workflow;
-        if ($hasWorkflow) {
-            $model = $this->controller->formGetModel();
-            $this->vars['noRole'] = $model->hasNoRole();
-            $this->vars['transitions'] = $this->getWorkFlowTransitions();
-            return $this->makePartial('workflow/workflow_part');
-        } else {
+        if(!$hasWorkflow) {
             return $this->makePartial('sub/base_buttons');
         }
+        //
+        $model = $this->controller->formGetModel();
+        //
+        $noRole =  $model->hasNoRole();
+        if($noRole) {
+            return $this->makePartial('workflow/no_wf_role');
+        }
+        $state = $model->state;
+        //trace_log($state);
+        //trace_log($this->config->workflow);
+
+        $formAutoConfig = null;
+        $is_form_auto = $this->config->workflow[$state]['form_auto'] ?? true;
+        if($is_form_auto) {
+            $formAutoConfig = $this->config->workflow[$state]['form_auto'] ?? false;
+            if(!$formAutoConfig) {
+                $formAutoConfig = $model->listWfPlaceFormAuto();
+            } 
+        }
+        //trace_log($formAutoConfig);
+        $separateOnStateConfig = $this->config->workflow[$state]['separate'] ?? [];
+
+        $transitions = $this->getWorkFlowTransitions();
+        $wfTrys = $formAutoConfig;
+        $wfSeparates = [];
+
+        foreach($transitions as $key => $transition) {
+            if(in_array($transition['value'], $formAutoConfig)) {
+                unset($transitions[$key]);
+                
+            }
+            //Recehrche de separate_field
+             if(in_array($transition['value'], $separateOnStateConfig)) {
+                array_push($wfSeparates, $transition);
+                unset($transitions[$key]);
+            }
+        }
+
+        // trace_log('transitions');
+        // trace_log($transitions);
+        // trace_log('wfTrys');
+        // trace_log($wfTrys);
+        // trace_log('wfSeparates');
+        // trace_log($wfSeparates);
+
+
+        $this->vars['modelId'] = $model->id;
+        $this->vars['transitions'] = $transitions;
+        $this->vars['wfTrys'] = $wfTrys ? "try:'".implode(',', $wfTrys)."'" : null;
+        $this->vars['wfSeparates'] = $wfSeparates;
+
+        
+        return $this->makePartial('workflow');
     }
 
     public function renderBreadcrump($context = null)

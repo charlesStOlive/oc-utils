@@ -1,3 +1,4 @@
+    <?php if(count($btnTrans) > 1) : ?>
     <div class="dropdown dropup">
         <a href="#"
            data-toggle="dropdown"
@@ -7,7 +8,7 @@
             role="menu"
             data-dropdown-title="lien rapide">
 
-            <?php foreach ($transitions as $key => $trans): ?>
+            <?php foreach ($btnTrans as $key => $trans): ?>
             <li role="presentation">
                 <a href="javascript:;"
                    role="menuitem"
@@ -23,3 +24,6 @@
             <?php endforeach ?>
         </ul>
     </div>
+    <?php else : ?>
+    <?= $this->makePartial('workflow/workflow_buttons', ['btnTrans' => $btnTrans]);?>
+    <?php endif ?>
