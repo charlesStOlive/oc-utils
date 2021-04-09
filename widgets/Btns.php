@@ -192,6 +192,18 @@ class Btns extends WidgetBase
         $groups = $configurator['groups'] ?? [];
         $collection = new Collection($configurator['btns']);
 
+        //Blocage si dans les hide de la config
+        $model = $this->controller->formGetModel();
+        if($model) {
+             trace_log($model->state);
+            $modelState = $model->state;
+            $hiddenBar = $this->config->workflow[$modelState]['hide'] ?? false;
+            if($hiddenBar) {
+                return [];
+            }
+        }
+       
+
         //Nettoyage des boutons, suppresion de ceux qui n'ont pas d'ajaxInline pour les boutons dans l'action container
         if($isInContainer) {
             $collection = $collection->reject(function ($item) {
