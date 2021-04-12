@@ -110,11 +110,12 @@ class TmpFiles
         return self::$storageRacine;
     }
     protected function getTempFolderName() {
-        return self::$tempFolderName;
+        $tempFolderName = self::$tempFolderName;
+        return $tempFolderName ? DIRECTORY_SEPARATOR . $tempFolderName : '';
     }
     protected function getFullRacine(): string
     {
-        return $this->getStorageRacine().($this->getTempFolderName() ? DIRECTORY_SEPARATOR.$this->getTempFolderName() : '');
+        return $this->getStorageRacine().$this->getTempFolderName();
     }
     protected function getFullPath(): string
     {
@@ -123,10 +124,16 @@ class TmpFiles
 
     public function putFile(string $pathOrFilename, $content) {
         //A terminer possibilité de mettre plusieurs fichiers et des sous dossier. 
-        //trace_log("-------------- putFile ------------------");
-        $this->fileName = trim($this->fileName,'/');
+        $this->fileName = trim($pathOrFilename,'/');
+        //trace_log($this->fileName);
         $path = $this->getFullRacine().DIRECTORY_SEPARATOR.$this->fileName;
         Storage::put($path, $content);
+        return $this;
+    }
+    public function emptyFile(string $pathOrFilename) {
+        //A terminer possibilité de mettre plusieurs fichiers et des sous dossier. 
+        $this->fileName = trim($pathOrFilename,'/');
+        $path = $this->getFullRacine().DIRECTORY_SEPARATOR.$this->fileName;
         return $this;
     }
 
@@ -152,6 +159,16 @@ class TmpFiles
     {
         if($this->fileName) {
             return storage_path($this->getFullPath().DIRECTORY_SEPARATOR.$this->fileName);
+        } else {
+            throw new Exception("Il manque le nom du fichier getFilePath ne fonctionne QUE si il y a eu un putFile");
+        }
+        
+    }
+    public function getFileUrl(): string
+    {
+        if($this->fileName) {
+            //trace_log(url('storage/'.$this->getFullPath().DIRECTORY_SEPARATOR.$this->fileName));
+            return url('storage/'.$this->getFullPath().DIRECTORY_SEPARATOR.$this->fileName);
         } else {
             throw new Exception("Il manque le nom du fichier getFilePath ne fonctionne QUE si il y a eu un putFile");
         }

@@ -33,18 +33,12 @@ class Btns extends WidgetBase
         $configBtns = $this->config->action_bar['config_btns'] ?? null;
         $this->vars['mode'] = $mode;
         $this->vars['partials'] = $this->config->action_bar['partials'] ?? null;
-        if ($context == 'update') {
+        if ($mode == 'update') {
             $model = $this->controller->formGetModel();
             $this->vars['btns'] = $this->getBtns($configBtns);
             $this->vars['modelId'] = $model->id;
             return $this->makePartial('action_bar');
-        } elseif ($context == 'create') {
-            $model = $this->controller->formGetModel();
-            $this->vars['btns'] = null;
-            $this->vars['modelId'] = $model->id;
-            return $this->makePartial('action_bar');
-        }
-         else {
+        } else {
             $this->vars['btns'] = $this->getBtns($configBtns, true);
             $this->vars['modelId'] = $modelId;
             return $this->makePartial('action_container');
@@ -127,9 +121,9 @@ class Btns extends WidgetBase
         }
     }
 
-    public function renderToolBar($context = null, $secondaryLabel = false)
+    public function renderToolBar($secondaryLabel = false)
     {
-        $this->prepareComonVars($context);
+        $this->prepareComonVars(null);
         $toolBar = null;
         if (!$secondaryLabel) {
             $toolBar = $this->config->tool_bar;
@@ -164,7 +158,7 @@ class Btns extends WidgetBase
             } else {
                 $permissionGranted = $this->user->hasAccess($permission);
             }
-            //trace_log($permissionGranted);
+            //trace_log($btn);
             $btn['permissions']  = $permissionGranted;
             $btnWithPermission[$key] = $btn;
         }
@@ -195,7 +189,7 @@ class Btns extends WidgetBase
         //Blocage si dans les hide de la config
         $model = $this->controller->formGetModel();
         if($model) {
-             trace_log($model->state);
+             //trace_log($model->state);
             $modelState = $model->state;
             $hiddenBar = $this->config->workflow[$modelState]['hide'] ?? false;
             if($hiddenBar) {

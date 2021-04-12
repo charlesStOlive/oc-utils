@@ -61,40 +61,40 @@ class WorkflowBehavior extends ControllerBehavior
             $transitionChosen = null;
             $modelData = $this->controller->formGetWidget()->getSaveData();
             foreach($tryToChangeStates as $try) {
-                trace_log($try.'---------------------------');
+                //trace_log($try.'---------------------------');
                 $transition = $model::getTransitionobject($try, $model);
                 $transitionMetaData = $wfMetadataStore->getTransitionMetadata($transition);
                 $rulesSet = $transitionMetaData['rulesSet'] ?? null;
                 $rules = $model->getWorkgflowRules($rulesSet);
                 $error = 0;
                 foreach($rules['fields'] as $key=>$rule) {
-                    trace_log("test on key : ".$key);
+                    //trace_log("test on key : ".$key);
                     if(!$modelData[$key]) {
-                        trace_log('error on'.$key);
+                        //trace_log('error on'.$key);
                         $error++;
                     }
                 }
                 if(!$error) {
-                    trace_log("try ok : ".$try);
+                    //trace_log("try ok : ".$try);
                     $model->change_state = $try;
                     \Session::put('wf_redirect', $transitionMetaData['redirect']);
                     break;
                 }
             }
-            trace_log("fin des tests");
-            trace_log($model->change_state);
+            //trace_log("fin des tests");
+            //trace_log($model->change_state);
         }
     }
         
 
     public function update_onSave($recordId = null, $context = null)
     {
-        trace_log("update_onSave---------------------");
+        //trace_log("update_onSave---------------------");
         if(post('try')) {
             $this->controller->asExtension('FormController')->update_onSave($recordId, $context);
             $redirect = \Session::pull('wf_redirect');
             $model = $this->controller->formFindModelObject($recordId);
-            trace_log($redirect);
+            //trace_log($redirect);
             if($redirect == "refresh:1") {
                     return Redirect::refresh();
                 }
@@ -106,7 +106,7 @@ class WorkflowBehavior extends ControllerBehavior
                 if ($redirect == "redirect:1") {
                     $redirectUrl = $this->controller->formGetRedirectUrl($context, $model);
                 }
-                trace_log($redirectUrl);
+                //trace_log($redirectUrl);
                 return Backend::redirect($redirectUrl);
         } else {
             return $this->controller->asExtension('FormController')->update_onSave($recordId, $context);
