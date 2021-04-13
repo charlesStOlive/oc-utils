@@ -64,12 +64,12 @@ class SidebarAttributes extends WidgetBase
             $attributes = Yaml::parseFile(plugins_path() . '/' . $modelAttributeAdresse);
             //trace_log($attributes);
         } else {
-            $pluginName = strtolower($this->dataSource->author . '/' . $this->dataSource->plugin . '\/models');
+            $pluginName = strtolower($this->dataSource->author . '/' . $this->dataSource->plugin . '/models');
             $attributesPath = plugins_path() . '/' . $pluginName . '/' . strtolower($this->dataSource->name) . '/attributes.yaml';
             if (file_exists($attributesPath)) {
                 $attributes = Yaml::parseFile($attributesPath);
             } else {
-                throw new \SystemException('Les attributs ne sont pas correctemrnt configuré.');
+                throw new \SystemException('Les attributs ne sont pas correctemrnt configuré : '.$attributesPath);
             }
         }
         $maped = $this->remapAttributes($attributes['attributes'], 'ds');
