@@ -66,14 +66,17 @@ class Btns extends WidgetBase
         //trace_log($state);
         //trace_log($this->config->workflow);
 
-        $formAutoConfig = null;
-        $is_form_auto = $this->config->workflow[$state]['form_auto'] ?? true;
-        if($is_form_auto) {
-            $formAutoConfig = $this->config->workflow[$state]['form_auto'] ?? false;
-            if(!$formAutoConfig) {
-                $formAutoConfig = $model->listWfPlaceFormAuto();
-            } 
-        }
+        $formAutoConfig = [];
+            $is_form_auto = $this->config->workflow[$state]['form_auto'] ?? true;
+            if($is_form_auto) {
+                $formAutoConfig = $this->config->workflow[$state]['form_auto'] ?? false;
+                if(!$formAutoConfig) {
+                    $formAutoConfig = $model->listWfPlaceFormAuto();
+                } 
+            }
+
+        
+        
         //trace_log($formAutoConfig);
         $separateOnStateConfig = $this->config->workflow[$state]['separate'] ?? [];
 

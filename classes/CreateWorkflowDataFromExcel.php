@@ -160,8 +160,6 @@ class CreateWorkflowDataFromExcel extends CreateBase
             'tradFieldRules' => $tradFieldRules,
         ];
 
-        //trace_log($all);
-
         return $this->processVars($all);
     }
 

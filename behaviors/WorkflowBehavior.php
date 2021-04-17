@@ -51,36 +51,39 @@ class WorkflowBehavior extends ControllerBehavior
 
     public function formBeforeSave($model)
     {
+        trace_log("formBeforeSave");
         if (post('change_state') != '') {
             $model->change_state = post('change_state');
         }
         if (post('try') != '') {
-            $tryToChangeStates = post('try');
-            $wfMetadataStore = $model->workflow_get()->getMetadataStore();
-            $tryToChangeStates = explode(',',$tryToChangeStates);
-            $transitionChosen = null;
-            $modelData = $this->controller->formGetWidget()->getSaveData();
-            foreach($tryToChangeStates as $try) {
-                //trace_log($try.'---------------------------');
-                $transition = $model::getTransitionobject($try, $model);
-                $transitionMetaData = $wfMetadataStore->getTransitionMetadata($transition);
-                $rulesSet = $transitionMetaData['rulesSet'] ?? null;
-                $rules = $model->getWorkgflowRules($rulesSet);
-                $error = 0;
-                foreach($rules['fields'] as $key=>$rule) {
-                    //trace_log("test on key : ".$key);
-                    if(!$modelData[$key]) {
-                        //trace_log('error on'.$key);
-                        $error++;
-                    }
-                }
-                if(!$error) {
-                    //trace_log("try ok : ".$try);
-                    $model->change_state = $try;
-                    \Session::put('wf_redirect', $transitionMetaData['redirect']);
-                    break;
-                }
-            }
+            trace_log('Il y a un try : '.post('try'));
+            $model->change_state = post('try');
+            // $tryToChangeStates = post('try');
+            // $wfMetadataStore = $model->workflow_get()->getMetadataStore();
+            // $tryToChangeStates = explode(',',$tryToChangeStates);
+            // $transitionChosen = null;
+            // $modelData = $this->controller->formGetWidget()->getSaveData();
+            // foreach($tryToChangeStates as $try) {
+            //     //trace_log($try.'---------------------------');
+            //     $transition = $model::getTransitionobject($try, $model);
+            //     $transitionMetaData = $wfMetadataStore->getTransitionMetadata($transition);
+            //     $rulesSet = $transitionMetaData['rulesSet'] ?? null;
+            //     $rules = $model->getWorkgflowRules($rulesSet);
+            //     $error = 0;
+            //     foreach($rules['fields'] as $key=>$rule) {
+            //         //trace_log("test on key : ".$key);
+            //         if(!$modelData[$key]) {
+            //             //trace_log('error on'.$key);
+            //             $error++;
+            //         }
+            //     }
+            //     if(!$error) {
+            //         //trace_log("try ok : ".$try);
+            //         $model->change_state = $try;
+            //         \Session::put('wf_redirect', $transitionMetaData['redirect']);
+            //         break;
+            //     }
+            // }
             //trace_log("fin des tests");
             //trace_log($model->change_state);
         }

@@ -58,6 +58,8 @@ class WorkflowCreate extends GeneratorCommand
     {
         $this->vars = $this->prepareVars(true);
 
+        trace_log("handle");
+
         $this->makeStubs();
 
         $this->info($this->type . 'created successfully.');
@@ -139,6 +141,7 @@ class WorkflowCreate extends GeneratorCommand
             'trans' => $trans,
             'config' => $config,
         ];
+
 
         $prepareExcel = new \Waka\Utils\Classes\CreateWorkflowDataFromExcel();
         return $prepareExcel->prepareVars($data);

@@ -382,6 +382,8 @@ class DataSource
 
         foreach ($model_functions as $item) {
             $itemFnc = $item['functionCode'];
+            trace_log($item['collectionCode']);
+            trace_log($item);
             $collection[$item['collectionCode']] = $fnc->{$itemFnc}($item);
         }
         return $collection;

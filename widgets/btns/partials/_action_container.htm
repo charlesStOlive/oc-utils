@@ -6,7 +6,7 @@
     <?php else : ?>
     <button href="javascript:;"
             class="btn btn-secondary <?=$btn['icon'] ?? null?>"
-            data-request-data="modelId:<?=$modelId?>, model:'<?=$modelClass?>'"
+            data-request-data="modelId:<?=$modelId?>, modelClass:'<?=$modelClass?>'"
             data-request="<?=$btn['ajaxInlineCaller'] ??''?>">
         <?= e(trans($btn['label'] ?? 'Inc'))?>
     </button>

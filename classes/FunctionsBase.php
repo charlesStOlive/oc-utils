@@ -35,17 +35,29 @@ class FunctionsBase
     public function getFunctionsOutput($value)
     {
         $functions = $this->listFunctionAttributes();
-        $outputs = $this->findFunction($functions, $value, 'outputs');
-        return $outputs;
+        try {
+            $outputs = $this->findFunction($functions, $value, 'outputs');
+            return $outputs;
+        } catch( Exeption $e) {
+            return null;
+
+        }
+        
+        
     }
 
     private function findFunction($functions, $functionCode, $searchedKey)
     {
+        trace_log($functions);
+        $functionName = $functions[$functionCode] ?? null;
+        if (!$functionName) {
+            throw new \ApplicationException("La fonction d'édition  : ".$functionCode." n'existe pas");
+        }
         $atttributes = $functions[$functionCode][$searchedKey] ?? null;
         $valeursExtended = [];
         $valeurs = [];
         if (!$atttributes) {
-            throw new \SystemException("Erreur attributs d'une fonction d'édition");
+            throw new \ApplicationException("Erreur attributs de la fonction : ".$functionCode." :  ".$searchedKey);
         }
         if ($atttributes['extend'] ?? false) {
             $extendedFunction = $atttributes['extend'];

@@ -1,8 +1,3 @@
-<?php if ($context == 'create') : ?>
-<div>
-    <?= $this->makePartial('workflow/workflow_buttons', ['btnTrans' => $transitions]);?>
-</div>
-<?php else : ?>
 <?php if ($wfTrys) : ?>
 <?= $this->makePartial('workflow/btn_save_auto', ['wfTrys' => $wfTrys]);?>
 <?php else : ?>
@@ -10,4 +5,3 @@
 <?php endif ?>
 <?= $this->makePartial('workflow/workflow_buttons',['btnTrans' => $wfSeparates]);?>
 <?= $this->makePartial('workflow/workflow_dd_button',['btnTrans' => $transitions]);?>
-<?php endif ?>
