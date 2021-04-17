@@ -70,28 +70,55 @@ trait WakaWorkflowTrait
                 $changeState = $model->change_state;
                 $wf_try = strpos($changeState, ',');
                 if ($wf_try && $changeState) {
+                    trace_log("On test un changement de transition");
                     //Si on test un changement de transition
                     $tryToChangeStates = explode(',',$changeState);
+                    trace_log($tryToChangeStates);
+                    $wfMetadataStore = $model->workflow_get()->getMetadataStore();
+                    $trySuccess = null;
                     foreach($tryToChangeStates as $try) {
+                        trace_log($try);
+
+                        if(!$model->workflow_can($try)) {
+                            //Si la transition n'est pas compatible au saute cette boucle.
+                            continue;
+                        }
                         $transition = self::getTransitionobject($try, $model);
-                        trace_log($transition);
-                        $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
+                        $transitionMetaData = $wfMetadataStore->getTransitionMetadata($transition);
+                        $rulesSet = $transitionMetaData['rulesSet'] ?? null;
                         $rules = $model->getWorkgflowRules($rulesSet);
+                        $error = 0;
+                        trace_log($rules['fields'] ?? 'Pas de rules');
+                        if(!$rules['fields'] ?? false) {
+                            trace_log("il n' y a pas de rules");
+                            $trySuccess = $model->change_state = $try;
+                            $model->workflow_get()->apply($model, $model->change_state);
+                            return;
+                        }
                         foreach($rules['fields'] as $key=>$rule) {
-                            if(!$modelData[$key]) {
+                            if(!$model[$key]) {
                                 trace_log('error on'.$key);
                                 $error++;
                             }
                         }
                         if(!$error) {
                             trace_log("try ok : ".$try);
-                            // $model->workflow_get()->apply($model, $changeState);
-                            // \Session::put('wf_redirect', $transitionMetaData['redirect']);
+                            $trySuccess = $model->change_state = $try;
+                            $model->workflow_get()->apply($model, $model->change_state);
+                            \Session::put('wf_redirect', $transitionMetaData['redirect']);
                             break;
                         }
                     }
+                    if(!$trySuccess) {
+                        if($model->wfMustTrans) {
+                            throw new \ValidationException(['memo' => \Lang::get('waka.utils::lang.workflow.must_trans')]);
+                        }
+                        $model->change_state = null;
+
+                    }
                 }
                 if (!$wf_try && $changeState) {
+                    trace_log("On a un changement de transition");
                     //la transition et déjà choisi nous allons verifier. 
                     $transition = self::getTransitionobject($changeState, $model);
                     $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
@@ -107,7 +134,12 @@ trait WakaWorkflowTrait
             });
             
             $model->bindEvent('model.afterSave', function () use ($model) {
+                trace_log('model.afterSave');
+                trace_log($model->change_state);
+                trace_log($model->getOriginalPurgeValue('change_state'));
+
                 $changeState = $model->getOriginalPurgeValue('change_state');
+                trace_log($changeState);
                 if ($changeState) {
                     //Preparation de l'evenement
                     $workflowName = $model->workflow_get()->getName();
@@ -255,6 +287,15 @@ trait WakaWorkflowTrait
         //trace_log($place);
         $label = $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['label'] ?? $place; // string place name
         return Lang::get($label);
+    }
+
+    public function getWfMustTransAttribute()
+    {
+        //A faire $state_column pour changer la colonne source de l'etat
+        
+        $place = $this->state;
+        //trace_log($place);
+        return $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['must_trans'] ?? false; // string place name
     }
 
     // public function getWfAutomatisation()

@@ -179,6 +179,7 @@ return [
         'btn_workflow' => 'Sauver et appliquer une transition',
         "state_change_forbidden" => "Modifications et transitions interdites",
         "state" => "Etat",
+        "must_trans" => "Verifiez vos champs, il est impossible de sauvegarder pour le moment.",
         "change_state" => "Changer d'état",
         "error_place" => "erreur d'état",
         'popup' => [

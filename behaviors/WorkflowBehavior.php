@@ -58,6 +58,7 @@ class WorkflowBehavior extends ControllerBehavior
         if (post('try') != '') {
             trace_log('Il y a un try : '.post('try'));
             $model->change_state = post('try');
+            //IMPORTANT A GARDER POUR L INSTANT IL Y A DES FORMULES COMPLEXES A GARDER POUR UNE AUTRE FOIS-----------
             // $tryToChangeStates = post('try');
             // $wfMetadataStore = $model->workflow_get()->getMetadataStore();
             // $tryToChangeStates = explode(',',$tryToChangeStates);
@@ -97,8 +98,8 @@ class WorkflowBehavior extends ControllerBehavior
             $this->controller->asExtension('FormController')->update_onSave($recordId, $context);
             $redirect = \Session::pull('wf_redirect');
             $model = $this->controller->formFindModelObject($recordId);
-            //trace_log($redirect);
-            if($redirect == "refresh:1") {
+            trace_log("REDIRECTION : ".$redirect);
+            if($redirect == "refresh:1" || !$redirect) {
                     return Redirect::refresh();
                 }
                 $redirectUrl = null;
