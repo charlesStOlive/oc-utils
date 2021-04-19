@@ -51,12 +51,12 @@ class WorkflowBehavior extends ControllerBehavior
 
     public function formBeforeSave($model)
     {
-        trace_log("formBeforeSave");
+        //trace_log("formBeforeSave");
         if (post('change_state') != '') {
             $model->change_state = post('change_state');
         }
         if (post('try') != '') {
-            trace_log('Il y a un try : '.post('try'));
+            //trace_log('Il y a un try : '.post('try'));
             $model->change_state = post('try');
             //IMPORTANT A GARDER POUR L INSTANT IL Y A DES FORMULES COMPLEXES A GARDER POUR UNE AUTRE FOIS-----------
             // $tryToChangeStates = post('try');
@@ -98,7 +98,7 @@ class WorkflowBehavior extends ControllerBehavior
             $this->controller->asExtension('FormController')->update_onSave($recordId, $context);
             $redirect = \Session::pull('wf_redirect');
             $model = $this->controller->formFindModelObject($recordId);
-            trace_log("REDIRECTION : ".$redirect);
+            //trace_log("REDIRECTION : ".$redirect);
             if($redirect == "refresh:1" || !$redirect) {
                     return Redirect::refresh();
                 }

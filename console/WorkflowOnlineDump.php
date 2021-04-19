@@ -140,8 +140,8 @@ class WorkflowOnlineDump extends WorkflowCreate
         $dumper = new GraphvizDumper();
 
         //Création de l'image en 16/
-        $dotCommand = $this->createDotCommand($workflowSlug, 'td', $format);
-        $tdOptions = ["graph" => ['rankdir' => 'TD']];
+        $dotCommand = $this->createDotCommand($workflowSlug, 'tb', $format);
+        $tdOptions = ["graph" => ['rankdir' => 'TB']];
         $process = new Process($dotCommand);
         $process->setInput($dumper->dump($definition, null, $tdOptions));
         $process->mustRun();
@@ -157,7 +157,7 @@ class WorkflowOnlineDump extends WorkflowCreate
         $srcModel->places = html_entity_decode($this->workflowData['workflow/places.stub'], ENT_QUOTES);
         $srcModel->transitions = html_entity_decode($this->workflowData['workflow/transitions.stub'], ENT_QUOTES);
         $srcModel->infos = html_entity_decode($this->workflowData['workflow/infos.stub'], ENT_QUOTES);
-        $this->tryCopyImage($srcModel, 'td', $format, 2);
+        $this->tryCopyImage($srcModel, 'tb', $format, 2);
         $this->tryCopyImage($srcModel, 'lr', $format, 2);
     }
 
@@ -180,34 +180,6 @@ class WorkflowOnlineDump extends WorkflowCreate
             $srcModel->save();
         }
     }
-    // public function getModelOptions($option)
-    // {
-    //     //trace_log($option);
-    //     switch ($option) {
-    //         case 'ortho_LR':
-    //             # code...
-    //             return [
-    //                 'graph' => ['splines' => 'ortho', 'rankdir' => 'LR'],
-    //             ];
-    //         case 'ortho_TD':
-    //             # code...
-    //             return [
-    //                 'graph' => ['splines' => 'ortho', 'rankdir' => 'TD'],
-    //             ];
-    //         case 'curved_LR':
-    //             # code...
-    //             return [
-    //                 'graph' => ['splines' => 'spline', 'rankdir' => 'LR'],
-    //             ];
-    //         case 'curved_TD':
-    //             # code...
-    //             return [
-    //                 'graph' => ['splines' => 'spline', 'rankdir' => 'TD'],
-    //             ];
-    //         default:
-    //             return [];
-    //     }
-    // }
 
     /**
      * Get the console command arguments.

@@ -87,8 +87,8 @@ class WorkflowDump extends Command
 
         //trace_log($dumper);
 
-        $dotCommand = $this->createDotCommand($workflowName, 'td', 'jpeg');
-        $tdOptions = ["graph" => ['rankdir' => 'TD']];
+        $dotCommand = $this->createDotCommand($workflowName, 'tb', 'jpeg');
+        $tdOptions = ["graph" => ['rankdir' => 'TB']];
         $process = new Process($dotCommand);
         $process->setInput($dumper->dump($definition, null, $tdOptions));
         $process->mustRun();

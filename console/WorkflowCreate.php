@@ -58,7 +58,7 @@ class WorkflowCreate extends GeneratorCommand
     {
         $this->vars = $this->prepareVars(true);
 
-        trace_log("handle");
+        //trace_log("handle");
 
         $this->makeStubs();
 

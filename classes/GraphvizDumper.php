@@ -46,7 +46,7 @@ class GraphvizDumper implements DumperInterface
     public function dump(Definition $definition, Marking $marking = null, array $options = [])
     {
         //trace_log($options);
-        $this->wordWrap = $options['graph']['rankdir'] == 'TD' ? 40 : 15;
+        $this->wordWrap = $options['graph']['rankdir'] == 'TB' ? 40 : 15;
 
         //trace_log($options['graph']['rankdir']);
         //trace_log($this->wordWrap);
@@ -101,6 +101,10 @@ class GraphvizDumper implements DumperInterface
             if (null !== $label) {
                 $attributes['name'] = $label;
             }
+            $must_trans = $workflowMetadata->getMetadata('must_trans', $place);
+            if ($must_trans !== null) {
+                $attributes['must_trans'] = true;
+            }
             $automatisations = $workflowMetadata->getMetadata('automatisations', $place);
             if (null !== $automatisations) {
                 $attributes['automatisations'] = "Automatisation !";
@@ -125,11 +129,11 @@ class GraphvizDumper implements DumperInterface
         foreach ($definition->getTransitions() as $transition) {
             $attributes = ['shape' => 'box', 'regular' => false];
 
-            // $backgroundColor = $workflowMetadata->getMetadata('bg_color', $transition);
-            // if (null !== $backgroundColor) {
-            //     $attributes['style'] = 'dashed';
-            //     $attributes['fillcolor'] = $backgroundColor;
-            // }
+            $hidden = $workflowMetadata->getMetadata('hidden', $transition);
+            if (null !== $hidden) {
+                $attributes['style'] = 'dashed';
+                $attributes['fillcolor'] = '#cccccc';
+            }
             $name = $workflowMetadata->getMetadata('label', $transition) ?? $transition->getName();
             $name = wordwrap(\Lang::get($name), $this->wordWrap, '|');
 
@@ -140,17 +144,9 @@ class GraphvizDumper implements DumperInterface
             $trait = null;
 
             if ($functions) {
-                //$attributes['fillcolor'] = $backgroundColor;
                 $attributes['style'] = 'filled';
                 foreach ($functions as $fncKeyName => $function) {
                     $type = $function['type'] ?? null;
-                    // if ($type == 'prod' && $attributes['fillcolor'] != 'cyan') {
-                    //     $attributes['fillcolor'] = 'yellow';
-                    // } elseif ($type == 'trait' && $attributes['fillcolor'] != 'yellow') {
-                    //     $attributes['fillcolor'] = 'cyan';
-                    // } else {
-                    //     $attributes['fillcolor'] = 'green';
-                    // }
                     if ($type == 'gard') {
                         $gard = "Gard : " . $fncKeyName;
                     }
@@ -163,20 +159,18 @@ class GraphvizDumper implements DumperInterface
                 }
             }
             $rulesSet = $workflowMetadata->getMetadata('rulesSet', $transition) ?? null;
-
-            if ($rulesSet && $rulesSet != 'none') {
-                //trace_log("rouge = " . $name . " : " . $rulesSet);
-                $attributes['color'] = 'red';
-            } elseif ($rulesSet == 'none') {
-                //trace_log("blanc" . $name);
-                $attributes['color'] = 'grey';
+            $rules = null;
+            if ($rulesSet) {
+                $rules = "Règles : ".$rulesSet;
             }
+               
             $transitions[] = [
                 'attributes' => $attributes,
                 'name' => $name,
                 'gard' => $gard,
                 'prod' => $prod,
                 'trait' => $trait,
+                'rules' => $rules,
             ];
         }
 
@@ -191,15 +185,17 @@ class GraphvizDumper implements DumperInterface
         $code = '';
 
         foreach ($places as $id => $place) {
+            trace_log($place);
             if (isset($place['attributes']['name'])) {
                 $placeName = $place['attributes']['name'];
-                $automatisations = $place['attributes']['automatisations'] ?? null;
+                $must_trans = $place['attributes']['must_trans'] ?? null;
+                $must_trans = $must_trans ? 'Transition obligatoire' : null;
                 unset($place['attributes']['name']);
             } else {
                 $placeName = $id;
             }
 
-            $code .= sprintf("  place_%s [label=%s, %s];\n", $this->dotize($id), $this->createPlaceLabelTab($placeName, $automatisations), $this->addAttributes($place['attributes']));
+            $code .= sprintf("  place_%s [label=%s, %s];\n", $this->dotize($id), $this->createPlaceLabelTab($placeName, $must_trans), $this->addAttributes($place['attributes']));
             //trace_log($code);
         }
 
@@ -246,9 +242,10 @@ class GraphvizDumper implements DumperInterface
         $gard = $this->createRow($place['gard'] ?? null);
         $prod = $this->createRow($place['prod'] ?? null);
         $trait = $this->createRow($place['trait'] ?? null);
+        $rules = $this->createRow($place['rules'] ?? null);
         $placeName = $this->escape($placeName);
         $placeName = str_replace('|', '<BR/>', $placeName);
-        $text = sprintf('<<table border="0" style="width:100px" cellborder="0"><tr><td><b>%s</b></td></tr>%s %s %s</table>>', $placeName, $gard, $prod, $trait);
+        $text = sprintf('<<table border="0" style="width:100px" cellborder="0"><tr><td><b>%s</b></td></tr>%s %s %s %s</table>>', $placeName, $gard, $prod, $trait,$rules);
         return $text;
     }
 

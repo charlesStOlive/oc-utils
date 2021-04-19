@@ -1,0 +1,43 @@
+<?php
+    $fieldOptions = $field->options();
+    $useSearch = $field->getConfig('showSearch', true);
+    $emptyOption = $field->getConfig('emptyOption', $field->placeholder);
+?>
+<div class="">
+    <div data-control="">
+        <div class="scoreboard-item title-value">
+            <h4><?= e(trans('waka.utils::lang.workflow.state')) ?> : <b><?=$value?></b></h4>
+            <?php if($com) : ?><p class="description"><?= $com ?></p><?php endif ?>
+        </div>
+
+        <div class="">
+            <!-- Dropdown -->
+            <div class="m-t">
+                <?php if ($this->previewMode || $field->readOnly): ?>
+                <a class="btn btn-default oc-icon-lock" href="#" disabled
+                   role="button"><?=e(trans('waka.utils::lang.workflow.state_change_forbidden'))?></a>
+                <?php else: ?>
+                <?php if ($emptyOption): ?>
+                <div class="radio custom-radio">
+                    <input checked="checked" name="<?= $field->getName() ?>" value="" type="radio" id="lw_0" />
+                    <label for="lw_0">Ne pas changer d'état</label>
+                </div>
+                <?php endif ?>
+                <?php 
+                $i = 1;
+                foreach ($fieldOptions as $value => $option): 
+                ?>
+                <?php if (!is_array($option)) $option = [$option]; ?>
+                <div class="radio custom-radio">
+                    <input name="<?= $field->getName() ?>" value="<?= e($value) ?>" type="radio" id="lw_<?=$i?>" />
+                    <label for="lw_<?=$i?>"><?= e(trans($option[0])) ?></label>
+                </div>
+                <?php 
+                 $i++;
+                 endforeach
+                ?>
+                <?php endif ?>
+            </div>
+        </div>
+    </div>
+</div>

@@ -17,7 +17,7 @@ class Workflow extends FormWidgetBase
     public $stateFrom = "state";
     public $workflow;
     public $workflowMetadata;
-    public $mode = "edit";
+    public $mode = "edit-dd";
 
     /**
      * @inheritDoc
@@ -40,8 +40,10 @@ class Workflow extends FormWidgetBase
         $this->prepareVars();
         if($this->mode == "read") {
             return $this->makePartial('read');
+        } elseif($this->mode == "edit-list") {
+            return $this->makePartial('workflow_list');
         } else {
-            return $this->makePartial('workflow');
+            return $this->makePartial('workflow_dd');
         }
     }
 
@@ -132,10 +134,10 @@ class Workflow extends FormWidgetBase
      */
     public function getSaveValue($value)
     {
-        if($this->mode == "edit") {
-            return $value;
-        } else {
+        if($this->mode == "read") {
             return \Backend\Classes\FormField::NO_SAVE_DATA;
+        } else {
+            return $value;
         }
         
     }

@@ -48,7 +48,7 @@ class FunctionsBase
 
     private function findFunction($functions, $functionCode, $searchedKey)
     {
-        trace_log($functions);
+        //trace_log($functions);
         $functionName = $functions[$functionCode] ?? null;
         if (!$functionName) {
             throw new \ApplicationException("La fonction d'édition  : ".$functionCode." n'existe pas");
