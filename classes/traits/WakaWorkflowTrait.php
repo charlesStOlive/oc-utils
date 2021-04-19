@@ -77,13 +77,13 @@ trait WakaWorkflowTrait
                     $wfMetadataStore = $model->workflow_get()->getMetadataStore();
                     $trySuccess = null;
                     foreach($tryToChangeStates as $try) {
-                        trace_log("-----try : ".$try." sur état : ".$model->state);
-                        trace_log("Etats possible : ") ;
-                        trace_log($model->workflow_transitions());
+                        //trace_log("-----try : ".$try." sur état : ".$model->state);
+                        //trace_log("Etats possible : ") ;
+                        //trace_log($model->workflow_transitions());
 
                         if(!$model->workflow_can($try)) {
                             //Si la transition n'est pas compatible au saute cette boucle.
-                            trace_log("Transition incompatible : ".$try);
+                            //trace_log("Transition incompatible : ".$try);
                             continue;
                         }
                         $transition = self::getTransitionobject($try, $model);
@@ -91,16 +91,16 @@ trait WakaWorkflowTrait
                         $rulesSet = $transitionMetaData['rulesSet'] ?? 'default';
                         $rules = $model->getWorkgflowRules($rulesSet);
                         $error = 0;
-                        trace_log($rules['fields'] ?? 'Pas de rules');
+                        //trace_log($rules['fields'] ?? 'Pas de rules');
                         if(!$rules['fields'] ?? false) {
-                            trace_log("il n' y a pas de rules");
+                            //trace_log("il n' y a pas de rules");
                             $trySuccess = $model->change_state = $try;
                             $model->workflow_get()->apply($model, $model->change_state);
                             return;
                         }
                         foreach($rules['fields'] as $key=>$rule) {
                             if(!$model[$key]) {
-                                trace_log('error on'.$key);
+                                //trace_log('error on'.$key);
                                 $error++;
                             }
                         }

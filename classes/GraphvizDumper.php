@@ -185,7 +185,7 @@ class GraphvizDumper implements DumperInterface
         $code = '';
 
         foreach ($places as $id => $place) {
-            trace_log($place);
+            //trace_log($place);
             if (isset($place['attributes']['name'])) {
                 $placeName = $place['attributes']['name'];
                 $must_trans = $place['attributes']['must_trans'] ?? null;
