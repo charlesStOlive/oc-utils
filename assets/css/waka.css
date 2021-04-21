@@ -302,4 +302,4 @@
 .txt_success >textarea {background-color:#c9faa0}
 .w-toolbar {display:flex}
 .w-actionbar {align-items:flex-start;display:inline-flex}
-@media (max-width:768px) {.w-toolbar {display:block }.w-actionbar {display:block }.w-actionbar >.dropdown {margin-top:5px }}
+@media (max-width:768px) {.w-toolbar {display:block }.w-toolbar >.dropdown,.w-toolbar >div >button {margin-top:5px }.w-actionbar {display:block }.w-actionbar >.dropdown {margin-top:5px }.w-actionbar >.dropdown,.w-actionbar >button {margin-top:5px }}
