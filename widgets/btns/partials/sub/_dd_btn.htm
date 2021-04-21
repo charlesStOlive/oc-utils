@@ -5,7 +5,7 @@
     </a>
     <ul class="dropdown-menu" style="<?php if($popupAction) :?>margin-left: 15px;<?php endif ?>"
         role="menu"
-        data-dropdown-title="<?= e(trans('waka.utils::lang.production.production')) ?>">
+        data-dropdown-title="<?= e(trans($databtn['label'])) ?>">
         <?php foreach($databtn['btns'] as $subbtn) : ?>
         <?php $inlineExiste = $subbtn['ajaxInlineCaller'] ?? false?>
         <li role="presentation">
