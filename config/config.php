@@ -117,6 +117,10 @@ return [
                 'word' => '${%s*MD}',
                 'twig' => "{{%s|md_safe}}",
             ],
+            'txt' => [
+                'word' => '${%s*TXT}',
+                'twig' => "{{%s|striptags('<br><p>') }}",
+            ],
         ],
 
     ],
