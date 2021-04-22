@@ -25,12 +25,10 @@
                 <?php endif ?>
                 <?php 
                 $i = 1;
-                foreach ($fieldOptions as $value => $option): 
-                ?>
-                <?php if (!is_array($option)) $option = [$option]; ?>
+                foreach ($fieldOptions as $key => $option): ?>
                 <div class="radio custom-radio">
-                    <input name="<?= $field->getName() ?>" value="<?= e($value) ?>" type="radio" id="lw_<?=$i?>" />
-                    <label for="lw_<?=$i?>"><?= e(trans($option[0])) ?></label>
+                    <input name="<?= $field->getName() ?>" value="<?= e($key) ?>" type="radio" id="lw_<?=$i?>" />
+                    <label for="lw_<?=$i?>"><?= e(trans($option['label'])) ?></label>
                 </div>
                 <?php 
                  $i++;

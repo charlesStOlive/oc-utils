@@ -24,14 +24,11 @@
                     <?php if ($emptyOption): ?>
                     <option value=""><?= e(trans($emptyOption)) ?></option>
                     <?php endif ?>
-                    <?php foreach ($fieldOptions as $value => $option): ?>
-                    <?php
-                if (!is_array($option)) $option = [$option];
-            ?>
-                    <option <?= $field->isSelected($value) ? 'selected="selected"' : '' ?>
-                            <?php if (isset($option[1])): ?>data-<?=strpos($option[1],'.')?'image':'icon'?>="<?= $option[1] ?>"
+                    <?php foreach ($fieldOptions as $key => $option): ?>
+                    <option <?= $field->isSelected($key) ? 'selected="selected"' : '' ?>
+                            <?php if (isset($option['icon'])): ?>data-<?=strpos($option['icon'],'.')?'image':'icon'?>="<?= $option['icon'] ?>"
                             <?php endif ?>
-                            value="<?= e($value) ?>"><?= e(trans($option[0])) ?></option>
+                            value="<?= e($key) ?>"><?= e(trans($option['label'])) ?></option>
                     <?php endforeach ?>
                 </select>
                 <?php endif ?>

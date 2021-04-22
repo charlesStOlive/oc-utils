@@ -67,43 +67,69 @@ class Btns extends WidgetBase
         //trace_log($this->config->workflow);
 
         $formAutoConfig = [];
-            $is_form_auto = $this->config->workflow[$state]['form_auto'] ?? true;
-            if($is_form_auto) {
-                $formAutoConfig = $this->config->workflow[$state]['form_auto'] ?? false;
-                if(!$formAutoConfig) {
-                    $formAutoConfig = $model->listWfPlaceFormAuto();
-                } 
-            }
+        $is_form_auto = $this->config->workflow[$state]['form_auto'] ?? true;
+        if($is_form_auto) {
+            $formAutoConfig = $this->config->workflow[$state]['form_auto'] ?? false;
+            //La form auto peux aussi être déclarer dans le YAML
+            if(!$formAutoConfig) {
+                $formAutoConfig = $model->listWfPlaceFormAuto();
+            } 
+        }
+        $wfTrys = $formAutoConfig;
 
-        
-        
-        //trace_log($formAutoConfig);
-        $separateOnStateConfig = $this->config->workflow[$state]['separate'] ?? [];
 
         $transitions = $this->getWorkFlowTransitions();
-        $wfTrys = $formAutoConfig;
-        $wfSeparates = [];
+        $separateOnStateConfigYaml = $this->config->workflow[$state]['separate'] ?? [];
 
+        //traitement du tableau des boutons séparés et création d'un premier tableau
+        $wfConfigSeparates = []; 
+        if($separateOnStateConfigYaml) {
+            foreach($separateOnStateConfigYaml as $key=>$separate) {
+                if(is_string($separate)) {
+                    $wfConfigSeparates[$separate] = [];
+                } else {
+                    $wfConfigSeparates[$key] = $separate;
+                }
+            }
+        }
+        trace_log($wfConfigSeparates);
+
+
+        $wfOriginalSeparates = [];
+        //Information venant du workflow on va réorganiser les boutons si besoin.
         foreach($transitions as $key => $transition) {
+            //Attention la clef est d etype ,0,1,2 elle ne sert qu'a enlever les tableaux. 
+            trace_log($transition['value']);
             if(in_array($transition['value'], $formAutoConfig)) {
                 unset($transitions[$key]);
                 
             }
             //Recehrche de separate_field
-             if(in_array($transition['value'], $separateOnStateConfig)) {
-                array_push($wfSeparates, $transition);
+             if(array_key_exists($transition['value'], $wfConfigSeparates)) {
+                $wfOriginalSeparates[$transition['value']] =  $transition;
                 unset($transitions[$key]);
             }
         }
 
-        // trace_log('transitions');
-        // trace_log($transitions);
+        trace_log($wfOriginalSeparates);
+        
+        
+        $wfSeparates = [];
+        if($separateOnStateConfigYaml) {
+            foreach($wfConfigSeparates as $key=>$separate) {
+                $wfSeparates[$key] = array_merge($wfOriginalSeparates[$key], $separate );
+            }
+        }
+
+        trace_log('transitions');
+        trace_log($transitions);
         // trace_log('wfTrys');
         // trace_log($wfTrys);
         // trace_log('wfSeparates');
         // trace_log($wfSeparates);
+        // trace_log($this->config->workflow[$state]['separateFirst']);
 
-
+        $this->vars['separateFirst'] =  $this->config->workflow[$state]['separateFirst'] ?? false;
         $this->vars['modelId'] = $model->id;
         $this->vars['transitions'] = $transitions;
         $this->vars['wfTrys'] = $wfTrys ? "try:'".implode(',', $wfTrys)."'" : null;
@@ -312,11 +338,13 @@ class Btns extends WidgetBase
                 $com = $workflowMetadata->getMetadata('com', $transition) ?? null;
                 $redirect = $workflowMetadata->getMetadata('redirect', $transition) ?? null;
                 $icon = $workflowMetadata->getMetadata('icon', $transition) ?? null;
+                $type = $workflowMetadata->getMetadata('type', $transition) ?? null;
                 $object = [
                     'value' => $name,
                     'label' => \Lang::get($label),
                     'com' => $com,
                     'icon' => $icon,
+                    'type' => $type,
                     'redirect' => $redirect,
                 ];
                 array_push($objTransition, $object);

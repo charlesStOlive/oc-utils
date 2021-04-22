@@ -67,6 +67,9 @@
 {% if transition.redirect %}
                 redirect: "{{transition.redirect}}"
 {% endif %}
+{% if transition.type %}
+                type: {{transition.type}}
+{% endif %}
 {% if transition.functions %}
                 fncs:
 {% for functions in transition.functions %}

@@ -114,7 +114,12 @@ class Workflow extends FormWidgetBase
             if (!$hidden) {
                 $name = $transition->getName();
                 $label = $this->workflowMetadata->getMetadata('label', $transition) ?? $name;
-                $possibleTransition[$name] = \Lang::get($label);
+                $possibleTransition[$name] = [
+                    'label' => $label,
+                    'type' => $this->workflowMetadata->getMetadata('type', $transition) ?? null,
+                    'com' => $this->workflowMetadata->getMetadata('com', $transition) ?? null,
+                    'icon' => $this->workflowMetadata->getMetadata('icon', $transition) ?? null,
+                ];
             }
         }
         return $possibleTransition;
