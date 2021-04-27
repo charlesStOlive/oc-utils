@@ -26,7 +26,7 @@
         <?php endif ?>
         <?php if($base['reorder']['show'] ?? false) : ?>
         <?php if($base['reorder']['permissions']) : ?>
-        <a href="<?= Backend::url($reorderUrl) ?>"
+        <a href="<?= Backend::url($base['reorder']['url'] ?? '#') ?>"
            class="btn btn-default oc-icon-bars">
             <?= e(trans('waka.utils::lang.global.reorder')) ?>
         </a>

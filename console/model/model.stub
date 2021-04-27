@@ -161,7 +161,7 @@ class {{studly_name}} extends Model
     ];
     public $hasOneThrough = [];
     public $hasManyThrough = [
-{% for relation in configs.manythrough %}
+{% for relation in configs.manyThrough %}
         '{{relation.relation_name| lowercase}}' => [
             '{{relation.relation_class}}',
 {% if relation.options %}{% for key,option in relation.options %}
@@ -183,10 +183,20 @@ class {{studly_name}} extends Model
         ],
 {% endfor %}
     ];
-    public $belongsToMany = [];
+    public $belongsToMany = [
+{% for relation in configs.belongsMany %}
+        '{{relation.relation_name| lowercase}}' => [
+            '{{relation.relation_class}}',
+{% if relation.options %}{% for key,option in relation.options %}
+            '{{key}}' => '{{option}}',
+{% endfor %}
+{% endif %}
+        ],
+{% endfor %}
+    ];        
     public $morphTo = [];
     public $morphOne = [
-{% for relation in configs.morphone %}
+{% for relation in configs.morphOne %}
         '{{relation.relation_name| lowercase}}' => [
             '{{relation.relation_class}}',
 {% if relation.options%}
@@ -198,7 +208,7 @@ class {{studly_name}} extends Model
 {% endfor %}
     ];
     public $morphMany = [
-{% for relation in configs.morphmany %}
+{% for relation in configs.morphMany %}
         '{{relation.relation_name| lowercase}}' => [
             '{{relation.relation_class}}',
 {% if relation.options%}

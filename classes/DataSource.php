@@ -41,7 +41,7 @@ class DataSource
         $globalConfig = new Collection($this->getSrConfig());
         $config = $globalConfig->where($type_id, $id)->first();
         if(!$config) {
-            throw new ApplicationException("La configuration n' a pas été trouvé pour la clef :  ".$id." du type ".$type_id);
+            throw new ApplicationException("La configuration datasource n' a pas été trouvé pour la valeur :  ".$id." recherché sur la cléf ".$type_id);
         }
         //
         $this->config = $config;

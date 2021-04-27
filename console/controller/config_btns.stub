@@ -21,10 +21,12 @@ tool_bar:
             show: true
             permissions: [{{configs.save_permission}}]
             url: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/create
-        redorder: 
-            show: true
+        reorder: 
+            show: {% if configs.behav_reorder %}true{% else%}false{% endif %}
+{% if configs.behav_reorder %} 
             permissions: []
             url: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/reorder
+{% endif %} 
         delete: 
             show: true
             permissions: [{{configs.delete_permission}}]

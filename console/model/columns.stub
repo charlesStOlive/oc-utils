@@ -52,13 +52,15 @@ columns:
 {% elseif column.type is null and column.relation is null  %}
         searchable: false
         sortable: false
-{% if column.field_type %}
+{% if column.col_opt and column.col_opt != "hide"  %}
+        type: {{column.col_opt}}
+{% elseif column.field_type  %}
         type: {{column.field_type}}
 {% endif %}
 {% else %}
         searchable: true
 {% endif %}
-{% if column.column == '999' or column.opt_col == "hide" %}
+{% if column.column == '999' or column.col_opt == "hide" %}
         invisible: true
 {% endif %}
 {% endfor %}

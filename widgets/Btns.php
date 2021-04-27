@@ -166,7 +166,7 @@ class Btns extends WidgetBase
         $base = $toolBar['base'] ?? false;
         if($base) {
             $base = $this->getPermissions($base);
-            //trace_log($base);
+            trace_log($base);
         }
         $this->vars['base'] = $base;
         $this->vars['isLot'] = true;
