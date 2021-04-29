@@ -117,7 +117,13 @@ class Btns extends WidgetBase
         $wfSeparates = [];
         if($separateOnStateConfigYaml) {
             foreach($wfConfigSeparates as $key=>$separate) {
-                $wfSeparates[$key] = array_merge($wfOriginalSeparates[$key], $separate );
+                $transitionExiste = $wfOriginalSeparates[$key] ?? false;
+                if($transitionExiste) {
+                    $wfSeparates[$key] = array_merge($wfOriginalSeparates[$key], $separate);
+                } else {
+                    \Log::error('nom de transition inconnu dans config_btn workflow');
+                }
+                
             }
         }
 
