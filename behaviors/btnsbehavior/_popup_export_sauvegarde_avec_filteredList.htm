@@ -17,8 +17,21 @@
                 <?=Lang::get("waka.cloud::lang.popup.choose_who")?>
             </label>
             <div class="radio custom-radio">
-                <input name="lotType" checked
-                       value=true
+                <input checked="checked"
+                       name="lotType"
+                       value="filtered"
+                       type="radio"
+                       id="filtered">
+                <label for="filtered">
+                    <?=e(trans("waka.cloud::lang.popup.filtered"))?>
+                </label>
+                <p class="help-block">Nombres :
+                    <?=$filtered?>
+                </p>
+            </div>
+            <div class="radio custom-radio">
+                <input name="lotType"
+                       value="checked"
                        type="radio"
                        id="checked">
                 <label for="checked">

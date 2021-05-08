@@ -74,6 +74,7 @@ class Wimages
 
     public function listFile($model = null, $relation = null)
     {
+        //trace_log("listFile");
         if (!$model) {
             $model = $this->model;
         }
@@ -85,6 +86,7 @@ class Wimages
         }
 
         $files = $model->attachOne;
+        //trace_log($model->attachOne);
         foreach ($files as $key => $value) {
             if ($value == 'System\Models\File') {
                 $img = [
@@ -97,6 +99,7 @@ class Wimages
                 array_push($cloudiKeys, $img);
             }
         }
+        //trace_log($cloudiKeys);
         return $cloudiKeys;
     }
 
@@ -110,14 +113,14 @@ class Wimages
             foreach ($relationWithImages as $relation) {
                 //trace_log($relation);
                 $subModel = $this->getStringModelRelation($this->model, $relation);
-                //trace_log($subModel->name);
+                $files = $this->listFile($subModel, $relation);
+                $relationImages = $relationImages->merge($files);
                 if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
                     $cloudiList = \Waka\Cloudis\Classes\Cloudi::listCloudis($subModel, $relation);
                     $montages = \Waka\Cloudis\Classes\Cloudi::listMontages($subModel, $relation);
                     $relationImages = $relationImages->merge($cloudiList);
                     $relationImages = $relationImages->merge($montages);
-                }
-                $files = $this->listFile($subModel, $relation);
+                }  
             }
         }
         return $relationImages;
@@ -125,6 +128,7 @@ class Wimages
 
     public function getPicturesUrl($dataImages)
     {
+        //trace_log('getPicturesUrl');
         if (!$dataImages) {
             return;
         }
@@ -162,12 +166,13 @@ class Wimages
             }
             if ($image['type'] == 'file') {
                 $img = $modelImage->{$image['field']};
+                //trace_log("image à trouver ".$image['field']);
                 if ($img) {
-                    $img = $img->getThumb($options['width'], $options['height'], ['mode' => $options['crop']]);
+                    $img = $img->getThumb($options['width'], $options['height']);
                 } else {
                     //trace_log('error');
                 }
-                // trace_log('montage ---' . $img);
+                //trace_log('montage ---' . $img);
             }
             $allPictures[$image['code']] = [
                 'path' => $img,

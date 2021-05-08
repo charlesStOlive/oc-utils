@@ -408,7 +408,7 @@ class CreateModelController extends GeneratorCommand
         }
         $array = explode('::', $relation);
         $type = $array[0];
-        trace_log($type);
+        //trace_log($type);
         $relationClass = $this->getRelationClass($array[1], $item['var']);
         $createYamlRelation = $this->createYamlRelation($array[1], $item['var']);
         $relationPath = $this->getRelationPath($array[1], $item['var'], $createYamlRelation);

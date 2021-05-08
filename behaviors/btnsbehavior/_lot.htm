@@ -1,0 +1,26 @@
+<?= Form::open() ?>
+
+<div class="report-widget">
+    <h5>Choisissez une fonction</h5>
+    <div class="modal-body">
+        <div class="form-group">
+            <select class="form-control custom-select"
+                    name="fncName">
+                <option value=""
+                        disabled
+                        selected>Choisissez une fonction</option>
+                <?php foreach($options as $key => $value)  { ?>
+                <option value="<?=$key?>"><?=$value?></option>
+                <?php } ?>
+            </select>
+        </div>
+    </div>
+
+    <button type="submit"
+            data-request="onExecuteLotFncValidation"
+            class="btn btn-primary">
+        <?=e(trans('waka.utils::lang.global.validate'))?>
+    </button>
+</div>
+
+<?= Form::close() ?>

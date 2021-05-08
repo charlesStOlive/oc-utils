@@ -9,6 +9,12 @@ return [
             'ajaxInlineCaller' => 'onLoadDuplicateContentForm',
             'icon' => 'oc-icon-files-o',
         ],
+         'lot_fnc' => [
+            'label' => 'Fonctions par lot',
+            'class' => 'btn-secondary',
+            'ajaxInlineCaller' => 'onExecuteLotFnc',
+            'icon' => 'oc-icon-calculator',
+        ],
     ],
     'ImageOptions' => [
         'width' => [
@@ -124,5 +130,4 @@ return [
         ],
 
     ],
-
 ];

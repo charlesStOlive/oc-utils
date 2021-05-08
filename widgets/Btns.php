@@ -92,14 +92,14 @@ class Btns extends WidgetBase
                 }
             }
         }
-        trace_log($wfConfigSeparates);
+        //trace_log($wfConfigSeparates);
 
 
         $wfOriginalSeparates = [];
         //Information venant du workflow on va réorganiser les boutons si besoin.
         foreach($transitions as $key => $transition) {
             //Attention la clef est d etype ,0,1,2 elle ne sert qu'a enlever les tableaux. 
-            trace_log($transition['value']);
+            //trace_log($transition['value']);
             if(in_array($transition['value'], $formAutoConfig)) {
                 unset($transitions[$key]);
                 
@@ -111,7 +111,7 @@ class Btns extends WidgetBase
             }
         }
 
-        trace_log($wfOriginalSeparates);
+        //trace_log($wfOriginalSeparates);
         
         
         $wfSeparates = [];
@@ -127,8 +127,8 @@ class Btns extends WidgetBase
             }
         }
 
-        trace_log('transitions');
-        trace_log($transitions);
+        //trace_log('transitions');
+        //trace_log($transitions);
         // trace_log('wfTrys');
         // trace_log($wfTrys);
         // trace_log('wfSeparates');
@@ -172,7 +172,7 @@ class Btns extends WidgetBase
         $base = $toolBar['base'] ?? false;
         if($base) {
             $base = $this->getPermissions($base);
-            trace_log($base);
+            //trace_log($base);
         }
         $this->vars['base'] = $base;
         $this->vars['isLot'] = true;
@@ -246,7 +246,11 @@ class Btns extends WidgetBase
         //trace_log($collection->toArray());
         $collection = $collection->reject(function ($item) {
                 $configFromPlugins = \Config::get($item['config']);
-                $mergedConfig = array_merge($configFromPlugins, $item);
+                $mergedConfig = [];
+                if($configFromPlugins) {
+                    $mergedConfig = array_merge($configFromPlugins, $item);
+                }
+                
                 $permissions = $mergedConfig['permissions'] ?? false;
                 if(!$permissions) {
                     //Si il n' y a pas de jeux de permission on ne rejete rien
