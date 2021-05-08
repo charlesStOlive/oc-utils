@@ -87,7 +87,7 @@ class BtnsBehavior extends ControllerBehavior
     {
         $options = $this->btnsWidget->config->tool_bar['config_lot']['btns']['lot_fnc']['fncNames'];
         $this->vars['options'] = $options;
-        return ['#popupActionContent' => $this->makePartial('$/waka/utils/behaviors/btnsBehavior/_lot.htm')];
+        return ['#popupActionContent' => $this->makePartial('$/waka/utils/behaviors/btnsbehavior/_lot.htm')];
     }
 
     public function onExecuteLotFncValidation()

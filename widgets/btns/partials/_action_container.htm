@@ -1,5 +1,5 @@
 <?php if($btns) : ?>
-<div class="w-actionbar">
+<div class="w-actionbar loading-indicator-container">
     <?php foreach($btns as $btn) : ?>
     <?php if($btn['btns'] ?? false) : ?>
     <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'popupAction' => true, 'isLot' => false, 'dropup' =>false]);?>
