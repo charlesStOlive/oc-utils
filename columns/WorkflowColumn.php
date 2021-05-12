@@ -88,13 +88,16 @@ class WorkflowColumn
         $placeMetadata = $this->record->workflow_get()->getMetadataStore()->getPlaceMetadata($place);
         $icon = null;
         $label = \Lang::get($placeMetadata['label'] ?? $place);
+        trace_log($place);
+        trace_log($placeMetadata);
+        $color = $placeMetadata['color'] ?? 'currentcolor';
 
         if ($this->getConfig('showWicon')) {
             $icon = $placeMetadata['icon'] ?? null;
             $icon = "<i class='" . $icon . "'></i>";
-            return $icon . ' ' . $label;
+            return "<div style='color:" . $color . "'>".$icon . ' ' . $label."</div>";
         } else {
-            return $label;
+            return $label; 
         }
     }
 }
