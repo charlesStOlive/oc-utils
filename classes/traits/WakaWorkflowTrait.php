@@ -258,6 +258,9 @@ trait WakaWorkflowTrait
 
     public function hasNoRole() {
         $user = \BackendAuth::getUser();
+        if($user->is_superuser) {
+            return false;
+        }
         $place = null;
         $place = $this->state;
         if (!$place) {
@@ -265,11 +268,14 @@ trait WakaWorkflowTrait
             $places = $workflow->getDefinition()->getPlaces();
             $place = array_key_first($places);
         }
+        
         //trace_log($place);
 
         $noRoleCode = $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['norole'] ?? []; // string place name
-        //trace_log($noRoleCode);
-        //trace_log($user->role->code);
+        if($norole == []) {
+            return false;
+        }
+        
         
         if(in_array($user->role->code, $noRoleCode))  {
             return true;
