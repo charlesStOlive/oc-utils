@@ -159,7 +159,18 @@ class {{studly_name}} extends Model
         ],
 {% endfor %}
     ];
-    public $hasOneThrough = [];
+    public $hasOneThrough = [
+{% for relation in configs.oneThrough %}
+        '{{relation.relation_name| lowercase}}' => [
+            '{{relation.relation_class}}',
+{% if relation.options%}
+{% for key,option in relation.options %}
+            '{{key}}' => '{{option}}',
+{% endfor %}
+{% endif %}
+        ],
+{% endfor %}
+    ];
     public $hasManyThrough = [
 {% for relation in configs.manyThrough %}
         '{{relation.relation_name| lowercase}}' => [

@@ -3,6 +3,7 @@
 # ===================================
 
 {% for relation in configs.many %}
+{% if relation.createInController %}
 {{relation.relation_name}}:
     label: {{relation.detail.author}}.{{relation.detail.plugin}}::{{lower_name}}.{{relation.relation_name}}
     manage:
@@ -14,10 +15,12 @@
         defaultSort:
             column: name
             direction: asc
+{% endif %}
 {% endfor %}
 {% for relation in configs.morphmany %}
+{% if relation.createInController %}
 {{relation.relation_name}}:
-    label:{{relation.detail.author}}.{{relation.detail.plugin}}::{{lower_name}}.{{relation.relation_name}}
+    label: {{relation.detail.author}}.{{relation.detail.plugin}}::{{lower_name}}.{{relation.relation_name}}
     manage:
         form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
     view:
@@ -27,4 +30,30 @@
         defaultSort:
             column: name
             direction: asc
+{% endif %}
+{% endfor %}
+{% for relation in configs.belong %}
+{% if relation.createInController %}
+{{relation.relation_name}}:
+    label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{relation.relation_name}}
+    manage:
+        form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
+        list: {{relation.relation_path}}/columns_for_{{lower_name}}.yaml
+    view:
+        form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
+        list: {{relation.relation_path}}/columns_for_{{lower_name}}.yaml
+        toolbarButtons: create|link|unlink
+{% endif %}
+{% endfor %}
+{% for relation in configs.oneThrough %}
+{% if relation.createInController %}
+{{relation.relation_name}}:
+    label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{relation.relation_name}}
+    manage:
+        form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
+        list: {{relation.relation_path}}/columns_for_{{lower_name}}.yaml
+    view:
+        form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
+        toolbarButtons: create|update|link
+{% endif %}
 {% endfor %}

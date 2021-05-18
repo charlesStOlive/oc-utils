@@ -129,27 +129,52 @@ class CreateModelController extends GeneratorCommand
             if ($this->config['filters'] ?? false) {
                 $this->stubs['controller/config_filter.stub'] = 'controllers/{{lower_ctname}}/' . $this->config['filters'] . '.yaml';
             }
-            //trace_log("--MORPHMANY--");
-            //trace_log($this->config['morphmany']);
-
+            trace_log("--MORPHMANY--");
+            trace_log($this->config['morphmany'] ?? null);
+            $relationConfigExiste = 0;
             if (($this->config['many'] || $this->config['morphMany']) && $this->yaml_for) {
                 foreach ($this->config['many'] as $relation) {
-                    $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
-                    if ($relation['createYamlRelation']) {
-                        $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
-                        $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
+                    if($relation['createInController']) {
+                        $relationConfigExiste++;
+                        $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
+                        if ($relation['createYamlRelation']) {
+                            $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
+                            $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
+                        }
                     }
+                    
                 }
                 foreach ($this->config['morphMany'] as $relation) {
-                    $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
-                    if ($relation['createYamlRelation']) {
-                        $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
-                        $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
+                    if($relation['createInController']) {
+                        $relationConfigExiste++;
+                        $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
+                        if ($relation['createYamlRelation']) {
+                            $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
+                            $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
+                        }
                     }
                 }
-
+            }
+             trace_log("--BELONG--");
+            trace_log($this->config['belong'] ?? null);
+            if (($this->config['belong'] || $this->config['oneThrough']) && $this->yaml_for) {
+                foreach ($this->config['belong'] as $relation) {
+                    if($relation['createInController']) {
+                        $relationConfigExiste++;
+                        $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
+                    }
+                }
+                foreach ($this->config['oneThrough'] as $relation) {
+                    if($relation['createInController']) {
+                        $relationConfigExiste++;
+                        $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
+                    }
+                }
+            }
+            if($relationConfigExiste) {
                 $this->stubs['controller/config_relation.stub'] = 'controllers/{{lower_ctname}}/config_relation.yaml';
             }
+            
         }
         if ($this->maker['html_file_controller']) {
             $this->stubs = array_merge($this->stubs, $this->controllerHtmStubs);
@@ -303,6 +328,7 @@ class CreateModelController extends GeneratorCommand
         });
 
         $this->config['belong'] = $rows->where('belong', '!=', null)->pluck('belong')->toArray();
+        $this->config['oneThrough'] = $rows->where('oneThrough', '!=', null)->pluck('oneThrough')->toArray();
         $this->config['belongsMany'] = $rows->where('belongsMany', '!=', null)->pluck('belongsMany')->toArray();
         $this->config['many'] = $rows->where('many', '!=', null)->pluck('many')->toArray();
         $this->config['manyThrough'] = $rows->where('manyThrough', '!=', null)->pluck('manythrough')->toArray();
@@ -310,7 +336,7 @@ class CreateModelController extends GeneratorCommand
         $this->config['morphOne'] = $rows->where('morphOne', '!=', null)->pluck('morphone')->unique('relation_name')->toArray();
         $this->config['attachOne'] = $rows->where('attachOne', '!=', null)->pluck('attachOne')->toArray();
         $this->config['attachMany'] = $rows->where('attachMany', '!=', null)->pluck('attachMany')->toArray();
-        $this->config['lists'] = $rows->where('lists', '!=', null)->pluck('lists')->toArray();
+        $this->config['lists'] = $rows->where('lists', '!=', null)->unique('lists')->pluck('lists')->toArray();
 
         //trace_log($rows->toArray());
         //trace_log($this->config);
@@ -410,12 +436,17 @@ class CreateModelController extends GeneratorCommand
         $type = $array[0];
         //trace_log($type);
         $relationClass = $this->getRelationClass($array[1], $item['var']);
+        trace_log('getRelationClass : '.$item['var']. ' :  '.$relationClass);
         $createYamlRelation = $this->createYamlRelation($array[1], $item['var']);
         $relationPath = $this->getRelationPath($array[1], $item['var'], $createYamlRelation);
+        trace_log('getRelationPath : '.$item['var']. ' :  '.$relationPath);
         $relationDetail = $this->getRelationDetail($array[1], $item['var']);
         $options = $this->getRelationOptions($array[2] ?? null);
+        
         $userRelation = $relationClass == 'Backend\Models\User' ? true : false;
         if ($type == 'belong') {
+            $fieldType = $item['field_type'] ?? null;
+            $createRelationInController = $fieldType == 'partial_relation';
             $item['belong'] = [
                 'relation_name' => $item['var'],
                 'relation_class' => $relationClass,
@@ -424,10 +455,28 @@ class CreateModelController extends GeneratorCommand
                 'userRelation' => $userRelation,
                 'createYamlRelation' => $createYamlRelation,
                 'detail' => $relationDetail,
+                'createInController' =>  $createRelationInController,
+
+            ];
+        }
+        if ($type == 'oneThrough') {
+            $fieldType = $item['field_type'] ?? null;
+            $createRelationInController = $fieldType == 'partial_relation';
+            $item['oneThrough'] = [
+                'relation_name' => $item['var'],
+                'relation_class' => $relationClass,
+                'relation_path' => $relationPath,
+                'options' => $options,
+                'userRelation' => $userRelation,
+                'createYamlRelation' => $createYamlRelation,
+                'detail' => $relationDetail,
+                'createInController' =>  $createRelationInController,
 
             ];
         }
         if ($type == 'belongsMany') {
+            $fieldType = $item['field_type'] ?? null;
+            $createRelationInController = $fieldType != 'taglist' && $fieldType != 'dropdown';
             $item['belongsMany'] = [
                 'relation_name' => $item['var'],
                 'relation_class' => $relationClass,
@@ -436,10 +485,12 @@ class CreateModelController extends GeneratorCommand
                 'userRelation' => $userRelation,
                 'createYamlRelation' => $createYamlRelation,
                 'detail' => $relationDetail,
-
+                'createInController' =>  $createRelationInController,
             ];
         }
         if ($type == 'morphMany') {
+            $fieldType = $item['field_type'] ?? null;
+           $createRelationInController = $fieldType != 'taglist' && $fieldType != 'dropdown';
             $item['morphMany'] = [
                 'relation_name' => $item['var'],
                 'singular_name' => str_singular($item['var']),
@@ -448,9 +499,12 @@ class CreateModelController extends GeneratorCommand
                 'options' => $options,
                 'createYamlRelation' => $createYamlRelation,
                 'detail' => $relationDetail,
+                'createInController' =>  $createRelationInController,
             ];
         }
         if ($type == 'morphOne') {
+            $fieldType = $item['field_type'] ?? null;
+            $createRelationInController = $fieldType == 'partial_relation';
             $item['morphOne'] = [
                 'relation_name' => $this->getRelationKeyVar($array[1], $item['var']),
                 'relation_class' => $relationClass,
@@ -459,9 +513,12 @@ class CreateModelController extends GeneratorCommand
                 'userRelation' => $userRelation,
                 'createYamlRelation' => $createYamlRelation,
                 'detail' => $relationDetail,
+                'createInController' =>  $createRelationInController,
             ];
         }
         if ($type == 'many') {
+            $fieldType = $item['field_type'] ?? null;
+            $createRelationInController = $fieldType != 'taglist' && $fieldType != 'dropdown';
             $item['many'] = [
                 'relation_name' => $item['var'],
                 'singular_name' => str_singular($item['var']),
@@ -470,9 +527,12 @@ class CreateModelController extends GeneratorCommand
                 'options' => $options,
                 'createYamlRelation' => $createYamlRelation,
                 'detail' => $relationDetail,
+                'createInController' =>  $createRelationInController,
             ];
         }
         if ($type == 'manyThrough') {
+            $fieldType = $item['field_type'] ?? null;
+            $createRelationInController = $fieldType != 'taglist' && $fieldType != 'dropdown';
             $item['manyThrough'] = [
                 'relation_name' => $item['var'],
                 'singular_name' => str_singular($item['var']),
@@ -481,6 +541,7 @@ class CreateModelController extends GeneratorCommand
                 'options' => $options,
                 'createYamlRelation' => $createYamlRelation,
                 'detail' => $relationDetail,
+                'createInController' =>  $createRelationInController,
             ];
         }
         if ($type == 'attachMany') {
@@ -510,8 +571,8 @@ class CreateModelController extends GeneratorCommand
     public function createYamlRelation($value, $key)
     {
         $returnVar = true;
-        $noYaml = $this->config['no_yaml_for'] ?? "";
-        $yamlInModel = $this->config['yaml_in_model'] ?? "";
+        $noYaml = $this->config['no_yaml_for'] ?? false;
+        $yamlInModel = $this->config['yaml_in_model'] ?? false;
         $noYaml = explode(",", $noYaml);
         $yamlInModel = explode(",", $yamlInModel);
         //trace_log($key);
@@ -521,6 +582,7 @@ class CreateModelController extends GeneratorCommand
         if (in_array($key, $yamlInModel)) {
             $returnVar = 'inModel';
         }
+        trace_log('returnVar : '.$returnVar);
         return $returnVar;
     }
 
@@ -582,13 +644,20 @@ class CreateModelController extends GeneratorCommand
 
     public function getRelationPath($value, $key, $createYamlRelation)
     {
+        trace_log('getRelationPath : '.$value.' key '.$key.' createYamlRelation : '.$createYamlRelation);
         if ($value == 'self') {
+            trace_log('self');
             return '$/' . strtolower($this->w_author) . '/' . strtolower($this->w_plugin) . '/models/' . strtolower(camel_case(str_singular($key)));
-        } elseif ($value == 'user') {
+        } else if ($value == 'user') {
+             trace_log('user');
             return '$/' . strtolower($this->w_author) . '/' . strtolower($this->w_plugin) . '/models/' . strtolower(str_singular($key));
-        } elseif ($createYamlRelation == 'inModel') {
-            return '$/' . strtolower($this->w_author) . '/' . strtolower($this->w_plugin) . '/models/' . strtolower(str_singular($key));
-        } else {
+        } 
+        // else if ($createYamlRelation == 'inModel') {
+        //     trace_log('createYamlRelation = inModel');
+        //     return '$/' . strtolower($this->w_author) . '/' . strtolower($this->w_plugin) . '/models/' . strtolower(str_singular($key));
+        // } 
+        else {
+            trace_log('plugin externe-------------------');
             $parts = explode('.', $value);
             $r_plugin = array_pop($parts);
             $r_author = array_pop($parts);
