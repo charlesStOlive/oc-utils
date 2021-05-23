@@ -73,6 +73,7 @@ class PlacesImport implements ToCollection, WithHeadingRow, WithCalculatedFormul
                 'cron_auto' => $row['cron_auto'] ?? null,
                 'form_auto' => $row['form_auto'] ?? null,
                 'must_trans' => $row['must_trans'] ?? null,
+                'hidden_fields' => $row['hidden_fields'] ?? null,
             ];
             array_push($this->data, $obj);
         }

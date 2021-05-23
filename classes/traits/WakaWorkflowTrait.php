@@ -42,10 +42,10 @@ trait WakaWorkflowTrait
             //         $transitionChosen = null;
             //         foreach($tryToChangeStates as $try) {
             //             //trace_log($try.'---------------------------');
-            //             $transition = $model::getTransitionobject($try, $model);
+            //             $transition = $model::getWfTransition($try, $model);
             //             $transitionMetaData = $wfMetadataStore->getTransitionMetadata($transition);
             //             $rulesSet = $transitionMetaData['rulesSet'] ?? null;
-            //             $rules = $model->getWorkgflowRules($rulesSet);
+            //             $rules = $model->getWfRules($rulesSet);
             //             $error = 0;
             //             foreach($rules['fields'] as $key=>$rule) {
             //                 //trace_log("test on key : ".$key);
@@ -86,10 +86,10 @@ trait WakaWorkflowTrait
                             //trace_log("Transition incompatible : ".$try);
                             continue;
                         }
-                        $transition = self::getTransitionobject($try, $model);
+                        $transition = self::getWfTransition($try, $model);
                         $transitionMetaData = $wfMetadataStore->getTransitionMetadata($transition);
                         $rulesSet = $transitionMetaData['rulesSet'] ?? 'default';
-                        $rules = $model->getWorkgflowRules($rulesSet);
+                        $rules = $model->getWfRules($rulesSet);
                         $error = 0;
                         //trace_log($rules['fields'] ?? 'Pas de rules');
                         if(!$rules['fields'] ?? false) {
@@ -123,9 +123,9 @@ trait WakaWorkflowTrait
                 if (!$wf_try && $changeState) {
                     //trace_log("On a un changement de transition");
                     //la transition et déjà choisi nous allons verifier. 
-                    $transition = self::getTransitionobject($changeState, $model);
+                    $transition = self::getWfTransition($changeState, $model);
                     $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
-                    $rules = $model->getWorkgflowRules($rulesSet);
+                    $rules = $model->getWfRules($rulesSet);
                     if ($rules['fields'] ?? false) {
                         foreach($rules['fields'] as $key=>$rule) {
                             $model->rules[$key] = $rule;
@@ -146,7 +146,7 @@ trait WakaWorkflowTrait
                 if ($changeState) {
                     //Preparation de l'evenement
                     $workflowName = $model->workflow_get()->getName();
-                    $transition = self::getTransitionobject($changeState, $model);
+                    $transition = self::getWfTransition($changeState, $model);
                     $afterSaveFunction = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['fncs'] ?? null;
                     
                     if ($afterSaveFunction) {
@@ -178,7 +178,7 @@ trait WakaWorkflowTrait
         return $value;
     }
 
-    public static function getTransitionobject($changeState, $model)
+    public static function getWfTransition($changeState, $model)
     {
         $transitions = $model->workflow_get()->getDefinition()->getTransitions();
         foreach ($transitions as $transition) {
@@ -189,16 +189,16 @@ trait WakaWorkflowTrait
         }
     }
 
-    public static function getManualTransitionobject($changeState, $model)
-    {
-        $transitions = $model->workflow_get()->getDefinition()->getTransitions();
-        foreach ($transitions as $transition) {
-            if ($transition->getName() == $changeState) {
-                return $transition;
-                break;
-            }
-        }
-    }
+    // public static function getManualTransitionobject($changeState, $model)
+    // {
+    //     $transitions = $model->workflow_get()->getDefinition()->getTransitions();
+    //     foreach ($transitions as $transition) {
+    //         if ($transition->getName() == $changeState) {
+    //             return $transition;
+    //             break;
+    //         }
+    //     }
+    // }
 
     public function listAllWorklowstate()
     {
@@ -229,7 +229,7 @@ trait WakaWorkflowTrait
         return $form_auto;
     }
 
-    public function listAllWorklowstateWithAutomatisation()
+    public function listWfWorklowstateWithAutomatisation()
     {
         $workflow = $this->workflow_get();
         $places = $workflow->getDefinition()->getPlaces();
@@ -243,7 +243,7 @@ trait WakaWorkflowTrait
         return $results;
     }
 
-    public function getWorkgflowRules($rulesSet)
+    public function getWfRules($rulesSet)
     {
         $rulesSets = $this->workflow_get()->getMetadataStore()->getWorkflowMetadata()['rulesSets'] ?? null;
         if (!$rulesSets) {
@@ -300,25 +300,13 @@ trait WakaWorkflowTrait
 
     public function getWfMustTransAttribute()
     {
-        //A faire $state_column pour changer la colonne source de l'etat
-        
         $place = $this->state;
-        //trace_log($place);
         return $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['must_trans'] ?? false; // string place name
     }
 
-    // public function getWfAutomatisation()
-    // {
-    //     $place = $this->model->state;
-
-    //     if (!$place) {
-    //         $arrayPlaces = $this->workflow->getMarking($this->model)->getPlaces();
-    //         $place = array_key_first($arrayPlaces);
-    //     }
-    //     $automatisation = $this->workflow->getMetadataStore()->getPlaceMetadata($place)['automatisation'] ?? false;
-    //     if ($automatisation) {
-
-    //     }
-    //     return \Lang::get($label);
-    // }
+    public function getWfHiddenFields()
+    {
+        $place = $this->state;
+        return $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['hidden_fields'] ?? []; // string place name
+    }
 }

@@ -49,6 +49,20 @@ class WorkflowBehavior extends ControllerBehavior
         }
     }
 
+    public function formExtendFields($form)
+    {
+        $model = $form->model;
+        if($model) {
+            $fieldsToHide = $model->getWfHiddenFields();
+            foreach($fieldsToHide as $field) {
+                $form->removeField($field);
+            }
+            
+        }
+        
+    }
+    
+
     public function formBeforeSave($model)
     {
         //trace_log("formBeforeSave");
@@ -66,10 +80,10 @@ class WorkflowBehavior extends ControllerBehavior
             // $modelData = $this->controller->formGetWidget()->getSaveData();
             // foreach($tryToChangeStates as $try) {
             //     //trace_log($try.'---------------------------');
-            //     $transition = $model::getTransitionobject($try, $model);
+            //     $transition = $model::getWfTransition($try, $model);
             //     $transitionMetaData = $wfMetadataStore->getTransitionMetadata($transition);
             //     $rulesSet = $transitionMetaData['rulesSet'] ?? null;
-            //     $rules = $model->getWorkgflowRules($rulesSet);
+            //     $rules = $model->getWfRules($rulesSet);
             //     $error = 0;
             //     foreach($rules['fields'] as $key=>$rule) {
             //         //trace_log("test on key : ".$key);

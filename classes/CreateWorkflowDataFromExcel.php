@@ -42,6 +42,14 @@ class CreateWorkflowDataFromExcel extends CreateBase
 
         //
         //
+        $trans = $trans->reject(function ($item, $key) {
+            $from = $item['from'] ?? null;
+            if(!$from or $from == '' ) {
+                return true;
+            } else {
+                return false;
+            }
+        });
         $trans = $trans->map(function ($item, $key) use ($config) {
             $item['functions'] = [];
 

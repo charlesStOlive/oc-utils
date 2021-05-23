@@ -49,6 +49,7 @@ class CreateModelController extends GeneratorCommand
         'controller/index.stub' => 'controllers/{{lower_ctname}}/index.htm',
         'controller/preview.stub' => 'controllers/{{lower_ctname}}/preview.htm',
         'controller/update.stub' => 'controllers/{{lower_ctname}}/update.htm',
+        'controller/sidebar_info.stub' => 'controllers/{{lower_ctname}}/_sidebar_info.htm',
 
     ];
     protected $modelYamlstubs = [
@@ -100,12 +101,12 @@ class CreateModelController extends GeneratorCommand
                 unset($this->stubs['model/fields.stub']);
                 $this->stubs['model/fields_tab.stub'] = 'models/{{lower_name}}/fields.yaml';
             }
-            if ($this->config['belong'] && $this->yaml_for) {
-                foreach ($this->config['belong'] as $relation) {
-                    $this->makeOneStub('model/fields.stub', 'models/' . strtolower($this->w_model) . '/fields_for_' . $relation['relation_name'] . '.yaml', $this->vars);
-                    $this->makeOneStub('model/columns.stub', 'models/' . strtolower($this->w_model) . '/columns_for_' . $relation['relation_name'] . '.yaml', $this->vars);
-                }
-            }
+            // if ($this->config['belong'] && $this->yaml_for) {
+            //     foreach ($this->config['belong'] as $relation) {
+            //         $this->makeOneStub('model/fields.stub', 'models/' . strtolower($this->w_model) . '/fields_for_' . $relation['relation_name'] . '.yaml', $this->vars);
+            //         $this->makeOneStub('model/columns.stub', 'models/' . strtolower($this->w_model) . '/columns_for_' . $relation['relation_name'] . '.yaml', $this->vars);
+            //     }
+            // }
         }
 
         if ($this->maker['controller']) {
@@ -119,6 +120,8 @@ class CreateModelController extends GeneratorCommand
             }
             if ($this->config['side_bar_info'] ?? false) {
                 $this->stubs['controller/config_sidebar_info.stub'] = 'controllers/{{lower_ctname}}/config_sidebar_info.yaml';
+            } else {
+                unset($this->stubs['controller/sidebar_info.stub']);
             }
             if ($this->config['behav_lots'] ?? false) {
                 $this->stubs['controller/config_lots.stub'] = 'controllers/{{lower_ctname}}/config_lots.yaml';
@@ -162,12 +165,20 @@ class CreateModelController extends GeneratorCommand
                     if($relation['createInController']) {
                         $relationConfigExiste++;
                         $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
+                        if ($relation['createYamlRelation']) {
+                            $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
+                            $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
+                        }
                     }
                 }
                 foreach ($this->config['oneThrough'] as $relation) {
                     if($relation['createInController']) {
                         $relationConfigExiste++;
                         $this->makeOneStub('controller/_field_relation.stub', 'controllers/' . strtolower($this->w_model) . 's/_field_{{relation_name}}.htm', $relation);
+                        if ($relation['createYamlRelation']) {
+                            $this->makeOneStub('model/fields_for.stub', 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml', []);
+                            $this->makeOneStub('model/columns_for.stub', 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml', []);
+                        }
                     }
                 }
             }
@@ -449,6 +460,7 @@ class CreateModelController extends GeneratorCommand
             $createRelationInController = $fieldType == 'partial_relation';
             $item['belong'] = [
                 'relation_name' => $item['var'],
+                'singular_name' => str_singular(camel_case($item['var'])),
                 'relation_class' => $relationClass,
                 'relation_path' => $relationPath,
                 'options' => $options,
@@ -464,6 +476,7 @@ class CreateModelController extends GeneratorCommand
             $createRelationInController = $fieldType == 'partial_relation';
             $item['oneThrough'] = [
                 'relation_name' => $item['var'],
+                'singular_name' => str_singular(camel_case($item['var'])),
                 'relation_class' => $relationClass,
                 'relation_path' => $relationPath,
                 'options' => $options,
@@ -479,6 +492,7 @@ class CreateModelController extends GeneratorCommand
             $createRelationInController = $fieldType != 'taglist' && $fieldType != 'dropdown';
             $item['belongsMany'] = [
                 'relation_name' => $item['var'],
+                'singular_name' => str_singular(camel_case($item['var'])),
                 'relation_class' => $relationClass,
                 'relation_path' => $relationPath,
                 'options' => $options,
@@ -493,7 +507,7 @@ class CreateModelController extends GeneratorCommand
            $createRelationInController = $fieldType != 'taglist' && $fieldType != 'dropdown';
             $item['morphMany'] = [
                 'relation_name' => $item['var'],
-                'singular_name' => str_singular($item['var']),
+                'singular_name' => str_singular(camel_case($item['var'])),
                 'relation_path' => $relationPath,
                 'relation_class' => $relationClass,
                 'options' => $options,
@@ -508,6 +522,7 @@ class CreateModelController extends GeneratorCommand
             $item['morphOne'] = [
                 'relation_name' => $this->getRelationKeyVar($array[1], $item['var']),
                 'relation_class' => $relationClass,
+                'singular_name' => str_singular(camel_case($item['var'])),
                 'relation_path' => $relationPath,
                 'options' => $options,
                 'userRelation' => $userRelation,
@@ -521,7 +536,7 @@ class CreateModelController extends GeneratorCommand
             $createRelationInController = $fieldType != 'taglist' && $fieldType != 'dropdown';
             $item['many'] = [
                 'relation_name' => $item['var'],
-                'singular_name' => str_singular($item['var']),
+                'singular_name' => str_singular(camel_case($item['var'])),
                 'relation_path' => $relationPath,
                 'relation_class' => $relationClass,
                 'options' => $options,
@@ -535,7 +550,7 @@ class CreateModelController extends GeneratorCommand
             $createRelationInController = $fieldType != 'taglist' && $fieldType != 'dropdown';
             $item['manyThrough'] = [
                 'relation_name' => $item['var'],
-                'singular_name' => str_singular($item['var']),
+                'singular_name' => str_singular(camel_case($item['var'])),
                 'relation_path' => $relationPath,
                 'relation_class' => $relationClass,
                 'options' => $options,

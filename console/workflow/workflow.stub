@@ -4,7 +4,8 @@
         name: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{configs.name.key}}{% else %}{{configs.name.label}}{% endif %} 
 {% if configs.com %}
         com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{ configs.com.key }} 
-        rulesSets:
+{% if rulesSets |length > 0 %}
+            rulesSets:
 {% for key, rulesSet in rulesSets %}
             {{key}}:
                 fields: 
@@ -13,6 +14,7 @@
 {% endfor %}
                 messages: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_wf_errors
 {% endfor %}
+{% endif %}
 {% endif %}
     marking_store:
         type: single_state
@@ -47,6 +49,9 @@
 {% endif %}
 {% if place.must_trans %}
                 must_trans: true
+{% endif %}
+{% if place.hidden_fields %}
+                hidden_fields: [{{place.hidden_fields | trim}}]
 {% endif %}
 {% endfor %}
     initial_places: {{ configs.initial_places.value }}  # or set to an array if multiple initial places
