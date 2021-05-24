@@ -258,11 +258,11 @@ class DataSource
         }
         return array_dot($api);
     }
-    public function getSimpleDotedValues($modelId = null)
-    {
-        $constructApi = $this->getValues($modelId);
-        return array_dot($constructApi);
-    }
+    // public function getSimpleDotedValues($modelId = null)
+    // {
+    //     $constructApi = $this->getValues($modelId);
+    //     return array_dot($constructApi);
+    // }
 
     /**
      *

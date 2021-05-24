@@ -34,9 +34,30 @@ class SidebarInfo extends WidgetBase
 
     public function setValues($modelId, $fields)
     {
-        $dotedValues = $this->ds->getSimpleDotedValues($modelId);
+        $modelvalues = $this->ds->getValues($modelId);
+        $dotedValues = array_dot($modelvalues);
         $parsedFields = [];
         foreach ($fields as $field) {
+            $showIf =  $field['showIf'] ?? null;
+            if($showIf) {
+                $showField = $showIf['field'] ?? null;
+                $fieldToTest = $dotedValues[$showField];
+                $tests = $showIf['tests'] ?? null;
+                $condition = $showIf['condition'] ?? null;
+                if(!$showField or !is_array($tests)) {
+                    throw new \SystemException('Configuration sidebarinfo erreur sur du showIF');
+                }
+                trace_log($fieldToTest);
+                trace_log($tests);
+
+                $fieldInArray = in_array($fieldToTest, $tests);
+                trace_log('fieldInArray : '.$fieldInArray);
+                trace_log('condition : '.$condition);
+                if($fieldInArray != $condition) {
+                    trace_log("PAS OK");
+                    continue;
+                }
+            }
             $type = $field['type'] ?? 'label_value';
             $icon = $field['icon'] ?? null;
 
@@ -68,6 +89,25 @@ class SidebarInfo extends WidgetBase
                         $obj = [
                             'label' => Lang::get($src_trad . $log['name'] ?? null),
                             'created_at' => $log['created_at'],
+                        ];
+                        array_push($value, $obj);
+                    }
+                }
+            }
+           
+            if ($type == 'array') {
+                $value = [];
+                $fieldValues = $field['values'] ?? null;
+                //Array on enregistre la valeur dans values
+                $rows = [];
+                if($fieldValues) {
+                    $rows = $modelvalues[$fieldValues] ?? [];
+                }
+                if (count($rows)) {
+                    foreach ($rows as $key=>$row) {
+                        $obj = [
+                            'key' => $key,
+                            'data' => $row,
                         ];
                         array_push($value, $obj);
                     }
