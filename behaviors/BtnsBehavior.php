@@ -61,7 +61,7 @@ class BtnsBehavior extends ControllerBehavior
 
         $checkedIds = post('checked');
 
-        trace_log($checkedIds);
+        //trace_log($checkedIds);
 
         $countCheck = null;
         if (is_countable($checkedIds)) {

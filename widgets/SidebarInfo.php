@@ -47,14 +47,14 @@ class SidebarInfo extends WidgetBase
                 if(!$showField or !is_array($tests)) {
                     throw new \SystemException('Configuration sidebarinfo erreur sur du showIF');
                 }
-                trace_log($fieldToTest);
-                trace_log($tests);
+                //trace_log($fieldToTest);
+                //trace_log($tests);
 
                 $fieldInArray = in_array($fieldToTest, $tests);
-                trace_log('fieldInArray : '.$fieldInArray);
-                trace_log('condition : '.$condition);
+                //trace_log('fieldInArray : '.$fieldInArray);
+                //trace_log('condition : '.$condition);
                 if($fieldInArray != $condition) {
-                    trace_log("PAS OK");
+                    //trace_log("PAS OK");
                     continue;
                 }
             }
@@ -98,6 +98,11 @@ class SidebarInfo extends WidgetBase
             if ($type == 'array') {
                 $value = [];
                 $fieldValues = $field['values'] ?? null;
+                $options = $field['options'] ?? null;
+                if($options) {
+                    $this->ds->model->{$options};
+                    $options = $this->ds->model->{$options}();
+                }
                 //Array on enregistre la valeur dans values
                 $rows = [];
                 if($fieldValues) {
@@ -105,11 +110,13 @@ class SidebarInfo extends WidgetBase
                 }
                 if (count($rows)) {
                     foreach ($rows as $key=>$row) {
-                        $obj = [
-                            'key' => $key,
-                            'data' => $row,
-                        ];
-                        array_push($value, $obj);
+                        if($options) {
+                            trace_log($options);
+                            trace_log($row);
+                            array_push($value, $options[$row] ?? '');
+                        } else {
+                            array_push($value, $row); 
+                        }
                     }
                 }
             }

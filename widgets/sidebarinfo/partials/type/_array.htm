@@ -1,8 +1,6 @@
 <?= e(trans($field['label'])) ?>
-<ul>
+<p class="small p-l">
     <?php foreach($field['value'] as $row) {  ?>
-    <li class="">
-        <p class="small">-<?= $row['data'] ?? null ?></p>
-    </li>
+    <?= $row ?><?php if(next( $field['value'])) { ?> | <?php } ?>
     <?php } ?>
-</ul>
+</p>

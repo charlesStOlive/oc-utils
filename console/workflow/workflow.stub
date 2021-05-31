@@ -5,10 +5,10 @@
 {% if configs.com %}
         com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_w.{{ configs.com.key }} 
 {% if rulesSets |length > 0 %}
-            rulesSets:
+        rulesSets:
 {% for key, rulesSet in rulesSets %}
             {{key}}:
-                fields: 
+                fields: {% if not  rulesSet.fields %}null{% endif %} 
 {% for field in rulesSet.fields %}
                     {{field.key}}: {{field.value}}              
 {% endfor %}

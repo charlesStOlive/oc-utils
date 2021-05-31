@@ -65,6 +65,10 @@ class Btns extends WidgetBase
         $state = $model->state;
         //trace_log($state);
         //trace_log($this->config->workflow);
+        $block = $this->config->workflow[$state]['block'] ?? false;
+        if($block) {
+            return $this->makePartial('workflow/no_wf_role');
+        }
 
         $formAutoConfig = [];
         $is_form_auto = $this->config->workflow[$state]['form_auto'] ?? true;
@@ -148,8 +152,22 @@ class Btns extends WidgetBase
     public function renderBreadcrump($context = null)
     {
         $this->prepareComonVars($context);
+        $model = $this->controller->formGetModel();
         if ($this->config->breadcrump) {
-            $this->vars['breadcrump'] = $this->config->breadcrump;
+            $configBreadCrump = $this->config->breadcrump;
+            foreach($configBreadCrump as $key=>$config) {
+                trace_log($config);
+                $splitUrl = explode(':',$config);
+                $varInUrl = $splitUrl[1] ?? false;
+                if($varInUrl) {
+                    //trace_log($splitUrl[1]);
+                    //trace_log($splitUrl[0].$model->{$splitUrl[1]});
+                    $configBreadCrump[$key] = $splitUrl[0] . $model->{$varInUrl};
+                }
+
+
+            }
+            $this->vars['breadcrump'] = $configBreadCrump;
             return $this->makePartial('breadcrump');
         } else {
             return '';
