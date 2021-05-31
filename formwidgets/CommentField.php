@@ -29,7 +29,7 @@ class CommentField extends FormWidgetBase
             'mode',
             'text',
             'valueFrom',
-            'info',
+            'color',
             'icon',
             'title',
         ]);
