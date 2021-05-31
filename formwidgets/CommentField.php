@@ -15,6 +15,9 @@ class CommentField extends FormWidgetBase
     public $type = "info";
     public $mode = "static";
     public $text = "Une explication";
+    public $color ="info";
+    public $icon = "icon-info";
+    public $title = "Information";
 
     /**
      * @inheritDoc
@@ -26,6 +29,9 @@ class CommentField extends FormWidgetBase
             'mode',
             'text',
             'valueFrom',
+            'info',
+            'icon',
+            'title',
         ]);
     }
 
@@ -46,6 +52,9 @@ class CommentField extends FormWidgetBase
         $this->vars['name'] = $this->formField->getName();
         $this->vars['value'] = $this->getLoadValue();
         $this->vars['type'] = $this->type;
+        $this->vars['color'] = $this->color;
+        $this->vars['icon'] = $this->icon;
+        $this->vars['title'] = $this->title;
         if ($this->mode == "static") {
             $this->vars['text'] = $this->text;
         } else {
