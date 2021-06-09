@@ -153,10 +153,13 @@ class Btns extends WidgetBase
     {
         $this->prepareComonVars($context);
         $model = $this->controller->formGetModel();
+        if(!$model) {
+            return;
+        }
         if ($this->config->breadcrump) {
             $configBreadCrump = $this->config->breadcrump;
             foreach($configBreadCrump as $key=>$config) {
-                trace_log($config);
+                //trace_log($config);
                 $splitUrl = explode(':',$config);
                 $varInUrl = $splitUrl[1] ?? false;
                 if($varInUrl) {

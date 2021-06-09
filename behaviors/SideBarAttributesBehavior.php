@@ -10,7 +10,7 @@ class SideBarAttributesBehavior extends ControllerBehavior
      * @inheritDoc
      */
     protected $requiredProperties = ['sidebarAttributesConfig'];
-    protected $optionalProperties = '$/wcli/wconfig/config/attributes.yaml';
+    //protected $optionalProperties = '$/wcli/wconfig/config/attributes.yaml';
 
     /**
      * @var array Visible actions in context of the controller
@@ -40,14 +40,14 @@ class SideBarAttributesBehavior extends ControllerBehavior
     public function __construct($controller)
     {
         parent::__construct($controller);
-        $tempConfig = $this->mergeConfig($controller->sidebarAttributesConfig, $this->optionalProperties);
-        $this->config = $this->makeConfig($tempConfig, $this->requiredConfig);
+        //$tempConfig = $this->mergeConfig($controller->sidebarAttributesConfig, $this->optionalProperties);
+        $this->config = $this->makeConfig($controller->sidebarAttributesConfig, $this->requiredConfig);
     }
 
     public function initForm($model, $context = null)
     {
-        $tempConfig = $this->mergeConfig($this->controller->sidebarAttributesConfig, $this->optionalProperties);
-        $this->config = $this->makeConfig($tempConfig, $this->requiredConfig);
+        //$tempConfig = $this->mergeConfig($this->controller->sidebarAttributesConfig, $this->optionalProperties);
+        $this->config = $this->makeConfig($this->controller->sidebarAttributesConfig, $this->requiredConfig);
         //$config = $this->makeConfig($this->controller->sidebarAttributesConfig, $this->requiredConfig);
         $this->config->model = $model;
         $this->config->arrayName = 'attributes';

@@ -111,8 +111,8 @@ class SidebarInfo extends WidgetBase
                 if (count($rows)) {
                     foreach ($rows as $key=>$row) {
                         if($options) {
-                            trace_log($options);
-                            trace_log($row);
+                            //trace_log($options);
+                            //trace_log($row);
                             array_push($value, $options[$row] ?? '');
                         } else {
                             array_push($value, $row); 

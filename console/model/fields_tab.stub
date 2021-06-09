@@ -47,11 +47,9 @@ tabs:
             type: workflow
             stateFrom: state
             placeholder: waka.utils::lang.global.placeholder_w
-{% elseif field.field_type == 'workflow' %}
-            placeholder: waka.utils::lang.global.placeholder
 {% elseif field.field_type == 'partial_relation'  %}
-        type: partial
-        path: field_{{field.var}}
+            type: partial
+            path: field_{{field.var}}
 {% elseif field.field_type == 'dropdown'  %}
             type: {{ field.field_type }}
             placeholder: waka.utils::lang.global.placeholder
