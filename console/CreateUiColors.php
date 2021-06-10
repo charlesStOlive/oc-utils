@@ -53,7 +53,7 @@ class CreateUiColors extends GeneratorCommand
 
         $this->info($this->type . ' created successfully.');
 
-        $this->call('Winter:util', ['name' => 'compile less']);
+        $this->call('winter:util', ['name' => 'compile less']);
     }
 
     /**
