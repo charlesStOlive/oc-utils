@@ -5,7 +5,7 @@
 // use MathPHP\Functions\Map;*
 use ApplicationException;
 use Config;
-use October\Rain\Support\Collection;
+use Winter\Storm\Support\Collection;
 use Yaml;
 
 class DataSource

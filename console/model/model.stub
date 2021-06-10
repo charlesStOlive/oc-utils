@@ -8,15 +8,15 @@ use Model;
 
 class {{studly_name}} extends Model
 {
-    use \October\Rain\Database\Traits\Validation;
+    use \Winter\Storm\Database\Traits\Validation;
 {% if configs.trait_nested %}
-    use \October\Rain\Database\Traits\NestedTree;
+    use \Winter\Storm\Database\Traits\NestedTree;
 {% endif %}
 {% if configs.trait_soft_delete %}
-    use \October\Rain\Database\Traits\SoftDelete;
+    use \Winter\Storm\Database\Traits\SoftDelete;
 {% endif %}
 {% if configs.trait_reorder %}
-    use \October\Rain\Database\Traits\Sortable;
+    use \Winter\Storm\Database\Traits\Sortable;
 {% endif %}
 {% if configs.trait_cloudi %}
     use \Waka\Cloudis\Classes\Traits\CloudiTrait;

@@ -1,6 +1,6 @@
 <?php namespace Waka\Utils\Console;
 
-use October\Rain\Scaffold\GeneratorCommand;
+use Winter\Storm\Scaffold\GeneratorCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 

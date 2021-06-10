@@ -1,7 +1,7 @@
 <?php namespace Waka\Cloudis\Updates;
 
-use October\Rain\Database\Schema\Blueprint;
-use October\Rain\Database\Updates\Migration;
+use Winter\Storm\Database\Schema\Blueprint;
+use Winter\Storm\Database\Updates\Migration;
 use Schema;
 
 class CreateStateteablesTable extends Migration

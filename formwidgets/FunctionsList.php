@@ -129,9 +129,9 @@ class FunctionsList extends FormWidgetBase
         $data;
         $modelValues = $this->getLoadValue();
         if ($modelValues && count($modelValues)) {
-            $datas = new \October\Rain\Support\Collection($modelValues);
+            $datas = new \Winter\Storm\Support\Collection($modelValues);
         } else {
-            $datas = new \October\Rain\Support\Collection();
+            $datas = new \Winter\Storm\Support\Collection();
         }
 
         //preparatio de l'array a ajouter
@@ -159,7 +159,7 @@ class FunctionsList extends FormWidgetBase
 
         $modelValues = $this->getLoadValue();
         //trace_log($modelValues);
-        $datas = new \October\Rain\Support\Collection($modelValues);
+        $datas = new \Winter\Storm\Support\Collection($modelValues);
         $data = $datas->where('collectionCode', $collectionCode)->first();
 
         $ds = $this->getDataSource();

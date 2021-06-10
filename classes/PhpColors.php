@@ -1,7 +1,7 @@
 <?php namespace Waka\Utils\Classes;
 
 use Mexitek\PHPColors\Color;
-use October\Rain\Support\Collection;
+use Winter\Storm\Support\Collection;
 
 class PhpColors
 {

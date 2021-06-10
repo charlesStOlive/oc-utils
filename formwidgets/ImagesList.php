@@ -95,9 +95,9 @@ class ImagesList extends FormWidgetBase
         $data = [];
         $modelImagesValues = $this->getLoadValue();
         if ($modelImagesValues && count($modelImagesValues)) {
-            $datas = new \October\Rain\Support\Collection($modelImagesValues);
+            $datas = new \Winter\Storm\Support\Collection($modelImagesValues);
         } else {
-            $datas = new \October\Rain\Support\Collection();
+            $datas = new \Winter\Storm\Support\Collection();
         }
         //preparatio de l'array a ajouter
         $imageOptionsArray = post('imageList_array');
@@ -129,7 +129,7 @@ class ImagesList extends FormWidgetBase
 
         $modelValues = $this->getLoadValue();
         // trace_log($modelValues);
-        $datas = new \October\Rain\Support\Collection($modelValues);
+        $datas = new \Winter\Storm\Support\Collection($modelValues);
         $data = $datas->where('code', $code)->first();
 
         $this->imageWidget = $this->createFormWidget();

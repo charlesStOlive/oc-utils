@@ -3,7 +3,7 @@
 use Backend\Classes\ControllerBehavior;
 use Flash;
 use Lang;
-use October\Rain\Support\Collection;
+use Winter\Storm\Support\Collection;
 use Redirect;
 use Session;
 

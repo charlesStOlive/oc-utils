@@ -89,7 +89,7 @@ class WorkflowListener
     public function launchFunction($event, $type = 'trait')
     {
         $eventTransition = $event->getTransition();
-        $fncs = new \October\Rain\Support\Collection($event->getMetadata('fncs', $eventTransition));
+        $fncs = new \Winter\Storm\Support\Collection($event->getMetadata('fncs', $eventTransition));
         if ($type) {
             $fncs = $fncs->where('type', $type);
         }
@@ -108,7 +108,7 @@ class WorkflowListener
     public function launchGardFunction($event)
     {
         $eventTransition = $event->getTransition();
-        $fncs = new \October\Rain\Support\Collection($event->getMetadata('fncs', $eventTransition));
+        $fncs = new \Winter\Storm\Support\Collection($event->getMetadata('fncs', $eventTransition));
         $fncs = $fncs->where('type', 'gard');
         if (!$fncs) {
             return false;

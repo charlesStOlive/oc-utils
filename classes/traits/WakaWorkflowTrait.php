@@ -150,7 +150,7 @@ trait WakaWorkflowTrait
                     $afterSaveFunction = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['fncs'] ?? null;
                     
                     if ($afterSaveFunction) {
-                        $afterSaveFunction = new \October\Rain\Support\Collection($afterSaveFunction);
+                        $afterSaveFunction = new \Winter\Storm\Support\Collection($afterSaveFunction);
                         $fnc = $afterSaveFunction->where('type', 'prod')->toArray();
                         \Event::fire('workflow.' . $workflowName . '.afterModelSaved', [$model, $fnc]);
                     }

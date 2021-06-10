@@ -2,7 +2,7 @@
 
 use Config;
 use Illuminate\Console\Command;
-use October\Rain\Support\Collection;
+use Winter\Storm\Support\Collection;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Process\Process;
 use Twig;

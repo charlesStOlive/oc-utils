@@ -1,6 +1,6 @@
 <?php namespace Waka\Utils\Console;
 
-use October\Rain\Scaffold\GeneratorCommand;
+use Winter\Storm\Scaffold\GeneratorCommand;
 use Symfony\Component\Console\Input\InputOption;
 
 class CreateUiColors extends GeneratorCommand
@@ -53,7 +53,7 @@ class CreateUiColors extends GeneratorCommand
 
         $this->info($this->type . ' created successfully.');
 
-        $this->call('october:util', ['name' => 'compile less']);
+        $this->call('Winter:util', ['name' => 'compile less']);
     }
 
     /**

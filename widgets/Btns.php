@@ -1,7 +1,7 @@
 <?php namespace Waka\Utils\Widgets;
 
 use Backend\Classes\WidgetBase;
-use October\Rain\Support\Collection;
+use Winter\Storm\Support\Collection;
 
 class Btns extends WidgetBase
 {

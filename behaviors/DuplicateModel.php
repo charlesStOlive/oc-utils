@@ -2,8 +2,8 @@
 
 use Backend\Classes\ControllerBehavior;
 use Flash;
-use October\Rain\Exception\ApplicationException;
-use October\Rain\Support\Collection;
+use Winter\Storm\Exception\ApplicationException;
+use Winter\Storm\Support\Collection;
 use Redirect;
 
 class DuplicateModel extends ControllerBehavior

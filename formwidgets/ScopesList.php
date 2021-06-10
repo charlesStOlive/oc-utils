@@ -101,9 +101,9 @@ class ScopesList extends FormWidgetBase
         $data;
         $modelValues = $this->getLoadValue();
         if ($modelValues && count($modelValues)) {
-            $datas = new \October\Rain\Support\Collection($modelValues);
+            $datas = new \Winter\Storm\Support\Collection($modelValues);
         } else {
-            $datas = new \October\Rain\Support\Collection();
+            $datas = new \Winter\Storm\Support\Collection();
         }
         $datas->push($widgetArray);
 
@@ -126,7 +126,7 @@ class ScopesList extends FormWidgetBase
 
         $modelValues = $this->getLoadValue();
         //trace_log($modelValues);
-        $datas = new \October\Rain\Support\Collection($modelValues);
+        $datas = new \Winter\Storm\Support\Collection($modelValues);
 
         $dataScope = $datas->where('scopeCode', $scopeCode)->first();
 

@@ -7,7 +7,7 @@ use Model;
  */
 class ImageList extends Model
 {
-    use \October\Rain\Database\Traits\Validation;
+    use \Winter\Storm\Database\Traits\Validation;
 
     /**
      * @var array Guarded fields

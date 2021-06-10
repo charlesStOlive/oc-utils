@@ -1,6 +1,6 @@
 <?php namespace Waka\Utils\Classes;
 
-use October\Rain\Support\Collection;
+use Winter\Storm\Support\Collection;
 
 class Wimages
 {

@@ -4,7 +4,7 @@
 // use MathPHP\Algebra;
 // use MathPHP\Functions\Map;*
 use Config;
-use October\Rain\Support\Collection;
+use Winter\Storm\Support\Collection;
 use Yaml;
 
 class DataSourceList
