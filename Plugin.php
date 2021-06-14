@@ -97,6 +97,7 @@ class Plugin extends PluginBase
     {
         $this->registerConsoleCommand('waka.injector', 'Waka\Utils\Console\CreateInjector');
         $this->registerConsoleCommand('waka.mc', 'Waka\Utils\Console\CreateModelController');
+        $this->registerConsoleCommand('waka.mc2', 'Waka\Utils\Console\CreateModelControllerV2');
         $this->registerConsoleCommand('waka.uicolors', 'Waka\Utils\Console\CreateUiColors');
         $this->registerConsoleCommand('waka.workflow', 'Waka\Utils\Console\WorkflowCreate');
         $this->registerConsoleCommand('waka.workflowDump', 'Waka\Utils\Console\WorkflowDump');
