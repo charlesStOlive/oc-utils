@@ -2,58 +2,35 @@
 # Relation Behavior Config
 # ===================================
 
-{% for relation in configs.many %}
-{% if relation.createInController %}
-{{relation.relation_name}}:
-    label: {{relation.detail.author}}.{{relation.detail.plugin}}::{{lower_name}}.{{relation.relation_name}}
+{% for relation in controllerRelations %}
+{{relation.name}}:
+    label: {{relation.detail.author}}.{{relation.detail.plugin}}::{{lower_name}}.{{relation.name}}
     manage:
-        form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
+{% if relation.manage_form %}
+        form: {{relation.path}}/fields_for_{{lower_name}}.yaml
+{% endif %}
+{% if relation.manage_form_read %}
+        form: {{relation.path}}/fields_for_{{lower_name}}.read_yaml
+{% endif %}
+{% if relation.manage_list %}
+        list: {{relation.path}}/columns_for_{{lower_name}}.yaml
+{% endif %}
     view:
-        list: {{relation.relation_path}}/columns_for_{{lower_name}}.yaml
+{% if relation.view_form %}
+        form: {{relation.path}}/fields_for_{{lower_name}}_read.yaml
+{% endif %}
+{% if relation.view_form_read %}
+        form: {{relation.path}}/fields_for_{{lower_name}}_read.yaml
+{% endif %}
+{% if relation.view_list %}
+        list: {{relation.path}}/columns_for_{{lower_name}}.yaml
+{% endif %}
+{% if relation.record_url %} 
         recordUrl: {{relation.detail.author}}/{{relation.detail.plugin}}/{{relation.detail.model}}/update/:id
-        toolbarButtons: create|delete
+{% endif %}
+        toolbarButtons: {{relation.toolbar}}
         defaultSort:
-            column: name
-            direction: asc
-{% endif %}
-{% endfor %}
-{% for relation in configs.morphmany %}
-{% if relation.createInController %}
-{{relation.relation_name}}:
-    label: {{relation.detail.author}}.{{relation.detail.plugin}}::{{lower_name}}.{{relation.relation_name}}
-    manage:
-        form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
-    view:
-        list: {{relation.relation_path}}/columns_for_{{lower_name}}.yaml
-        recordUrl: {{relation.detail.author}}/{{relation.detail.plugin}}//{{relation.detail.model}}/update/:id
-        toolbarButtons: create|delete
-        defaultSort:
-            column: name
-            direction: asc
-{% endif %}
-{% endfor %}
-{% for relation in configs.belong %}
-{% if relation.createInController %}
-{{relation.relation_name}}:
-    label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{relation.relation_name}}
-    manage:
-        form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
-        list: {{relation.relation_path}}/columns_for_{{lower_name}}.yaml
-    view:
-        form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
-        list: {{relation.relation_path}}/columns_for_{{lower_name}}.yaml
-        toolbarButtons: create|link|unlink
-{% endif %}
-{% endfor %}
-{% for relation in configs.oneThrough %}
-{% if relation.createInController %}
-{{relation.relation_name}}:
-    label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{relation.relation_name}}
-    manage:
-        form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
-        list: {{relation.relation_path}}/columns_for_{{lower_name}}.yaml
-    view:
-        form: {{relation.relation_path}}/fields_for_{{lower_name}}.yaml
-        toolbarButtons: create|update|link
-{% endif %}
+            column: {{relation.sort_column | default('name')}}
+            direction: {{relation.sort_mode | default('asc')}}
+
 {% endfor %}
