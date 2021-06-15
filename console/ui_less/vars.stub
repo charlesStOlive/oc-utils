@@ -1,5 +1,6 @@
 @color-primary: {{primary}};
 @color-secondary: {{secondary}};
+@color-accent: {{accent}};
 @color-gd: #787978;
 @color-gl: #E0E0E0;
 @color-dark: #2F4250;

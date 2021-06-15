@@ -15,7 +15,7 @@ class {{studly_ctname}} extends Controller
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController',
         'Waka.Utils.Behaviors.BtnsBehavior',
-{% if configs.many or configs.morphmany  %}
+{% if isBehaviorRelationNeeded  %}
         'Backend.Behaviors.RelationController',
 {% endif %}
 {% if configs.side_bar_info %}
@@ -72,7 +72,7 @@ class {{studly_ctname}} extends Controller
     public $formConfig = 'config_form.yaml';
     public $listConfig = 'config_list.yaml';
     public $btnsConfig = 'config_btns.yaml';
-{% if configs.many or configs.morphmany  %}
+{% if isBehaviorRelationNeeded  %}
     public $relationConfig = 'config_relation.yaml';
 {% endif %}
 {% if configs.behav_duplicate %}

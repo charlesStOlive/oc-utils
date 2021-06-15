@@ -149,95 +149,49 @@ class {{studly_name}} extends Model
      */
     public $hasOne = [];
     public $hasMany = [
-{% for relation in configs.many %}
-        '{{relation.relation_name| lowercase}}' => [
-            '{{relation.relation_class}}',
-{% if relation.options %}{% for key,option in relation.options %}
-            '{{key}}' => '{{option}}',
-{% endfor %}
-{% endif %}
-        ],
+{% for relation in modelRelations.many %}
+        '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}}
 {% endfor %}
     ];
     public $hasOneThrough = [
-{% for relation in configs.oneThrough %}
-        '{{relation.relation_name| lowercase}}' => [
-            '{{relation.relation_class}}',
-{% if relation.options%}
-{% for key,option in relation.options %}
-            '{{key}}' => '{{option}}',
-{% endfor %}
-{% endif %}
-        ],
+{% for relation in modelRelations.oneThrough %}
+        '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}}
 {% endfor %}
     ];
     public $hasManyThrough = [
-{% for relation in configs.manyThrough %}
-        '{{relation.relation_name| lowercase}}' => [
-            '{{relation.relation_class}}',
-{% if relation.options %}{% for key,option in relation.options %}
-            '{{key}}' => '{{option}}',
-{% endfor %}
-{% endif %}
-        ],
+{% for relation in modelRelations.manyThrough %}
+        '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}}
 {% endfor %}
     ];
     public $belongsTo = [
-{% for relation in configs.belong %}
-        '{{relation.relation_name| lowercase}}' => [
-            '{{relation.relation_class}}',
-{% if relation.options%}
-{% for key,option in relation.options %}
-            '{{key}}' => '{{option}}',
-{% endfor %}
-{% endif %}
-        ],
+{% for relation in modelRelations.belong %}
+       '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}}
 {% endfor %}
     ];
     public $belongsToMany = [
-{% for relation in configs.belongsMany %}
-        '{{relation.relation_name| lowercase}}' => [
-            '{{relation.relation_class}}',
-{% if relation.options %}{% for key,option in relation.options %}
-            '{{key}}' => '{{option}}',
-{% endfor %}
-{% endif %}
-        ],
+{% for relation in modelRelations.belongsMany %}
+        '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}}
 {% endfor %}
     ];        
     public $morphTo = [];
     public $morphOne = [
-{% for relation in configs.morphOne %}
-        '{{relation.relation_name| lowercase}}' => [
-            '{{relation.relation_class}}',
-{% if relation.options%}
-{% for key,option in relation.options %}
-            '{{key}}' => '{{option}}',
-{% endfor %}
-{% endif %}
-        ],
+{% for relation in modelRelations.morphOne %}
+        '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}}
 {% endfor %}
     ];
     public $morphMany = [
-{% for relation in configs.morphMany %}
-        '{{relation.relation_name| lowercase}}' => [
-            '{{relation.relation_class}}',
-{% if relation.options%}
-{% for key,option in relation.options %}
-            '{{key}}' => '{{option}}',
-{% endfor %}
-{% endif %}
-        ],
+{% for relation in modelRelations.morphMany %}
+        '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}}
 {% endfor %}
     ];
     public $attachOne = [
-{% for relation in configs.attachOne %}
-        '{{relation.relation_name| lowercase}}' => '{{relation.relation_class}}',
+{% for relation in modelRelations.attachOne %}
+        '{{relation.name| lowercase}}' => {{relation.relationarray | raw}},
 {% endfor %}
     ];
     public $attachMany = [
-{% for relation in configs.attachMany %}
-        '{{relation.relation_name| lowercase}}' => '{{relation.relation_class}}',
+{% for relation in modelRelations.attachMany %}
+        '{{relation.name| lowercase}}' => {{relation.relationarray | raw}},
 {% endfor %}
     ];
 

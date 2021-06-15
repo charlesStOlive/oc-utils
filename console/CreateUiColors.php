@@ -2,7 +2,7 @@
 
 use Winter\Storm\Scaffold\GeneratorCommand;
 use Symfony\Component\Console\Input\InputOption;
-
+use Mexitek\PHPColors\Color;
 class CreateUiColors extends GeneratorCommand
 {
     /**
@@ -47,13 +47,43 @@ class CreateUiColors extends GeneratorCommand
      */
     public function handle()
     {
-        $this->vars = $this->processVars($this->prepareVars());
+        //$this->vars = $this->processVars($this->prepareVars());
+        $this->vars = $this->prepareVars();
 
-        $this->makeStubs();
+        trace_log($this->vars);
 
-        $this->info($this->type . ' created successfully.');
+        $sourceFilePath = $this->getSourcePath() . '/../../../../modules/system/assets/ui/less';
 
-        $this->call('winter:util', ['name' => 'compile less']);
+        $files = \File::allFiles($sourceFilePath);
+        foreach($files as $file) {
+            $filePath = $file->getRealPath();
+            $stringContent = $file->getContents();
+            $stringContent = $this->updateColorContent($stringContent);
+            $this->files->put($filePath, $stringContent);
+        }
+
+        // $this->makeStubs();
+
+        // $this->info($this->type . ' created successfully.');
+
+        // $this->call('winter:util', ['name' => 'compile less']);
+    }
+
+    public function updateColorContent($content) {
+        $replaceColors = $this->vars['replace'];
+        foreach($replaceColors as $key=>$color) {
+            $content = str_replace($key, $color, $content);
+        }
+        return $content;
+
+    }
+
+    protected function getSourcePath()
+    {
+        $className = get_class($this);
+        $class = new \ReflectionClass($className);
+
+        return dirname($class->getFileName());
     }
 
     /**
@@ -63,8 +93,58 @@ class CreateUiColors extends GeneratorCommand
      */
     protected function prepareVars()
     {
-        $primary = $this->ask('primary');
-        $secondary = $this->ask('secondary');
+
+        $primaryColor = new Color(\Config::get('wcli.wconfig::brand_data.primaryColor'));
+        $secondaryColor = new Color(\Config::get('wcli.wconfig::brand_data.secondaryColor'));
+        $accentColor = new Color(\Config::get('wcli.wconfig::brand_data.accentColor'));
+
+        $primary  = '#'.$primaryColor->getHex();
+        $primary_dark =  '#'.$primaryColor->darken(10);
+        $primary_light = '#'.$primaryColor->lighten(10);
+        $primary_light2 = '#'.$primaryColor->lighten(20);
+        $secondary = '#'.$secondaryColor->getHex();
+        $accent = '#'.$accentColor->getHex();
+        $accent_light = '#'.$accentColor->lighten(10);
+
+        //BrandPrimary 34495e
+
+        //Primary button/link 0181b9 balloon 1681BA  checkbox : 1F99DC  brand-accentPRIMARY/3498db  active-bg/4da7e8
+
+        //Accent da5700
+
+        //secondary : 405261 (btn_sec)  brand-secondaryACCENT:e67e22
+
+        //other/default bcc3c7 (defaut balloon)
+
+        return [
+            'primary' => $primary,
+            'secondary' => $secondary,
+            'accent' => $accent,
+            'primary_dark' => $primary_dark,
+            'primary_light' => $primary_light,
+            'primary_light2' => $primary_light2,
+            'replace' => [
+               '#34495e' => $primary_dark,
+               '#0181b9' => $primary,
+               '#1681BA' => $primary,
+               '#1F99DC' => $primary_light,
+               '#3498db' => $accent_light,
+               '#4da7e8' => $primary_light2,
+               '#da5700' => $accent,
+               '#405261' => $secondary,
+               '#e67e22' => $accent_light,
+
+
+
+               
+
+
+
+            ]
+        ];
+
+        
+        
 
         return [
             'primary' => $primary,

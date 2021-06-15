@@ -10,8 +10,8 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 class ImportModelController implements WithMultipleSheets
 {
     public $model;
-    public $datas;
-    public $configs;
+    public $data;
+    public $config;
     public $relations;
 
     public function __construct($model)
@@ -20,12 +20,13 @@ class ImportModelController implements WithMultipleSheets
     }
     public function sheets(): array
     {
-        $configs = $this->model . '_config';
-        $datas = $this->model . '_data';
+        $config = $this->model . '_config';
+        $data = $this->model . '_data';
+        $relations = $this->model . '_relations';
 
         return [
-            $configs => $this->configs = new configImport(),
-            $datas => $this->datas = new dataImport(),
+            $config => $this->config = new configImport(),
+            $data => $this->data = new dataImport(),
             $relations => $this->relations = new RelationImport(),
         ];
     }
@@ -34,25 +35,25 @@ class ImportModelController implements WithMultipleSheets
 class ConfigImport implements ToCollection, WithHeadingRow
 {
 
-    public $datas;
+    public $data;
 
     public function collection(Collection $rows)
     {
-        $this->datas = [];
+        $this->data = [];
         foreach ($rows as $row) {
-            $this->datas[$row['key']] = $row['value'];
+            $this->data[$row['key']] = $row['value'];
         }
-        return $this->datas;
+        return $this->data;
     }
 }
 class DataImport implements ToCollection, WithHeadingRow
 {
 
-    public $datas;
+    public $data;
 
     public function collection(Collection $rows)
     {
-        $this->datas = [];
+        $this->data = [];
         foreach ($rows as $row) {
             $obj = [
                 'var' => $row['var'] ?? null,
@@ -86,9 +87,9 @@ class DataImport implements ToCollection, WithHeadingRow
                 'excel' => $row['excel'] ?? null,
                 'version' => $row['version'] ?? null,
             ];
-            array_push($this->datas, $obj);
+            array_push($this->data, $obj);
         }
-        return $this->datas;
+        return $this->data;
     }
 }
 
@@ -99,7 +100,7 @@ class RelationImport implements ToCollection, WithHeadingRow
 
     public function collection(Collection $rows)
     {
-        $this->relations = [];
+        $this->data = [];
         foreach ($rows as $row) {
             $obj = [
                 'var' => $row['var'] ?? null,
@@ -109,12 +110,17 @@ class RelationImport implements ToCollection, WithHeadingRow
                 'columns' => $row['columns'] ?? null,
                 'fields' => $row['fields'] ?? null,
                 'yamls' => $row['yamls'] ?? null,
+                'yamls_read' => $row['yamls_read'] ?? null,
                 'toolbar' => $row['toolbar'] ?? null,
-                'recordUrl' => $row['permissions'] ?? null,
-                'field' => $row['field'] ?? null,
+                'search' => $row['search'] ?? null,
+                'show_search' => $row['show_search'] ?? null,
+                'sort_column' => $row['sort_column'] ?? null,
+                'sort_mode' => $row['sort_mode'] ?? null,
+                'filters' => $row['filters'] ?? null,
+                
             ];
-            array_push($this->relations, $obj);
+            array_push($this->data, $obj);
         }
-        return $this->relations;
+        return $this->data;
     }
 }
