@@ -110,6 +110,8 @@ class {{studly_ctname}} extends Controller
 {% endif %}
     }
 
+    //startKeep/
+
 {% if configs.side_bar_attributes or  configs.side_bar_info or  configs.declare_update  %}
     public function update($id)
     {
@@ -129,5 +131,6 @@ class {{studly_ctname}} extends Controller
 {% endif %}
     }
 {% endif %}
+        //endKeep/
 }
 

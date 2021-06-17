@@ -46,7 +46,7 @@ class CreateUiColors extends GeneratorCommand
         //$this->vars = $this->processVars($this->prepareVars());
         $this->vars = $this->prepareVars();
 
-        trace_log($this->vars);
+        //trace_log($this->vars);
 
         $sourceFilePath = $this->getSourcePath() . '/../../../../modules/system/assets/ui/less';
 
@@ -84,7 +84,7 @@ class CreateUiColors extends GeneratorCommand
 
     public function makeStub($stubName)
     {
-        trace_log($stubName);
+        //trace_log($stubName);
         if (!isset($this->stubs[$stubName])) {
             return;
         }
@@ -107,8 +107,8 @@ class CreateUiColors extends GeneratorCommand
         // if ($this->files->exists($destinationFile) && !$this->option('force')) {
         //     throw new Exception('Stop everything!!! This file already exists: ' . $destinationFile);
         // }
-        trace_log($destinationFile);
-        trace_log($destinationContent);
+        //trace_log($destinationFile);
+        //trace_log($destinationContent);
 
         $this->files->put($destinationFile, $destinationContent);
     }
@@ -177,13 +177,13 @@ class CreateUiColors extends GeneratorCommand
      *
      * @return array
      */
-    protected function getArguments()
-    {
-        return [
-            ['plugin', InputArgument::REQUIRED, 'The name of the plugin. Eg: RainLab.Blog'],
-            ['model', InputArgument::REQUIRED, 'The name of the model. Eg: Post'],
-        ];
-    }
+    // protected function getArguments()
+    // {
+    //     return [
+    //         ['plugin', InputArgument::REQUIRED, 'The name of the plugin. Eg: RainLab.Blog'],
+    //         ['model', InputArgument::REQUIRED, 'The name of the model. Eg: Post'],
+    //     ];
+    // }
 
     /**
      * Get the console command options.

@@ -86,7 +86,7 @@ fields:
 {% if field.required %}
         required: true
 {% endif %}
-{% for foption in field.field_options %}
+{% for foption in field.field_opt %}
         {{foption}}
 {% endfor %}
 {% if field.lists  %}

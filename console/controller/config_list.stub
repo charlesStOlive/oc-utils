@@ -63,4 +63,4 @@ toolbar:
     search:
         prompt: backend::lang.list.search_prompt
 
-{% if configs.filters %}filter: {{ configs.filters }}.yaml{% endif %}
+{% if configs.filters %}filter: config_filters.yaml{% endif %}

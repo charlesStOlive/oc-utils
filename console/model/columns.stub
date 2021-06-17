@@ -11,18 +11,8 @@ columns:
         invisible: true
 {% endif %}
 {% endif %}
-{% if addReorderTrait %}
-    sort_order:
-        label: waka.utils::lang.global.sort_order
-        invisible: true
-{% endif %}
 {% for column in columns  %}
-{% if column.morphone %}
-    {{column.var}}_r:
-        label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{column.var}}
-        relation: unique
-        select: {{column.var}}
-{% elseif column.belong %}
+{% if column.col_type == 'relation' %}
     {{column.var}}_r:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{column.var}}
         searchable: true
@@ -34,33 +24,30 @@ columns:
 {% endif %}
 {% if column.type == 'boolean' %}
         type: switch
-{% elseif column.type == 'timestamp' %}
+{% elseif column.type == 'timestamp' and not column.col_type %}
         type: timesince
-{% elseif column.type == 'date' %}
+{% elseif column.type == 'date' and not column.col_type %}
         type: date
         ignoreTimezone: true
-{% elseif column.field_type == 'workflow' or column.attribute == 'workflow'  %}
-        type: workflow
-        searchable: true
-{% elseif column.field_type == 'action' %}
+{% elseif column.col_type == 'action' %}
         type: waka-btn-actions
         icon: icon-wrench
         clickable: false
         searchable: false
         sortable: false
         width: 25px
-{% elseif column.type is null and column.relation is null  %}
+{% elseif column.col_type == 'append' or (column.col_type is null and column.type is null)  %}
         searchable: false
         sortable: false
-{% if column.col_opt and column.col_opt != "hide"  %}
-        type: {{column.col_opt}}
-{% elseif column.field_type  %}
-        type: {{column.field_type}}
-{% endif %}
+{% elseif column.col_type %}
+        type: col_type
 {% else %}
         searchable: true
 {% endif %}
-{% if column.column == '999' or column.col_opt == "hide" %}
+{% for c_option in column.col_opt %}
+        {{c_option}}
+{% endfor %}
+{% if column.column == '999' %}
         invisible: true
 {% endif %}
 {% endfor %}

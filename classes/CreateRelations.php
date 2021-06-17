@@ -35,6 +35,11 @@ class CreateRelations
         return $controllerRelations;
     }
 
+    public function getOneRelation($var) {
+        //trace_log($this->relations->toArray());
+        return $this->relations->where('var', $var)->first();
+    }
+
     public function isBehaviorRelationNeeded() {
         return count($this->getControllerRelations());
     }
