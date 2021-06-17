@@ -3,6 +3,7 @@
 use Winter\Storm\Scaffold\GeneratorCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Mexitek\PHPColors\Color;
+use Twig;
 class CreateUiColors extends GeneratorCommand
 {
     /**
@@ -32,11 +33,6 @@ class CreateUiColors extends GeneratorCommand
      * @var array
      */
     protected $stubs = [
-        'ui_less/button.variables.stub' => '../../../modules/system/assets/ui/less/button.variables.less',
-        'ui_less/checkbox.balloon.stub' => '../../../modules/system/assets/ui/less/checkbox.balloon.less',
-        'ui_less/checkbox.stub' => '../../../modules/system/assets/ui/less/checkbox.less',
-        'ui_less/global.variables.stub' => '../../../modules/system/assets/ui/less/global.variables.less',
-        'ui_less/select.variables.stub' => '../../../modules/system/assets/ui/less/select.variables.less',
         'ui_less/vars.stub' => '/assets/css/simple_grid/vars.less',
     ];
 
@@ -62,11 +58,11 @@ class CreateUiColors extends GeneratorCommand
             $this->files->put($filePath, $stringContent);
         }
 
-        // $this->makeStubs();
+        $this->makeStubs();
 
-        // $this->info($this->type . ' created successfully.');
+        $this->info($this->type . ' created successfully.');
 
-        // $this->call('winter:util', ['name' => 'compile less']);
+        $this->call('winter:util', ['name' => 'compile less']);
     }
 
     public function updateColorContent($content) {
@@ -84,6 +80,37 @@ class CreateUiColors extends GeneratorCommand
         $class = new \ReflectionClass($className);
 
         return dirname($class->getFileName());
+    }
+
+    public function makeStub($stubName)
+    {
+        trace_log($stubName);
+        if (!isset($this->stubs[$stubName])) {
+            return;
+        }
+
+        $sourceFile = $this->getSourcePath() . '/' . $stubName;
+        $destinationFile = $this->getDestinationPath() . '/' . $this->stubs[$stubName];
+        $destinationContent = $this->files->get($sourceFile);
+
+        /*
+         * Parse each variable in to the destination content and path
+         */
+        $destinationContent = Twig::parse($destinationContent, $this->vars);
+        $destinationFile = Twig::parse($destinationFile, $this->vars);
+
+        $this->makeDirectory($destinationFile);
+
+        /*
+         * Make sure this file does not already exist
+         */
+        // if ($this->files->exists($destinationFile) && !$this->option('force')) {
+        //     throw new Exception('Stop everything!!! This file already exists: ' . $destinationFile);
+        // }
+        trace_log($destinationFile);
+        trace_log($destinationContent);
+
+        $this->files->put($destinationFile, $destinationContent);
     }
 
     /**
@@ -133,13 +160,6 @@ class CreateUiColors extends GeneratorCommand
                '#da5700' => $accent,
                '#405261' => $secondary,
                '#e67e22' => $accent_light,
-
-
-
-               
-
-
-
             ]
         ];
 
@@ -157,13 +177,13 @@ class CreateUiColors extends GeneratorCommand
      *
      * @return array
      */
-    // protected function getArguments()
-    // {
-    //     return [
-    //         ['plugin', InputArgument::REQUIRED, 'The name of the plugin. Eg: RainLab.Blog'],
-    //         ['model', InputArgument::REQUIRED, 'The name of the model. Eg: Post'],
-    //     ];
-    // }
+    protected function getArguments()
+    {
+        return [
+            ['plugin', InputArgument::REQUIRED, 'The name of the plugin. Eg: RainLab.Blog'],
+            ['model', InputArgument::REQUIRED, 'The name of the model. Eg: Post'],
+        ];
+    }
 
     /**
      * Get the console command options.
