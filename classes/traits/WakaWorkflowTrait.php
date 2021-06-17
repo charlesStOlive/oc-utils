@@ -272,7 +272,7 @@ trait WakaWorkflowTrait
         //trace_log($place);
 
         $noRoleCode = $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['norole'] ?? []; // string place name
-        if($norole == []) {
+        if($noRoleCode == []) {
             return false;
         }
         
