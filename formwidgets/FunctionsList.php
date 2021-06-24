@@ -145,6 +145,7 @@ class FunctionsList extends FormWidgetBase
         $field = $this->fieldName;
         $this->model[$field] = $datas;
         $this->model->save();
+        $this->vars['user'] = \BackendAuth::getUser();
 
         //rafraichissement de la liste
         return [
@@ -194,6 +195,7 @@ class FunctionsList extends FormWidgetBase
         $this->vars['collectionCode'] = $collectionCode;
         $this->vars['functionCode'] = $functionCode;
         $this->vars['attributeWidget'] = $this->attributeWidget;
+        $this->vars['user'] = \BackendAuth::getUser();
 
         return $this->makePartial('popup_update');
     }
@@ -214,6 +216,8 @@ class FunctionsList extends FormWidgetBase
         $field = $this->fieldName;
         $this->model[$field] = $updatedDatas;
         $this->model->save();
+
+        $this->vars['user'] = \BackendAuth::getUser();
 
         return [
             '#list' => $this->makePartial('list', ['values' => $updatedDatas]),
@@ -243,6 +247,8 @@ class FunctionsList extends FormWidgetBase
         $field = $this->fieldName;
         $this->model[$field] = $datas;
         $this->model->save();
+
+        $this->vars['user'] = \BackendAuth::getUser();
 
         //rafraichissement de la liste
         return [
