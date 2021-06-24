@@ -106,7 +106,7 @@ class DataSource
         }
         if (!$this->model) {
             // \Flash::error("Attention le test_id n'existe pas");
-            throw new \SystemException("Il n'y a pas de modele disponible pour : " . $this->class);
+            throw new \SystemException("Il n'y a pas de modele disponible pour : " . $this->class." Veuillez créer au moins une valuer dans cette ressource");
         }
         $this->modelName = $this->model;
         $this->wimages = new Wimages($this->model, $this->relations);
