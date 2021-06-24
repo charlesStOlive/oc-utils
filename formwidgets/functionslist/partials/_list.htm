@@ -26,15 +26,17 @@
                     </td>
                     <td class="nolink text-right">
                         <button data-attach-loading href="javascript:;" data-control="popup"
-                            data-handler="onUpdateFunction" data-stripe-load-indicator
-                            data-request-data="functionCode:'<?=$value['functionCode']?>',collectionCode:'<?=$value['collectionCode']?>'"
-                            class=" btn btn-secondary btn-xs" data-toggle="tooltip" title="Update"><i
-                                class="icon-pencil"></i></button>
+                                data-handler="onUpdateFunction" data-stripe-load-indicator
+                                data-request-data="functionCode:'<?=$value['functionCode']?>',collectionCode:'<?=$value['collectionCode']?>'"
+                                class=" btn btn-secondary btn-xs" data-toggle="tooltip" title="Update"><i
+                               class="icon-pencil"></i></button>
+                        <?php if ($user->hasAccess('waka.formwidget.functionlist.admin')): ?>
                         <button data-attach-loading href="javascript:;" data-request="onDeleteFunction"
-                            data-stripe-load-indicator
-                            data-request-data="collectionCode:'<?=$value['collectionCode']?>'"
-                            class=" btn btn-danger btn-xs" data-toggle="tooltip" title="Delete"><i
-                                class="icon-trash"></i></button>
+                                data-stripe-load-indicator
+                                data-request-data="collectionCode:'<?=$value['collectionCode']?>'"
+                                class=" btn btn-danger btn-xs" data-toggle="tooltip" title="Delete"><i
+                               class="icon-trash"></i></button>
+                        <?php endif ?>
                     </td>
                 </tr>
                 <?php endforeach ?>

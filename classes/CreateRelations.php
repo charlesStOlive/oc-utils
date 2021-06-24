@@ -75,12 +75,15 @@ class CreateRelations
         $userRelation = $relationClass == 'Backend\Models\User' ? true : false;
         
         //Création des relations pour le modèles
-        $relationarray = null;
+        $relationarray[] = $relationClass;
+
         if($options) {
-            $relationarray =  VarExporter::export([$relationClass, $options],VarExporter::NO_CLOSURES,2);
-        } else {
-            $relationarray =  VarExporter::export([$relationClass],VarExporter::NO_CLOSURES,2);
+            foreach($options as $key=>$option) {
+                $relationarray[$key] = $option;
+            }
         }
+        $relationarray =  VarExporter::export($relationarray,VarExporter::NO_CLOSURES,2);
+        $relationarray = str_replace('0 => ', '',$relationarray);
         
         //Suppresion des doubles antiSlash
         $relationarray = str_replace('\\\\', '\\', $relationarray); 

@@ -27,8 +27,11 @@ class {{studly_name}} extends Model
 {% if configs.trait_workflow %}
     use \Waka\Utils\Classes\Traits\WakaWorkflowTrait;
 {% endif %}
-{% if configs.trait_workflow %}
+{% if configs.trait_sourcelog %}
     use \Waka\Lp\Classes\Traits\SourceLogTrait;
+{% endif %}
+{% if configs.trait_wakaPeriode %}
+    use \Waka\Utils\Classes\Traits\ScopePeriodes;
 {% endif %}
 {% if configs.trait_tag %}
     use \Waka\Segator\Classes\Traits\TagTrait;
@@ -64,12 +67,12 @@ class {{studly_name}} extends Model
     /**
      * @var array Guarded fields
      */
-    protected $guarded = ['*'];
+    protected $guarded = ['id'];
 
     /**
      * @var array Fillable fields
      */
-    protected $fillable = [];
+    //protected $fillable = [];
 
     /**
      * @var array Validation rules for attributes

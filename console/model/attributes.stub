@@ -11,8 +11,8 @@ attributes:
 {% for field in attributes  %}
     {{field.var}}:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.var}}
-{% if field.attribute != '1' %}
-        type: {{ field.attribute }}
+{% if field.att_type %}
+        type: {{ field.att_type }}
 {% endif %}
 {% endfor %}
 {% if configs.no_timestamps is null %}

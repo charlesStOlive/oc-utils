@@ -34,8 +34,12 @@ tool_bar:
             format: all
             btns:
 {% if configs.behav_imports %}
-                excelImportChild:
-                    config: waka.importexport::btns.importChild
+                excelImport:
+                    config: waka.importexport::btns.importExcel
+{% endif %}
+{% if configs.behav_exports %}
+                excelExport:
+                    config: waka.importexport::btns.exportExcel
 {% endif %}
     config_lot:
         format: all

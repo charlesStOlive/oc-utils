@@ -54,6 +54,7 @@ class FunctionsList extends FormWidgetBase
         $this->vars['noFunction'] = $noFunction;
         $this->vars['functionClass'] = $functionClass;
         $this->vars['name'] = $this->formField->getName();
+        $this->vars['user'] = \BackendAuth::getUser();
         //trace_log($this->getLoadValue());
         $this->vars['values'] = $this->getLoadValue();
         $this->vars['model'] = $this->model;
@@ -171,8 +172,12 @@ class FunctionsList extends FormWidgetBase
         //création du widget
 
         $this->attributeWidget->getField('collectionCode')->value = $data['collectionCode'];
+        if(!\BackendAuth::getUser()->hasAccess('waka.formwidget.functionlist.admin')) {
+            $this->attributeWidget->getField('collectionCode')->readOnly = true;
+        }
+        
         $this->attributeWidget->getField('name')->value = $data['name'];
-
+        
         if ($attributes) {
             foreach ($attributes as $key => $value) {
                 $this->attributeWidget->addFields([$key => $value]);

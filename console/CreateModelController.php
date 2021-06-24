@@ -131,7 +131,7 @@ class CreateModelController extends GeneratorCommand
                 $src = 'controllers/{{lower_ctname}}/config_filters.yaml';
                 $this->makeOneStubFromFile($stub, $destination, $this->vars, $src);
             }
-                /**/trace_log('on fait les filtres');
+            /**/trace_log('on fait les filtres');
             $stub = 'controller/config_btns.stub';
             $destination =  'controllers/{{studly_ctname}}/config_btns.yaml';
             $src = 'controllers/{{studly_ctname}}/config_btns.yaml';
@@ -141,17 +141,6 @@ class CreateModelController extends GeneratorCommand
             }
             if($this->relations->isBehaviorRelationNeeded()) {
                 $this->stubs['controller/config_relation.stub'] = 'controllers/{{lower_ctname}}/config_relation.yaml';
-            }
-            $controllerRelations = $this->relations->getControllerRelations();
-            foreach($controllerRelations as $relation) {
-                $stub = 'controller/_field_relation.stub';
-                $destintion = 'controllers/' . strtolower($this->w_model) . 's/_field_'.$relation['name'].'.htm';
-                $this->makeOneStubFromFile($stub, $destintion, $relation);
-                if($relation['yamls_read'] ?? false) {
-                    $stub = 'model/fields_for.stub';
-                    $destintion = 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '_read.yaml';
-                    $this->makeOneStubFromFile($stub,$destintion , $this->vars, '/fields.yaml');
-                }
             }
         }
         if($this->maker['yaml_relation']) {
@@ -165,7 +154,7 @@ class CreateModelController extends GeneratorCommand
                 if($relation['createYamls'] ?? false) {
                     $stub = 'model/fields_for.stub';
                     $destination = 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml';
-                    $src = 'models/' . $relation['singular_name'] . '/fields.yaml';
+                    $src = 'models/' . $relation['singular_name'] . '/fields_create.yaml';
                     $fnc = 'cleanYaml';
                     $this->makeOneStubFromFile($stub, $destination, [], $src , $fnc );
                     //
@@ -193,9 +182,36 @@ class CreateModelController extends GeneratorCommand
             if ($this->config['behav_reorder']) {
                 $this->stubs['controller/reorder.stub'] = 'controllers/{{lower_ctname}}/reorder.htm';
             }
+            /**/trace_log('on fait les htm relations');
+            $controllerRelations = $this->relations->getControllerRelations();
+            foreach($controllerRelations as $relation) {
+                $stub = 'controller/_field_relation.stub';
+                $destintion = 'controllers/' . strtolower($this->w_model) . 's/_field_'.$relation['name'].'.htm';
+                $this->makeOneStubFromFile($stub, $destintion, $relation);
+                if($relation['yamls_read'] ?? false) {
+                    $stub = 'model/fields_for.stub';
+                    $destintion = 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '_read.yaml';
+                    $src = 'models/' . $relation['singular_name'] . '/fields_create.yaml';
+                    $this->makeOneStubFromFile($stub,$destintion , $this->vars, $src);
+                }
+            }
         }
         if ($this->maker['excel']) {
             $this->stubs['imports/import.stub'] = 'classes/imports/{{studly_ctname}}Import.php';
+            $stringClassName = '{{studly_author}}\{{studly_plugin}}\Classes\Imports\{{studly_ctname}}Import';
+            $stringClassName = Twig::parse($stringClassName, $this->vars);
+            trace_log($stringClassName);
+            $excel = \Waka\ImportExport\Models\Import::where('import_model_class', $stringClassName)->first();
+            if(!$excel) {
+                $excel = new \Waka\ImportExport\Models\Import();
+                $excel->name = Twig::parse('Import de {{lower_name}}', $this->vars);
+                $excel->data_source = Twig::parse('{{lower_name}}', $this->vars);
+                $excel->is_editable = false;
+                $excel->import_model_class = $stringClassName;
+                $excel->comment = "Import de base si le champs ID est vide, l'application créera une nouvelle ligne sinon elle tentera une MAJ de la ligne";
+                $excel->save();
+            }
+            
         }
 
         $this->makeStubs();

@@ -142,6 +142,69 @@ class DataSource
         }
         return $optionsList;
     }
+    public function dynamyseText($content,$modelId =null) {
+        if($modelId) {
+            $this->instanciateModel($modelId);
+        }
+        return \Twig::parse($content, ['ds' => $this->model]);
+    }
+
+    public function getProductorAsks($productorClass, $productorId, $modelId)
+    {
+
+        $productor = $productorClass::find($productorId);
+        if(!$productor->has_asks) {
+            trace_log('pas de asks');
+            return [];
+        }
+        trace_log('il y a  asks');
+        $this->instanciateModel($modelId);
+
+        $asksList = [];
+
+        foreach ($productor->asks as $ask) {
+            if($ask['is_asked'] ?? false) {
+                $askCode = $ask['code'];
+                $askContent = \Twig::parse($ask['content'], ['ds' => $this->getValues()]);
+                $askType = str_replace('_', '', $ask['_group']);
+                if($askType == 'label') {
+                    $askType = null;
+                }
+                $asksList['_ask_'.$askCode] = [
+                    'label' => $ask['code'],
+                    'default' => $askContent,
+                    'type' => $askType,
+                    'size'=> $askType  == 'textarea' ? 'tiny' : 'small',
+                    'toolbarButtons' => $askType  == 'richeditor' ? 'bold|italic' : null,
+                ];
+            }
+        }
+        return $asksList;
+    }
+    public function getAsksFromData($datas = [], $modelAsks = []) {
+        $askArray = [];
+        if($datas) {
+            foreach($datas as $key=>$content) {
+                if(starts_with($key, '_ask_')) {
+                    $finalKey = str_replace('_ask_', '', $key);
+                    $askArray[$finalKey] = $content;
+                }
+            }
+        } 
+        if($modelAsks) {
+            foreach($modelAsks as $row) {
+                $limitReplace = 0;
+                $finalKey = ltrim($row['code'], '_');
+                $keyExiste = $askArray[$finalKey] ?? false;
+                //Si le ask array n'est pas rempli on l'ajoute
+                if(!$keyExiste) {
+                    $content = \Twig::parse($row['content'], ['ds' => $this->getValues()]);
+                    $askArray[$finalKey] = $content;
+                }
+            }
+        }
+        return $askArray;
+    }
 
     public function getPartialIndexOptions($productorModel, $relation = false)
     {

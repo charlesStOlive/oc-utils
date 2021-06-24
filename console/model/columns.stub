@@ -15,7 +15,6 @@ columns:
 {% if column.col_type == 'relation' %}
     {{column.var}}_r:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{column.var}}
-        searchable: true
         relation: {{column.var}}
         select: name
 {% else %}
@@ -39,8 +38,8 @@ columns:
 {% elseif column.col_type == 'append' or (column.col_type is null and column.type is null)  %}
         searchable: false
         sortable: false
-{% elseif column.col_type %}
-        type: col_type
+{% elseif column.col_type and column.col_type != 'relation'  %}
+        type: {{column.col_type}}
 {% else %}
         searchable: true
 {% endif %}

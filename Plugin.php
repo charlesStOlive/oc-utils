@@ -260,6 +260,18 @@ class Plugin extends PluginBase
                 'tab' => 'Waka - Utils',
                 'label' => "Lecteur des taches de l'app",
             ],
+            'waka.formwidget.functionlist.admin' => [
+                'tab' => 'Waka - Utils',
+                'label' => "Administrateur des fonctionslists ( dans email, pdf, word, etc.)",
+            ],
+             'waka.formwidget.imagelist.admin' => [
+                'tab' => 'Waka - Utils',
+                'label' => "Administrateur des imagelist ( dans email, pdf, word, etc.)",
+            ],
+             'waka.formwidget.scopelist.user' => [
+                'tab' => 'Waka - Utils',
+                'label' => "Administrateur des scopelist ( dans email, pdf, word, etc.)",
+            ],
         ];
     }
 
