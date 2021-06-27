@@ -1,0 +1,41 @@
+<?php if($noImage) { ?>
+<div class="callout fade in callout-info no-subheader">
+    <div class="header">
+        <i class="icon-info"></i>
+        <h3>Auncune image disponible</h3>
+    </div>
+</div>
+<?php } else { ?>
+<div class="form-group dropdown-field span-full">
+    <select id="<?= $id.'_selector' ?>" class="form-control custom-select"
+            data-request="<?= $this->getEventHandler('onSelectImages') ?>"
+            name="<?=$name.'[selector]'?>">
+        <option value="" disabled <?= $selectedImage == null  ? 'selected="selected"' : '' ?>>--Choisissez une image--
+        </option>
+        <?php foreach($images as $key => $labl)  : ?>
+        <option value="<?=$key?>" <?= $selectedImage == $key  ? 'selected="selected"' : '' ?>><?=$labl?></option>
+        <?php endforeach ?>
+    </select>
+</div>
+<div class="form-group span-storm col-xs-3">
+    <label>Width</label>
+    <input class="form-control" id="<?= $id.'_width' ?>" name="<?= $name.'[width]' ?>"
+           value="<?= e($values['width'] ?? null) ?>" />
+</div>
+
+<div class="form-group span-storm col-xs-3">
+    <label>Height</label>
+    <input class="form-control" id="<?= $id.'_height' ?>" name="<?= $name.'[height]' ?>"
+           value="<?= e($values['height'] ?? null) ?>" />
+</div>
+<div id="image_option">
+    <?php if($imageType == 'file') : ?>
+    <?=$this->makePartial('options_classique') ?>
+    <?php elseif($imageType) : ?>
+    <?=$this->makePartial('options_cloudi') ?>
+    <?php endif ?>
+</div>
+
+
+
+<?php } ?>

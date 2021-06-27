@@ -28,6 +28,16 @@ return [
             'span' => 'right',
         ],
     ],
+    'image' => [
+        'baseCrop' => [
+            'exact' =>"Exacte",
+            'portrait' => "Portrait",
+            'landscape' => "Paysage",
+            'auto' => "automatique",
+            'fit' => 'Tenir',
+            'crop' => "Couper",
+        ]
+    ],
     'scopesType' => [
         'model_value' => [
             'label' => "Restriction depuis une valeur d'un champ",

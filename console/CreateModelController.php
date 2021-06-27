@@ -200,7 +200,7 @@ class CreateModelController extends GeneratorCommand
             $this->stubs['imports/import.stub'] = 'classes/imports/{{studly_ctname}}Import.php';
             $stringClassName = '{{studly_author}}\{{studly_plugin}}\Classes\Imports\{{studly_ctname}}Import';
             $stringClassName = Twig::parse($stringClassName, $this->vars);
-            trace_log($stringClassName);
+            //trace_log($stringClassName);
             $excel = \Waka\ImportExport\Models\Import::where('import_model_class', $stringClassName)->first();
             if(!$excel) {
                 $excel = new \Waka\ImportExport\Models\Import();
@@ -513,7 +513,7 @@ class CreateModelController extends GeneratorCommand
         $destinationFile = $this->getDestinationPath() . '/' . Twig::parse($destinationName, $tempVar);
         $srcFile = $this->getDestinationPath() . '/' . Twig::parse($srcFileName, $tempVar);
 
-        trace_log($stubFile.'    '.$srcFile);
+        //trace_log($stubFile.'    '.$srcFile);
 
         $destinationContent = null;
         if($stubFile) {

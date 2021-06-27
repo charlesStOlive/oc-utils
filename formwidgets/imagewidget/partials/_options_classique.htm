@@ -1,0 +1,12 @@
+<div class="form-group span-storm col-xs-3">
+    <label>Méthode de déformation</label>
+    <div class="form-group dropdown-field span-full">
+        <select id="<?= $id.'_crop' ?>" class="form-control custom-select"
+                name="<?=$name.'[crop]'?>">
+            <?php foreach($cropOptions as $key => $labl)  : ?>
+            <option value="<?=$key?>" <?= ($values['crop'] ?? null) == $key  ? 'selected="selected"' : '' ?>><?=$labl?>
+            </option>
+            <?php endforeach ?>
+        </select>
+    </div>
+</div>

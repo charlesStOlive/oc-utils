@@ -125,17 +125,15 @@ class Wimages
         }
         return $relationImages;
     }
+    public function getUrlFromOptions($objImage) {
+        $pictureData = $this->getOnePictureKey($objImage['selector']);
+        $objImage = array_merge($objImage, $pictureData);
+        return $this->getOnePictureUrl($objImage);
 
-    public function getPicturesUrl($dataImages)
-    {
-        //trace_log('getPicturesUrl');
-        if (!$dataImages) {
-            return;
-        }
-        $allPictures = [];
-        foreach ($dataImages as $image) {
-            //trace_log($image);
-            //On recherche le bon model
+
+        
+    }
+    public function getOnePictureUrl($image) {
             $modelImage = $this->model;
             $img;
 
@@ -144,16 +142,25 @@ class Wimages
             }
             //trace_log("nom du model " . $modelImage->name);
 
+            $width = $image['width'] ?? null;
+            $height = $image['height'] ?? null;
+            $crop = $image['crop'] ?? null;
+            $gravity = $image['gravity'] ?? null;
+
             $options = [
                 'width' => $image['width'] ?? null,
                 'height' => $image['height'] ?? null,
                 'crop' => $image['crop'] ?? null,
                 'gravity' => $image['gravity'] ?? null,
             ];
+
+            trace_log($options);
+
             if ($image['type'] == 'cloudi') {
                 $img = $modelImage->{$image['field']};
                 if ($img) {
                     $img = $img->getUrl($options);
+                    //$img = $img->getCloudiUrl($width,  $height, $crop, $gravity);
                 } else {
                     $img = \Cloudder::secureShow(CloudisSettings::get('srcPath'));
                 }
@@ -174,11 +181,26 @@ class Wimages
                 }
                 //trace_log('montage ---' . $img);
             }
-            $allPictures[$image['code']] = [
+            return  [
                 'path' => $img,
                 'width' => $options['width'],
                 'height' => $options['height'],
             ];
+
+    }
+
+    public function getPicturesUrl($dataImages)
+    {
+        //trace_log('getPicturesUrl');
+        if (!$dataImages) {
+            return;
+        }
+        $allPictures = [];
+        foreach ($dataImages as $image) {
+            //trace_log($image);
+            //On recherche le bon model
+             $allPictures[$image['code']] = $this->getOnePictureUrl($image);
+            
         }
         return $allPictures;
     }

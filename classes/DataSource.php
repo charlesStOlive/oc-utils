@@ -154,10 +154,10 @@ class DataSource
 
         $productor = $productorClass::find($productorId);
         if(!$productor->has_asks) {
-            trace_log('pas de asks');
+            //trace_log('pas de asks');
             return [];
         }
-        trace_log('il y a  asks');
+        //trace_log('il y a  asks');
         $this->instanciateModel($modelId);
 
         $asksList = [];
@@ -184,25 +184,34 @@ class DataSource
     public function getAsksFromData($datas = [], $modelAsks = []) {
         $askArray = [];
         if($datas) {
-            foreach($datas as $key=>$content) {
+            foreach($datas as $key=>$data) {
                 if(starts_with($key, '_ask_')) {
                     $finalKey = str_replace('_ask_', '', $key);
-                    $askArray[$finalKey] = $content;
+                    $askArray[$finalKey] = $data;
                 }
             }
         } 
         if($modelAsks) {
             foreach($modelAsks as $row) {
-                $limitReplace = 0;
-                $finalKey = ltrim($row['code'], '_');
+                $type = $row['_group'];
+                $finalKey = $row['code'];
                 $keyExiste = $askArray[$finalKey] ?? false;
-                //Si le ask array n'est pas rempli on l'ajoute
-                if(!$keyExiste) {
+                if($keyExiste) {
+                    //model déjà instancié on ne le traite pas. 
+                    continue;
+                }
+                if($type == 'image') {
+                    $obj = $row['content'];
+                    $pictureUrl = $this->wimages->getUrlFromOptions($row['content']);
+                    trace_log($pictureUrl);
+                    $askArray[$finalKey] = $pictureUrl;
+                } else {
                     $content = \Twig::parse($row['content'], ['ds' => $this->getValues()]);
                     $askArray[$finalKey] = $content;
                 }
             }
         }
+        //trace_log($askArray);
         return $askArray;
     }
 
