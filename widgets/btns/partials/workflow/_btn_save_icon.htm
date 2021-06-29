@@ -1,3 +1,4 @@
+<?php if(!$mustTrans) : ?>
 <button type="button"
         data-hotkey="ctrl+s, cmd+s"
         type="button"
@@ -6,3 +7,4 @@
         data-request="onSave"
         data-load-indicator="<?= e(trans('waka.utils::lang.global.save_indicator')) ?>">
 </button>
+<?php endif ?>

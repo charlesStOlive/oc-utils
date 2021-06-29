@@ -66,7 +66,7 @@ trait WakaWorkflowTrait
 
 
             $model->bindEvent('model.beforeValidate', function () use ($model) {
-                //trace_log('beforeValidate');
+                trace_log('beforeValidate');
                 $changeState = $model->change_state;
                 $wf_try = strpos($changeState, ',');
                 if ($wf_try && $changeState) {
@@ -119,8 +119,7 @@ trait WakaWorkflowTrait
                         $model->change_state = null;
 
                     }
-                }
-                if (!$wf_try && $changeState) {
+                } else if (!$wf_try && $changeState) {
                     //trace_log("On a un changement de transition");
                     //la transition et déjà choisi nous allons verifier. 
                     $transition = self::getWfTransition($changeState, $model);
@@ -133,6 +132,8 @@ trait WakaWorkflowTrait
                     }
                     //trace_log($model->toArray());
                     $model->workflow_get()->apply($model, $changeState);
+                } else if ($model->wfMustTrans) {
+                    throw new \ValidationException(['memo' => \Lang::get('waka.utils::lang.workflow.must_trans')]);
                 }
             });
             

@@ -131,14 +131,8 @@ class Btns extends WidgetBase
             }
         }
 
-        //trace_log('transitions');
-        //trace_log($transitions);
-        // trace_log('wfTrys');
-        // trace_log($wfTrys);
-        // trace_log('wfSeparates');
-        // trace_log($wfSeparates);
-        // trace_log($this->config->workflow[$state]['separateFirst']);
-
+        
+        $this->vars['mustTrans'] =  $model->wfMustTrans;
         $this->vars['separateFirst'] =  $this->config->workflow[$state]['separateFirst'] ?? false;
         $this->vars['modelId'] = $model->id;
         $this->vars['transitions'] = $transitions;
