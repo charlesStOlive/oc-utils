@@ -81,7 +81,7 @@ class ImageWidget extends FormWidgetBase
      */
     public function getSaveValue($value)
     {
-        trace_log($value);
+        //trace_log($value);
         return $value;
     }
 

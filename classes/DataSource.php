@@ -151,6 +151,12 @@ class DataSource
 
     public function getProductorAsks($productorClass, $productorId, $modelId)
     {
+        if(!$productorId) {
+             throw new \SystemException('le productorId est null ! ');
+        }
+
+        //trace_log($productorClass);
+
 
         $productor = $productorClass::find($productorId);
         if(!$productor->has_asks) {
@@ -203,7 +209,7 @@ class DataSource
                 if($type == 'image') {
                     $obj = $row['content'];
                     $pictureUrl = $this->wimages->getUrlFromOptions($row['content']);
-                    trace_log($pictureUrl);
+                    //trace_log($pictureUrl);
                     $askArray[$finalKey] = $pictureUrl;
                 } else {
                     $content = \Twig::parse($row['content'], ['ds' => $this->getValues()]);
@@ -454,9 +460,12 @@ class DataSource
 
         foreach ($model_functions as $item) {
             $itemFnc = $item['functionCode'];
-            //trace_log($item['collectionCode']);
-            //trace_log($item);
-            $collection[$item['collectionCode']] = $fnc->{$itemFnc}($item);
+            if(method_exists($fnc,$itemFnc)) {
+                $collection[$item['collectionCode']] = $fnc->{$itemFnc}($item) ?? "error";
+            } else {
+                $collection[$item['collectionCode']] = [];
+                /**/trace_log("ERREUR DATASOURCE 467 la methode n'existe pas  fnc : ".get_class($fnc)." ".$itemFnc);
+            }   
         }
         return $collection;
     }

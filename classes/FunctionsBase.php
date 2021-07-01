@@ -51,14 +51,14 @@ class FunctionsBase
         //trace_log($functions);
         $functionName = $functions[$functionCode] ?? null;
         if (!$functionName) {
-            throw new \ApplicationException("La fonction d'édition  : ".$functionCode." n'existe pas");
+            //throw new \ApplicationException("La fonction d'édition  : ".$functionCode." n'existe pas");
         }
-        $atttributes = $functions[$functionCode][$searchedKey] ?? null;
+        $atttributes = $functions[$functionCode][$searchedKey] ?? [];
         $valeursExtended = [];
         $valeurs = [];
-        if (!$atttributes) {
-            throw new \ApplicationException("Erreur attributs de la fonction : ".$functionCode." :  ".$searchedKey);
-        }
+        // if (!$atttributes) {
+        //     throw new \ApplicationException("Erreur attributs de la fonction : ".$functionCode." :  ".$searchedKey);
+        // }
         if ($atttributes['extend'] ?? false) {
             $extendedFunction = $atttributes['extend'];
             $atttributesExtended = $functions[$extendedFunction][$searchedKey] ?? null;

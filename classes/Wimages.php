@@ -154,7 +154,7 @@ class Wimages
                 'gravity' => $image['gravity'] ?? null,
             ];
 
-            trace_log($options);
+            //trace_log($options);
 
             if ($image['type'] == 'cloudi') {
                 $img = $modelImage->{$image['field']};

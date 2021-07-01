@@ -66,7 +66,7 @@ trait WakaWorkflowTrait
 
 
             $model->bindEvent('model.beforeValidate', function () use ($model) {
-                trace_log('beforeValidate');
+                //trace_log('beforeValidate');
                 $changeState = $model->change_state;
                 $wf_try = strpos($changeState, ',');
                 if ($wf_try && $changeState) {

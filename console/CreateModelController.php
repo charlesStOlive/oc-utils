@@ -177,6 +177,7 @@ class CreateModelController extends GeneratorCommand
             $this->stubs = array_merge($this->stubs,  $controllerHtmStubs);
             if ($this->config['side_bar_attributes'] || $this->config['side_bar_info']) {
                 unset($this->stubs['controller/update.stub']);
+                //trace_log('controller avec sidebar');
                 $this->stubs['controller/update_sidebar.stub'] = 'controllers/{{lower_ctname}}/update.htm';
             }
             if ($this->config['behav_reorder']) {
@@ -372,7 +373,8 @@ class CreateModelController extends GeneratorCommand
         $columns = $rows->where('column', '<>', null)->sortBy('column')->toArray();
 
          //R2cuperqtion des listes uniques. 
-        $this->config['lists'] = $rows->where('lists', '!=', null)->unique('lists')->toArray();
+        $this->config['lists'] = $rows->where('lists', '!=', null)->unique('lists')->pluck('lists', 'lists')->toArray();
+        //trace_log($this->config['lists']);
         //
         $trads = $rows->where('name', '<>', null)->toArray();
         //

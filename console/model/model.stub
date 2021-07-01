@@ -36,6 +36,10 @@ class {{studly_name}} extends Model
 {% if configs.trait_tag %}
     use \Waka\Segator\Classes\Traits\TagTrait;
 {% endif %}
+{% if configs.trait_informer %}
+    use \Waka\Informer\Classes\Traits\InformerTrait;
+{% endif %}
+
 
     /**
      * @var string The database table used by the model.

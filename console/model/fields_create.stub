@@ -2,7 +2,7 @@
 #  Form Field Definitions
 # ===================================
 
-fields:    
+fields:
 {% for field in fields_create  %}
     {{field.var}}{% if field.context %}@{{field.context}}{% endif %}:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.var}}
@@ -42,34 +42,18 @@ fields:
         type: workflow
         stateFrom: state
         placeholder: waka.utils::lang.global.placeholder_w
-{% elseif field.field_type == 'workflow' %}
+{% elseif field.field_type == 'relation' %}
+        type: relation
         placeholder: waka.utils::lang.global.placeholder
+{% if not field.field_opt %}
+        nameFrom: name
+{% endif %}
 {% elseif field.field_type == 'partial_relation'  %}
         type: partial
         path: field_{{field.var}}
 {% elseif field.field_type == 'dropdown'  %}
         type: {{ field.field_type }}
         placeholder: waka.utils::lang.global.placeholder
-{% elseif field.field_type  %}
-        type: {{ field.field_type }}
-{% elseif field.many %}
-        type: partial
-        path: field_{{field.var}}
-{% elseif field.belong %}
-        type: relation
-        placeholder: waka.utils::lang.global.placeholder
-{% if field.belong.userRelation %}
-        select: CONCAT(first_name,' ', last_name)
-{% else %}
-        nameFrom: name
-{% endif %}
-{% elseif field.many %}
-        type: partial
-        path: field_{{field.var}}
-{% elseif field.belong %}
-        type: relation
-        placeholder: waka.utils::lang.global.placeholder
-        nameFrom: name
 {% elseif field.type == 'boolean' and not field.field_type %}
         type: switch
 {% elseif field.type == 'text' and field.json and not field.field_type  %}
@@ -77,6 +61,8 @@ fields:
 {% if not field.lists  %}
         options: ['1','2']
 {% endif %}
+{% elseif field.field_type  %}
+        type: {{ field.field_type }}
 {% elseif field.type == 'timestamp' %}
         type: datepicker
         mode: date
