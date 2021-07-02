@@ -63,4 +63,4 @@ richeditor:
             type: richeditor
             span: full
             size: small
-            toolbarButtons: bold|italic
+            toolbarButtons: paragraphStyle|paragraphFormat|bold|italic| underline|strikeThrough|color|inlineStyle|clearFormatting|html

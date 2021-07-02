@@ -227,6 +227,12 @@ class Plugin extends PluginBase
             });
         });
 
+
+        //Foralaedotor
+        \Backend\Classes\Controller::extend(function($controller) {
+            $controller->addJs('/plugins/waka/utils/assets/js/froala.js');
+        });
+
         $localeCode = Lang::getLocale();
         setlocale(LC_TIME, $localeCode . '_' . strtoupper($localeCode) . '.UTF-8');
     }
