@@ -133,6 +133,48 @@ class CreateUiColors extends GeneratorCommand
         $accent = '#'.$accentColor->getHex();
         $accent_light = '#'.$accentColor->lighten(10);
 
+        $replaceColors = [];
+
+        $oldColors = \Config::get('wcli.wconfig::brand_data.oldColors');
+        if($oldColors) {
+            $old_primaryColor = new Color($oldColors['primaryColor']);
+            $old_secondaryColor = new Color($oldColors['secondaryColor']);
+            $old_accentColor = new Color($oldColors['accentColor']);
+
+            $old_primary  = '#'.$old_primaryColor->getHex();
+            $old_primary_dark =  '#'.$old_primaryColor->darken(10);
+            $old_primary_light = '#'.$old_primaryColor->lighten(10);
+            $old_primary_light2 = '#'.$old_primaryColor->lighten(20);
+            $old_secondary = '#'.$old_secondaryColor->getHex();
+            $old_accent = '#'.$old_accentColor->getHex();
+            $old_accent_light = '#'.$old_accentColor->lighten(10);
+
+            $replaceColors = [
+               $old_primary_dark => $primary_dark,
+               $old_primary => $primary,
+               $old_primary_light => $primary_light,
+               $old_accent_light => $accent_light,
+               $old_primary_light2 => $primary_light2,
+               $old_accent => $accent,
+               $old_secondary => $secondary,
+               $old_secondary => $secondary,
+            ];
+
+        } else {
+             $replaceColors = [
+               '#34495e' => $primary_dark,
+               '#0181b9' => $primary,
+               '#1681BA' => $primary,
+               '#1F99DC' => $primary_light,
+               '#3498db' => $accent_light,
+               '#4da7e8' => $primary_light2,
+               '#da5700' => $accent,
+               '#405261' => $secondary,
+               '#e67e22' => $accent_light,
+            ];
+
+        }
+
         //BrandPrimary 34495e
 
         //Primary button/link 0181b9 balloon 1681BA  checkbox : 1F99DC  brand-accentPRIMARY/3498db  active-bg/4da7e8
@@ -150,17 +192,7 @@ class CreateUiColors extends GeneratorCommand
             'primary_dark' => $primary_dark,
             'primary_light' => $primary_light,
             'primary_light2' => $primary_light2,
-            'replace' => [
-               '#34495e' => $primary_dark,
-               '#0181b9' => $primary,
-               '#1681BA' => $primary,
-               '#1F99DC' => $primary_light,
-               '#3498db' => $accent_light,
-               '#4da7e8' => $primary_light2,
-               '#da5700' => $accent,
-               '#405261' => $secondary,
-               '#e67e22' => $accent_light,
-            ]
+            'replace' => $replaceColors,
         ];
 
         
