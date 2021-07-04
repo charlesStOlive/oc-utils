@@ -6,6 +6,7 @@
 @color-gl: #E0E0E0;
 @color-dark: #2F4250;
 @color-white: #FFF;
+@font-size: 12px;
 @prefix: w-;
 
 
