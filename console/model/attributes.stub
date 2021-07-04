@@ -11,7 +11,9 @@ attributes:
 {% for field in attributes  %}
     {{field.var}}:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.var}}
-{% if field.att_type %}
+{% if field.att_type is null and field.field_type == 'workflow' %}
+        type: workflow
+{% elseif field.att_type %}
         type: {{ field.att_type }}
 {% endif %}
 {% endfor %}

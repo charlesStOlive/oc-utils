@@ -12,7 +12,7 @@ columns:
 {% endif %}
 {% endif %}
 {% for column in columns  %}
-{% if column.col_type == 'relation' %}
+{% if column.col_type == 'relation' or (column.col_type is null and column.field_type == 'relation' ) %}
     {{column.var}}_r:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{column.var}}
         relation: {{column.var}}
