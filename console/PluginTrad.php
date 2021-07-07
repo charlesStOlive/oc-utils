@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Twig;
 use File;
+use Brick\VarExporter\VarExporter;
 
 class PluginTrad extends GeneratorCommand
 {
@@ -97,9 +98,10 @@ class PluginTrad extends GeneratorCommand
      * 
      */
     public function launchTradFile($file) {
+        trace_log($file);
         $fileName = $file->getRelativePathname();
         $fileLangName = $this->destinationFolder.'/'.$fileName;
-        //trace_log($fileLangName);
+        trace_log($fileLangName);
         $content = null;
         $tradContent = null;
         $fileExiste = false;
@@ -108,7 +110,7 @@ class PluginTrad extends GeneratorCommand
             $content = include $file;
             $tradContent = include $fileLangName;
             $content = $this->array_diff_key_recursive($content, $tradContent);
-            //trace_log($content);
+            trace_log($content);
         } else {
             $content = new Collection(include $file);
         }
@@ -124,10 +126,10 @@ class PluginTrad extends GeneratorCommand
         }
     
         //FICHIER TRADUCTION PRET CREATION DU FICHIER DE LANGUE
-        $stubLang = $this->getSourcePath() . '/trad/lang.stub';
+        $traduction =  VarExporter::export($traduction,VarExporter::NO_CLOSURES);
+        $stubLang = $this->getSourcePath() . '/trad/langVar.stub';
         $langStubContent = File::get($stubLang);
         $destinationContent = Twig::parse($langStubContent, ['data' => $traduction]);
-        //trace_log($destinationContent);
         File::put($fileLangName,$destinationContent);
     }
     /**

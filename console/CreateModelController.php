@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Twig;
 use Yaml;
+use Brick\VarExporter\VarExporter;
 
 
 class CreateModelController extends GeneratorCommand
@@ -68,7 +69,7 @@ class CreateModelController extends GeneratorCommand
         }
         //création du fichier le langues.
         if ($this->maker['lang_field_attributes'] || $this->maker['only_langue']) {
-            $this->stubs['model/temp_lang.stub'] = 'lang/fr/{{lower_name}}.php';
+            $this->stubs['model/langVar.stub'] = 'lang/fr/{{lower_name}}.php';
         }
         if ($this->maker['lang_field_attributes'] || $this->maker['only_attribute']) {
             if (!$this->config['no_attributes_file'] ?? false) {
@@ -375,8 +376,38 @@ class CreateModelController extends GeneratorCommand
          //R2cuperqtion des listes uniques. 
         $this->config['lists'] = $rows->where('lists', '!=', null)->unique('lists')->pluck('lists', 'lists')->toArray();
         //trace_log($this->config['lists']);
-        //
+        
+        
+        //GESTION DES TRADUCTIONS
         $trads = $rows->where('name', '<>', null)->toArray();
+        $finalTrads = [];
+        foreach($trads as $trad) {
+            $var = $trad['var'] ?? null;
+            if (!$var) {
+                continue;
+            }
+            if ($trad['name'] ?? false) {
+                $finalTrads[$var] = $trad['name'] ?? null;
+            }
+            if ($trad['comment'] ?? false) {
+                $finalTrads[$var.'_com'] = $trad['comment'] ?? null;
+            }
+        }
+        //Construction d'un array errors à partir de config, il sera utiliser dans le fichier de lang du modele
+        $errors = [];
+        foreach ($this->config as $key => $value) {
+            if (starts_with($key, 'e.')) {
+                $key = str_replace('e.', "", $key);
+                $errors[$key] = $value;
+            }
+        }
+        if($errors) {
+            $finalTrads['e'] = $errors;
+        }
+        //Fin de la gestion des langues
+
+        
+        $finalTrads = VarExporter::export($finalTrads,VarExporter::NO_CLOSURES);
         //
         $dbs = $rows->where('type', '<>', null)->where('version', '==', null)->toArray();
         $dbVersion = $rows->where('type', '<>', null)->where('version', '==', $this->version)->toArray();
@@ -405,14 +436,7 @@ class CreateModelController extends GeneratorCommand
             }
         }
 
-        //Construction d'un array errors à partir de config, il sera utiliser dans le fichier de lang du modele
-        $errors = [];
-        foreach ($this->config as $key => $value) {
-            if (starts_with($key, 'e.')) {
-                $key = str_replace('e.', "", $key);
-                $errors[$key] = $value;
-            }
-        }
+        
 
         $excels = $rows->where('excel', '<>', null)->toArray();
 
@@ -434,7 +458,7 @@ class CreateModelController extends GeneratorCommand
             'author' => $this->w_author,
             'plugin' => $this->w_plugin,
             'configs' => $this->config,
-            'trads' => $trads,
+            
             'dbs' => $dbs,
             'dbVersion' => $dbVersion,
             'version' => $this->version,
@@ -451,7 +475,11 @@ class CreateModelController extends GeneratorCommand
             'purgeables' => $purgeables,
             'excels' => $excels,
             'tabs' => $tabs,
+            //Ancien trad a supprimer
+            'trads' => $trads,
             'errors' => $errors,
+            //nouveau trad
+            'finalTrads' => $finalTrads,
             'modelRelations' => $modelRelations,
             'controllerRelations' => $controllerRelations,
             'isBehaviorRelationNeeded' => $isBehaviorRelationNeeded,
