@@ -1,6 +1,9 @@
 <?php namespace {{studly_author}}\{{studly_plugin}}\Models;
 
 use Model;
+{% for use_classe in configs.use_classes_in_model  %}
+use {{ use_classe }};
+{% endfor %}
 
 /**
  * {{name}} Model
@@ -38,6 +41,9 @@ class {{studly_name}} extends Model
 {% endif %}
 {% if configs.trait_informer %}
     use \Waka\Informer\Classes\Traits\InformerTrait;
+{% endif %}
+{% if configs.trait_dbutils %}
+    use \Waka\Utils\Classes\Traits\DbUtils;
 {% endif %}
 
 
@@ -125,9 +131,6 @@ class {{studly_name}} extends Model
 {% for key,append in appends %}
         '{{key}}',
 {% endfor %}
-{% if configs.behav_workflow %}
-        'wfPlaceLabel',
-{% endif %}
     ];
 
     /**
@@ -154,7 +157,11 @@ class {{studly_name}} extends Model
     /**
      * @var array Relations
      */
-    public $hasOne = [];
+    public $hasOne = [
+{% for relation in modelRelations.hasOne %}
+        '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}},
+{% endfor %}
+    ];
     public $hasMany = [
 {% for relation in modelRelations.many %}
         '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}},

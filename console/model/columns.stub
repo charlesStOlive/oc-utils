@@ -21,7 +21,14 @@ columns:
     {{column.var}}:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{column.var}}
 {% endif %}
-{% if column.type == 'boolean' %}
+{% if column.col_type == 'action' %}
+        type: waka-btn-actions
+        icon: icon-wrench
+        clickable: false
+        searchable: false
+        sortable: false
+        width: 25px
+{% elseif column.type == 'boolean' %}
         type: switch
 {% elseif column.type == 'timestamp' and not column.col_type %}
         type: timesince

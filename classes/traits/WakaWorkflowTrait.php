@@ -18,7 +18,7 @@ trait WakaWorkflowTrait
              * Define relationships
              */
 
-            array_push($model->appends, 'wfPlaceLabel');
+            array_push($model->attributesToDs, 'wfPlaceLabel');
             array_push($model->purgeable, 'change_state');
             array_push($model->purgeable, 'state_close');
 
@@ -67,6 +67,7 @@ trait WakaWorkflowTrait
 
             $model->bindEvent('model.beforeValidate', function () use ($model) {
                 //trace_log('beforeValidate');
+                //trace_log($model->name);
                 $changeState = $model->change_state;
                 $wf_try = strpos($changeState, ',');
                 if ($wf_try && $changeState) {
@@ -114,7 +115,7 @@ trait WakaWorkflowTrait
                     }
                     if(!$trySuccess) {
                         if($model->wfMustTrans) {
-                            throw new \ValidationException(['memo' => \Lang::get('waka.utils::lang.workflow.must_trans')]);
+                            //throw new \ValidationException(['memo' => \Lang::get('waka.utils::lang.workflow.must_trans')]);
                         }
                         $model->change_state = null;
 
@@ -133,7 +134,7 @@ trait WakaWorkflowTrait
                     //trace_log($model->toArray());
                     $model->workflow_get()->apply($model, $changeState);
                 } else if ($model->wfMustTrans) {
-                    throw new \ValidationException(['memo' => \Lang::get('waka.utils::lang.workflow.must_trans')]);
+                    //throw new \ValidationException(['memo' => \Lang::get('waka.utils::lang.workflow.must_trans')]);
                 }
             });
             

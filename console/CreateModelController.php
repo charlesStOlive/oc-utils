@@ -132,13 +132,17 @@ class CreateModelController extends GeneratorCommand
                 $src = 'controllers/{{lower_ctname}}/config_filters.yaml';
                 $this->makeOneStubFromFile($stub, $destination, $this->vars, $src);
             }
-            /**/trace_log('on fait les filtres');
+            /**/trace_log('on fait les btn');
             $stub = 'controller/config_btns.stub';
             $destination =  'controllers/{{studly_ctname}}/config_btns.yaml';
             $src = 'controllers/{{studly_ctname}}/config_btns.yaml';
-            $this->makeOneStubFromFile($stub, $destination, $this->vars, $src);
+            $fnc = 'keepData';
+            $this->makeOneStubFromFile($stub, $destination, $this->vars, $src , $fnc );
             if ($this->config['behav_reorder']) {
-                $this->stubs['controller/config_reorder.stub'] = 'controllers/{{lower_ctname}}/config_reorder.yaml';
+                $stub = 'controller/config_reorder.stub';
+                $destination =  'controllers/{{lower_ctname}}/config_reorder.yaml';
+                $src = 'controllers/{{lower_ctname}}/config_reorder.yaml';
+                $this->makeOneStubFromFile($stub, $destination, $this->vars, $src);
             }
             if($this->relations->isBehaviorRelationNeeded()) {
                 $this->stubs['controller/config_relation.stub'] = 'controllers/{{lower_ctname}}/config_relation.yaml';
@@ -147,24 +151,29 @@ class CreateModelController extends GeneratorCommand
         if($this->maker['yaml_relation']) {
             $controllerRelations = $this->relations->getControllerRelations();
             foreach($controllerRelations as $relation) {
-                if($relation['yamls_read'] ?? false) {
+                if($relation['manage_form'] or $relation['view_form'] ) {
                     $stub = 'model/fields_for.stub';
-                    $destintion = 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '_read.yaml';
-                    $this->makeOneStubFromFile($stub,$destintion , $this->vars, '/fields.yaml');
-                }
-                if($relation['createYamls'] ?? false) {
-                    $stub = 'model/fields_for.stub';
-                    $destination = 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '.yaml';
-                    $src = 'models/' . $relation['singular_name'] . '/fields_create.yaml';
+                    $destination = $relation['fields'];
+                    $src = $relation['path'].'/fields_create.yaml';
                     $fnc = 'cleanYaml';
-                    $this->makeOneStubFromFile($stub, $destination, [], $src , $fnc );
-                    //
+                    //trace_log($src);
+                    //trace_log($destination);
+                    $this->makeOneStubFromFile($stub, $destination, $relation, $src , $fnc );
+                }
+                if($relation['manage_list'] or $relation['view_list']) {
                     $stub = 'model/columns_for.stub';
-                    $destination = 'models/' . $relation['singular_name'] . '/columns_for_' . strtolower($this->w_model) . '.yaml';
-                    $src = 'models/' . $relation['singular_name'] . '/columns.yaml';
+                    $destination = $relation['columns'];
+                    $src = $relation['path'].'/columns.yaml';
                     $fnc = 'cleanYaml';
-                    $this->makeOneStubFromFile($stub, $destination, [], $src , $fnc );
+                    $this->makeOneStubFromFile($stub, $destination, $relation, $src , $fnc );
                 }
+                if($relation['yamls_read'] ?? false) {
+                    $stub = 'model/fields_for_read.stub';
+                    $destination = 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '_read.yaml';
+                    $src = 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '_read.yaml';
+                    $this->makeOneStubFromFile($stub,$destination , $this->vars, $src);
+                }
+                
             }
         }
         if ($this->maker['controller_htm']) {
@@ -190,29 +199,130 @@ class CreateModelController extends GeneratorCommand
                 $stub = 'controller/_field_relation.stub';
                 $destintion = 'controllers/' . strtolower($this->w_model) . 's/_field_'.$relation['name'].'.htm';
                 $this->makeOneStubFromFile($stub, $destintion, $relation);
-                if($relation['yamls_read'] ?? false) {
-                    $stub = 'model/fields_for.stub';
-                    $destintion = 'models/' . $relation['singular_name'] . '/fields_for_' . strtolower($this->w_model) . '_read.yaml';
-                    $src = 'models/' . $relation['singular_name'] . '/fields_create.yaml';
-                    $this->makeOneStubFromFile($stub,$destintion , $this->vars, $src);
+                //
+                if($relation['filters'] ?? false) {
+                    $stub = 'controller/config_filter.stub';
+                    $destination = $src =  'controllers/{{lower_ctname}}/'.$relation['filters'];
+                    $this->makeOneStubFromFile($stub,$destination , $this->vars, $src);
                 }
             }
         }
         if ($this->maker['excel']) {
-            $this->stubs['imports/import.stub'] = 'classes/imports/{{studly_ctname}}Import.php';
-            $stringClassName = '{{studly_author}}\{{studly_plugin}}\Classes\Imports\{{studly_ctname}}Import';
-            $stringClassName = Twig::parse($stringClassName, $this->vars);
-            //trace_log($stringClassName);
-            $excel = \Waka\ImportExport\Models\Import::where('import_model_class', $stringClassName)->first();
-            if(!$excel) {
-                $excel = new \Waka\ImportExport\Models\Import();
-                $excel->name = Twig::parse('Import de {{lower_name}}', $this->vars);
-                $excel->data_source = Twig::parse('{{lower_name}}', $this->vars);
-                $excel->is_editable = false;
-                $excel->import_model_class = $stringClassName;
-                $excel->comment = "Import de base si le champs ID est vide, l'application créera une nouvelle ligne sinon elle tentera une MAJ de la ligne";
-                $excel->save();
+            if($this->config['behav_imports']) {
+                $stub = 'imports/import.stub';
+                $destination = 'classes/imports/{{studly_ctname}}Import.php';
+                $src = 'classes/imports/{{studly_ctname}}Import.php';
+                $fnc = 'keepData';
+                $this->makeOneStubFromFile($stub, $destination, $this->vars, $src , $fnc );
+                $stringClassName = '{{studly_author}}\{{studly_plugin}}\Classes\Imports\{{studly_ctname}}Import';
+                $stringClassName = Twig::parse($stringClassName, $this->vars);
+                //trace_log($stringClassName);
+                $excel = \Waka\ImportExport\Models\Import::where('import_model_class', $stringClassName)->first();
+                if(!$excel) {
+                    $excel = new \Waka\ImportExport\Models\Import();
+                    $excel->name = Twig::parse('Import de {{lower_name}}', $this->vars);
+                    $excel->data_source = Twig::parse('{{lower_name}}', $this->vars);
+                    $excel->is_editable = false;
+                    $excel->import_model_class = $stringClassName;
+                    $excel->comment = "Import de base si le champs ID est vide, l'application créera une nouvelle ligne sinon elle tentera une MAJ de la ligne";
+                    $excel->save();
+                }
             }
+            if($this->config['behav_exports']) {
+                $stub = 'imports/export.stub';
+                $destination = 'classes/exports/{{studly_ctname}}Export.php';
+                $src = 'classes/exports/{{studly_ctname}}Export.php';
+                $fnc = 'keepData';
+                $this->makeOneStubFromFile($stub, $destination, $this->vars, $src , $fnc );
+                $stringClassName = '{{studly_author}}\{{studly_plugin}}\Classes\Exports\{{studly_ctname}}Export';
+                $stringClassName = Twig::parse($stringClassName, $this->vars);
+                //trace_log($stringClassName);
+                $excel = \Waka\ImportExport\Models\Export::where('export_model_class', $stringClassName)->first();
+                if(!$excel) {
+                    $excel = new \Waka\ImportExport\Models\Export();
+                    $excel->name = Twig::parse('Export de {{lower_name}}', $this->vars);
+                    $excel->data_source = Twig::parse('{{lower_name}}', $this->vars);
+                    $excel->is_editable = false;
+                    $excel->export_model_class = $stringClassName;
+                    $excel->comment = "Export de base";
+                    $excel->save();
+                }
+            }
+            //trace_log($this->config['behav_exports_childs']);
+            if($this->config['behav_exports_childs']) {
+                $childsArray = explode('|',$this->config['behav_exports_childs']); 
+                //trace_log($childsArray);
+                
+                foreach($childsArray as $child) {
+                    //trace_log($child);
+                    $relationHeaders = $this->relations->getOneRelation($child);
+                    $stub = 'imports/exportChilds.stub';
+                    $destination = 'classes/exports/{{studly_ctname}}Export{{childName | ucfirst}}.php';
+                    $src = 'classes/exports/{{studly_ctname}}Export{{childName | ucfirst}}.php';
+                    $fnc = 'keepData';
+                    $this->vars['childName'] = $child;
+                    $this->vars['childHeaders'] = $relationHeaders['fields_export'];
+                    $this->makeOneStubFromFile($stub, $destination, $this->vars, $src , $fnc );
+                    $stringClassName = '{{studly_author}}\{{studly_plugin}}\Classes\Exports\{{studly_ctname}}Export{{childName | ucfirst}}';
+                    $stringClassName = Twig::parse($stringClassName, $this->vars);
+                    //trace_log($stringClassName);
+                    $excel = \Waka\ImportExport\Models\Export::where('export_model_class', $stringClassName)->first();
+                    if(!$excel) {
+                        $excel = new \Waka\ImportExport\Models\Export();
+                        $excel->name = Twig::parse('Export des {{childName}} de {{lower_name}}', $this->vars);
+                        $excel->data_source = Twig::parse('{{lower_name}}', $this->vars);
+                        $excel->is_editable = false;
+                        $excel->relation = $child;
+                        $excel->export_model_class = $stringClassName;
+                        $excel->comment = "Export de base";
+                        $excel->save();
+                    }
+                    unset($this->vars['childName']);
+                    unset($this->vars['childHeaders']);
+                }
+                
+            }
+
+            if($this->config['behav_imports_childs']) {
+                $childsArray = explode('|',$this->config['behav_imports_childs']); 
+                //trace_log($childsArray);
+                
+                foreach($childsArray as $child) {
+                    //trace_log($child);
+                    $relationHeaders = $this->relations->getOneRelation($child);
+                    $stub = 'imports/importChilds.stub';
+                    $destination = 'classes/imports/{{studly_ctname}}Import{{childPluralName}}.php';
+                    $src = 'classes/imports/{{studly_ctname}}Import{{childPluralName}}.php';
+                    $fnc = 'keepData';
+                    $this->vars['childSingulareName'] = str_singular($child);
+                    $this->vars['childPluralName'] = ucfirst($child);
+                    $this->vars['childHeaders'] = $relationHeaders['fields_export'];
+                    $this->vars['relationClass'] = $relationHeaders['class'];
+                    $this->makeOneStubFromFile($stub, $destination, $this->vars, $src , $fnc );
+                    $stringClassName = '{{studly_author}}\{{studly_plugin}}\Classes\Imports\{{studly_ctname}}Import{{childPluralName}}';
+                    $stringClassName = Twig::parse($stringClassName, $this->vars);
+                   
+
+                    //trace_log($stringClassName);
+                    $excel = \Waka\ImportExport\Models\Import::where('import_model_class', $stringClassName)->first();
+                    if(!$excel) {
+                        $excel = new \Waka\ImportExport\Models\Import();
+                        $excel->name = Twig::parse('Import des {{childSingulareName}} de {{lower_name}}', $this->vars);
+                        $excel->data_source = Twig::parse('{{lower_name}}', $this->vars);
+                        $excel->is_editable = false;
+                        $excel->relation = $child;
+                        $excel->import_model_class = $stringClassName;
+                        $excel->comment = "Import des enfants. Si l'ID est vide une ligne sera crée. Si l'ID n'est pas vide, si l'élement appartient au parent il sera mis çà jour sinon il sera oublié. ";
+                        $excel->save();
+                    }
+                    unset($this->vars['childSingulareName']);
+                    unset($this->vars['childPluralName']);
+                    unset($this->vars['childHeaders']);
+                    unset($this->vars['relationClass']);
+                }
+                
+            }
+            
             
         }
 
@@ -275,6 +385,10 @@ class CreateModelController extends GeneratorCommand
         if($this->option('noKeep')) {
             $this->keepOldContent = false;
         }
+        $this->takeParentValues = true;
+        if($this->option('noTake')) {
+            $this->takeParentValues = false;
+        }
 
         if ($this->option('option')) {
             $this->maker = [
@@ -333,13 +447,13 @@ class CreateModelController extends GeneratorCommand
             }
             $options = $item['field_opt'] ?? null;
             if ($options) {
-                $array = explode(',', $options);
+                $array = explode('|', $options);
                 $item['field_opt'] = $array;
             }
 
             $model_opt = $item['model_opt'] ?? null;
             if ($model_opt) {
-                $arrayOpt = explode(',', $model_opt);
+                $arrayOpt = explode('|', $model_opt);
                 $item['append'] = in_array('append', $arrayOpt);
                 $item['json'] = in_array('json', $arrayOpt);
                 $item['getter'] = in_array('getter', $arrayOpt);
@@ -347,19 +461,19 @@ class CreateModelController extends GeneratorCommand
             }
             $options = $item['c_field_opt'] ?? null;
             if ($options) {
-                $array = explode(',', $options);
+                $array = explode('|', $options);
                 $item['c_field_opt'] = $array;
             }
 
             $optionsCol = $item['col_opt'] ?? null;
             if ($optionsCol) {
-                $array = explode(',', $optionsCol);
+                $array = explode('|', $optionsCol);
                 $item['col_opt'] = $array;
             }
 
             $optionsAtt = $item['att_opt'] ?? null;
             if ($optionsAtt) {
-                $array = explode(',', $optionsAtt);
+                $array = explode('|', $optionsAtt);
                 $item['att_opt'] = $array;
             }
             $rel = $item['relation'] ?? null;
@@ -435,10 +549,29 @@ class CreateModelController extends GeneratorCommand
                 $tabs[$key] = $value;
             }
         }
+        if($this->config['use_classes_in_model'] ?? false) {
+            $this->config['use_classes_in_model'] = explode('|' ,  $this->config['use_classes_in_model'] );
+        } else {
+            $this->config['use_classes_in_model'] = null;
+        }
 
         
 
         $excels = $rows->where('excel', '<>', null)->toArray();
+        $excelHeaders = [];
+        foreach($excels as $key=>$row) {
+            $var = $row['var'];
+            if($row['relation']) {
+                $var = $var.'_id';
+            }
+            $excelHeaders[$key] = $var;
+        }
+        array_unshift($excelHeaders , 'id');
+
+        
+        //
+
+
 
         $titles = $rows->where('title', '<>', null)->pluck('name', 'var')->toArray();
         $appends = $rows->where('append', '<>', null)->pluck('name', 'var')->toArray();
@@ -473,20 +606,23 @@ class CreateModelController extends GeneratorCommand
             'jsons' => $jsons,
             'getters' => $getters,
             'purgeables' => $purgeables,
-            'excels' => $excels,
+            //
             'tabs' => $tabs,
             //Ancien trad a supprimer
             'trads' => $trads,
             'errors' => $errors,
             //nouveau trad
             'finalTrads' => $finalTrads,
+            //
             'modelRelations' => $modelRelations,
             'controllerRelations' => $controllerRelations,
             'isBehaviorRelationNeeded' => $isBehaviorRelationNeeded,
+            //
+            'excels' => $excels,
+            'excelHeaders' => $excelHeaders
 
         ];
         //trace_log($this->config);
-        //trace_log($all);
 
         return $all;
     }
@@ -536,36 +672,61 @@ class CreateModelController extends GeneratorCommand
      *
      * @param string $stubName The source filename for the stub.
      */
-    public function makeOneStubFromFile($stubName, $destinationName, $tempVar, $srcFileName='', $mappingFnc=null)
+    public function makeOneStubFromFile($stubName, $destinationName, $tempVar, $srcFileName=null, $mappingFnc=null)
     {
 
         $stubFile = $this->getSourcePath() . '/' . Twig::parse($stubName, $tempVar);
-        $destinationFile = $this->getDestinationPath() . '/' . Twig::parse($destinationName, $tempVar);
-        $srcFile = $this->getDestinationPath() . '/' . Twig::parse($srcFileName, $tempVar);
 
-        //trace_log($stubFile.'    '.$srcFile);
-
+        $destinationFile = null;
+        if(starts_with($destinationName, '$')) {
+            $destinationName = ltrim($destinationName, '$/');
+            $destinationFile = plugins_path(Twig::parse($destinationName, $tempVar));
+        } else {
+            $destinationFile = $this->getDestinationPath() . '/' . Twig::parse($destinationName, $tempVar);
+        }
+        //
+        $srcFile = null;
+        if(starts_with($srcFileName, '$')) {
+            $srcFileName = ltrim($srcFileName, '$/');
+            $srcFile = plugins_path(Twig::parse($srcFileName, $tempVar));
+        } elseif($srcFileName) {
+            $srcFile = $this->getDestinationPath() . '/' . Twig::parse($srcFileName, $tempVar);
+        }
+        //le contenu de base est un 
         $destinationContent = null;
         if($stubFile) {
           $destinationContent = $this->files->get($stubFile);  
         }
-        if($srcFileName != '') {
-            if ($this->files->exists($srcFile) && $mappingFnc && $this->keepOldContent) {
-                //Appel d'une fonction dynamique de traitement
+        if ($this->files->exists($srcFile)) {
+            //trace_log($srcFile.' existe');
+            if($mappingFnc == 'keepData' && $this->keepOldContent) {
                 $copiedContent = $this->files->get($srcFile);
                 $newContent = $destinationContent;
                 $newContent = Twig::parse($newContent, $tempVar);
-                $destinationContent = $this->$mappingFnc($copiedContent, $newContent);
-            } else if($this->files->exists($srcFile) && $this->keepOldContent) {
+                $destinationContent = $this->keepData($copiedContent, $newContent);
+            }
+            else if($mappingFnc == 'cleanYaml' && $this->takeParentValues) {
+                //ici tempvar est la relation
+                $copiedContent = $this->files->get($srcFile);
+                $newContent = $destinationContent;
+                $newContent = Twig::parse($newContent, $tempVar);
+                $destinationContent = $this->cleanYaml($copiedContent, $tempVar);
+            }
+            else if($this->takeParentValues && !$mappingFnc) {
+                //trace_log($srcFile);
                 $destinationContent = $this->files->get($srcFile);
             }
         }
-        
         /*
          * Parse each variable in to the destination content and path
          */
+
+        //trace_log($destinationFile);
+
         $destinationContent = Twig::parse($destinationContent, $tempVar);
         $destinationFile = Twig::parse($destinationFile, $tempVar);
+
+
 
         $this->makeDirectory($destinationFile);
         $this->files->put($destinationFile, $destinationContent);
@@ -600,10 +761,8 @@ class CreateModelController extends GeneratorCommand
         return $finalContent;
     }
 
-    public function cleanYaml($srcFileContent) {
+    public function cleanYaml($srcFileContent,$relation) {
         $yamlParsed = Yaml::parse($srcFileContent);
-        // trace_log("before");
-        // trace_log($yamlParsed);
         if(!$yamlParsed) {
             return null;
         }
@@ -618,7 +777,10 @@ class CreateModelController extends GeneratorCommand
         $yamlParsedRows = $yamlParsed[$firstKey];
         foreach($yamlParsedRows as $key=>$line) {
             //trace_log($key);
-            //trace_log($line);
+            //trace_log('remove_'.$firstKey);
+            //trace_log($relation['remove_'.$firstKey]);
+            //trace_log($relation['remove_columns']);
+            //trace_log('---');
             //Cas des colonnes
             if($key ==  strtolower($this->w_model).'_r') {
                 unset($yamlParsed[$firstKey][$key]);
@@ -627,6 +789,11 @@ class CreateModelController extends GeneratorCommand
             if($key ==  strtolower($this->w_model)) {
                 unset($yamlParsed[$firstKey][$key]);
             }
+            //firstkey = columns ou fields on recuperera donc le champs remove_fields ou remove_columns
+            if(in_array($key, $relation['remove_'.$firstKey])) {
+                unset($yamlParsed[$firstKey][$key]);
+            }
+
         }
         // trace_log("after");
         // trace_log($yamlParsed);
@@ -684,6 +851,7 @@ class CreateModelController extends GeneratorCommand
     {
         return [
             ['noKeep', null, InputOption::VALUE_NONE, 'keep value from older files'],
+            ['noTake', null, InputOption::VALUE_NONE, 'take value from parent'],
             ['option', null, InputOption::VALUE_NONE, 'Options avancés'],
         ];
     }

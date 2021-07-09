@@ -31,12 +31,6 @@ class Wimages
         return $collection->where('key', $key)->first();
     }
 
-    // public function getOne($dataSource, $key)
-    // {
-    //     $collection = $this->listAll();
-    //     return $collection->where('key', $key)->first();
-    // }
-
     public function listAll()
     {
         $allImages = new Collection();
@@ -49,8 +43,8 @@ class Wimages
         $allImages = $allImages->merge($listFiles);
 
         $listRelationsImages = $this->listRelation();
-        //trace_log('listRelationsImages');
-        //trace_log($listRelationsImages);
+        // trace_log('listRelationsImages');
+        // trace_log($listRelationsImages);
         $allImages = $allImages->merge($listRelationsImages);
 
         return $allImages;
@@ -88,6 +82,9 @@ class Wimages
         $files = $model->attachOne;
         //trace_log($model->attachOne);
         foreach ($files as $key => $value) {
+            if(is_array($value)) {
+                 $value =  $value[0];
+            }
             if ($value == 'System\Models\File') {
                 $img = [
                     'field' => $key,
@@ -105,6 +102,7 @@ class Wimages
 
     public function listRelation()
     {
+        //trace_log('listRelation');
         $relationImages = new Collection();
         $relationWithImages = new Collection($this->relations);
         //trace_log($relationWithImages->toArray());
@@ -114,6 +112,7 @@ class Wimages
                 //trace_log($relation);
                 $subModel = $this->getStringModelRelation($this->model, $relation);
                 $files = $this->listFile($subModel, $relation);
+                //trace_log($files);
                 $relationImages = $relationImages->merge($files);
                 if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
                     $cloudiList = \Waka\Cloudis\Classes\Cloudi::listCloudis($subModel, $relation);
@@ -126,7 +125,9 @@ class Wimages
         return $relationImages;
     }
     public function getUrlFromOptions($objImage) {
-        $pictureData = $this->getOnePictureKey($objImage['selector']);
+        //trace_log($objImage);
+        $pictureData = $this->getOnePictureKey($objImage['selector'] ?? []);
+        //trace_log($pictureData);
         $objImage = array_merge($objImage, $pictureData);
         return $this->getOnePictureUrl($objImage);
 

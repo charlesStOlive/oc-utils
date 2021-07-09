@@ -73,6 +73,14 @@ return [
                 'word' => '${%s*date}',
                 'twig' => "{{%s | localeDate('date')}}",
             ],
+            'date-tiny' => [
+                'word' => '${%s*date-tiny}',
+                'twig' => "{{%s | localeDate('date-tiny')}}",
+            ],
+            'date-short' => [
+                'word' => '${%s*date-short}',
+                'twig' => "{{%s|localeDate('date-short')}}",
+            ],
             'date-medium' => [
                 'word' => '${%s*date-medium}',
                 'twig' => "{{%s | localeDate('date-medium')}}",
@@ -81,21 +89,13 @@ return [
                 'word' => '${%s*date-full}',
                 'twig' => "{{%s | localeDate('date-full')}}",
             ],
-            'date-tiny' => [
-                'word' => '${%s*date-tiny}',
-                'twig' => "{{%s | localeDate('date-tiny')}}",
+            'date-time-full' => [
+                'word' => '${%s*date-time-full}',
+                'twig' => "{{%s | localeDate('date-time-full')}}",
             ],
             'date-time' => [
                 'word' => '${%s*date-time}',
-                'twig' => "{{%s | localeDate('date-time')}}",
-            ],
-            'date-short' => [
-                'word' => '${%s*date-medium}',
-                'twig' => "{{%s|localeDate('date-short')}}",
-            ],
-            'date-short-time' => [
-                'word' => '${%s*date-short-time}',
-                'twig' => "{{%s|localeDate('date-short-time')}}",
+                'twig' => "{{%s|localeDate('date-time')}}",
             ],
             'float' => [
                 'word' => '${%s*float}',
@@ -136,6 +136,10 @@ return [
             'txt' => [
                 'word' => '${%s*TXT}',
                 'twig' => "{{%s|striptags('<br><p>') }}",
+            ],
+            'nl2br' => [
+                'word' => '${%s}',
+                'twig' => "{{%s|nl2br}}",
             ],
         ],
 

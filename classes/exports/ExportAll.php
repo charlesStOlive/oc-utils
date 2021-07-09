@@ -23,11 +23,11 @@ class ExportAll implements WithMultipleSheets
      */
     public function sheets(): array
     {
-        trace_log('sheets');
+        //trace_log('sheets');
         $sheets = [];
 
         $srcLang = $this->data;
-        trace_log($srcLang);
+        //trace_log($srcLang);
         foreach ($srcLang as $fileName=>$fileContent) {
             $sheets[] = new ExportLang($fileName, $fileContent, $this->langs);
         }

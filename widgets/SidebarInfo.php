@@ -3,6 +3,8 @@
 use Backend\Classes\WidgetBase;
 use Lang;
 use Waka\Utils\Classes\DataSource;
+use Waka\Utils\Classes\WakaDate;
+use System\Helpers\DateTime as DateTimeHelper;
 
 class SidebarInfo extends WidgetBase
 {
@@ -78,6 +80,21 @@ class SidebarInfo extends WidgetBase
             $racine = $field['racine'] ?? null;
             if ($racine && $value) {
                 $link = \Backend::url($field['racine'] . $value);
+            }
+
+            if ($type == 'workflow') {
+                $value = $dotedValues['wfPlaceLabel'];
+            }
+
+            if ($type == 'date') {
+                $mode = $field['mode'] ?? 'date-short-time';
+                $value = $dotedValues[$fieldValue] ?? "Erreur";
+                if($value != 'Erreur') {
+                    $date = new WakaDate();
+                    $value = DateTimeHelper::makeCarbon($value, false);
+                    $value =  $date->localeDate($value, $mode);
+                }
+               
             }
 
             if ($type == 'state_logs') {

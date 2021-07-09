@@ -13,7 +13,7 @@ class CreateRelations
         $this->parent = $parent;
         $this->relations = new Collection();
         $this->yamlRead = false;
-        $this->typeCode = ['many','belong', 'oneThrough', 'belongsMany', 'manyThrough', 'morphMany' , 'morphOne', 'attachOne', 'attachMany' ];
+        $this->typeCode = ['many','belong', 'hasOne', 'oneThrough', 'belongsMany', 'manyThrough', 'morphMany' , 'morphOne', 'attachOne', 'attachMany' ];
         foreach($relations as $relation) {
             $relationParsed = $this->createRelation($relation);
             $this->relations->push($relationParsed);
@@ -55,9 +55,16 @@ class CreateRelations
         $type = $item['type'];
         $dotedClass = $item['class'];
         $options = $item['options'] ?? null;
-        $columns = $item['columns'] ?? 0;
-        $fields =  $item['fields'] ?? 0;
+        $columns = $item['columns'] ?? 'auto';
+        $fields =  $item['fields'] ?? 'auto';
         $createYamls =  $item['yamls'] ?? false;
+        $filters = $item['filters'] ?? null;
+        $filters = $filters ?  'config_filters_for_'.$var.'.yaml' : null; 
+        //'/\s/' prmet d'enlever les espaces en trop
+        $removeFields = explode('|', preg_replace('/\s/', '', $item['remove_fields']));
+        $removeColumns = explode('|', preg_replace('/\s/', '', $item['remove_columns']));
+        $fieldsExport = explode('|', preg_replace('/\s/', '', $item['fields_export']));
+
         //
         
         //
@@ -101,62 +108,86 @@ class CreateRelations
             'relationarray' => $relationarray,
             'userRelation' => $userRelation,
             'createYamls' => $createYamls,
+            'remove_fields' => $removeFields,
+            'remove_columns' => $removeColumns,
+            'fields_export' => $fieldsExport,
+            'filters' => $filters,
         ];
+
+        
         $relation = array_merge($relation, $addToRelation);
         $relationItem = $this->createConfig($var, $type, $item);
-        $relation = array_merge($relation, $relationItem);
         
+        $relation = array_merge($relation, $relationItem);
+
         //trace_log($relation);
-        //     [var] => clients
-        //     [type] => many
-        //     [class] => Wcli\Crm\Models\Client
-        //     [options] => 
-        //     [columns] => $/wcli/crm/models/client/columns_for_secteur.yaml
-        //     [fields] => $/wcli/crm/models/client/fields_for_secteur.yaml
-        //     [yamls] => 1
-        //     [yamls_read] => 0
-        //     [toolbar] => link|unlink
-        //     [search] => 
-        //     [show_search] => 1
-        //     [sort_column] => 
-        //     [sort_mode] => 
-        //     [filters] => 
-        //     [path] => $/wcli/crm/models/client
-        //     [detail] => Array
-        //         (
-        //             [author] => wcli
-        //             [plugin] => crm
-        //             [model] => clients
-        //         )
+        
+        // [var] => ressources
+        // [type] => many
+        // [class] => Wcli\Tarificateur\Models\Ressource
+        // [options] => delete=true
+        // [columns] => $/wcli/tarificateur/models/ressource/columns_for_appsrc.yaml
+        // [fields] => $/wcli/tarificateur/models/ressource/fields_for_appsrc.yaml
+        // [yamls] => 1
+        // [yamls_read] => 
+        // [toolbar] => 
+        // [search] => 
+        // [record_url] => false
+        // [show_search] => 
+        // [sort_column] => 
+        // [sort_mode] => 
+        // [filters] => 
+        // [path] => $/wcli/tarificateur/models/ressource
+        // [detail] => Array
+        //     (
+        //         [author] => wcli
+        //         [plugin] => tarificateur
+        //         [model] => ressources
+        //     )
 
-        //     [relationarray] => [
-        //     'Wcli\Crm\Models\Client',
-        //     null
-        // ]
-        //     [userRelation] => 
-        //     [createYamls] => 1
-        //     [name] => clients
-        //     [singular_name] => client
-        //     [views] => Array
-        //         (
-        //             [view_list] => 1
-        //             [manage_form] => 1
-        //             [manage_list] => 1
-        //         )
-
-        // )
+        // [relationarray] => [
+        //         'Wcli\Tarificateur\Models\Ressource',
+        //         'delete' => 'true'
+        //     ]
+        // [userRelation] => 
+        // [createYamls] => 1
+        // [name] => ressources
+        // [singular_name] => ressource
+        // [view_list] => 1
+        // [manage_form] => 1
+        // [manage_list] => 1
+        //trace_log($relation);
         return $relation;
 
     }
 
     public function createConfig($var, $type, $item) {
+        //trace_log($type);
+        if(!in_array($type, ['belong', 'oneThrough', 'belongsMany', 'hasOne', 'morphMany', 'morphOne', 'many', 'manyThrough', 'attachMany', 'attachOne' ])) {
+            //trace_log("il y aune erreur");
+            throw new \ApplicationException('verifier la colone type de relation ');
+        }
+
         if ($type == 'belong') {
             return [
                 'name' => $var,
                 'singular_name' => str_singular(camel_case($var)),
+                'view_list' => false,
                 'view_form' => !$item['yamls_read'],
                 'view_form_read' => $item['yamls_read'],
-                'manage_form' => true,
+                'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
+                'manage_list' => str_contains($item['toolbar'], 'link'),
+                'show_check' => str_contains($item['toolbar'], 'delete') or str_contains($item['toolbar'], 'unlink'),
+            ];
+        }
+        if ($type == 'hasOne') {
+            return [
+                'name' => $var,
+                'singular_name' => str_singular(camel_case($var)),
+                'view_list' => false,
+                'view_form' => !$item['yamls_read'],
+                'view_form_read' => $item['yamls_read'],
+                'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
                 'manage_list' => str_contains($item['toolbar'], 'link'),
             ];
         }
@@ -164,9 +195,10 @@ class CreateRelations
             return [
                 'name' => $var,
                 'singular_name' => str_singular(camel_case($var)),
+                'view_list' => false,
                 'view_form' => !$item['yamls_read'],
                 'view_form_read' => $item['yamls_read'],
-                'manage_form' => true,
+                'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
                 'manage_list' => str_contains($item['toolbar'], 'link'),
             ];
         }
@@ -175,8 +207,10 @@ class CreateRelations
                 'name' => $var,
                 'singular_name' => str_singular(camel_case($var)),
                 'view_list' => true,
-                'manage_form' => true,
-                'manage_list' => true,
+                'view_form' => false,
+                'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
+                'manage_list' => str_contains($item['toolbar'], 'add') or str_contains($item['toolbar'], 'link'),
+                'show_check' => str_contains($item['toolbar'], 'delete') or str_contains($item['toolbar'], 'unlink'),
             ];
         }
         if ($type == 'morphMany') {
@@ -184,17 +218,20 @@ class CreateRelations
                 'name' => $var,
                 'singular_name' => str_singular(camel_case($var)),
                 'view_list' => true,
-                'manage_form' => true,
-                'manage_list' => true,
+                'view_form' => false,
+                'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
+                'manage_list' => str_contains($item['toolbar'], 'add') or str_contains($item['toolbar'], 'link'),
+                'show_check' => str_contains($item['toolbar'], 'delete') or str_contains($item['toolbar'], 'unlink'),
             ];
         }
         if ($type == 'morphOne') {
             return [
                 'name' => $this->getRelationKeyVar($type, $var),
                 'singular_name' => str_singular(camel_case($var)),
+                'view_list' => false,
                 'view_form' => !$item['yamls_read'],
                 'view_form_read' => $item['yamls_read'],
-                'manage_form' => true,
+                'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
                 'manage_list' => str_contains($item['toolbar'], 'link'),
             ];
         }
@@ -203,8 +240,10 @@ class CreateRelations
                 'name' => $var,
                 'singular_name' => str_singular(camel_case($var)),
                 'view_list' => true,
-                'manage_form' => true,
-                'manage_list' => true,
+                'view_form' => false,
+                'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
+                'manage_list' => str_contains($item['toolbar'], 'add') or str_contains($item['toolbar'], 'link'),
+                'show_check' => str_contains($item['toolbar'], 'delete') or str_contains($item['toolbar'], 'unlink'),
             ];
         }
         if ($type == 'manyThrough') {
@@ -212,8 +251,10 @@ class CreateRelations
                 'name' => $var,
                 'singular_name' => str_singular(camel_case($var)),
                 'view_list' => true,
-                'manage_form' => true,
-                'manage_list' => true,
+                'view_form' => false,
+                'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
+                'manage_list' => str_contains($item['toolbar'], 'add') or str_contains($item['toolbar'], 'link'),
+                'show_check' => str_contains($item['toolbar'], 'delete') or str_contains($item['toolbar'], 'unlink'),
             ];
         }
         if ($type == 'attachMany') {
@@ -251,6 +292,9 @@ class CreateRelations
             return 'System\Models\File';
         } else {
             $parts = explode('.', $value);
+            if(count($parts) <2) {
+                throw new \ApplicationException('verifier la colone class. veleur self, cloudi, file ou wcli.xxx.yyy yyy optionel ');
+            }
             $r_author = $parts[0];
             $r_plugin = $parts[1];
             $r_model = $parts[2] ?? camel_case(str_singular($key));
@@ -308,9 +352,10 @@ class CreateRelations
         else {
             //trace_log('plugin externe-------------------');
             $parts = explode('.', $value);
-            $r_plugin = array_pop($parts);
-            $r_author = array_pop($parts);
-            return '$/' . strtolower($r_author) . '/' . strtolower($r_plugin) . '/models/' . strtolower(camel_case(str_singular($key)));
+            $r_author = $parts[0] ?? 'NON GERE 324';
+            $r_plugin = $parts[1] ?? 'NON GERE 324';
+            $r_model = $parts[2] ?? $key;
+            return '$/' . strtolower($r_author) . '/' . strtolower($r_plugin) . '/models/' . strtolower(camel_case(str_singular($r_model)));
         }
     }
 
@@ -327,9 +372,11 @@ class CreateRelations
         else {
             //trace_log('plugin externe-------------------');
             $parts = explode('.', $value);
-            $r_plugin = array_pop($parts);
-            $r_author = array_pop($parts);
-            return '$/' . strtolower($r_author) . '/' . strtolower($r_plugin) . '/models/' . strtolower(camel_case(str_singular($key))).'/'.$columnOrField.'_for_'.strtolower(camel_case(str_singular($this->parent->w_model))).'.yaml';
+            //trace_log($parts);
+            $r_author = $parts[0] ?? 'NON GERE 324';
+            $r_plugin = $parts[1] ?? 'NON GERE 324';
+            $r_model = $parts[2] ?? $key;
+            return '$/' . strtolower($this->parent->w_author) . '/' . strtolower($this->parent->w_plugin) . '/models/' . strtolower(camel_case(str_singular($r_model))).'/'.$columnOrField.'_for_'.strtolower(camel_case(str_singular($this->parent->w_model))).'.yaml';
         }
     }
 
@@ -338,15 +385,19 @@ class CreateRelations
         if (!$value) {
             return null;
         }
-        $parts = explode(',', $value);
+        $parts = explode('|', $value);
 
         $options = [];
 
         //travail sur les deifferents coules key attribute
         foreach ($parts as $part) {
             $key_att = explode('=', $part);
-            //trace_log($key_att);
-            $options[$key_att[0]] = $key_att[1];
+            if($key_att[1] ?? false) {
+                $options[$key_att[0]] = $key_att[1];
+            } else {
+                $options[$key_att[0]] = null;
+            }
+            
         }
         return $options;
     }

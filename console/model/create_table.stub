@@ -23,7 +23,7 @@ class Create{{studly_plural_name}}Table extends Migration
 {% elseif db.type == 'double' %}
             $table->double('{{db.var}}', 15, 2){% if not db.not_null %}->default(0){%endif%};
 {% elseif db.type == 'integer' %}
-            $table->double('{{db.var}}', 15, 2){% if not db.not_null %}->default(0){%endif%};
+            $table->integer('{{db.var}}'){% if not db.not_null %}->nullable(){%endif%}{% if db.default %}->default({{ db.default}}){%endif%};
 {% else %}
             $table->{{db.type}}('{{db.var}}'){% if not db.not_null %}->nullable(){%endif%}{% if db.default %}->default({{ db.default}}){%endif%};
 {% endif %}

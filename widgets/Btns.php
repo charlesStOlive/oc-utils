@@ -219,6 +219,7 @@ class Btns extends WidgetBase
     {
         $this->prepareComonVars('list');
         $configBtns = $this->config->tool_bar['lot'] ?? null;
+        //trace_log("preparation du lot");
         $this->vars['hasWorkflow'] = $this->config->workflow;
         $this->vars['btns'] = $this->getBtns($this->config->tool_bar['config_lot'] ?? null);
         return $this->makePartial('container_lot');
@@ -226,16 +227,13 @@ class Btns extends WidgetBase
 
     public function getBtns($configurator, $isInContainer = false)
     {
-        // if($this->context != 'update') {
-        //     return [];
-        // }
         if (!$configurator) {
             return null;
         }
         $btns = [];
         $groups = $configurator['groups'] ?? [];
         $collection = new Collection($configurator['btns']);
-
+        //trace_log($collection);
         //Blocage si dans les hide de la config
         $model = $this->controller->formGetModel();
         if($model) {
@@ -249,6 +247,7 @@ class Btns extends WidgetBase
        
 
         //Nettoyage des boutons, suppresion de ceux qui n'ont pas d'ajaxInline pour les boutons dans l'action container
+        //trace_log("Est dans un container : ".$isInContainer);
         if($isInContainer) {
             $collection = $collection->reject(function ($item) {
                 $configFromPlugins = \Config::get($item['config']);
@@ -258,7 +257,6 @@ class Btns extends WidgetBase
         }
 
         //nettoyage permissions
-        //trace_log($collection->toArray());
         $collection = $collection->reject(function ($item) {
                 $configFromPlugins = \Config::get($item['config']);
                 $mergedConfig = [];
@@ -271,9 +269,9 @@ class Btns extends WidgetBase
                     //Si il n' y a pas de jeux de permission on ne rejete rien
                     return false;
                 }
-                //trace_log($permissions);
-                //trace_log($this->user->login);
-                //trace_log($this->user->hasAccess($permissions));
+                // trace_log($permissions);
+                // trace_log($this->user->login);
+                // trace_log($this->user->hasAccess($permissions));
                 $this->user->hasAccess($permissions);               
                 if (!$this->user->hasAccess($permissions)) {
                     //Pas de permission donc true on reject
@@ -284,16 +282,11 @@ class Btns extends WidgetBase
                     return false;
                 }
             });
-        //trace_log($collection->toArray());
-        $format = $configurator['format'] ?? 'unique';
+        $format = $configurator['format'] ?? 'all';
         if ($format == 'all') {
             //Création des boutons séparés
             foreach ($collection->toArray() as $key => $prod) {
-                $configFromPlugins = \Config::get($prod['config']);
-                $btns[$key] = $configFromPlugins;
-                foreach ($prod as $keyopt => $opt) {
-                    $btns[$key][$keyopt] = $opt;
-                }
+                $btns[$key] = $this->getConfigFromPlugins($key, $prod);
             }
         } elseif ($format == 'grouped') {
             //Création des boutons groupé
@@ -302,11 +295,7 @@ class Btns extends WidgetBase
                 $collection = $collection->diffKeys($subbtns);
                 $sub = [];
                 foreach ($subbtns as $subkey => $prod) {
-                    $configFromPlugins = \Config::get($prod['config']);
-                    $sub[$subkey] = $configFromPlugins;
-                    foreach ($prod as $keyopt => $opt) {
-                        $sub[$subkey][$keyopt] = $opt;
-                    }
+                    $sub[$subkey] = $this->getConfigFromPlugins($subkey, $prod);
                 }
                 if (count($sub)) {
                     $btns[$key] = [
@@ -317,20 +306,12 @@ class Btns extends WidgetBase
                 }
             }
             foreach ($collection->toArray() as $key => $prod) {
-                $configFromPlugins = \Config::get($prod['config']);
-                $btns[$key] = $configFromPlugins;
-                foreach ($prod as $keyopt => $opt) {
-                    $btns[$key][$keyopt] = $opt;
-                }
+                $btn[$key] = $this->getConfigFromPlugins($key, $prod);
             }
         } else {
             $subBtn = [];
             foreach ($collection->toArray() as $key => $prod) {
-                $configFromPlugins = \Config::get($prod['config']);
-                $subBtn[$key] = $configFromPlugins;
-                foreach ($prod as $keyopt => $opt) {
-                    $subBtn[$key][$keyopt] = $opt;
-                }
+                $subBtn[$key] = $this->getConfigFromPlugins($key, $prod);
             }
             if (count($subBtn)) {
                 $btns[0] = [
@@ -340,7 +321,20 @@ class Btns extends WidgetBase
                 ];
             }
         }
+        //trace_log($btns);
         return $btns;
+    }
+
+    public function getConfigFromPlugins($key, $prod) {
+        $config = \Config::get($prod['config']);
+        if(!$config) {
+            throw new  \SystemException('configuration introuvable pour : '.$key);
+        }
+        $btn = $config;
+        foreach ($prod as $keyopt => $opt) {
+            $btn[$keyopt] = $opt;
+        }
+        return $btn;
     }
 
     public function loadAssets()

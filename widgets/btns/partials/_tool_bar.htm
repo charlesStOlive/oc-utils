@@ -46,6 +46,15 @@
         <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'popupAction' => false, 'isLot' => true, 'dropup' => false]);?>
         <?php else : ?>
         <!--SINON C EST UN BOUTON SEUL -->
+        <?php if($btn['ajaxCaller'] == 'onExportPopupForm') : ?>
+        <button href="javascript:;"
+                class="btn btn-secondary <?=$btn['icon'] ?? null?>"
+                onclick="$(this).data('request-data', {checked: $('.control-list').listWidget('getChecked'), modelClass:'<?=$modelClass?>' })"
+                data-control="popup"
+                data-handler="<?=$btn['ajaxCaller'] ??''?>">
+            <?= e(trans($btn['label'] ?? 'Inc'))?>
+        </button>
+        <?php else : ?>
         <button href="javascript:;"
                 class="btn btn-secondary <?=$btn['icon'] ?? null?>"
                 data-request-data="modelClass:'<?=$modelClass?>'"
@@ -53,6 +62,9 @@
                 data-handler="<?=$btn['ajaxCaller'] ??''?>">
             <?= e(trans($btn['label'] ?? 'Inc'))?>
         </button>
+        <?php endif ?>
+
+
         <?php endif ?>
         <?php endforeach ?>
         <?php endif ?>

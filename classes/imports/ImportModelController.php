@@ -115,10 +115,14 @@ class RelationImport implements ToCollection, WithHeadingRow
                 'yamls_read' => $row['yamls_read'] ?? null,
                 'toolbar' => $row['toolbar'] ?? null,
                 'search' => $row['search'] ?? null,
+                'record_url' => $row['record_url'] ?? null,
                 'show_search' => $row['show_search'] ?? null,
                 'sort_column' => $row['sort_column'] ?? null,
                 'sort_mode' => $row['sort_mode'] ?? null,
                 'filters' => $row['filters'] ?? null,
+                'remove_fields' => $row['remove_fields'],
+                'remove_columns' => $row['remove_columns'],
+                'fields_export' => $row['fields_export'],
                 
             ];
             array_push($this->data, $obj);

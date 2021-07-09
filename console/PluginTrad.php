@@ -98,10 +98,10 @@ class PluginTrad extends GeneratorCommand
      * 
      */
     public function launchTradFile($file) {
-        trace_log($file);
+        //trace_log($file);
         $fileName = $file->getRelativePathname();
         $fileLangName = $this->destinationFolder.'/'.$fileName;
-        trace_log($fileLangName);
+        //trace_log($fileLangName);
         $content = null;
         $tradContent = null;
         $fileExiste = false;
@@ -110,7 +110,7 @@ class PluginTrad extends GeneratorCommand
             $content = include $file;
             $tradContent = include $fileLangName;
             $content = $this->array_diff_key_recursive($content, $tradContent);
-            trace_log($content);
+            //trace_log($content);
         } else {
             $content = new Collection(include $file);
         }

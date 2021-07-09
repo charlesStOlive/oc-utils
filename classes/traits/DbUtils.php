@@ -12,6 +12,11 @@ trait DbUtils
     public function getNextStringId($num = 4)
     {
         $id = $this->getNextId();
-        return str_pad( $id, $num, "0", STR_PAD_LEFT );
+        return $this->stringifyNum($id, $num);
+    }
+    public function stringifyNum($val, $num = 4)
+    {
+        $id = $this->getNextId();
+        return str_pad( $val, $num, "0", STR_PAD_LEFT );
     }
 }

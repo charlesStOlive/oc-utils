@@ -1,0 +1,88 @@
+<?php namespace {{studly_author}}\{{studly_plugin}}\Classes\Exports;
+
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Maatwebsite\Excel\Concerns\WithStyles;
+//
+use {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}};
+
+class {{studly_ctname}}Export implements FromCollection, WithHeadings, ShouldAutoSize, WithStyles
+{
+    public $listId;
+
+    public function __construct($listId = null)
+    {
+        $this->listId = $listId;
+    }
+
+    //startKeep/
+
+    public function headings(): array
+    {
+        return [
+{% for header in excelHeaders %}
+            '{{ header}}',
+{% endfor %}
+        ];
+    }
+
+    public function collection()
+    {
+        $request;
+        if ($this->listId) {
+            $request = {{studly_name}}::whereIn('id', $this->listId)->get($this->headings());
+        } else {
+            $request = {{studly_name}}::get($this->headings()); 
+        }
+        $request = $request->map(function ($item) {
+                return $item;
+        });;
+        return $request;
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            'A'    => ['font' => ['bold' => true]],
+            1 => ['font' => ['bold' => true]],
+            'A1:A50' => [
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    'startColor' => ['argb' => 'FFFFFF00'],
+                ],
+            ],
+        ];
+    }
+
+    //endKeep/
+
+
+
+    /**
+    * MAJ DU SYSTHEME *****************************
+    **/
+//     public function headings(): array
+//     {
+//         return [
+{% for header in excelHeaders %}
+//             '{{ header}}',
+{% endfor %}
+//         ];
+//     }
+
+//     public function collection()
+//     {
+//         $request;
+//         if ($this->listId) {
+//             $request = {{studly_name}}::whereIn('id', $this->listId)->get($this->headings());
+//         } else {
+//             $request = {{studly_name}}::get($this->headings()); 
+//         }
+//         $request = $request->map(function ($item) {
+//                 return $item;
+//         });;
+//         return $request;
+//     }
+}

@@ -2,7 +2,8 @@
 #  Btn  Behavior Config
 # ===================================
 
-
+Description: >
+    //startKeep/
 modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}}
 
 workflow: {% if configs.behav_workflow %}true{% else %}false{% endif %} 
@@ -19,7 +20,7 @@ tool_bar:
     base:
         create: 
             show: true
-            permissions: [{{configs.save_permission}}]
+            permissions: [{{configs.create_permission}}]
             url: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/create
         reorder: 
             show: {% if configs.behav_reorder %}true{% else%}false{% endif %}
@@ -34,11 +35,11 @@ tool_bar:
             format: all
             btns:
 {% if configs.behav_imports %}
-                excelImport:
+                importExcel:
                     config: waka.importexport::btns.importExcel
 {% endif %}
 {% if configs.behav_exports %}
-                excelExport:
+                exportExcel:
                     config: waka.importexport::btns.exportExcel
 {% endif %}
     config_lot:
@@ -61,7 +62,7 @@ tool_bar:
 {% endif %}
     # partials: #Attention seul les variables modelId et modelClass (class du controller) sont disponible sans les partials.  
     #     testbtns:
-    #         url: $/wcli/crm/controllers/projects/_test_index.htm
+    #         url: $/{{lower_author}}/{{lower_plugin}}/controllers/{{lower_ctname}}/_test_btns.htm
 
 ###ACTION_BAR Producteurs. Les behavior liée aux boutons doivent êtres instanciés implements = [waka.xxx.behaviors.yyy] dans le controller. 
 action_bar:
@@ -91,7 +92,8 @@ action_bar:
             pdf_cloud:
                 config: waka.cloud::btns.pdf
                 group: waka.utils::lang.prod.send
-{% endif %}{% if configs.behav_duplicate %}
+{% endif %}
+{% if configs.behav_duplicate %}
             duplicate:
                 config: waka.utils::btns.duplicate
                 group: waka.utils::lang.prod.tools
@@ -106,16 +108,142 @@ action_bar:
                 config: waka.mailtoer::btns.mailto
                 group: waka.utils::lang.prod.produce
 {% endif %}
-{% if configs.behav_exports %}
-            excelExportChild:
-                config: waka.importexport::btns.exportChild
+{% if configs.behav_exports_childs %}
+            exportChildExcel:
+                config: waka.importexport::btns.exportChildExcel
                 group: waka.utils::lang.prod.produce
 {% endif %}
-{% if configs.behav_imports %}
-            excelImportChild:
-                config: waka.importexport::btns.importChild
+{% if configs.behav_imports_childs %}
+            ImportChildExcel:
+                config: waka.importexport::btns.importChildExcel
                 group: waka.utils::lang.prod.tools
 {% endif %}
+
     # partials: #Attention seul les variables modelId et modelClass (class du controller) sont disponible sans les partials.  
     #     name:
-    #         url: $/wcli/crm/controllers/projects/_test_update.htm
+    #         url: $/{{lower_author}}/{{lower_plugin}}/controllers/{{lower_ctname}}/_test_update.htm
+Description: >
+    //endKeep/
+
+
+#     ##### SAUVEGARDE PURE ########
+# # ===================================
+# #  Btn  Behavior Config
+# # ===================================
+
+# modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}}
+
+# workflow: {% if configs.behav_workflow %}true{% else %}false{% endif %} 
+
+# ###BREADCRUMP
+# breadcrump:
+#     inSettings: {% if configs.controller_in_settings %}true{% else %}false{% endif %} 
+#     indexUrl: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}
+#     indexlabel: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.title
+#     title: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.form_name
+
+# ###TOOL_BAR
+# tool_bar:
+#     base:
+#         create: 
+#             show: true
+#             permissions: [{{configs.create_permission}}]
+#             url: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/create
+#         reorder: 
+#             show: {% if configs.behav_reorder %}true{% else%}false{% endif %}
+# {% if configs.behav_reorder %} 
+#             permissions: []
+#             url: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/reorder
+# {% endif %} 
+#         delete: 
+#             show: true
+#             permissions: [{{configs.delete_permission}}]
+#     config_btns:
+#             format: all
+#             btns:
+# {% if configs.behav_imports %}
+#                 importExcel:
+#                     config: waka.importexport::btns.importExcel
+# {% endif %}
+# {% if configs.behav_exports %}
+#                 exportExcel:
+#                     config: waka.importexport::btns.exportExcel
+# {% endif %}
+#     config_lot:
+#         format: all
+#         btns: 
+# {% if configs.behav_cloud_pdf %}
+#             lot_pdf:
+#                 config: waka.cloud::btns.lot_pdf
+#                 group: waka.utils::lang.prod.send
+# {% endif %}
+# {% if configs.behav_cloud_pdf %}
+#             lot_word:
+#                 config: waka.cloud::btns.lot_word
+#                 group: waka.utils::lang.prod.send
+# {% endif %}
+# {% if configs.behav_email %}            
+#             lot_mail:
+#                 config: waka.mailer::btns.lot_mail
+#                 group: waka.utils::lang.prod.send
+# {% endif %}
+#     # partials: #Attention seul les variables modelId et modelClass (class du controller) sont disponible sans les partials.  
+#     #     testbtns:
+#     #         url: $/{{lower_author}}/{{lower_plugin}}/controllers/{{lower_ctname}}/_test_btns.htm
+
+# ###ACTION_BAR Producteurs. Les behavior liée aux boutons doivent êtres instanciés implements = [waka.xxx.behaviors.yyy] dans le controller. 
+# action_bar:
+#     config_btns:
+#         format: grouped #unique : un seul bouton, all : tts les boutons
+#         groups:
+#             waka.utils::lang.prod.produce: oc-icon-file-text-o
+#             waka.utils::lang.prod.send: oc-icon-external-link
+#             waka.utils::lang.prod.tools: oc-icon-wrench
+#         btns:
+# {% if configs.behav_word %}
+#             word:
+#                 config: waka.worder::btns.word
+#                 group: waka.utils::lang.prod.produce
+# {% endif %}
+# {% if configs.behav_word and configs.behav_cloud_word  %}
+#             word_cloud:
+#                 config: waka.cloud::btns.word
+#                 group: waka.utils::lang.prod.send
+# {% endif %}
+# {% if configs.behav_pdf %}
+#             pdf:
+#                 config: waka.pdfer::btns.pdf
+#                 group: waka.utils::lang.prod.produce
+# {% endif %}
+# {% if configs.behav_pdf and configs.behav_cloud_pdf   %}
+#             pdf_cloud:
+#                 config: waka.cloud::btns.pdf
+#                 group: waka.utils::lang.prod.send
+# {% endif %}{% if configs.behav_duplicate %}
+#             duplicate:
+#                 config: waka.utils::btns.duplicate
+#                 group: waka.utils::lang.prod.tools
+# {% endif %}
+# {% if configs.behav_email %}
+#             mail:
+#                 config: waka.mailer::btns.mail
+#                 group: waka.utils::lang.prod.send
+# {% endif %}
+# {% if configs.behav_mailto %}
+#             mailto:
+#                 config: waka.mailtoer::btns.mailto
+#                 group: waka.utils::lang.prod.produce
+# {% endif %}
+# {% if configs.behav_exports_childs %}
+#             exportChildExcel:
+#                 config: waka.importexport::btns.exportChildExcel
+#                 group: waka.utils::lang.prod.produce
+# {% endif %}
+# {% if configs.behav_imports_childs %}
+#             ImportChildExcel:
+#                 config: waka.importexport::btns.importChildExcel
+#                 group: waka.utils::lang.prod.tools
+# {% endif %}
+#     # partials: #Attention seul les variables modelId et modelClass (class du controller) sont disponible sans les partials.  
+#     #     name:
+#     #         url: $/{{lower_author}}/{{lower_plugin}}/controllers/{{lower_ctname}}/_test_update.htm

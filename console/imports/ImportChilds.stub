@@ -5,12 +5,24 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}};
+use {{relationClass}};
 
-class {{studly_ctname}}Import implements ToCollection, WithHeadingRow, WithCalculatedFormulas
+class {{studly_ctname}}Import{{childPluralName}} implements ToCollection, WithHeadingRow, WithCalculatedFormulas
 {
     //startKeep/
+
+    public $parentId;
+
+    public function __construct($parentId)
+    {
+        $this->parentId = $parentId;
+    }
+
     public function collection(Collection $rows)
     {
+        if(!$this->parentId) {
+            throw new \SystemException('Il manque le parentId');
+        }
         foreach ($rows as $row) {
             if(!$row->filter()->isNotEmpty()) {
                 continue;
@@ -18,22 +30,22 @@ class {{studly_ctname}}Import implements ToCollection, WithHeadingRow, WithCalcu
             ${{name}} = null;
             $id = $row['id'] ?? null;
             if($id) {
-                ${{name}} = {{studly_name}}::find($id);
+                ${{childSingulareName}} = {{childSingulareName | ucfirst}}::find($id);
+                $parentId = ${{childSingulareName}}->{{name}}_id;
+                if($this->parentId != $this->parentId) {
+                    //trace_log('error');
+                    break;
+                }
             }
-            if(!${{name}}) {
-                ${{name}} = new {{studly_name}}();
+            if(!${{childSingulareName}}) {
+                ${{childSingulareName}} = new {{childSingulareName | ucfirst}}();
+                ${{childSingulareName}}->{{name}}_id = $this->parentId;
+
             }
-            ${{name}}->id = $row['id'] ?? null;
-{% for excel in excels %}
-{% if excel.type == 'liaison_id' or excel.type == 'string_id' %}
-            ${{name}}->{{excel.var}}_id = $row['{{excel.var}}_id'] ?? null;
-{% elseif excel.json %}
-            ${{name}}->{{excel.var}} = json_decode($row['{{excel.var}}'] ?? null);
-{% else %}
-            ${{name}}->{{excel.var}} = $row['{{excel.var}}'] ?? null;
-{% endif %}
+{% for header in childHeaders %}
+            ${{childSingulareName}}->{{header}} = $row['{{header}}'] ?? null;
 {% endfor %}
-            ${{name}}->save();
+            ${{childSingulareName}}->save();
         }
     }
     //endKeep/

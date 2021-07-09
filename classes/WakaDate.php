@@ -34,43 +34,54 @@ class WakaDate
             return "inc";
         }
 
+
         if (is_string($twig)) {
             $twig = Carbon::parse($twig);
         }
 
         $user = \BackendAuth::getUser();
 
+        $twig = $twig->locale('fr_FR');
+
         if (!$timeZone && $user) {
             $timeZone = \Backend\Models\Preference::get('timezone');
         }
-        if (!$format) {
-            $format = "date";
+        
+        $isoFormat =  "DD MMM YYYY";
+        if ($format == 'date-tiny') {
+            $isoFormat = "D/M/YY";
         }
-        if ($format == 'date') {
-            $format = "%A %e %B";
+        if ($format == 'date-short') {
+            $isoFormat = "DD/MM/YY";
         }
         if ($format == 'date-medium') {
-            $format = "%a %e %b";
+            $isoFormat = "DD MMM YYYY";
+        }
+        if ($format == 'date') {
+            //Deja fait
         }
         if ($format == 'date-full') {
-            $twig->setTimezone($timeZone);
-            $format = "%A %e %B %Y";
-        }
-        if ($format == 'date-tiny') {
-            $format = "%A %e %B %Y";
+            $isoFormat = "dddd DD MMMM YYYY";
         }
         if ($format == 'date-time') {
             $twig->setTimezone($timeZone);
-            $format = "%A %e %B %Y à %H:%M";
+            $isoFormat = "DD/MM/YY à HH:SS ";
         }
-        if ($format == 'date-short') {
-            $format = "%d/%m/%Y";
-        }
-        if ($format == 'date-short-time') {
+        if ($format == 'date-time-full') {
             $twig->setTimezone($timeZone);
-            $format = "%d/%m/%Y à %H:%M";
+            $isoFormat = "LLLL";
         }
+        //trace_log('--------------');
+        //trace_log('D/M/YY '.$twig->isoFormat('D/M/YY'));
+        //trace_log($twig->isoFormat('DD/MM/YY'));
+        //trace_log($twig->isoFormat('DD MMM YYYY'));
+        //trace_log($twig->isoFormat('DD/MMMM/YYYY'));
+        //trace_log($twig->isoFormat('dddd DD MMMM YYYY'));
+        //trace_log($twig->isoFormat('DD/MM/YY à HH:SS'));
+        //trace_log($twig->isoFormat('LLLL'));
+        //trace_log('--------------FIN');
+        //trace_log($isoFormat);
 
-        return $twig->formatLocalized($format);
+        return $twig->isoFormat($isoFormat);
     }
 }

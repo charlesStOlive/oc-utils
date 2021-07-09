@@ -61,7 +61,7 @@ class ExcelTrad extends GeneratorCommand
     {
         $this->vars = $this->prepareVars();
         $mode = $this->choice('Import ou export', ['lang vers excel', 'excel vers lang'], 0, null, true);
-        trace_log($mode);
+        //trace_log($mode);
         if($mode[0] == 'lang vers excel') {
             $this->createExcel();
             $this->info($this->type . 'Excel crée avec succès');
