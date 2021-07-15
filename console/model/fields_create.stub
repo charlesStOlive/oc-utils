@@ -31,6 +31,7 @@ fields:
             extension: auto
 {% elseif field.field_type and field.field_type == 'recordfinder'  %}
         type: recordfinder
+{% if  field.c_field_opt is null %}
         list: ~/plugins/{{lower_author}}/{{lower_plugin}}/models/{{field.var}}/columns_for_{{lower_name}}.yaml
         recordsPerPage: 10
         title: waka.utils::lang.global.find_record
@@ -38,6 +39,7 @@ fields:
         keyFrom: id
         nameFrom: name
         useRelation: true
+{% endif %}
 {% elseif field.field_type == 'workflow' %}
         type: workflow
         stateFrom: state
@@ -74,7 +76,7 @@ fields:
 {% if field.required %}
         required: true
 {% endif %}
-{% for foption in field.field_opt %}
+{% for foption in field.c_field_opt %}
         {{foption}}
 {% endfor %}
 {% if field.lists  %}
