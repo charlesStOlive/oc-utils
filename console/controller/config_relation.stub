@@ -15,6 +15,12 @@
 {% if relation.manage_list %}
         list: {{relation.columns}}
 {% endif %}
+{% if relation.filters.manage %}
+        filter: {{ relation.filters.manage }}
+{% endif %}
+{% if relation.manage_opt %}{% for m_opt in relation.manage_opt %}
+        {{ m_opt}}
+{% endfor %}{%endif%}
     view:
 {% if relation.view_form %}
         form: {{relation.fields}}
@@ -26,18 +32,25 @@
         list: {{relation.columns}}
 {% endif %}
 {% if relation.record_url %}
-        recordUrl: {{relation.detail.author}}/{{relation.detail.plugin}}/{{relation.name}}/update/:id
+        recordUrl: {{relation.record_url}}
 {% endif %}
+{% if relation.toolbar %}
         toolbarButtons: {{relation.toolbar}}
+{% else %}
+        toolbarButtons: false
+{% endif %}
 {% if not relation.show_check %}
         showCheckboxes: false
 {% endif %}
 {% if relation.show_search %}
         showSearch: true
 {% endif %}
-{% if relation.filters %}
-        filter: {{ relation.filters }}
+{% if relation.filters.view %}
+        filter: {{ relation.filters.view }}
 {% endif %}
+{% for v_opt in relation.view_opt %}
+        {{ v_opt}}
+{% endfor %}
         defaultSort:
             column: {{relation.sort_column | default('name')}}
             direction: {{relation.sort_mode | default('asc')}}

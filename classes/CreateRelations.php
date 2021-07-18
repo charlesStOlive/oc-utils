@@ -57,15 +57,35 @@ class CreateRelations
         $options = $item['options'] ?? null;
         $columns = $item['columns'] ?? 'auto';
         $fields =  $item['fields'] ?? 'auto';
+        $record_url =  $item['record_url'] ?? null;
         $createYamls =  $item['yamls'] ?? false;
-        $filters = $item['filters'] ?? null;
-        $filters = $filters ?  'config_filters_for_'.$var.'.yaml' : null; 
+        //
+        $filter = $item['filters'] ?? null;
+        $filters = [];
+        $filterName = $filter ?  'config_filters_for_'.$var.'.yaml' : null; ;
+        if($filter == 'manage' || $filter == 'all') {
+            $filters['manage'] = $filterName;
+        }
+        if($filter == 'view' || $filter == 'all') {
+            $filters['view'] = $filterName;
+        }
+        //
+        
         //'/\s/' prmet d'enlever les espaces en trop
         $removeFields = explode('|', preg_replace('/\s/', '', $item['remove_fields']));
         $removeColumns = explode('|', preg_replace('/\s/', '', $item['remove_columns']));
         $fieldsExport = explode('|', preg_replace('/\s/', '', $item['fields_export']));
 
         //
+        $manage_opt = null;
+        if($item['manage_opt']) {
+            $manage_opt = explode('|', $item['manage_opt']);
+        }
+        $view_opt = null;
+        if($item['view_opt']) {
+            $view_opt = explode('|', $item['view_opt']);
+        }
+        
         
         //
         $relationClass = $this->getRelationClass($dotedClass, $var);
@@ -78,6 +98,9 @@ class CreateRelations
         if($fields == 'auto') {
             $fields = $this->getRelationPathConfig($dotedClass, $var,'fields', $createYamls);
         }
+        if($record_url == 1 ) {
+            $record_url = $this->getRecordUrl($dotedClass, $var);
+        }
         
         $userRelation = $relationClass == 'Backend\Models\User' ? true : false;
         
@@ -86,10 +109,14 @@ class CreateRelations
 
         if($options) {
             foreach($options as $key=>$option) {
+                if(str_contains($option, ',')) {
+                    $option = explode(',', $option);
+                }
                 $relationarray[$key] = $option;
             }
         }
-        $relationarray =  VarExporter::export($relationarray,VarExporter::NO_CLOSURES,2);
+        //trace_log( $relationarray);
+        $relationarray =  VarExporter::export($relationarray,VarExporter::INLINE_NUMERIC_SCALAR_ARRAY,2);
         $relationarray = str_replace('0 => ', '',$relationarray);
         
         //Suppresion des doubles antiSlash
@@ -112,6 +139,9 @@ class CreateRelations
             'remove_columns' => $removeColumns,
             'fields_export' => $fieldsExport,
             'filters' => $filters,
+            'manage_opt' => $manage_opt,
+            'view_opt' => $view_opt,
+            'record_url' => $record_url,
         ];
 
         
@@ -367,7 +397,7 @@ class CreateRelations
             return '$/' . strtolower($this->parent->w_author) . '/' . strtolower($this->parent->w_plugin) . '/models/' . strtolower(camel_case(str_singular($key))).'/'.$columnOrField.'_for_'.strtolower(camel_case(str_singular($this->parent->w_model))).'.yaml';
         } else if ($value == 'user') {
              //trace_log('user');
-            return '$/' . strtolower($this->parent->w_author) . '/' . strtolower($this->parent->w_plugin) . '/models/' . strtolower($this->parent->w_model).'/'.$columnOrField.'_for_user.yaml';
+            return '$/' . strtolower($this->parent->w_author) . '/' . strtolower($this->parent->w_plugin) . '/models/user/'.$columnOrField.'_for_'.strtolower(camel_case(str_singular($this->parent->w_model))).'.yaml';
         } 
         else {
             //trace_log('plugin externe-------------------');
@@ -377,6 +407,22 @@ class CreateRelations
             $r_plugin = $parts[1] ?? 'NON GERE 324';
             $r_model = $parts[2] ?? $key;
             return '$/' . strtolower($this->parent->w_author) . '/' . strtolower($this->parent->w_plugin) . '/models/' . strtolower(camel_case(str_singular($r_model))).'/'.$columnOrField.'_for_'.strtolower(camel_case(str_singular($this->parent->w_model))).'.yaml';
+        }
+    }
+
+    public function getRecordUrl($value, $key)
+    {
+        if ($value == 'self') {
+            return strtolower($this->parent->w_author) . '/' . strtolower($this->parent->w_plugin) . '/' . strtolower(camel_case($key)).'/update/:id';
+        } else if ($value == 'user') {
+            return 'backend/users/update/:id';
+        } 
+        else {
+            $parts = explode('.', $value);
+            $r_author = $parts[0] ?? 'NON GERE 324';
+            $r_plugin = $parts[1] ?? 'NON GERE 324';
+            $r_model = $parts[2] ?? $key;
+            return strtolower($r_author) . '/' . strtolower($r_plugin) . '/' . strtolower(camel_case($r_model));
         }
     }
 

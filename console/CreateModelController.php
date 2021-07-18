@@ -200,9 +200,10 @@ class CreateModelController extends GeneratorCommand
                 $destintion = 'controllers/' . strtolower($this->w_model) . 's/_field_'.$relation['name'].'.htm';
                 $this->makeOneStubFromFile($stub, $destintion, $relation);
                 //
-                if($relation['filters'] ?? false) {
+                if(count($relation['filters']) ?? false) {
                     $stub = 'controller/config_filter.stub';
-                    $destination = $src =  'controllers/{{lower_ctname}}/'.$relation['filters'];
+                    $filterName = $relation['filters']['manage'] ?? $relation['filters']['view'];
+                    $destination = $src =  'controllers/{{lower_ctname}}/'.$filterName;
                     $this->makeOneStubFromFile($stub,$destination , $this->vars, $src);
                 }
             }
