@@ -19,4 +19,18 @@ trait DbUtils
         $id = $this->getNextId();
         return str_pad( $val, $num, "0", STR_PAD_LEFT );
     }
+    public static function countScope($scope)
+    {
+        try {
+            $count = self::{$scope}()->count();
+        } catch(Throwable $t) {
+            $count = null;
+        }
+        //
+        if(!$count) {
+            return null;
+        } else {
+            return $count;
+        }
+    }
 }

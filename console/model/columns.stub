@@ -33,7 +33,7 @@ columns:
         ignoreTimezone: true
 {% elseif column.col_type and column.type is null  %}
         type: {{column.col_type}}
-{% elseif column.col_type %}
+{% elseif column.col_type and column.col_type != 'relation'  %}
         type: {{column.col_type}}
 {% endif %}
 {% if column.type is null %}

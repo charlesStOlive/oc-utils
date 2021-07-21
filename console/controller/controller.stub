@@ -106,7 +106,11 @@ class {{studly_ctname}} extends Controller
         BackendMenu::setContext('October.System', 'system', 'settings');
         SettingsManager::setContext('{{studly_author}}.{{studly_plugin}}', '{{studly_ctname}}');
 {% else %}
+{% if configs.controller_no_left_bar %}
+        BackendMenu::setContext('{{studly_author}}.{{studly_plugin}}', '{{lower_plugin}}', '{{lower_ctname}}');
+{% else %}
         BackendMenu::setContext('{{studly_author}}.{{studly_plugin}}', '{{lower_plugin}}', 'side-menu-{{lower_ctname}}');
+{% endif %}
 {% endif %}
     }
 

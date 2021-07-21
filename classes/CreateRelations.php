@@ -439,6 +439,11 @@ class CreateRelations
         foreach ($parts as $part) {
             $key_att = explode('=', $part);
             if($key_att[1] ?? false) {
+                if($key_att[1] == 'true') {
+                    $key_att[1] = true;
+                } elseif($key_att[1] == 'false') {
+                    $key_att[1] = false;
+                } 
                 $options[$key_att[0]] = $key_att[1];
             } else {
                 $options[$key_att[0]] = null;
