@@ -48,6 +48,8 @@ class CreateUiColors extends GeneratorCommand
 
         //trace_log($this->vars);
 
+        $this->makeStubs();
+
         $sourceFilePath = $this->getSourcePath() . '/../../../../modules/system/assets/ui/less';
 
         $files = \File::allFiles($sourceFilePath);
@@ -57,8 +59,6 @@ class CreateUiColors extends GeneratorCommand
             $stringContent = $this->updateColorContent($stringContent);
             $this->files->put($filePath, $stringContent);
         }
-
-        $this->makeStubs();
 
         $this->info($this->type . ' created successfully.');
 
@@ -104,9 +104,12 @@ class CreateUiColors extends GeneratorCommand
         /*
          * Make sure this file does not already exist
          */
-        // if ($this->files->exists($destinationFile) && !$this->option('force')) {
-        //     throw new Exception('Stop everything!!! This file already exists: ' . $destinationFile);
-        // }
+        if ($this->files->exists($destinationFile)) {
+            $create = $this->ask('Recréer le fichier var.less', true);
+            if(!$create) {
+                return;
+            }
+        }
         //trace_log($destinationFile);
         //trace_log($destinationContent);
 
