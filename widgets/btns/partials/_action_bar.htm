@@ -1,9 +1,10 @@
 <div class="w-actionbar">
     <!-- AFFICHE LE WORKFLOW SI ATIVE SINON LES BOUTON CLASSIQUE -->
     <?= $this->renderWorkflowOrBtn($context) ?>
-    <?php if($btns) : ?>
-    <!--IL Y A DES BOUTONS -->
     <div class="w-actionbar">
+        <?php if($btns) : ?>
+        <!--IL Y A DES BOUTONS -->
+
         <?php foreach($btns as $btn) : ?>
 
         <?php if($btn['btns'] ?? false) : ?>
@@ -21,16 +22,17 @@
         <?php endif ?>
         <?php endforeach ?>
         <?php endif ?>
+
+
+
+        <?php if($partials) : ?>
+        <?php foreach($partials as $partial) : ?>
+        <?= $this->makePartial($partial['url']);?>
+        <?php endforeach ?>
+        <?php endif ?>
+
+        <?php if(!$hasWorkflow) : ?>
+        <?= $this->makePartial('sub/btn_delete');?>
+        <?php endif ?>
     </div>
-
-
-    <?php if($partials) : ?>
-    <?php foreach($partials as $partial) : ?>
-    <?= $this->makePartial($partial['url']);?>
-    <?php endforeach ?>
-    <?php endif ?>
-
-    <?php if(!$hasWorkflow) : ?>
-    <?= $this->makePartial('sub/btn_delete');?>
-    <?php endif ?>
 </div>
