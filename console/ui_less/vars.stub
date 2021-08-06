@@ -10,8 +10,8 @@
 @prefix: w-;
 
 
-@pm-step: 0.5rem; 
-@base-margin: 0.1rem;
+@pm-step: 1rem; 
+@base-margin: 0.5rem;
 
 
 
