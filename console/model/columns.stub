@@ -36,10 +36,13 @@ columns:
 {% elseif column.col_type and column.col_type != 'relation'  %}
         type: {{column.col_type}}
 {% endif %}
-{% if column.type is null %}
+{% if column.type is null or column.col_type == 'partial'  %}
         searchable: false
         sortable: false
-{% elseif column.colType is null or column.colType == 'relation' %}
+{% elseif column.col_type == 'switch'  %}
+        searchable: false
+        sortable: true
+{% elseif column.colType is null or column.col_type == 'relation' %}
         searchable: true
 {% endif %}
 {% for c_option in column.col_opt %}
