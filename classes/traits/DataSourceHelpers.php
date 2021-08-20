@@ -6,6 +6,11 @@ trait DataSourceHelpers
     {
         return \Waka\Utils\Classes\DataSourceList::lists();
     }
+
+    public function listAllDataSourceToArray()
+    {
+        return $this->listDataSource()->toArray();
+    }
     public function listDataSourceTarget()
     {
         if(!$this->data_source) {
