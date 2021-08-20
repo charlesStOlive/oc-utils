@@ -80,6 +80,8 @@ class SidebarInfo extends WidgetBase
             $racine = $field['racine'] ?? null;
             if ($racine && $value) {
                 $link = \Backend::url($field['racine'] . $value);
+            } elseif ($value) {
+                $link = $value;
             }
 
             if ($type == 'workflow') {
@@ -138,10 +140,6 @@ class SidebarInfo extends WidgetBase
                 }
             }
 
-            if ($racine && $value) {
-                $link = \Backend::url($field['racine'] . $value);
-            }
-
             $field = [
                 'type' => $type,
                 'icon' => $icon,
@@ -150,6 +148,7 @@ class SidebarInfo extends WidgetBase
                 'cssClass' => $cssClass,
                 'link' => $link,
             ];
+            trace_log($field);
 
             array_push($parsedFields, $field);
         }

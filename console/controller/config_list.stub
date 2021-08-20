@@ -45,7 +45,7 @@ treeExpanded: true
 {% if configs.behav_reorder %}
 defaultSort:
     column: sort_order
-    direction: asc
+    direction: desc
 {% else %}
 defaultSort:
     column: updated_at
