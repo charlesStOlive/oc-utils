@@ -148,7 +148,7 @@ class SidebarInfo extends WidgetBase
                 'cssClass' => $cssClass,
                 'link' => $link,
             ];
-            trace_log($field);
+            //trace_log($field);
 
             array_push($parsedFields, $field);
         }
