@@ -90,23 +90,16 @@ class DataSource
 
     public function instanciateModel($id = null)
     {
+        
         if ($this->model) {
             return;
         }
         if ($id) {
             $this->model = $this->class::find($id);
-        } elseif ($this->testId) {
-            $this->model = $this->class::find($this->testId);
-        } else {
-            throw new \SystemException('Il manque le test_id dans dataConfig');
-        }
+        } 
         if (!$this->model) {
             // \Flash::error("Attention le test_id n'existe pas");
-            $this->model = $this->class::first();
-        }
-        if (!$this->model) {
-            // \Flash::error("Attention le test_id n'existe pas");
-            throw new \SystemException("Il n'y a pas de modele disponible pour : " . $this->class." Veuillez créer au moins une valuer dans cette ressource");
+            throw new \SystemException("ID non trouvé ou Il n'y a pas de modele disponible pour : " . $this->class." Veuillez créer au moins une valuer dans cette ressource");
         }
         $this->modelName = $this->model;
         $this->wimages = new Wimages($this->model, $this->relations);
