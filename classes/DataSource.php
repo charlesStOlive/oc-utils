@@ -98,8 +98,9 @@ class DataSource
             $this->model = $this->class::find($id);
         } 
         if (!$this->model) {
-            // \Flash::error("Attention le test_id n'existe pas");
-            throw new \SystemException("ID non trouvé ou Il n'y a pas de modele disponible pour : " . $this->class." Veuillez créer au moins une valuer dans cette ressource");
+            /**/trace_log('instanciateModel impossible');
+            return;
+            //throw new \SystemException("ID non trouvé ou Il n'y a pas de modele disponible pour : " . $this->class." Veuillez créer au moins une valuer dans cette ressource");
         }
         $this->modelName = $this->model;
         $this->wimages = new Wimages($this->model, $this->relations);

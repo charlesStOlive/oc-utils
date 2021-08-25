@@ -44,11 +44,12 @@ class ImagesList extends FormWidgetBase
         $noImage = true;
         $ds = new DataSource($this->model->data_source);
         //trace_log($ds->name);
-        $ds->instanciateModel($this->model->test_id); // instancie l'exemple
-        $imagesList = $ds->wimages->getAllPicturesKey();
-        if ($imagesList) {
+        $imagesList = [];
+        if($this->model->test_id) {
+            $ds->instanciateModel($this->model->test_id); // instancie l'exemple
+            $imagesList = $ds->wimages->getAllPicturesKey();
             $noImage = false;
-        }
+        } 
         $this->vars['noImage'] = $noImage;
         $this->vars['name'] = $this->formField->getName();
         $this->vars['values'] = $this->getLoadValue();
