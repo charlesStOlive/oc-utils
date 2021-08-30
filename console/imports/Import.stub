@@ -4,6 +4,7 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use \PhpOffice\PhpSpreadsheet\Shared\Date as DateConvert;
 use {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}};
 
 class {{studly_ctname}}Import implements ToCollection, WithHeadingRow, WithCalculatedFormulas
@@ -27,6 +28,9 @@ class {{studly_ctname}}Import implements ToCollection, WithHeadingRow, WithCalcu
 {% for excel in excels %}
 {% if excel.type == 'liaison_id' or excel.type == 'string_id' %}
             ${{name}}->{{excel.var}}_id = $row['{{excel.var}}_id'] ?? null;
+{% elseif excel.json %}
+{% elseif excel.type == 'timestamp' or excel.type == 'date' %}
+            ${{name}}->{{excel.var}} = DateConvert::excelToDateTimeObject($row['{{excel.var}}'] ?? null);
 {% elseif excel.json %}
             ${{name}}->{{excel.var}} = json_decode($row['{{excel.var}}'] ?? null);
 {% else %}
