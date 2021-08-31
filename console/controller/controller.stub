@@ -56,6 +56,9 @@ class {{studly_ctname}} extends Controller
 {% if configs.behav_lots %}
         'Waka.Utils.Behaviors.TraitementsLots',
 {% endif %}
+{% if configs.behav_outlook %}
+        'Waka.MsGraph.Behaviors.OutlookBehavior',
+{% endif %}
 {% if configs.behav_cloud_pdf %}
         'Waka.Cloud.Behaviors.CloudPdf',
 {% endif %}

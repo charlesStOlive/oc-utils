@@ -108,6 +108,11 @@ action_bar:
                 config: waka.mailtoer::btns.mailto
                 group: waka.utils::lang.prod.produce
 {% endif %}
+{% if configs.behav_outlook %}
+            outlook:
+                config: waka.msgraph::btns.outlook
+                group: waka.utils::lang.prod.send
+{% endif %}
 {% if configs.behav_exports_childs %}
             exportChildExcel:
                 config: waka.importexport::btns.exportChildExcel
@@ -233,6 +238,11 @@ Description: >
 #             mailto:
 #                 config: waka.mailtoer::btns.mailto
 #                 group: waka.utils::lang.prod.produce
+# {% endif %}
+# {% if configs.behav_outlook %}
+#             outlook:
+#                 config: waka.msgraph::btns.outlook
+#                 group: waka.utils::lang.prod.send
 # {% endif %}
 # {% if configs.behav_exports_childs %}
 #             exportChildExcel:
