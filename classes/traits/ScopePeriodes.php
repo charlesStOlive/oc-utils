@@ -92,4 +92,14 @@ trait ScopePeriodes
             'm_1_n_1' => "M-1 N-1 ( mois prescedent de l'année précédente)",
         ];
     }
+
+    public function getPeriodeConfig($label = 'Choisssez une période', $span = "full")
+    {
+        return [
+            'label' => 'Choisssez une période',
+            'type' => 'dropdown',
+            'span' => $span,
+            'options' => $this->getPeriode(),
+        ];
+    }
 }
