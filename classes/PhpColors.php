@@ -15,12 +15,12 @@ class PhpColors
     public static function start()
     {
         //trace_log("start");
-        $configColors = \Config::get('wcli.wconfig::colors');
-        $primary = $configColors['primary'];
+        $configColors = \Config::get('wcli.wconfig::brand_data');
+        $primary = $configColors['primaryColor'];
         $color1 = new Color($primary);
         self::$primary = $primary;
         self::$complementary = "#" . $color1->complementary();
-        self::$secondary = $configColors['secondary'];
+        self::$secondary = $configColors['secondaryColor'];
         self::$gd = $configColors['gd'];
         self::$gl = $configColors['gl'];
     }
