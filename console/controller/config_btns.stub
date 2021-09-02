@@ -50,7 +50,7 @@ tool_bar:
                 config: waka.cloud::btns.lot_pdf
                 group: waka.utils::lang.prod.send
 {% endif %}
-{% if configs.behav_cloud_pdf %}
+{% if configs.behav_cloud_word %}
             lot_word:
                 config: waka.cloud::btns.lot_word
                 group: waka.utils::lang.prod.send
@@ -182,7 +182,7 @@ Description: >
 #                 config: waka.cloud::btns.lot_pdf
 #                 group: waka.utils::lang.prod.send
 # {% endif %}
-# {% if configs.behav_cloud_pdf %}
+# {% if configs.behav_cloud_word %}
 #             lot_word:
 #                 config: waka.cloud::btns.lot_word
 #                 group: waka.utils::lang.prod.send
