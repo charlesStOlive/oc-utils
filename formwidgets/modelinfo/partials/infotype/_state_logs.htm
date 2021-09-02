@@ -1,0 +1,8 @@
+<ul>
+    <?php foreach($field['value'] as $log) {  ?>
+    <li class="">
+        -<?=$log['label'] ?? null ?><br>
+        <p class="small"> Date UTC : <?=$log['created_at']?></p>
+    </li>
+    <?php } ?>
+</ul>

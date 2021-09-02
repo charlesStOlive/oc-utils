@@ -1,0 +1,17 @@
+<div class="sidebar_info">
+    <?php if ($this->controller->sideBarUpdateConfig) : ?>
+    <button type="button" style="margin-left: auto;"
+            class="oc-icon-pencil btn-icon success pull-right"
+            data-request-data="modelId:<?=$modelId?>"
+            data-control="popup"
+            data-handler="onLoadSideBarUpdateForm">
+    </button>
+    <?php endif ?>
+    <ul>
+        <?php foreach($parsedFields as $field) {  ?>
+        <li class="<?=$field['cssInfoClass']?>">
+            <?=$this->makePartial('infotype/'.$field['infoType'],['field'=>$field])?>
+        </li>
+        <?php } ?>
+    </ul>
+</div>

@@ -86,6 +86,9 @@ class CreateModelController extends GeneratorCommand
             if ($this->fields_create) {
                 $this->stubs['model/fields_create.stub'] = 'models/{{lower_name}}/fields_create.yaml';
             }
+            if ($this->config['side_bar_info']) {
+                $this->stubs['model/fields_for_side_bar.stub'] = 'models/{{lower_name}}/fields_for_side_bar.yaml';
+            }
             if ($this->config['use_tab']) {
                 unset($this->stubs['model/fields.stub']);
                 $this->stubs['model/fields_tab.stub'] = 'models/{{lower_name}}/fields.yaml';
@@ -113,10 +116,10 @@ class CreateModelController extends GeneratorCommand
             if ($this->config['side_bar_attributes'] ?? false) {
                 $this->stubs['controller/config_attributes.stub'] = 'controllers/{{lower_ctname}}/config_attributes.yaml';
             }
-            if ($this->config['side_bar_info'] ?? false) {
-                $stub = 'controller/config_sidebar_info.stub';
-                $destination = 'controllers/{{lower_ctname}}/config_sidebar_info.yaml';
-                $src = 'controllers/{{lower_ctname}}/config_sidebar_info.yaml';
+            if ($this->config['side_bar_update']) {
+                $stub = 'controller/config_side_bar_update.stub';
+                $destination = 'controllers/{{lower_ctname}}/config_side_bar_update.yaml';
+                $src = 'controllers/{{lower_ctname}}/config_side_bar_update.yaml';
                 $this->makeOneStubFromFile($stub, $destination, $this->vars, $src);
             } 
             if ($this->config['behav_workflow'] ?? false) {
@@ -447,10 +450,15 @@ class CreateModelController extends GeneratorCommand
                 }
             }
             $options = $item['field_opt'] ?? null;
-            if ($options) {
+            if ($options && starts_with($options, 'config::')) {
+                $configRaw = str_replace('config::', "", $item['field_opt']);
+                $item['field_config'] = $this->config[$configRaw];
+                $item['field_opt'] = null;
+            } elseif ($options) {
                 $array = explode('|', $options);
                 $item['field_opt'] = $array;
             }
+
 
             $model_opt = $item['model_opt'] ?? null;
             if ($model_opt) {
@@ -476,6 +484,12 @@ class CreateModelController extends GeneratorCommand
             if ($optionsAtt) {
                 $array = explode('|', $optionsAtt);
                 $item['att_opt'] = $array;
+            }
+            //
+            $optionsSb = $item['sb_opt'] ?? null;
+            if ($optionsSb) {
+                $array = explode('|', $optionsSb);
+                $item['sb_opt'] = $array;
             }
             $rel = $item['relation'] ?? null;
             if ($rel) {
@@ -529,6 +543,8 @@ class CreateModelController extends GeneratorCommand
 
         //
         $fields = $rows->where('field', '<>', null)->sortBy('field')->toArray();
+        $fieldsInfo = $rows->where('sidebar', '<>', null)->sortBy('field')->toArray();
+        $fields = $rows->where('field', '<>', null)->where('sidebar', '==', null)->sortBy('field')->toArray();
         $this->fields_create = $rows->where('c_field', '<>', null);
         if ($this->fields_create) {
             $this->fields_create = $this->fields_create->sortBy('c_field');
@@ -599,6 +615,7 @@ class CreateModelController extends GeneratorCommand
             'columns' => $columns,
             'fields' => $fields,
             'fields_create' => $this->fields_create,
+            'fieldsInfo' => $fieldsInfo,
             'attributes' => $attributes,
             'titles' => $titles,
             'appends' => $appends,

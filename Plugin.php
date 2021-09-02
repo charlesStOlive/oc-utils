@@ -141,6 +141,7 @@ class Plugin extends PluginBase
             'Waka\Utils\FormWidgets\ImagesList' => 'imageslist',
             'Waka\Utils\FormWidgets\ImageWidget' => 'imagewidget',
             'Waka\Utils\FormWidgets\Workflow' => 'workflow',
+            'Waka\Utils\FormWidgets\ModelInfo' => 'modelinfo',
         ];
     }
 

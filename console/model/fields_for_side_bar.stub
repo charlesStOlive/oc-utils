@@ -3,7 +3,7 @@
 # ===================================
 
 fields:
-{% for field in fields  %}
+{% for field in fieldsInfo  %}
     {{field.var}}{% if field.context %}@{{field.context}}{% endif %}:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.var}}
 {% if field.span %}
@@ -79,9 +79,6 @@ fields:
 {% for foption in field.field_opt %}
         {{foption}}
 {% endfor %}
-{% if field.field_config  %}
-{{field.field_config | raw}}
-{% endif %}
 {% if field.lists  %}
         options: {{field.lists}}
 {% endif %}
@@ -100,12 +97,14 @@ fields:
 {% if field.permissions  %}
         permissions: [{{field.permissions}}]
 {% endif %}
-{% endfor %}
-{% if configs.side_bar_info %}
-secondaryTabs:
-    fields:
-        info:
-            type: modelinfo
-            mode: secondary
-            src: /{{lower_author}}/{{lower_plugin}}/models/{{lower_name}}/fields_for_side_bar.yaml
+{% if field.sb_type  %}
+        infoType: {{field.sb_type}}
 {% endif %}
+{% if field.type is null  %}
+        noUpdate: true
+{% endif %}
+{% for sboption in field.sb_opt %}
+        {{sboption}}
+{% endfor %}
+{% endfor %}
+

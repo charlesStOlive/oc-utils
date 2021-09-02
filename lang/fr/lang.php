@@ -175,6 +175,7 @@ return [
     ],
     'side_bar_info' => [
         'state_history' => "Historique des transitions d'états",
+        'update' => "Mettre à jours",
     ],
     'workflow' => [
         'no_state_change' => "Aucune transitions",

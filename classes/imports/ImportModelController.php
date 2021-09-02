@@ -86,6 +86,10 @@ class DataImport implements ToCollection, WithHeadingRow
                 'field_opt' => $row['field_opt'],
                 'c_field_opt' => $row['c_field_opt'] ?? null,
                 //
+                'sidebar' => $row['sidebar'],
+                'sb_type' => $row['sb_type'] ?? null,
+                'sb_opt' => $row['sb_opt'] ?? null,
+                //
                 'excel' => $row['excel'] ?? null,
                 'version' => $row['version'] ?? null,
             ];

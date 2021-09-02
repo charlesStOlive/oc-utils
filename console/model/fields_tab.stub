@@ -106,3 +106,11 @@ tabs:
             tab: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.tab}}
 {% endif %}
 {% endfor %}
+{% if configs.side_bar_info %}
+secondaryTabs:
+    fields:
+        info:
+            type: modelinfo
+            mode: secondary
+            src: /{{lower_author}}/{{lower_plugin}}/models/{{lower_name}}/fields_for_side_bar.yaml
+{% endif %}

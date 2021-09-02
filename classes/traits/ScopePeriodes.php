@@ -8,12 +8,23 @@ trait ScopePeriodes
     {
         $year = Carbon::now()->year;
 
+        // A FAIRE UN SYSTEME  un systh_me plus inteligeny 
+        // $periodeArray = explode('_', $periode);
+        // $periode = $periodeArray[0];
+        // $timeToRemove = $periodeArray[1] ?? 0;
+
         if ($periode == 'all') {
             return $request;
         }
         if ($periode == 'd_30') {
             $date = Carbon::now();
             $start_at = $date->copy()->subDays(30);
+            $end_at = $date;
+            return $request->whereBetween($column, [$start_at, $end_at]);
+        }
+        if ($periode == 'd_365') {
+            $date = Carbon::now();
+            $start_at = $date->copy()->subDays(365);
             $end_at = $date;
             return $request->whereBetween($column, [$start_at, $end_at]);
         }

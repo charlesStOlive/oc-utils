@@ -18,8 +18,8 @@ class {{studly_ctname}} extends Controller
 {% if isBehaviorRelationNeeded  %}
         'Backend.Behaviors.RelationController',
 {% endif %}
-{% if configs.side_bar_info %}
-        'Waka.Utils.Behaviors.SidebarInfoBehavior',
+{% if configs.side_bar_update %}
+        'Waka.Utils.Behaviors.SideBarUpdate',
 {% endif %}
 {% if configs.side_bar_attributes %}
         'waka.Utils.Behaviors.SideBarAttributesBehavior',
@@ -84,8 +84,8 @@ class {{studly_ctname}} extends Controller
 {% if configs.behav_reorder %}
     public $reorderConfig = 'config_reorder.yaml';
 {% endif %}
-{% if configs.side_bar_info %}
-    public $sidebarInfoConfig = 'config_sidebar_info.yaml';
+{% if configs.side_bar_update %}
+    public $sideBarUpdateConfig = 'config_side_bar_update.yaml';
 {% endif %}
 {% if configs.side_bar_attributes  %}
     public $sidebarAttributesConfig = 'config_attributes.yaml';    
