@@ -43,7 +43,7 @@ class ImageWidget extends FormWidgetBase
         $noImage = true;
         $ds = new DataSource($this->model->data_source);
         //trace_log($ds->name);
-        $ds->instanciateModel(); // instancie l'exemple
+        $ds->instanciateModel($this->model->id); // instancie l'exemple
         $options = $ds->wimages->getAllPicturesKey();
         if ($options) {
             $noImage = false;

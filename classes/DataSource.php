@@ -98,8 +98,9 @@ class DataSource
             $this->model = $this->class::find($id);
         } 
         if (!$this->model) {
-            /**/trace_log('instanciateModel impossible');
-            return;
+            /**/trace_log('ATTENTION : instanciateModel impossible');
+            $this->model = $this->class::first();
+            \Flash::error("ATTENTION : instanciateModel impossible premier id trouvé instancié");
             //throw new \SystemException("ID non trouvé ou Il n'y a pas de modele disponible pour : " . $this->class." Veuillez créer au moins une valuer dans cette ressource");
         }
         $this->modelName = $this->model;
