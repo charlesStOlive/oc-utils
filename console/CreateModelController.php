@@ -487,7 +487,11 @@ class CreateModelController extends GeneratorCommand
             }
             //
             $optionsSb = $item['sb_opt'] ?? null;
-            if ($optionsSb) {
+            if ($optionsSb && starts_with($optionsSb, 'config::')) {
+                $configRaw = str_replace('config::', "", $item['sb_opt']);
+                $item['sb_config'] = $this->config[$configRaw];
+                $item['sb_opt'] = null;
+            } elseif ($optionsSb) {
                 $array = explode('|', $optionsSb);
                 $item['sb_opt'] = $array;
             }
@@ -543,7 +547,13 @@ class CreateModelController extends GeneratorCommand
 
         //
         $fields = $rows->where('field', '<>', null)->sortBy('field')->toArray();
-        $fieldsInfo = $rows->where('sidebar', '<>', null)->sortBy('field')->toArray();
+        $fieldsInfo = $rows->where('sidebar', '<>', null)->sortBy('sidebar');
+        $fieldsInfo = $fieldsInfo->map(function ($item, $key) {
+                if($item['field_type'] == 'partial_relation') {
+                    $item['field_type'] = 'relation';
+                };
+                return $item;
+            })->toArray();
         $fields = $rows->where('field', '<>', null)->where('sidebar', '==', null)->sortBy('field')->toArray();
         $this->fields_create = $rows->where('c_field', '<>', null);
         if ($this->fields_create) {

@@ -150,7 +150,7 @@ class CreateRelations
         
         $relation = array_merge($relation, $relationItem);
 
-        //trace_log($relation);
+        trace_log($relation);
         
         // [var] => ressources
         // [type] => many
@@ -422,7 +422,7 @@ class CreateRelations
             $r_author = $parts[0] ?? 'NON GERE 324';
             $r_plugin = $parts[1] ?? 'NON GERE 324';
             $r_model = $parts[2] ?? $key;
-            return strtolower($r_author) . '/' . strtolower($r_plugin) . '/' . strtolower(camel_case($r_model));
+            return strtolower($r_author) . '/' . strtolower($r_plugin) . '/' . strtolower(camel_case($r_model)).'s/update/:id';
         }
     }
 

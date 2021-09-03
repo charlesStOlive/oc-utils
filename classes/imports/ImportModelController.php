@@ -122,6 +122,7 @@ class RelationImport implements ToCollection, WithHeadingRow
                 'record_url' => $row['record_url'] ?? null,
                 'manage_opt' => $row['manage_opt'],
                 'view_opt' => $row['view_opt'],
+                'sort_column' => $row['sort_column'] ?? null,
                 'sort_mode' => $row['sort_mode'] ?? null,
                 'filters' => $row['filters'] ?? null,
                 'remove_fields' => $row['remove_fields'],

@@ -79,6 +79,9 @@ fields:
 {% for foption in field.field_opt %}
         {{foption}}
 {% endfor %}
+{% if field.sb_config  %}
+{{field.sb_config | raw}}
+{% endif %}
 {% if field.lists  %}
         options: {{field.lists}}
 {% endif %}
