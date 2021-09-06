@@ -61,13 +61,20 @@ class CreateRelations
         $createYamls =  $item['yamls'] ?? false;
         //
         $filter = $item['filters'] ?? null;
+        if($filter == '') {
+            $filter = null;
+        }
+        trace_log("filtre : ".$filter);
         $filters = [];
-        $filterName = $filter ?  'config_filters_for_'.$var.'.yaml' : null; ;
+        $filterName = $filter ?  'config_filters_for_'.$var.'.yaml' : null;
         if($filter == 'manage' || $filter == 'all') {
             $filters['manage'] = $filterName;
         }
         if($filter == 'view' || $filter == 'all') {
             $filters['view'] = $filterName;
+        }
+        if($filter && !in_array($filter, ['manage', 'view', 'all'])) {
+            throw new \ApplicationException('Filter doit avoir pour valeur NULL(vide), manage, view, all '.$filter);
         }
         //
         
