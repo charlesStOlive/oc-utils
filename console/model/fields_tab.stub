@@ -82,8 +82,11 @@ tabs:
             required: true
 {% endif %}
 {% for foption in field.field_opt %}
-            {{foption}}
+            {{foption|raw}}
 {% endfor %}
+{% if field.field_config  %}
+{{field.field_config | raw}} 
+{% endif %}
 {% if field.lists  %}
             options: {{field.lists}}
 {% endif %}

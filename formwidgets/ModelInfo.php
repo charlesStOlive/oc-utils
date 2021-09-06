@@ -117,7 +117,7 @@ class ModelInfo extends FormWidgetBase
                 $value = $dotedValues[$fieldValue] ?? "inconnu";
             }
 
-            trace_log($key .' : '.$value);
+            //trace_log($key .' : '.$value);
 
             $cssInfoClass = $field['cssInfoClass'] ?? null;
             $link = null;

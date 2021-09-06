@@ -29,7 +29,7 @@ fields:
             sharpen: 0
             interlace: false
             extension: auto
-{% elseif field.field_type and field.field_type == 'recordfinder'  %}
+{% elseif field.field_type == 'recordfinder'  %}
         type: recordfinder
 {% if  field.c_field_opt is null %}
         list: ~/plugins/{{lower_author}}/{{lower_plugin}}/models/{{field.var}}/columns_for_{{lower_name}}.yaml
@@ -77,7 +77,7 @@ fields:
         required: true
 {% endif %}
 {% for foption in field.c_field_opt %}
-        {{foption}}
+        {{foption|raw}}
 {% endfor %}
 {% if field.lists  %}
         options: {{field.lists}}

@@ -450,12 +450,15 @@ class CreateModelController extends GeneratorCommand
                 }
             }
             $options = $item['field_opt'] ?? null;
-            if ($options && starts_with($options, 'config::')) {
-                $configRaw = str_replace('config::', "", $item['field_opt']);
-                $item['field_config'] = $this->config[$configRaw];
-                $item['field_opt'] = null;
-            } elseif ($options) {
+            if ($options) {
                 $array = explode('|', $options);
+                foreach($array as $key=>$row) {
+                    if(starts_with($row, 'config::')) {
+                        $configRaw = str_replace('config::', "", $row);
+                        $item['field_config'] = $this->config[$configRaw];
+                        unset($array[$key]);
+                    }  
+                }
                 $item['field_opt'] = $array;
             }
 
@@ -468,9 +471,21 @@ class CreateModelController extends GeneratorCommand
                 $item['getter'] = in_array('getter', $arrayOpt);
                 $item['purgeable'] = in_array('purgeable', $arrayOpt);
             }
+            // $options = $item['c_field_opt'] ?? null;
+            // if ($options) {
+            //     $array = explode('|', $options);
+            //     $item['c_field_opt'] = $array;
+            // }
             $options = $item['c_field_opt'] ?? null;
             if ($options) {
                 $array = explode('|', $options);
+                foreach($array as $key=>$row) {
+                    if(starts_with($row, 'config::')) {
+                        $configRaw = str_replace('config::', "", $row);
+                        $item['c_field_config'] = $this->config[$configRaw];
+                        unset($array[$key]);
+                    }  
+                }
                 $item['c_field_opt'] = $array;
             }
 
@@ -487,14 +502,28 @@ class CreateModelController extends GeneratorCommand
             }
             //
             $optionsSb = $item['sb_opt'] ?? null;
-            if ($optionsSb && starts_with($optionsSb, 'config::')) {
-                $configRaw = str_replace('config::', "", $item['sb_opt']);
-                $item['sb_config'] = $this->config[$configRaw];
-                $item['sb_opt'] = null;
-            } elseif ($optionsSb) {
-                $array = explode('|', $optionsSb);
-                $item['sb_opt'] = $array;
+            if ($optionsSb) {
+                $arraySb = explode('|', $optionsSb);
+                foreach($arraySb as $key=>$row) {
+                    if(starts_with($row, 'config::')) {
+                        trace_log("il y a une config");
+                        $configRaw = str_replace('config::', "", $row);
+                        trace_log($this->config[$configRaw]);
+                        $item['sb_config'] = $this->config[$configRaw];
+                        unset($arraySb[$key]);
+                    }  
+                }
+                $item['sb_opt'] = $arraySb;
             }
+            // $optionsSb = $item['sb_opt'] ?? null;
+            // if ($optionsSb && starts_with($optionsSb, 'config::')) {
+            //     $configRaw = str_replace('config::', "", $item['sb_opt']);
+            //     $item['sb_config'] = $this->config[$configRaw];
+            //     $item['sb_opt'] = null;
+            // } elseif ($optionsSb) {
+            //     $array = explode('|', $optionsSb);
+            //     $item['sb_opt'] = $array;
+            // }
             $rel = $item['relation'] ?? null;
             if ($rel) {
                 $item['relation_parsed'] = $this->relations->getOneRelation($rel);
