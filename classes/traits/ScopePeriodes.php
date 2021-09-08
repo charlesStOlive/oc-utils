@@ -28,6 +28,34 @@ trait ScopePeriodes
             $end_at = $date;
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
+        if ($periode == 'm_6') {
+            $date = Carbon::now();
+            $start_at = $date->copy()->subMonths(6);
+            $end_at = $date;
+            trace_log( $start_at);
+            trace_log($end_at);
+            return $request->whereBetween($column, [$start_at, $end_at]);
+        }
+        if ($periode == 'm_6_n_1') {
+            $date = Carbon::now()->subYear();
+            $start_at = $date->copy()->subYear()->subMonths(6);
+            $end_at = $date;
+            trace_log( $start_at);
+            trace_log($end_at);
+            return $request->whereBetween($column, [$start_at, $end_at]);
+        }
+        if ($periode == 'y_to_d') {
+            $date = Carbon::now();
+            $start_at = $date->copy()->startOfYear();
+            $end_at = $date;
+            return $request->whereBetween($column, [$start_at, $end_at]);
+        }
+        if ($periode == 'y_1_to_d') {
+            $date = Carbon::now()->subYear();
+            $start_at = $date->copy()->startOfYear();
+            $end_at = $date;
+            return $request->whereBetween($column, [$start_at, $end_at]);
+        }
         if ($periode == 'y') {
             return $request->whereYear($column, $year);
         }
@@ -91,8 +119,11 @@ trait ScopePeriodes
         return  [
             'all' => "Tout le temps",
             'd_30' => "Trentes derniers jours",
+            'd_365' => "Les 365 derniers jours",
             'y' => "Année N",
             'y_1' => "N-1",
+            'y_to_d' => "Année jusqu'à aujourd'hui",
+            'y_1_to_d' => "Année dernière jusqu'à jours n-1",
             't' => 'Trimestre T',
             't_1' => "T-1",
             't_n_1' => "T N-1 ( trimestre  de l'année précédente)",

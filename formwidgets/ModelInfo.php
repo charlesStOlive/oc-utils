@@ -56,7 +56,7 @@ class ModelInfo extends FormWidgetBase
     {
         $modelId = $this->model->id;
         $modelClass = get_class($this->model);
-        //trace_log($modelClass);
+        trace_log($modelClass);
         //trace_log(get_class($this->getController()));
         $this->ds = new DataSource($modelClass, 'class');
         if(!$this->ds) {

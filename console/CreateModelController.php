@@ -755,7 +755,7 @@ class CreateModelController extends GeneratorCommand
           $destinationContent = $this->files->get($stubFile);  
         }
         if ($this->files->exists($srcFile)) {
-            //trace_log($srcFile.' existe');
+            trace_log($srcFile.' existe');
             if($mappingFnc == 'keepData' && $this->keepOldContent) {
                 $copiedContent = $this->files->get($srcFile);
                 $newContent = $destinationContent;

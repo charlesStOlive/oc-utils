@@ -137,6 +137,49 @@ class DataSource
         }
         return $optionsList;
     }
+    public function getLotProductorOptions($productorModel)
+    {
+        trace_log("getLotProductorOptions");
+        $documents = $productorModel::where('data_source', $this->code)->get();
+        trace_log($documents->toArray());
+
+        $optionsList = [];
+
+        foreach ($documents as $document) {
+            trace_log($document->name);
+            trace_log($document->is_lot);
+            if ($document->is_lot) {
+                $optionsList[$document->id] = $document->name;
+            }
+        }
+        return $optionsList;
+    }
+    public function getPartialIndexOptions($productorModel, $relation = false)
+    {
+        $documents = $productorModel::where('data_source', $this->code)->get();
+
+        if ($relation) {
+            $documents = $documents->where('relation', '<>', null);
+        } else {
+            $documents = $documents->where('relation', '=', null);
+        }
+
+        $optionsList = [];
+
+        foreach ($documents as $document) {
+            if ($document->is_scope) {
+                //Si il y a des limites
+                $scope = new \Waka\Utils\Classes\Scopes($document);
+                if ($scope->checkIndexScopes()) {
+                    $optionsList[$document->id] = $document->name;
+                }
+            } else {
+                $optionsList[$document->id] = $document->name;
+            }
+        }
+        return $optionsList;
+    }
+
     public function dynamyseText($content,$modelId =null) {
         if($modelId) {
             $this->instanciateModel($modelId);
@@ -214,32 +257,6 @@ class DataSource
         }
         //trace_log($askArray);
         return $askArray;
-    }
-
-    public function getPartialIndexOptions($productorModel, $relation = false)
-    {
-        $documents = $productorModel::where('data_source', $this->code)->get();
-
-        if ($relation) {
-            $documents = $documents->where('relation', '<>', null);
-        } else {
-            $documents = $documents->where('relation', '=', null);
-        }
-
-        $optionsList = [];
-
-        foreach ($documents as $document) {
-            if ($document->is_scope) {
-                //Si il y a des limites
-                $scope = new \Waka\Utils\Classes\Scopes($document);
-                if ($scope->checkIndexScopes()) {
-                    $optionsList[$document->id] = $document->name;
-                }
-            } else {
-                $optionsList[$document->id] = $document->name;
-            }
-        }
-        return $optionsList;
     }
 
     public function getKeyAndEmbed()

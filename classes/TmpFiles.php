@@ -75,10 +75,11 @@ class TmpFiles
         //trace_log($storagePath);
         //trace_log($keepMode);
         if($keepMode == self::KEEP_F) {
-            $storagePath .= DIRECTORY_SEPARATOR.'public' .DIRECTORY_SEPARATOR. $keepMode;
+            $storagePath .= "/".'public' ."/". $keepMode;
         } else {
-            $storagePath .= DIRECTORY_SEPARATOR.'public' .DIRECTORY_SEPARATOR. $keepMode;
+            $storagePath .= "/".'public' ."/". $keepMode;
         }
+        trace_log($storagePath);
         return $storagePath;
     }
 
@@ -111,7 +112,8 @@ class TmpFiles
     }
     protected function getTempFolderName() {
         $tempFolderName = self::$tempFolderName;
-        return $tempFolderName ? DIRECTORY_SEPARATOR . $tempFolderName : '';
+        trace_log($tempFolderName ? "/" . $tempFolderName : '');
+        return $tempFolderName ? "/" . $tempFolderName : '';
     }
     protected function getFullRacine(): string
     {
@@ -119,21 +121,22 @@ class TmpFiles
     }
     protected function getFullPath(): string
     {
-        return 'app'.DIRECTORY_SEPARATOR.$this->getStorageRacine().($this->getTempFolderName() ? DIRECTORY_SEPARATOR.$this->getTempFolderName() : '');
+        trace_log("/");
+        return 'app'."/".$this->getStorageRacine().($this->getTempFolderName() ? "/".$this->getTempFolderName() : '');
     }
 
     public function putFile(string $pathOrFilename, $content) {
         //A terminer possibilité de mettre plusieurs fichiers et des sous dossier. 
         $this->fileName = trim($pathOrFilename,'/');
         //trace_log($this->fileName);
-        $path = $this->getFullRacine().DIRECTORY_SEPARATOR.$this->fileName;
+        $path = $this->getFullRacine()."/".$this->fileName;
         Storage::put($path, $content);
         return $this;
     }
     public function emptyFile(string $pathOrFilename) {
         //A terminer possibilité de mettre plusieurs fichiers et des sous dossier. 
         $this->fileName = trim($pathOrFilename,'/');
-        $path = $this->getFullRacine().DIRECTORY_SEPARATOR.$this->fileName;
+        $path = $this->getFullRacine()."/".$this->fileName;
         return $this;
     }
 
@@ -144,7 +147,7 @@ class TmpFiles
         if($forceName) {
             $this->fileName = trim($forceName, '/');
         }
-        $path = $this->getFullRacine().DIRECTORY_SEPARATOR.$this->fileName;
+        $path = $this->getFullRacine()."/".$this->fileName;
         Storage::put($path, $file);
         return $this;
     }
@@ -158,7 +161,7 @@ class TmpFiles
     public function getFilePath(): string
     {
         if($this->fileName) {
-            return storage_path($this->getFullPath().DIRECTORY_SEPARATOR.$this->fileName);
+            return storage_path($this->getFullPath()."/".$this->fileName);
         } else {
             throw new Exception("Il manque le nom du fichier getFilePath ne fonctionne QUE si il y a eu un putFile");
         }
@@ -167,8 +170,8 @@ class TmpFiles
     public function getFileUrl(): string
     {
         if($this->fileName) {
-            //trace_log(url('storage/'.$this->getFullPath().DIRECTORY_SEPARATOR.$this->fileName));
-            return url('storage/'.$this->getFullPath().DIRECTORY_SEPARATOR.$this->fileName);
+            //trace_log(url('storage/'.$this->getFullPath()."/".$this->fileName));
+            return url('storage/'.$this->getFullPath()."/".$this->fileName);
         } else {
             throw new Exception("Il manque le nom du fichier getFilePath ne fonctionne QUE si il y a eu un putFile");
         }
@@ -204,7 +207,7 @@ class TmpFiles
     protected function sanitizePath(string $path): string
     {
         $path = rtrim($path);
-        return rtrim($path, DIRECTORY_SEPARATOR);
+        return rtrim($path, "/");
     }
 
     
@@ -215,7 +218,7 @@ class TmpFiles
             return $path;
         }
 
-        return substr($path, 0, strrpos($path, DIRECTORY_SEPARATOR));
+        return substr($path, 0, strrpos($path, "/"));
     }
 
     protected function isFilePath(string $path): bool

@@ -108,11 +108,40 @@ class FunctionsBase
      */
     public function getAttributesDs($model)
     {
-        return $model->each(function ($item) {
-            $att = $item->attributesToDs;
-            foreach ($item->attributesToDs as $att) {
+        return $model->map(function ($item) {
+            $atts = $item->attributesToDs;
+            foreach ($atts as $att) {
                 $item->append($att);
             }
+            return $item;
         });
+    }
+
+    public function getCalculConfig($label = "Opérateur", $span = "left")
+    {
+        return [
+            'label' => $label,
+            'type' => 'dropdown',
+            'span' => $span,
+            'options' => [
+                '=' => "égale à",
+                '>' => "supérieur à",
+                '<' => 'inférieur à',
+                '>=' => "supérieur ou égale à",
+                '<=' => "inférieur ou égale à",
+            ],
+        ];
+    }
+
+    function dynamic_comparison ($var1, $op, $var2) {
+        switch ($op) {
+            case "=":  return $var1 == $var2;
+            case "!=": return $var1 != $var2;
+            case ">=": return $var1 >= $var2;
+            case "<=": return $var1 <= $var2;
+            case ">":  return $var1 >  $var2;
+            case "<":  return $var1 <  $var2;
+            default:       return true;
+        }   
     }
 }

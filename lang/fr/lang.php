@@ -13,10 +13,11 @@ return [
     'popup' => [
         'traitement_lots' => 'Traitement par lots',
         'all' => "Tous",
-        'filtered' => "Filtré",
-        'checked' => "Coché",
+        'filtered' => "Lignes Filtrées",
+        'checked' => "Lignes Cochées",
         "change_field" => "Modifier le champ",
         'export_lot' => 'Produire un lot',
+        'choose_who' => 'Pour qui voulez vous créer'
     ],
     'import' => [
         "importExcel" => "Importer depuis excel",

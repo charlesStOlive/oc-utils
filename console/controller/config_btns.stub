@@ -55,6 +55,11 @@ tool_bar:
                 config: waka.cloud::btns.lot_word
                 group: waka.utils::lang.prod.send
 {% endif %}
+{% if configs.behav_outlook %}
+            lot_outlook:
+                config: waka.msgraph::btns.lot_outlook
+                group: waka.utils::lang.prod.send
+{% endif %}
 {% if configs.behav_email %}            
             lot_mail:
                 config: waka.mailer::btns.lot_mail
@@ -132,9 +137,6 @@ Description: >
 
 
 #     ##### SAUVEGARDE PURE ########
-# # ===================================
-# #  Btn  Behavior Config
-# # ===================================
 
 # modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}}
 
@@ -187,6 +189,11 @@ Description: >
 #                 config: waka.cloud::btns.lot_word
 #                 group: waka.utils::lang.prod.send
 # {% endif %}
+# {% if configs.behav_outlook %}
+#             lot_outlook:
+#                 config: waka.msgraph::btns.lot_outlook
+#                 group: waka.utils::lang.prod.send
+# {% endif %}
 # {% if configs.behav_email %}            
 #             lot_mail:
 #                 config: waka.mailer::btns.lot_mail
@@ -224,7 +231,8 @@ Description: >
 #             pdf_cloud:
 #                 config: waka.cloud::btns.pdf
 #                 group: waka.utils::lang.prod.send
-# {% endif %}{% if configs.behav_duplicate %}
+# {% endif %}
+# {% if configs.behav_duplicate %}
 #             duplicate:
 #                 config: waka.utils::btns.duplicate
 #                 group: waka.utils::lang.prod.tools
@@ -254,6 +262,7 @@ Description: >
 #                 config: waka.importexport::btns.importChildExcel
 #                 group: waka.utils::lang.prod.tools
 # {% endif %}
+
 #     # partials: #Attention seul les variables modelId et modelClass (class du controller) sont disponible sans les partials.  
 #     #     name:
 #     #         url: $/{{lower_author}}/{{lower_plugin}}/controllers/{{lower_ctname}}/_test_update.htm
