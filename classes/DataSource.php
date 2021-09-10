@@ -139,15 +139,15 @@ class DataSource
     }
     public function getLotProductorOptions($productorModel)
     {
-        trace_log("getLotProductorOptions");
+        //trace_log("getLotProductorOptions");
         $documents = $productorModel::where('data_source', $this->code)->get();
-        trace_log($documents->toArray());
+        //trace_log($documents->toArray());
 
         $optionsList = [];
 
         foreach ($documents as $document) {
-            trace_log($document->name);
-            trace_log($document->is_lot);
+            //trace_log($document->name);
+            //trace_log($document->is_lot);
             if ($document->is_lot) {
                 $optionsList[$document->id] = $document->name;
             }
@@ -371,6 +371,7 @@ class DataSource
 
     public function getStateLogsValues($modelId = null)
     {
+        //trace_log('getStateLogsValues');
         $this->instanciateModel($modelId);
         $results = $this->model->state_logs()->orderBy('created_at')->get()->toArray();
         return $results;

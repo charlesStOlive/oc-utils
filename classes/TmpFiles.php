@@ -79,7 +79,7 @@ class TmpFiles
         } else {
             $storagePath .= "/".'public' ."/". $keepMode;
         }
-        trace_log($storagePath);
+        //trace_log($storagePath);
         return $storagePath;
     }
 
@@ -112,7 +112,7 @@ class TmpFiles
     }
     protected function getTempFolderName() {
         $tempFolderName = self::$tempFolderName;
-        trace_log($tempFolderName ? "/" . $tempFolderName : '');
+        //trace_log($tempFolderName ? "/" . $tempFolderName : '');
         return $tempFolderName ? "/" . $tempFolderName : '';
     }
     protected function getFullRacine(): string
@@ -121,7 +121,7 @@ class TmpFiles
     }
     protected function getFullPath(): string
     {
-        trace_log("/");
+        //trace_log("/");
         return 'app'."/".$this->getStorageRacine().($this->getTempFolderName() ? "/".$this->getTempFolderName() : '');
     }
 

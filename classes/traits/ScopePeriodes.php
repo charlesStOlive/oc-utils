@@ -32,16 +32,16 @@ trait ScopePeriodes
             $date = Carbon::now();
             $start_at = $date->copy()->subMonths(6);
             $end_at = $date;
-            trace_log( $start_at);
-            trace_log($end_at);
+            //trace_log( $start_at);
+            //trace_log($end_at);
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
         if ($periode == 'm_6_n_1') {
             $date = Carbon::now()->subYear();
             $start_at = $date->copy()->subYear()->subMonths(6);
             $end_at = $date;
-            trace_log( $start_at);
-            trace_log($end_at);
+            //trace_log( $start_at);
+            //trace_log($end_at);
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
         if ($periode == 'y_to_d') {

@@ -11,3 +11,6 @@
 1.0.4:
     - 'Suppresiondes jobs, deplacé dans wakajob'
     - delete_job_lists_table.php
+1.0.5:
+    - "Ajout de l'état dans le stateLog"
+    - create_stateables_table_u105.php

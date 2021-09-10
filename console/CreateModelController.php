@@ -506,9 +506,9 @@ class CreateModelController extends GeneratorCommand
                 $arraySb = explode('|', $optionsSb);
                 foreach($arraySb as $key=>$row) {
                     if(starts_with($row, 'config::')) {
-                        trace_log("il y a une config");
+                        //trace_log("il y a une config");
                         $configRaw = str_replace('config::', "", $row);
-                        trace_log($this->config[$configRaw]);
+                        //trace_log($this->config[$configRaw]);
                         $item['sb_config'] = $this->config[$configRaw];
                         unset($arraySb[$key]);
                     }  
@@ -583,7 +583,6 @@ class CreateModelController extends GeneratorCommand
                 };
                 return $item;
             })->toArray();
-        $fields = $rows->where('field', '<>', null)->where('sidebar', '==', null)->sortBy('field')->toArray();
         $this->fields_create = $rows->where('c_field', '<>', null);
         if ($this->fields_create) {
             $this->fields_create = $this->fields_create->sortBy('c_field');
@@ -755,7 +754,7 @@ class CreateModelController extends GeneratorCommand
           $destinationContent = $this->files->get($stubFile);  
         }
         if ($this->files->exists($srcFile)) {
-            trace_log($srcFile.' existe');
+            //trace_log($srcFile.' existe');
             if($mappingFnc == 'keepData' && $this->keepOldContent) {
                 $copiedContent = $this->files->get($srcFile);
                 $newContent = $destinationContent;

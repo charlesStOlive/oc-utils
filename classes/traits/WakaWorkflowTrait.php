@@ -158,7 +158,18 @@ trait WakaWorkflowTrait
                     }
                     //fin de la sauvegarde evenement
                     if (!$model->noStateSave) {
-                        $state = new \Waka\Utils\Models\StateLog(['name' => $changeState]);
+                        $user = \BackendAuth::getUser();
+                        if($user) {
+                            $user = $user->fullName;
+
+                        } else {
+                            $user = 'App';
+                        }
+                        $state = new \Waka\Utils\Models\StateLog([
+                            'name' => $changeState,
+                            'state' => $transition->getTos()[0],
+                            'user' => $user,
+                            ]);
                         $model->state_logs()->add($state);
                     }
                 }
@@ -310,5 +321,16 @@ trait WakaWorkflowTrait
     {
         $place = $this->state;
         return $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['hidden_fields'] ?? []; // string place name
+    }
+    //
+    public function getLastLog($stateName) {
+        $log =  $this->state_logs()->where('state', $stateName)->orderBy('created_at', 'desc')->first();
+        if($log) {
+            return $log->created_at;
+        } else {
+            return null;
+        }
+        
+
     }
 }

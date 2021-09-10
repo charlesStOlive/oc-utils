@@ -56,7 +56,7 @@ class ModelInfo extends FormWidgetBase
     {
         $modelId = $this->model->id;
         $modelClass = get_class($this->model);
-        trace_log($modelClass);
+        //trace_log($modelClass);
         //trace_log(get_class($this->getController()));
         $this->ds = new DataSource($modelClass, 'class');
         if(!$this->ds) {
@@ -79,7 +79,6 @@ class ModelInfo extends FormWidgetBase
     {
         $modelvalues = $this->ds->getValues($modelId);
         $dotedValues = array_dot($modelvalues);
-        //trace_log($dotedValues);
         $parsedFields = [];
         foreach ($fields as $key=>$field) {
             $showIf =  $field['showIf'] ?? null;
@@ -147,9 +146,9 @@ class ModelInfo extends FormWidgetBase
             }
 
             if ($type == 'date') {
-                $mode = $field['mode'] ?? 'date-short-time';
-                $value = $dotedValues[$fieldValue] ?? "Erreur";
-                if($value != 'Erreur') {
+                $mode = $field['mode'] ?? 'date-time';
+                $value = $dotedValues[$fieldValue] ?? "Inconnu";
+                if($value != 'Inconnu') {
                     $date = new WakaDate();
                     $value = DateTimeHelper::makeCarbon($value, false);
                     $value =  $date->localeDate($value, $mode);
@@ -158,14 +157,20 @@ class ModelInfo extends FormWidgetBase
             }
 
             if ($type == 'state_logs') {
+                //trace_log('state_logs');
                 $value = [];
                 $logs = $this->ds->getStateLogsValues($modelId);
+                //trace_log($logs);
                 if ($logs) {
                     $src_trad = $field['src_trad'] ?? null;
                     foreach ($logs as $log) {
+                        $logDate = new WakaDate();
+                        $logValue = DateTimeHelper::makeCarbon($log['created_at'], false);
+                        $logvalue =  $logDate->localeDate($logValue, 'date-time');
                         $obj = [
                             'label' => Lang::get($src_trad . $log['name'] ?? null),
-                            'created_at' => $log['created_at'],
+                            'user' => $log['user'] ?? 'inc',
+                            'created_at' => $logvalue,
                         ];
                         array_push($value, $obj);
                     }

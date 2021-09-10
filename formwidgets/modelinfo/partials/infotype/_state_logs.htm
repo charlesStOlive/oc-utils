@@ -2,7 +2,7 @@
     <?php foreach($field['value'] as $log) {  ?>
     <li class="">
         -<?=$log['label'] ?? null ?><br>
-        <p class="small"> Date UTC : <?=$log['created_at']?></p>
+        <p class="small"> Date : <?=$log['created_at']?> | <?=$log['user']?></p>
     </li>
     <?php } ?>
 </ul>

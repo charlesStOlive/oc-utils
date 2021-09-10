@@ -16,7 +16,9 @@ columns:
     {{column.var}}_r:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{column.var}}
         relation: {{column.var}}
+{% if column.col_opt is null %}
         select: name
+{% endif %}
 {% else %}
     {{column.var}}:
         label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{column.var}}
@@ -46,7 +48,7 @@ columns:
         searchable: true
 {% endif %}
 {% for c_option in column.col_opt %}
-        {{c_option}}
+        {{c_option | raw }}
 {% endfor %}
 {% if column.column == '999' %}
         invisible: true

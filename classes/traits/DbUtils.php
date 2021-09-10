@@ -33,4 +33,12 @@ trait DbUtils
             return $count;
         }
     }
+
+    public function CollectionConcatId($collection, $champs1 = 'first_name', $champ2 = 'last_name', $id = 'id') {
+        $collection = $collection->keyBy($id);
+        $collection->transform(function ($item, $key) {
+            return $item['first_name'] . ' ' . $item['last_name'];
+        });
+        return $collection->toArray();
+    }
 }

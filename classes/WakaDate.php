@@ -65,7 +65,7 @@ class WakaDate
         }
         if ($format == 'date-time') {
             $twig->setTimezone($timeZone);
-            $isoFormat = "DD/MM/YY à HH:SS ";
+            $isoFormat = "DD/MM/YY à HH:mm ";
         }
         if ($format == 'date-time-full') {
             $twig->setTimezone($timeZone);

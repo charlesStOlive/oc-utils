@@ -65,9 +65,14 @@ class StateLog extends Model
     public $belongsTo = [
     ];
     public $belongsToMany = [];
-    public $morphTo = [];
+    public $morphTo = [
+        'state_logeable' => []
+    ];
     public $morphOne = [];
     public $morphMany = [];
     public $attachOne = [];
     public $attachMany = [];
+    public $morphedByMany = [
+    ];
+
 }

@@ -64,7 +64,7 @@ class CreateRelations
         if($filter == '') {
             $filter = null;
         }
-        trace_log("filtre : ".$filter);
+        //trace_log("filtre : ".$filter);
         $filters = [];
         $filterName = $filter ?  'config_filters_for_'.$var.'.yaml' : null;
         if($filter == 'manage' || $filter == 'all') {
@@ -157,7 +157,7 @@ class CreateRelations
         
         $relation = array_merge($relation, $relationItem);
 
-        trace_log($relation);
+        //trace_log($relation);
         
         // [var] => ressources
         // [type] => many
