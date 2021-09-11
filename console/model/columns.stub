@@ -38,7 +38,7 @@ columns:
 {% elseif column.col_type and column.col_type != 'relation'  %}
         type: {{column.col_type}}
 {% endif %}
-{% if column.type is null or column.col_type == 'partial'  %}
+{% if (column.type is null or column.col_type == 'partial') and column.var != 'created_at'  %}
         searchable: false
         sortable: false
 {% elseif column.col_type == 'switch'  %}
