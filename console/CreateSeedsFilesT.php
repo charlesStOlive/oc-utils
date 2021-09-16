@@ -9,7 +9,7 @@ use Yaml;
 use Brick\VarExporter\VarExporter;
 
 
-class CreateSeedsFiles extends GeneratorCommand
+class CreateSeedsFiles extends GeneratorCommand 
 {
     /**
      * The console command name.
