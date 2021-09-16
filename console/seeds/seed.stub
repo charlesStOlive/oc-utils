@@ -1,0 +1,29 @@
+<?php namespace {{studly_author}}\{{studly_plugin}}\Models;
+
+use Seeder;
+
+
+
+class Seed{{studly_model}}{% if version %}V{{version}}{% endif %} extends Seeder
+{
+    public function run()
+    {
+{% for data in datas %}
+            $inject = \{{className}}::insert({{data.w_dataString |raw}});
+{% if data.w_fileconfig%}
+{% for file in data.w_fileconfig %}
+{% if file.mode == 'copyUpload'%}
+            //Pas encore terminé
+{% elseif file.mode == 'copyStore' %}
+            $fileDestinationPath = "{{ file.attributeValue|raw }}";
+            $localDisk = new \Waka\Utils\Classes\WorkDirFiles();
+            $file = plugins_path('{{lower_author}}/{{lower_plugin}}{{file.srcPath}}');
+            $localDisk->putFile($file, $fileDestinationPath);
+            //
+{% endif %}
+{% endfor %} 
+{% endif %}
+{% endfor %} 
+    }
+
+}

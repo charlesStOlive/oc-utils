@@ -102,6 +102,7 @@ class Plugin extends PluginBase
         $this->registerConsoleCommand('waka.workflowDump', 'Waka\Utils\Console\WorkflowDump');
         $this->registerConsoleCommand('waka:trad', 'Waka\Utils\Console\PluginTrad');
         $this->registerConsoleCommand('waka:excelTrad', 'Waka\Utils\Console\ExcelTrad');
+        $this->registerConsoleCommand('waka:createSeed', 'Waka\Utils\Console\CreateSeedsFiles');
         //$this->registerConsoleCommand('waka.workflowOnline', 'Waka\Utils\Console\WorkflowOnlineCreate');
         $this->registerConsoleCommand('waka.workflowOnlineCreate', 'Waka\Utils\Console\WorkflowOnlineDump');
         CombineAssets::registerCallback(function ($combiner) {
