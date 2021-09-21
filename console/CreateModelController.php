@@ -48,13 +48,15 @@ class CreateModelController extends GeneratorCommand
      */
     public function handle()
     {
+        $noController = $this->config['no_controller'] ?? false;
+
         $this->vars = $this->processVars($this->prepareVars());
         //Création du modele
         if ($this->maker['model']) {
             /**/trace_log('on fait le modele');
             $stub = 'model/model.stub';
-            $destination = 'models/'. strtolower($this->w_model) . '.php';
-            $src = 'models/'. strtolower($this->w_model) . '.php';
+            $destination = 'models/'. ucfirst($this->w_model) . '.php';
+            $src = 'models/'. ucfirst($this->w_model) . '.php';
             $fnc = 'keepData';
             $this->makeOneStubFromFile($stub, $destination, $this->vars, $src , $fnc );
         }
@@ -94,7 +96,7 @@ class CreateModelController extends GeneratorCommand
                 $this->stubs['model/fields_tab.stub'] = 'models/{{lower_name}}/fields.yaml';
             }
         }
-        if ($this->maker['controller']) {
+        if ($this->maker['controller'] && !$noController) {
             /**/trace_log('on fait le controlleur');
             $controllerPhpStubs = [
                 'controller/config_form.stub' => 'controllers/{{lower_ctname}}/config_form.yaml',
@@ -108,7 +110,7 @@ class CreateModelController extends GeneratorCommand
             $fnc = 'keepData';
             $this->makeOneStubFromFile($stub, $destination, $this->vars, $src , $fnc);
         }
-        if ($this->maker['controller_config']) {
+        if ($this->maker['controller_config'] && !$noController) {
             /**/trace_log('on fait les configs du controlleur');
             if ($this->config['behav_duplicate'] ?? false) {
                 $this->stubs['controller/config_duplicate.stub'] = 'controllers/{{lower_ctname}}/config_duplicate.yaml';
@@ -179,22 +181,24 @@ class CreateModelController extends GeneratorCommand
                 
             }
         }
-        if ($this->maker['controller_htm']) {
-            $controllerHtmStubs = [
-                'controller/_list_toolbar.stub' => 'controllers/{{lower_ctname}}/_list_toolbar.htm',
-                'controller/create.stub' => 'controllers/{{lower_ctname}}/create.htm',
-                'controller/index.stub' => 'controllers/{{lower_ctname}}/index.htm',
-                'controller/preview.stub' => 'controllers/{{lower_ctname}}/preview.htm',
-                'controller/update.stub' => 'controllers/{{lower_ctname}}/update.htm',
-            ];
-            $this->stubs = array_merge($this->stubs,  $controllerHtmStubs);
-            if ($this->config['side_bar_attributes'] || $this->config['side_bar_info']) {
-                unset($this->stubs['controller/update.stub']);
-                //trace_log('controller avec sidebar');
-                $this->stubs['controller/update_sidebar.stub'] = 'controllers/{{lower_ctname}}/update.htm';
-            }
-            if ($this->config['behav_reorder']) {
-                $this->stubs['controller/reorder.stub'] = 'controllers/{{lower_ctname}}/reorder.htm';
+        if ($this->maker['controller_htm'] ) {
+            if(!$noController) {
+                $controllerHtmStubs = [
+                    'controller/_list_toolbar.stub' => 'controllers/{{lower_ctname}}/_list_toolbar.htm',
+                    'controller/create.stub' => 'controllers/{{lower_ctname}}/create.htm',
+                    'controller/index.stub' => 'controllers/{{lower_ctname}}/index.htm',
+                    'controller/preview.stub' => 'controllers/{{lower_ctname}}/preview.htm',
+                    'controller/update.stub' => 'controllers/{{lower_ctname}}/update.htm',
+                ];
+                $this->stubs = array_merge($this->stubs,  $controllerHtmStubs);
+                if ($this->config['side_bar_attributes'] || $this->config['side_bar_info']) {
+                    unset($this->stubs['controller/update.stub']);
+                    //trace_log('controller avec sidebar');
+                    $this->stubs['controller/update_sidebar.stub'] = 'controllers/{{lower_ctname}}/update.htm';
+                }
+                if ($this->config['behav_reorder']) {
+                    $this->stubs['controller/reorder.stub'] = 'controllers/{{lower_ctname}}/reorder.htm';
+                }
             }
             /**/trace_log('on fait les htm relations');
             $controllerRelations = $this->relations->getControllerRelations();

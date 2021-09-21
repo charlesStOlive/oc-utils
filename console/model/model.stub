@@ -159,53 +159,53 @@ class {{studly_name}} extends Model
      */
     public $hasOne = [
 {% for relation in modelRelations.hasOne %}
-        '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}},
+        '{{relation.name }}' => {{ relation.relationarray | raw}},
 {% endfor %}
     ];
     public $hasMany = [
 {% for relation in modelRelations.many %}
-        '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}},
+        '{{relation.name}}' => {{ relation.relationarray | raw}},
 {% endfor %}
     ];
     public $hasOneThrough = [
 {% for relation in modelRelations.oneThrough %}
-        '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}},
+        '{{relation.name}}' => {{ relation.relationarray | raw}},
 {% endfor %}
     ];
     public $hasManyThrough = [
 {% for relation in modelRelations.manyThrough %}
-        '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}},
+        '{{relation.name}}' => {{ relation.relationarray | raw}},
 {% endfor %}
     ];
     public $belongsTo = [
 {% for relation in modelRelations.belong %}
-       '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}},
+       '{{relation.name}}' => {{ relation.relationarray | raw}},
 {% endfor %}
     ];
     public $belongsToMany = [
 {% for relation in modelRelations.belongsMany %}
-        '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}},
+        '{{relation.name}}' => {{ relation.relationarray | raw}},
 {% endfor %}
     ];        
     public $morphTo = [];
     public $morphOne = [
 {% for relation in modelRelations.morphOne %}
-        '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}},
+        '{{relation.name}}' => {{ relation.relationarray | raw}},
 {% endfor %}
     ];
     public $morphMany = [
 {% for relation in modelRelations.morphMany %}
-        '{{relation.name| lowercase}}' => {{ relation.relationarray | raw}},
+        '{{relation.name}}' => {{ relation.relationarray | raw}},
 {% endfor %}
     ];
     public $attachOne = [
 {% for relation in modelRelations.attachOne %}
-        '{{relation.name| lowercase}}' => {{relation.relationarray | raw}},
+        '{{relation.name}}' => {{relation.relationarray | raw}},
 {% endfor %}
     ];
     public $attachMany = [
 {% for relation in modelRelations.attachMany %}
-        '{{relation.name| lowercase}}' => {{relation.relationarray | raw}},
+        '{{relation.name}}' => {{relation.relationarray | raw}},
 {% endfor %}
     ];
 

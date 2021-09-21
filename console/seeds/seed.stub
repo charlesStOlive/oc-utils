@@ -4,21 +4,29 @@ use Seeder;
 
 
 
-class Seed{{studly_model}}{% if version %}V{{version}}{% endif %} extends Seeder
+class Seed{{ seedClassName }} extends Seeder
 {
     public function run()
     {
+{% if classOptions.datasource %}
+        \{{className}}::where('data_source', '{{lower_model}}')->delete();;
+{% else %}
+        \{{className}}::truncate();
+{% endif %}
+            
 {% for data in datas %}
-            $inject = \{{className}}::insert({{data.w_dataString |raw}});
+        $inject = \{{className}}::create({{data.w_dataString |raw}});
 {% if data.w_fileconfig%}
 {% for file in data.w_fileconfig %}
 {% if file.mode == 'copyUpload'%}
-            //Pas encore terminé
+        $inject->{{file.attribute}} = plugins_path('{{lower_author}}/{{lower_plugin}}{{file.srcPath}}');
+        $inject->save();
+
 {% elseif file.mode == 'copyStore' %}
-            $fileDestinationPath = "{{ file.attributeValue|raw }}";
-            $localDisk = new \Waka\Utils\Classes\WorkDirFiles();
-            $file = plugins_path('{{lower_author}}/{{lower_plugin}}{{file.srcPath}}');
-            $localDisk->putFile($file, $fileDestinationPath);
+        $optionalPath = "{{ file.dirname }}";
+        $localDisk = new \Waka\Utils\Classes\WorkDirFiles();
+        $file = plugins_path('{{lower_author}}/{{lower_plugin}}{{file.srcPath}}');
+        $localDisk->putFile($file, $optionalPath);
             //
 {% endif %}
 {% endfor %} 
