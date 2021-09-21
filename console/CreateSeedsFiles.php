@@ -42,7 +42,7 @@ class CreateSeedsFiles extends GeneratorCommand
     protected $stubs = [];
     //
     public $pluginObj = [];
-    public $relations;
+    public $pluginCode;
     /**
      * Execute the console command.
      *
@@ -65,12 +65,12 @@ class CreateSeedsFiles extends GeneratorCommand
      */
     protected function prepareVars()
     {
-        $pluginCode = $this->argument('plugin');
+        $this->pluginCode = $this->argument('plugin');
 
-        $parts = explode('.', $pluginCode);
+        $parts = explode('.', $this->pluginCode);
         $plugin = array_pop($parts);
         $author = array_pop($parts);
-        $model = $this->argument('model');
+        $this->model = $this->argument('model');
         //
         $classes = $this->getModelsConfig();
         $classes = array_keys($classes);
@@ -79,7 +79,7 @@ class CreateSeedsFiles extends GeneratorCommand
         return [
             'author' => $author,
             'plugin' => $plugin,
-            'model' => $model,
+            'model' => $this->model,
             'version' => $this->argument('version'),
         ];
 
@@ -104,18 +104,36 @@ class CreateSeedsFiles extends GeneratorCommand
 
     public function createSeedFile($classIndex,$class) {
         $sourceFile = $this->getSourcePath() . '/seeds/seed.stub';
-        $destinationFile = $this->getDestinationPath() . '/updates/Seed' . $this->vars['studly_model'].camel_case($classIndex).$this->vars['version'].'.php';
+        $seedFileName = null;
+        $seedClassName = null;
+        $classOptions = $class['options'] ?? [];
+        $classProd = $class['options']['prod'] ?? false;
+        if($classProd ?? false) {
+            //les classes prods sont les classes de production on va adjoindre le nom de la classe producteur pour s'y retrouver.
+            $seedFileName = $this->vars['lower_model'].'_'.$classIndex.$this->vars['version'];
+            $seedClassName = $this->vars['studly_model'].ucfirst(camel_case($classIndex)).$this->vars['version'];
+        } else {
+            $seedFileName = $this->vars['lower_model'].'_'.$this->vars['version'];
+            $seedClassName = $this->vars['studly_model'].$this->vars['version'];
+        }
+        $destinationFile = $this->getDestinationPath() . '/updates/seed_' . $seedFileName .'.php';
         //
         $className = $class['class'];
         $files = $class['files'] ?? [];
+        $fileUploads = [];
+        foreach($files as $file) {
+            if(in_array($file['mode'], ['copyUpload'])) {
+                array_push($fileUploads, $file['attribute']);
+            }
+        }
         $dataSourceName = $this->vars['lower_model'];
         $getAllDatas = $class['all'] ?? false;
         $datas = [];
         //Recherche des modèles existants : 
-        if($getAllDatas) {
-            $datas = $className::get();
-        } else {
+        if($class['options']['datasource'] ?? false) {
             $datas = $className::where('data_source', $dataSourceName)->get();
+        } else {
+             $datas = $className::with($fileUploads)->get();
         }
         //Remove ID for each row
         $datas->transform(function ($item, $key) use ($files) {
@@ -126,114 +144,67 @@ class CreateSeedsFiles extends GeneratorCommand
         //Création des fichiers
         $finalDatas = [];
         foreach($datas as $key=>$data) {
+            //trace_log($data->toArray());
             $inject = [];
             $subDatas = $data->toArray();
-            foreach($subDatas as $key=>$subData) {
-                if(is_array($subData)) {
-                    $subDatas[$key] = json_encode($subData);
-                }
-            }
-            $inject['w_dataString'] = VarExporter::export($subDatas,VarExporter::NO_CLOSURES,3);
             $inject['w_fileconfig'] = [];
             foreach($files as $filekey=>$file) {
                 // On parocur la liste des fichier a copier
                 $attributeName = $file['attribute'];
-                if($data[$attributeName] ?? false) {
+                //trace_log( "attribute Name ".$attributeName);
+                //if($data[$attributeName] ?? false || $data->{$attributeName}) {
                     //Si on en trouve 1 on copie le fichier.
-                    $path = $data->{$attributeName};
                     if($file['mode'] =='copyStore') {
-                        $file['attributeValue'] = $path;
+                        $path = $data->{$attributeName};
+                        $pathinfo = pathinfo($path);
+                        $file['dirname'] = $pathinfo['dirname'] ?? '/';
+                        $file['name'] = $pathinfo['basename'];
+                        $file['srcPath'] = '/updates/files/'.$file['name'];
                         $path = storage_path('app/media'.$path);
-                    } else if ($file['mode'] =='copyUpload') {
-                        $path = $item->{$attributeName}->getPath();
+                        $file['originalPath'] = $path;
+                        
+                    } else if ($file['mode'] =='copyUpload' && $data->{$attributeName}) {
+                        $path = $data->{$attributeName}->getLocalPath();
+                        //trace_log($path);
+                        $file['originalPath'] = $path;
+                        $file['name'] = $data->{$attributeName}->getFilename();
+                        $file['srcPath'] = '/updates/files/'.$file['name'];
                     }
                     //On ajoute les information du fichier dans le row de données. 
                    
                     //On continue la création.
-                    $pathinfo = pathinfo($path);
-                    $fileName = $pathinfo['basename'];
-                    $file['srcPath'] = '/updates/files/'.$fileName;
-                    $filePath = $this->getDestinationPath() . '/updates/files/'.$fileName;
-                    $this->makeDirectory($filePath);
-                    $fileContent = $this->files->get($path);
-                    $this->files->put($filePath, $fileContent);
+                    if($file['originalPath'] ?? false) {
+                        $filePath = $this->getDestinationPath() . '/updates/files/'.$file['name'];
+                        $this->makeDirectory($filePath);
+                        $fileContent = $this->files->get($file['originalPath']);
+                        $this->files->put($filePath, $fileContent);
+
+                    }
+                   
                     //
                     //$item['files'][$attributeName] = $file;
                     //
-                }
+                //}
                 array_push($inject['w_fileconfig'],$file);
 
             }
+            foreach($subDatas as $key=>$subData) {
+                // if(is_array($subData)) {
+                //     $subDatas[$key] = json_encode($subData);
+                // }
+                if(in_array($key, $fileUploads)) {
+                    unset($subDatas[$key]);
+                }
+            }
+            $inject['w_dataString'] = VarExporter::export($subDatas,VarExporter::NO_CLOSURES,3);
             array_push($finalDatas, $inject);  
         }
-        // $datas->transform(function ($item, $key) use($files, $finalDatas) {
-            
-        //     $subDatas = $item->toArray();
-        //     foreach($subDatas as $key=>$subData) {
-        //         if(is_array($subData)) {
-        //             $subDatas[$key] = json_encode($subData);
-        //         }
-        //     }
-        //     $item['w_dataString'] = VarExporter::export($subDatas,VarExporter::NO_CLOSURES,3);
-        //     $item['w_fileconfig'] = [];
-        //     //On parcours lesrequetes
-        //     foreach($files as $filekey=>$file) {
-        //         // On parocur la liste des fichier a copier
-        //         $attributeName = $file['attribute'];
-        //         if($item[$attributeName] ?? false) {
-        //             //Si on en trouve 1 on copie le fichier.
-        //             $path = $item[$attributeName];
-        //             if($file['mode'] =='copyStore') {
-        //                 $file['attributeValue'] = $path;
-        //                 $path = storage_path('app/media'.$path);
-        //             } else if ($file['mode'] =='copyUpload') {
-        //                 $path = $item->{$attributeName}->getPath();
-        //             }
-        //             //On ajoute les information du fichier dans le row de données. 
-                   
-        //             //On continue la création.
-        //             $pathinfo = pathinfo($path);
-        //             $fileName = $pathinfo['basename'];
-        //             $filePath = $this->getDestinationPath() . '/updates/files/'.$fileName;
-        //             $this->makeDirectory($filePath);
-        //             $fileContent = $this->files->get($path);
-        //             $this->files->put($filePath, $fileContent);
-        //             //
-        //             //$item['files'][$attributeName] = $file;
-        //             //
-        //         }
-        //         array_push($item['w_fileconfig'],[$file]);
-
-        //     }
-
-        //     return $item;
-        // });
-        // $datas = $datas->toArray();
         $destinationContent = $this->files->get($sourceFile);
-        $seedVars = array_merge($this->vars, ['datas' => $finalDatas ], ['className' => $className]);
+        $seedVars = array_merge($this->vars, ['datas' => $finalDatas ], ['className' => $className], ['seedClassName' => $seedClassName], ['classOptions' => $classOptions]);
         trace_log($seedVars);
         $destinationContent = Twig::parse($destinationContent, $seedVars);
         $this->files->put($destinationFile, $destinationContent);
 
-    }
-
-
-    public function makeStub($stubName)
-    {
-        // if (!isset($this->stubs[$stubName])) {
-        //     return;
-        // }
-
-        // $sourceFile = $this->getSourcePath() . '/' . $stubName;
-        // $destinationFile = $this->getDestinationPath() . '/' . $this->stubs[$stubName];
-        // $destinationContent = $this->files->get($sourceFile);
-        // /*
-        //  * Parse each variable in to the destination content and path
-        //  */
-        // $destinationContent = Twig::parse($destinationContent, $this->vars);
-        // $destinationFile = Twig::parse($destinationFile, $this->vars);
-        // $this->makeDirectory($destinationFile);
-        // $this->files->put($destinationFile, $destinationContent);
     }
 
         /**
@@ -282,26 +253,86 @@ class CreateSeedsFiles extends GeneratorCommand
 
 
     protected FUNCTION getModelsConfig() {
-        return  [
-            'waka_woorder_document' => [
+        $classes =   [
+            'waka_importExport_export' => [
+                'class' => 'Waka\ImportExport\Models\Export',
+                'options' => [
+                    'prod' => true,
+                    'datasource' => true,
+                    'requiredBehavior' => 'Waka.'
+                ]
+            ],
+            'waka_importExport_import' => [
+                'class' => 'Waka\ImportExport\Models\Import',
+                'options' => [
+                    'datasource' => true,
+                    'prod' => true,
+                ]
+            ],
+            'waka_worder_document' => [
                 'class' => 'Waka\Worder\Models\Document',
                 'files' => [
                     ['attribute' => 'path','mode' => 'copyStore'],
+                ],
+                'options' => [
+                    'datasource' => true,
+                    'prod' => true,
                 ]
             ],
             'waka_mailer_wakaMail' => [
                 'class' => 'Waka\Mailer\Models\WakaMail',
+                'options' => [
+                    'datasource' => true,
+                    'prod' => true,
+                ]
             ],
             'waka_mailer_bloc' => [
                 'class' => 'Waka\Mailer\Models\Bloc',
-                'all' => true,
+                'options' => [
+                    'prod' => true,
+                ]
             ],
             'waka_mailer_layout' => [
                 'class' => 'Waka\Mailer\Models\Layout',
-                'all' => true,
+                'options' => [
+                    'prod' => true,
+                ]
+            ],
+            'waka_pdfer_wakaPdf' => [
+                'class' => 'Waka\Mailer\Models\WakaMail',
+                'options' => [
+                    'datasource' => true,
+                    'prod' => true,
+                ]
+            ],
+            'waka_pdfer_bloc' => [
+                'class' => 'Waka\Pdfer\Models\Bloc',
+                'options' => [
+                    'prod' => true,
+                ]
+            ],
+            'waka_pdfer_layout' => [
+                'class' => 'Waka\Pdfer\Models\Layout',
+                'options' => [
+                    'prod' => true,
+                ]
+            ],
+            'waka_segator_layout' => [
+                'class' => 'Waka\Segator\Models\Tag',
+                'options' => [
+                    'prod' => true,
+                ]
             ],
         ];
+        $lowerModel = strtolower($this->model);
+        $modelClasses = \Config::get($this->pluginCode.'::seeds.'. $lowerModel);
+        if($modelClasses) {
+            return array_merge([$lowerModel => $modelClasses ], $classes);
+        } else {
+            return $classes;
+        }
 
+        
     }
 
     protected function processVars($vars)
