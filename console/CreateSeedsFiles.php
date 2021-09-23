@@ -201,7 +201,7 @@ class CreateSeedsFiles extends GeneratorCommand
         }
         $destinationContent = $this->files->get($sourceFile);
         $seedVars = array_merge($this->vars, ['datas' => $finalDatas ], ['className' => $className], ['seedClassName' => $seedClassName], ['classOptions' => $classOptions]);
-        trace_log($seedVars);
+        //trace_log($seedVars);
         $destinationContent = Twig::parse($destinationContent, $seedVars);
         $this->files->put($destinationFile, $destinationContent);
 

@@ -30,9 +30,11 @@ class Scopes
         }
 
         foreach ($this->scopes as $scope) {
+            //trace_log($scope);
             $this->checked++;
             $model = $this->model;
-            if (!$scope['self']) {
+            $scopeSelf = $scope['self'] ?? true;
+            if (!$scopeSelf) {
                 $model = $this->getStringModelRelation($model, $scope['target']);
             }
             //trace_log($scope['scopeKey']);
@@ -173,9 +175,10 @@ class Scopes
 
     private function getUserValidation($scope)
     {
+        //trace_log($scope);
         $userId = \BackendAuth::getUser()->id;
 
-        return in_array($userId, $scope);
+        return in_array($userId, $scope['scope_users']);
     }
     private function getUserRoleValidation($scope)
     {
