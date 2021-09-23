@@ -192,7 +192,17 @@ class Btns extends WidgetBase
         }
         $this->vars['base'] = $base;
         $this->vars['isLot'] = true;
-        $this->vars['hasLot'] = $toolBar['config_lot']['btns'] ?? false;
+        $hasLot = $toolBar['config_lot']['btns'] ?? false;
+        if($hasLot) {
+            $permissionLot = $this->config->tool_bar['config_lot']['permissions'] ?? null;
+            trace_log($permissionLot);
+            if($permissionLot) {
+                if(!$this->user->hasAccess($permissionLot)) {
+                    $hasLot = false;
+                }
+            }
+        }
+        $this->vars['hasLot'] = $hasLot;
         $this->vars['partials'] = $toolBar['partials'] ?? null;
         $this->vars['btns'] = $this->getBtns($toolBar['config_btns'] ?? null);
         return $this->makePartial('tool_bar');
@@ -219,7 +229,7 @@ class Btns extends WidgetBase
     public function renderLot()
     {
         $this->prepareComonVars('list');
-        $configBtns = $this->config->tool_bar['lot'] ?? null;
+        //$configBtns = $this->config->tool_bar['lot'] ?? null;
         //trace_log("preparation du lot");
         $this->vars['hasWorkflow'] = $this->config->workflow;
         $this->vars['btns'] = $this->getBtns($this->config->tool_bar['config_lot'] ?? null);
