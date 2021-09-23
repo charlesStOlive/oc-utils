@@ -195,7 +195,7 @@ class Btns extends WidgetBase
         $hasLot = $toolBar['config_lot']['btns'] ?? false;
         if($hasLot) {
             $permissionLot = $this->config->tool_bar['config_lot']['permissions'] ?? null;
-            trace_log($permissionLot);
+            //trace_log($permissionLot);
             if($permissionLot) {
                 if(!$this->user->hasAccess($permissionLot)) {
                     $hasLot = false;
