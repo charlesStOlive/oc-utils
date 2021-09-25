@@ -94,8 +94,11 @@ fields:
 {% if field.default  %}
         default: {{field.default}}
 {% endif %}
-{% if field.comment  %}
+{% if field.commentAbove  %}
         commentAbove: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.var}}_com
+{% endif %}
+{% if field.comment  %}
+        comment: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{field.var}}_com
 {% endif %}
 {% if field.permissions  %}
         permissions: [{{field.permissions}}]

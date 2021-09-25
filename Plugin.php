@@ -47,6 +47,9 @@ class Plugin extends PluginBase
                 'camelCase' => function ($twig) {
                     return camel_case($twig);
                 },
+                'snakeCase' => function ($twig) {
+                    return snake_case($twig);
+                },
                 'defaultConfig' => function ($twig, $config_name) {
                     $dataFromConfig = \Config('wcli.wconfig::' . $config_name);
                     //trace_log($dataFromConfig);

@@ -28,7 +28,7 @@
     <input class="form-control" id="<?= $id.'_height' ?>" name="<?= $name.'[height]' ?>"
            value="<?= e($values['height'] ?? null) ?>" />
 </div>
-<div id="image_option">
+<div id="<?= $id.'image_option'?>">
     <?php if($imageType == 'file') : ?>
     <?=$this->makePartial('options_classique') ?>
     <?php elseif($imageType) : ?>

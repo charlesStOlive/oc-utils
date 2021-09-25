@@ -43,7 +43,7 @@ class ImageWidget extends FormWidgetBase
         $noImage = true;
         $ds = new DataSource($this->model->data_source);
         //trace_log($ds->name);
-        $ds->instanciateModel($this->model->id); // instancie l'exemple
+        $ds->instanciateModel($this->model->test_id); // instancie l'exemple
         $options = $ds->wimages->getAllPicturesKey();
         if ($options) {
             $noImage = false;
@@ -91,22 +91,23 @@ class ImageWidget extends FormWidgetBase
         $codeImage = trim($formFieldValue['selector']);
         //trace_log($codeImage);
         $ds = new DataSource($this->model->data_source);
-        $ds->instanciateModel(); // instancie l'exemple
+        $ds->instanciateModel($this->model->test_id); // instancie l'exemple
         $pictureData = $ds->wimages->getOnePictureKey($codeImage);
         $imageType = $pictureData['type'] ?? null;
         $this->vars['id'] = $this->getId();
         $this->vars['name'] = $this->getFieldName();
         $this->vars['value'] = $this->getLoadValue() ?? [];
+        trace_log( '#'.$this->getId().'image_option');
         if($imageType == 'file') {
             $this->vars['cropOptions'] = \Config::get('waka.utils::image.baseCrop');
             return [
-                '#image_option' => $this->makePartial('options_classique'),
+                '#'.$this->getId().'image_option' => $this->makePartial('options_classique'),
             ]; 
         } else {
             $this->vars['cropOptions'] = \Config::get('waka.cloudis::ImageOptions.crop.options');
             $this->vars['gravityOptions'] = \Config::get('waka.cloudis::ImageOptions.gravity.options');
             return [
-                '#image_option' => $this->makePartial('options_cloudi'),
+                '#'.$this->getId().'image_option' => $this->makePartial('options_cloudi'),
             ]; 
 
         } 
