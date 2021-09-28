@@ -1,0 +1,55 @@
+label:
+    name: Label/Titre
+    description: Ajouter un titre ou un label
+    titleFrom: name
+    icon: icon-file-text-o
+    fields:
+        code:
+            label: code
+            span: left
+            readOnly: true
+        content:
+            span: full
+            label: description
+            size: small
+textarea:
+    name: Ajouter un texte
+    description: Ajouter un texte su plusieurs lignes
+    icon: icon-file-text-o
+    fields:
+        code:
+            label: code
+            span: left
+            readOnly: true
+        content:
+            label: le texte
+            type: textarea
+            span: full
+            size: tiny
+image:
+    name: Ajouter une image
+    description: Ajouter une image et modifier sa taille
+    icon: icon-file-text-o
+    fields:
+        code:
+            label: code
+            span: left
+            readOnly: true
+        content:
+            label: Source de l'image
+            type: imagewidget
+richeditor:
+    name: Ajouter un texte html
+    description: Ajouter un texte su plusieurs lignes en markdown
+    icon: icon-file-text-o
+    fields:
+        code:
+            label: code
+            span: left
+            readOnly: true
+        content:
+            label: le texte
+            type: richeditor
+            span: full
+            size: small
+            toolbarButtons: paragraphStyle|paragraphFormat|bold|italic| underline|strikeThrough|color|inlineStyle|clearFormatting|html
