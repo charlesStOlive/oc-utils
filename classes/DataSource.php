@@ -496,6 +496,45 @@ class DataSource
     }
 
     /**
+     * NOUVEAU PRINCIPE POUR LES IMAGES
+     */
+
+    public function getSrcImage() {
+        $array = [];
+        $array[$this->code] = $this->name;
+        $relations = new Collection($this->relations);
+        if ($relations->count()) {
+            $relationArray =  $relations->where('images', true)->transform(function ($item, $key) {
+                 $item = $item['label'];
+                 return $item;
+             })->toArray();
+             $array = array_merge($array, $relationArray);
+        }
+        return $array; 
+       
+
+    }
+
+    public function getImagesFilesFrom($type, $code = null) {
+        $code ? $code : $this->code;
+        $staticModel = new $this->class;
+        trace_log("code = ".$code);
+        if($code != $this->code) {
+            $relation = new DataSource($code);
+            $staticModel = new $relation->class;
+        }
+        $files = $staticModel->attachOne; 
+        $fiesFiltered =  array_filter($files, function($value) use ($type) {
+            return $value == [$type];
+        });
+        $finalArray = [];
+        foreach($fiesFiltered as $key=>$file) {
+            $finalArray[$key] = $key;
+        }
+        return  $finalArray;
+    }
+
+    /**
      * GLOBAL
      */
 

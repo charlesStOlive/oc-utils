@@ -1,0 +1,17 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    image:
+        label: Choisissez une image
+        type: mediafinder
+        span: full
+    width:
+        label: width
+        span: auto
+    height:
+        label: height
+        span: auto
+        dependsOn: width
+    

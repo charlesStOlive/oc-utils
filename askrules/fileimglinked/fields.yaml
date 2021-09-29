@@ -1,0 +1,34 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    srcImage:
+        label: source de l'image
+        type: dropdown
+        span: left
+        options: listSelfParent
+        placeholder: --Choissez une valeur--
+        required: true
+    image:
+        label: Choisissez une image
+        type: dropdown
+        span: right
+        placeholder: --Choissez une valeur--
+        options: listLinkedImage
+        dependsOn: srcImage
+        required: true
+    width:
+        label: width
+        span: auto
+    height:
+        label: height
+        span: auto
+        dependsOn: width
+    crop:
+        label: Méthode de reditionement
+        type: dropdown
+        options: istCropMode
+
+
+    

@@ -112,7 +112,22 @@ class Plugin extends PluginBase
             $combiner->registerBundle('$/waka/utils/assets/css/waka.less');
             $combiner->registerBundle('$/wcli/wconfig/assets/css/simple_grid/pdf.less');
             $combiner->registerBundle('$/wcli/wconfig/assets/css/simple_grid/email.less');
+            $combiner->registerBundle('$/waka/utils/formwidgets/askbuilder/assets/less/asks.less');
         });
+    }
+
+    public function registerAskRules()
+    {
+        return [
+            'groups' => [],
+            'events' => [],
+            'asks' => [
+                \Waka\Utils\AskRules\HtmlAsk::class,
+                \Waka\Utils\AskRules\ImageAsk::class,
+                \Waka\Utils\AskRules\FileImgLinked::class,
+            ],
+            'conditions' => [],
+        ];
     }
 
     public function registerListColumnTypes()

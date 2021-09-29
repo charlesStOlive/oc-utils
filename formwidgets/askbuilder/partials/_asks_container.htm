@@ -1,0 +1,12 @@
+<div class="asks-container">
+    <div
+         id="<?= $this->getId() ?>"
+         class="control-ruleasks"
+         data-settings-handler="<?= $this->getEventHandler('onLoadAskSetup') ?>"
+         data-delete-handler="<?= $this->getEventHandler('onDeleteAsk') ?>"
+         data-cancel-handler="<?= $this->getEventHandler('onCancelAskSettings') ?>"
+         data-create-handler="<?= $this->getEventHandler('onLoadCreateChildAsk') ?>"
+         data-control="ruleasks">
+        <?= $this->makePartial('asks', ['asks' => $asks]) ?>
+    </div>
+</div>

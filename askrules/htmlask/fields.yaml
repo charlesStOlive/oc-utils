@@ -1,0 +1,8 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    html:
+        label: Text HTML
+        type: richeditor

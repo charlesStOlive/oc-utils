@@ -97,7 +97,7 @@ class ImageWidget extends FormWidgetBase
         $this->vars['id'] = $this->getId();
         $this->vars['name'] = $this->getFieldName();
         $this->vars['value'] = $this->getLoadValue() ?? [];
-        trace_log( '#'.$this->getId().'image_option');
+        //trace_log( '#'.$this->getId().'image_option');
         if($imageType == 'file') {
             $this->vars['cropOptions'] = \Config::get('waka.utils::image.baseCrop');
             return [

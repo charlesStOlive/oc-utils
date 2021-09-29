@@ -1,0 +1,23 @@
+<div class="title">Ask</div>
+<div class="ask-set">
+    <ol>
+        <?php foreach ($asks as $ask): ?>
+        <?= $this->makePartial('ask', ['ask' => $ask]) ?>
+        <?php endforeach ?>
+    </ol>
+    <?php if(!$isRestrictedMode) : ?>
+    <a
+       href="javascript:;"
+       data-control="popup"
+       data-handler="<?= $this->getEventHandler('onLoadCreateAskForm') ?>"
+       class="menu-control">
+        <i class="icon-plus"></i> Ajouter un champs éditable
+    </a>
+    <?php endif ?>
+</div>
+
+<?php if (isset($newAskId)): ?>
+<script>
+showAskSettings('<?= e($newAskId) ?>')
+</script>
+<?php endif ?>
