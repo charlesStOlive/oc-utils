@@ -7,6 +7,7 @@ use Mexitek\PHPColors\Color;
 use System\Classes\CombineAssets;
 use System\Classes\PluginBase;
 use View;
+use Illuminate\Foundation\AliasLoader;
 use Waka\Utils\Classes\DataSourceList;
 use Waka\Utils\Columns\BtnActions;
 use Waka\Utils\Columns\CalculColumn;
@@ -98,6 +99,13 @@ class Plugin extends PluginBase
      */
     public function register()
     {
+        $alias = AliasLoader::getInstance();
+        $alias->alias('DataSources', 'Waka\Utils\Facades\DataSources');
+
+        \App::singleton('datasources', function() {
+            return new \Waka\Utils\Classes\Ds\DataSources;
+        });
+
         $this->registerConsoleCommand('waka.injector', 'Waka\Utils\Console\CreateInjector');
         $this->registerConsoleCommand('waka.mc', 'Waka\Utils\Console\CreateModelController');
         $this->registerConsoleCommand('waka.uicolors', 'Waka\Utils\Console\CreateUiColors');
@@ -113,20 +121,21 @@ class Plugin extends PluginBase
             $combiner->registerBundle('$/wcli/wconfig/assets/css/simple_grid/pdf.less');
             $combiner->registerBundle('$/wcli/wconfig/assets/css/simple_grid/email.less');
             $combiner->registerBundle('$/waka/utils/formwidgets/askbuilder/assets/less/asks.less');
+            $combiner->registerBundle('$/waka/utils/formwidgets/fncbuilder/assets/less/fncs.less');
         });
+        
     }
 
-    public function registerAskRules()
+    public function registerWakaRules()
     {
         return [
-            'groups' => [],
-            'events' => [],
             'asks' => [
-                \Waka\Utils\AskRules\HtmlAsk::class,
-                \Waka\Utils\AskRules\ImageAsk::class,
-                \Waka\Utils\AskRules\FileImgLinked::class,
+                ['\Waka\Utils\WakaRules\Asks\HtmlAsk', 'only' => ['wakaMail']],
+                ['\Waka\Utils\WakaRules\Asks\ImageAsk'],
+                ['\Waka\Utils\WakaRules\Asks\FileImgLinked'],
             ],
-            'conditions' => [],
+            'fncs' => [
+            ],
         ];
     }
 
@@ -141,8 +150,8 @@ class Plugin extends PluginBase
             'euro-int' => function ($value) {
                 return number_format($value, 0, ',', ' ') . ' €';
             },
-            'datasource' => function ($value) {
-                return DataSourceList::getValue($value);
+            'datasource' => function ($code) {
+                return \DataSources::getLabel($code);
             },
             'workflow' => [WorkflowColumn::class, 'render'],
         ];
@@ -161,6 +170,8 @@ class Plugin extends PluginBase
             'Waka\Utils\FormWidgets\ImageWidget' => 'imagewidget',
             'Waka\Utils\FormWidgets\Workflow' => 'workflow',
             'Waka\Utils\FormWidgets\ModelInfo' => 'modelinfo',
+            'Waka\Utils\FormWidgets\AskBuilder' => 'askbuilder',
+            'Waka\Utils\FormWidgets\FncBuilder' => 'fncbuilder',
         ];
     }
 
@@ -171,6 +182,10 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
+
+        // $alias = AliasLoader::getInstance();
+        // $alias->alias('Excel', '\\Maatwebsite\\Excel\\Facades\\Excel');
+
         Event::listen('backend.page.beforeDisplay', function($controller, $action, $params) {
             //trace_log('/plugins/waka/utils/assets/css/waka.css');
             $controller->addCss('/plugins/waka/utils/assets/css/waka.css');
@@ -186,6 +201,7 @@ class Plugin extends PluginBase
 
             return new \League\Flysystem\Filesystem($adapter);
         });
+        
 
         
 

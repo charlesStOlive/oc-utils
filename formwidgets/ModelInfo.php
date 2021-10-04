@@ -58,7 +58,7 @@ class ModelInfo extends FormWidgetBase
         $modelClass = get_class($this->model);
         //trace_log($modelClass);
         //trace_log(get_class($this->getController()));
-        $this->ds = new DataSource($modelClass, 'class');
+        $this->ds = \DataSources::find($modelClass, 'class');
         if(!$this->ds) {
             throw new \SystemException('DS info pas trouvé');
         }
@@ -66,7 +66,7 @@ class ModelInfo extends FormWidgetBase
         if(is_array($this->src)) {
             $src = $this->src;
         } else {
-            $src = \Yaml::parseFile(plugins_path().$this->src);
+            $src = \Yaml::parseFile(plugins_path().'/'.$this->src);
         }
         $this->fields = $src['fields'];
         if(!$this->fields) {

@@ -2,7 +2,7 @@
 
 use Backend\Classes\FormField;
 use Backend\Classes\FormWidgetBase;
-use Waka\Utils\Classes\AskBase;
+use Waka\Utils\Classes\Rules\AskBase;
 use ApplicationException;
 use ValidationException;
 use Exception;
@@ -36,6 +36,8 @@ class AskBuilder extends FormWidgetBase
 
     protected $type = 'asks';
 
+    protected $targetClass = null;
+
     protected $full_access = 'noBody';
 
     public $restrictedMode = true;
@@ -46,7 +48,7 @@ class AskBuilder extends FormWidgetBase
     public function init()
     {
         $this->fillFromConfig([
-            'type',
+            'targetClass',
             'full_access',
         ]);
 
@@ -131,7 +133,7 @@ class AskBuilder extends FormWidgetBase
     public function onLoadCreateAskForm()
     {
         try {
-            $asks = AskBase::findAsks($this->type);
+            $asks = AskBase::findAsks($this->targetClass);
             $this->vars['asks'] = $asks;
         }
         catch (Exception $ex) {
@@ -335,6 +337,8 @@ class AskBuilder extends FormWidgetBase
     protected function getAvailableTags()
     {
         $tags = [];
+        //travaille sur les tags. 
+        //$ds = \DataSources::find(get_class($this->model),'class');
 
         if ($this->model->methodExists('defineParams')) {
             $params = $this->model->defineParams();

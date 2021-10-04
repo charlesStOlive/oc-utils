@@ -15,9 +15,7 @@ class SidebarAttributes extends WidgetBase
     public $model;
     public $dataSource;
     public $type;
-    public $separate_fields;
     public $text_info;
-    public $hidden_fields;
     public $valueArray;
     public $lang_fields;
 
@@ -27,24 +25,24 @@ class SidebarAttributes extends WidgetBase
             'model',
             'type',
             'text_info',
-            'separate_fields',
-            'hidden_fields',
             'lang_fields',
         ]);
     }
 
+    /**
+     * Prepares the form widget view data
+     */
     public function render()
     {
         if($this->model->no_ds) {
             return $this->makePartial('empty');
         }
-        $this->dataSource = new DataSource($this->model->data_source);
+        $this->dataSource = \DataSources::find($this->model->data_source);
 
         $this->vars['text_info'] = $this->text_info;
         $this->vars['attributesArray'] = $this->getWattributes();
-        $this->vars['IMGSArray'] = $this->getIMG();
-        $fncArray = $this->getFNCOutputs();
-        $this->vars['FNCSArray'] = $fncArray;
+        //$fncArray = $this->getFNCOutputs();
+        //$this->vars['FNCSArray'] = $fncArray;
 
         if ($this->type == 'word') {
             return $this->makePartial('list_word');
@@ -57,53 +55,26 @@ class SidebarAttributes extends WidgetBase
     {
         $attributeArray = [];
 
-        $attributes;
-        $modelAttributeAdresse = $this->dataSource->attributesConfig;
-        //trace_log($modelAttributeAdresse);
-        if ($modelAttributeAdresse) {
-            $attributes = Yaml::parseFile(plugins_path() . '/' . $modelAttributeAdresse);
-            //trace_log($attributes);
-        } else {
-            $pluginName = strtolower($this->dataSource->author . '/' . $this->dataSource->plugin . '/models');
-            $attributesPath = plugins_path() . '/' . $pluginName . '/' . strtolower($this->dataSource->name) . '/attributes.yaml';
-            if (file_exists($attributesPath)) {
-                $attributes = Yaml::parseFile($attributesPath);
-            } else {
-                throw new \SystemException('Les attributs ne sont pas correctemrnt configuré : '.$attributesPath);
-            }
-        }
-        $maped = $this->remapAttributes($attributes['attributes'], 'ds');
-        //trace_log($maped);
-        //$attributeArray[$this->dataSource->lowerName] = $attributes;
-        $attributeArray[$this->dataSource->lowerName]['values'] = $maped;
-        $attributeArray[$this->dataSource->lowerName]['icon'] = $attributes['icon'];
+        $attributesConfig = $this->dataSource->getAttributesConfig();
+        $maped = $this->remapAttributes($attributesConfig['attributes'], 'ds');
+        $attributeArray[$this->dataSource->code]['values'] = $maped;
+        $attributeArray[$this->dataSource->code]['icon'] = $attributesConfig['icon'];;
         if ($this->dataSource->relations) {
             foreach ($this->dataSource->relations as $key => $relation) {
                 //trace_log("key ".$key);
                 $ex = explode('.', $key);
-                $relationName = array_pop($ex);
+                $relationcode = array_pop($ex);
                 //trace_log("Relation name : ".$relationName);
-                $attributes;
-                $modelAttributeAdresse = $relation['attributes'] ?? null;
-                if ($modelAttributeAdresse) {
-                    $attributes = Yaml::parseFile(plugins_path() . '/' . $modelAttributeAdresse);
-                } else {
-                    $pluginName = strtolower($this->dataSource->author . '/' . $this->dataSource->plugin . '\/models');
-                    $attributesPath = plugins_path() . '/' . $pluginName . '/' . strtolower($relationName) . '/attributes.yaml';
-                    if (file_exists($attributesPath)) {
-                        $attributes = Yaml::parseFile($attributesPath);
-                    } else {
-                        throw new \SystemException('Les attributs ne sont pas correctemrnt configuré.');
-                    }
-                }
-                $maped = $this->remapAttributes($attributes['attributes'], $key, 'ds');
-                $attributeArray[$relationName]['values'] = $maped;
-                $icon = $attributes['icon'] ?? "icon-info";
-                $attributeArray[$relationName]['icon'] = $icon;
+                trace_log(\DataSources::list());
+                $relationAttributesConfig = \DataSources::find($relationcode)->getAttributesConfig();
+                trace_log($relationcode);
+                trace_log($relationAttributesConfig);
+                $maped = $this->remapAttributes($relationAttributesConfig['attributes'], $key, 'ds');
+                $attributeArray[$relationcode]['values'] = $maped;
+                $attributeArray[$relationcode]['icon'] = $relationAttributesConfig['icon'];
             }
             //trace_log($attributeArray);
         }
-
         return $attributeArray;
     }
 
@@ -156,73 +127,73 @@ class SidebarAttributes extends WidgetBase
         return $mapedResult;
     }
 
-    public function getIMG()
-    {
-        //trace_log(get_class($this->model));
-        $imgs = $this->model->images;
+    // public function getIMG()
+    // {
+    //     //trace_log(get_class($this->model));
+    //     $imgs = $this->model->images;
 
-        if (!$imgs) {
-            return [];
-        }
-        $result = [];
+    //     if (!$imgs) {
+    //         return [];
+    //     }
+    //     $result = [];
 
-        //remap images
-        $remapImages = [];
-        foreach ($imgs as $key => $img) {
-            $remapImages[$img['code']] = [
-                'label' => $img['code'],
-                'type' => 'modelImage',
-            ];
-        }
-        $attributesImg = $this->remapAttributes($remapImages, 'modelImage');
-        return $attributesImg;
-    }
+    //     //remap images
+    //     $remapImages = [];
+    //     foreach ($imgs as $key => $img) {
+    //         $remapImages[$img['code']] = [
+    //             'label' => $img['code'],
+    //             'type' => 'modelImage',
+    //         ];
+    //     }
+    //     $attributesImg = $this->remapAttributes($remapImages, 'modelImage');
+    //     return $attributesImg;
+    // }
 
-    public function getFNCOutputs()
-    {
+    // public function getFNCOutputs()
+    // {
 
-        $fncs = $this->model->model_functions;
-        if (!$fncs) {
-            return [];
-        }
-        $result = [];
-        foreach ($fncs as $fnc) {
-            $code = $fnc['collectionCode'];
-            $outputs = $this->dataSource->getFunctionsOutput($fnc['functionCode']);
-            //trace_log($outputs);
-            if ($outputs) {
-                $attributes = $outputs['attributes'] ?? null;
-                if ($attributes) {
-                    $temptAttributeArray = [];
-                    foreach ($attributes as $key => $attributeAdresse) {
-                        //trace_log($key);
-                        $attributeArray = Yaml::parseFile(plugins_path() . '/' . $attributeAdresse);
-                        if ($key == "main") {
-                            $maped = $this->remapAttributes($attributeArray['attributes'], $code, null, true);
-                        } else {
-                            $maped = $this->remapAttributes($attributeArray['attributes'], $key, $code, true);
-                        }
-                        $temptAttributeArray = array_merge($temptAttributeArray, $maped);
-                    }
-                    $result[$code] = $temptAttributeArray;
-                }
-                $values = $outputs['values'] ?? null;
-                if ($values) {
-                    //trace_log($values);
-                    $maped = $this->remapAttributes($values, $code, null, true);
-                    if ($result[$code] ?? null) {
-                        $result[$code] = array_merge($result[$code], $maped);
-                    } else {
-                        $result[$code] = $maped;
-                    }
-                }
-                //trace_log("result");
-                //trace_log($result);
-            }
-        }
+    //     $fncs = $this->model->model_functions;
+    //     if (!$fncs) {
+    //         return [];
+    //     }
+    //     $result = [];
+    //     foreach ($fncs as $fnc) {
+    //         $code = $fnc['collectionCode'];
+    //         $outputs = $this->dataSource->getFunctionsOutput($fnc['functionCode']);
+    //         //trace_log($outputs);
+    //         if ($outputs) {
+    //             $attributes = $outputs['attributes'] ?? null;
+    //             if ($attributes) {
+    //                 $temptAttributeArray = [];
+    //                 foreach ($attributes as $key => $attributeAdresse) {
+    //                     //trace_log($key);
+    //                     $attributeArray = Yaml::parseFile(plugins_path() . '/' . $attributeAdresse);
+    //                     if ($key == "main") {
+    //                         $maped = $this->remapAttributes($attributeArray['attributes'], $code, null, true);
+    //                     } else {
+    //                         $maped = $this->remapAttributes($attributeArray['attributes'], $key, $code, true);
+    //                     }
+    //                     $temptAttributeArray = array_merge($temptAttributeArray, $maped);
+    //                 }
+    //                 $result[$code] = $temptAttributeArray;
+    //             }
+    //             $values = $outputs['values'] ?? null;
+    //             if ($values) {
+    //                 //trace_log($values);
+    //                 $maped = $this->remapAttributes($values, $code, null, true);
+    //                 if ($result[$code] ?? null) {
+    //                     $result[$code] = array_merge($result[$code], $maped);
+    //                 } else {
+    //                     $result[$code] = $maped;
+    //                 }
+    //             }
+    //             //trace_log("result");
+    //             //trace_log($result);
+    //         }
+    //     }
 
-        return $result;
-    }
+    //     return $result;
+    // }
 
     public function loadAssets()
     {

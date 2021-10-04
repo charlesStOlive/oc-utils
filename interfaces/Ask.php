@@ -18,6 +18,12 @@ interface Ask
     public function getTitle();
 
     /**
+     * Resolve  ask a besoin du modèle.
+     * @return string
+     */
+    public function resolve($modelSrc, $context = 'twig', $dataForTwig = []);
+
+    /**
      * Returns information about this ask, including name and description.
      */
     public function askDetails();

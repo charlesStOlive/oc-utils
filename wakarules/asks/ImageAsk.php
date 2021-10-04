@@ -1,6 +1,6 @@
-<?php namespace Waka\Utils\AskRules;
+<?php namespace Waka\Utils\WakaRules\Asks;
 
-use Waka\Utils\Classes\AskBase;
+use Waka\Utils\Classes\Rules\AskBase;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use ApplicationException;
 
@@ -29,5 +29,9 @@ class ImageAsk extends AskBase
         }
         return parent::getText();
 
+    }
+
+    public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
+        return 'yo';
     }
 }

@@ -31,9 +31,6 @@ class Workflow extends WidgetBase
     public function prepareVars()
     {
         $this->model = $this->controller->formGetModel();
-        // $this->ds = new DataSource($this->config->model, 'name');
-
-        // $this->fields = $this->setValues($modelId, $this->config->fields);
     }
 
     public function loadAssets()

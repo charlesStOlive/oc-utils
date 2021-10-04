@@ -1,0 +1,12 @@
+<div class="fncs-container">
+    <div
+         id="<?= $this->getId() ?>"
+         class="control-rulefncs"
+         data-settings-handler="<?= $this->getEventHandler('onLoadFncSetup') ?>"
+         data-delete-handler="<?= $this->getEventHandler('onDeleteFnc') ?>"
+         data-cancel-handler="<?= $this->getEventHandler('onCancelFncSettings') ?>"
+         data-create-handler="<?= $this->getEventHandler('onLoadCreateChildFnc') ?>"
+         data-control="rulefncs">
+        <?= $this->makePartial('fncs', ['fncs' => $fncs]) ?>
+    </div>
+</div>

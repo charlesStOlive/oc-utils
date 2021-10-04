@@ -29,7 +29,7 @@ class SidebarInfo extends WidgetBase
     {
         $controllerModel = $this->controller->formGetModel();
         $modelId = $controllerModel->id;
-        $this->ds = new DataSource($this->config->model, 'name');
+        $this->ds = \DataSources::find($this->model->data_source);
 
         $this->fields = $this->setValues($modelId, $this->config->fields);
     }

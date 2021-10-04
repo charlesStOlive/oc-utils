@@ -1,0 +1,48 @@
+<?= Form::open(['id' => 'addRuleFncForm']) ?>
+
+<input type="hidden" name="current_fnc_data" value="<?= e(json_encode($this->getCacheFncDataPayload())) ?>" />
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="popup">&times;</button>
+    <h4 class="modal-title">Choisissez un type de champs éditable</h4>
+</div>
+<div class="modal-body">
+
+    <?php if ($this->fatalError): ?>
+    <p class="flash-message static error"><?= $fatalError ?></p>
+    <?php else: ?>
+
+    <div class="list-preview">
+        <div class="control-simplelist is-selectable is-scrollable size-large" data-control="simplelist">
+            <ul>
+                <?php foreach ($fncs as $class => $fnc): ?>
+
+                <li>
+                    <a
+                       href="javascript:;"
+                       data-request="<?= $this->getEventHandler('onCreateFnc') ?>"
+                       data-request-data="fnc_class: '<?= addslashes($class) ?>'"
+                       data-popup-load-indicator>
+                        <h5 class="heading"><?= e(trans($fnc->getFncName())) ?></h5>
+                        <p class="description"><?= e(trans($fnc->getFncDescription())) ?></p>
+                    </a>
+                </li>
+
+                <?php endforeach ?>
+            </ul>
+        </div>
+    </div>
+
+    <?php endif ?>
+
+</div>
+
+<div class="modal-footer">
+    <button
+            type="button"
+            class="btn btn-default"
+            data-dismiss="popup">
+        <?= e(trans('backend::lang.form.cancel')) ?>
+    </button>
+</div>
+<?= Form::close() ?>

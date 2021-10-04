@@ -3,4 +3,6 @@
 # ===================================
 
 fields:
-  
+    code:
+        label: Code
+        span: auto

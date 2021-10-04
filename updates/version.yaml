@@ -17,3 +17,6 @@
 1.1.0:
     - "Ajout des asks rules"
     - create_rule_asks_table.php
+1.1.1:
+    - "Ajout des fncs rules"
+    - create_rule_fncs_table.php

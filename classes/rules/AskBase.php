@@ -1,7 +1,8 @@
-<?php namespace Waka\Utils\Classes;
+<?php namespace Waka\Utils\Classes\Rules;
 
 use System\Classes\PluginManager;
 use Winter\Storm\Extension\ExtensionBase;
+use Waka\Utils\Classes\DataSource;
 use Waka\Utils\Interfaces\Ask as AskInterface;
 
 /**
@@ -35,7 +36,7 @@ class AskBase extends ExtensionBase implements AskInterface
         return [
             'name'        => 'Ask',
             'description' => 'Ask description',
-            'icon'        => 'icon-dot-circle-o'
+            'icon'        => 'icon-dot-circle-o',
         ];
     }
 
@@ -52,7 +53,10 @@ class AskBase extends ExtensionBase implements AskInterface
          * Parse the config, if available
          */
         if ($formFields = $this->defineFormFields()) {
-            $baseConfig = \Yaml::parseFile(plugins_path('/waka/utils/models/ruleask/fields.yaml'));
+            $baseConfig = \Yaml::parseFile(plugins_path('/waka/utils/models/rules/fields_ask.yaml'));
+            if(!$this->getEditableOption()) {
+                unset($baseConfig['fields']['ask_emit']);
+            }
             $askConfig = \Yaml::parseFile($this->configPath.'/'.$formFields);
             $mergeConfig = array_merge_recursive($baseConfig, $askConfig);
             $this->fieldConfig = $this->makeConfig($mergeConfig);
@@ -92,9 +96,19 @@ class AskBase extends ExtensionBase implements AskInterface
     public function getDs() {
         $model = $this->getModel();
         if($model) {
-            return new DataSource($model->data_source);
+            return \DataSources::find($model->data_source);
         } else {
             return null;
+        }
+        
+    }
+
+    public function getClientModel($clientId) {
+        $clientModel = $this->getDs()::find($clientId);
+        if(!$clientModel) {
+            throw new ApplicationException('Modèle non trouvé pour la résolution de la tache demandable.'); 
+        } else {
+            return $clientModel;
         }
         
     }
@@ -108,6 +122,22 @@ class AskBase extends ExtensionBase implements AskInterface
     {
         //trace_log('getText dans ask base');
         return $this->getAskDescription();
+    }
+
+    public function getCode()
+    {
+        //trace_log('getText dans ask base');
+        return $this->host->config_data['code'] ?? 'En attente';
+    }
+
+    public function isEditable()
+    {
+        //trace_log('getText dans ask base');
+        return $this->host->config_data['ask_emit'] ?? false;
+    }
+    public function getEditableOption()
+    {
+        return array_get($this->askDetails(), 'ask_emit');
     }
 
     public function getKeyValue()
@@ -195,24 +225,32 @@ class AskBase extends ExtensionBase implements AskInterface
         return [];
     }
 
+    public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
+        return 'resolve is missing in '.$this->getAskName();
+    }
+
     /**
      * Spins over types registered in plugin base class with `registerAskRules`.
      * @return array
      */
-    public static function findAsks()
+    public static function findAsks($targetClass = null)
     {
         $results = [];
-        $bundles = PluginManager::instance()->getRegistrationMethodValues('registerAskRules');
-        //trace_log($bundles);
+        $bundles = PluginManager::instance()->getRegistrationMethodValues('registerWakaRules');
 
         foreach ($bundles as $plugin => $bundle) {
             foreach ((array) array_get($bundle, 'asks', []) as $conditionClass) {
-                if (!class_exists($conditionClass)) {
+                $class = $conditionClass[0];
+                $classType = $conditionClass['only'] ?? [];
+                if (!class_exists($class)) {
                     continue;
                 }
-
-                $obj = new $conditionClass;
-                $results[$conditionClass] = $obj;
+                if (!in_array($targetClass, $classType) && $classType != [] && $targetClass != null) {
+                    trace_log('merde');
+                    continue;
+                }
+                $obj = new $class;
+                $results[$class] = $obj;
             }
         }
 
