@@ -1,0 +1,124 @@
+{{specific.var}}{% if specific.context %}@{{specific.context}}{% endif %}:
+{% if specific.name %}
+    label: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{specific.var}}
+{% endif %}
+{% if specific.span %}
+    span: {{ specific.span }}
+{% else %}
+    span: auto
+{% endif %}
+{% if field.field_type == 'cloudifileupload'  %}
+    type: cloudifileupload
+    mode: image
+    imageHeight: 100
+    imageWidth: 260
+{% elseif specific.field_type and specific.field_type == 'fileupload'  %}
+    type: fileupload
+    mode: file
+{% elseif specific.field_type and specific.field_type == 'imgupload'  %}
+    type: fileupload
+    mode: image
+    imageHeight: 260
+    thumbOptions:
+        mode: auto
+        quality: 90
+        sharpen: 0
+        interlace: false
+        extension: auto
+{% elseif specific.field_type == 'recordfinder'  %}
+    type: recordfinder
+{% if specific.field_opt is null %}
+    list: ~/plugins/{{lower_author}}/{{lower_plugin}}/models/{{specific.var}}/columns_for_{{lower_name}}.yaml
+    recordsPerPage: 10
+    title: waka.utils::lang.global.find_record
+    prompt: waka.utils::lang.global.prompt_record
+    keyFrom: id
+    nameFrom: name
+    useRelation: true
+{% endif %}
+{% elseif specific.field_type == 'workflow' %}
+    type: workflow
+    stateFrom: state
+{% if specific.noPlaceHolder == false %}
+    placeholder: waka.utils::lang.global.placeholder_w
+{% endif %}
+{% elseif specific.field_type == 'relation' %}
+    type: relation
+{% if specific.noPlaceHolder == false %}
+    placeholder: waka.utils::lang.global.placeholder
+{% endif %}
+{% if not specific.field_opt %}
+    nameFrom: name
+{% endif %}
+{% elseif specific.field_type == 'partial_relation'  %}
+    type: partial
+    path: field_{{specific.var}}
+{% elseif specific.field_type == 'dropdown'  %}
+    type: {{ specific.field_type }}
+{% if specific.noPlaceHolder == false %}
+    placeholder: waka.utils::lang.global.placeholder
+{% endif %}
+{% elseif specific.type == 'boolean' and not specific.field_type %}
+    type: switch
+{% elseif specific.type == 'text' and specific.json and not specific.field_type  %}
+    type: taglist
+{% if not specific.lists  %}
+    options: ['1','2']
+{% endif %}
+{% elseif specific.field_type  %}
+    type: {{ specific.field_type }}
+{% elseif specific.type == 'timestamp' %}
+    type: datepicker
+    mode: date
+{% elseif specific.type == 'date' %}
+    type: datepicker
+    mode: date
+    ignoreTimezone: true
+{% endif %}
+{% if specific.required %}
+    required: true
+{% endif %}
+{% for foption in specific.field_opt %}
+    {{foption|raw}}
+{% endfor %}
+{% if specific.field_config  %}
+{{specific.field_config | raw}} 
+{% endif %}
+{% if specific.lists  %}
+    options: {{specific.lists}}
+{% endif %}
+{% if specific.trigger  %}
+    trigger:
+        action: {{specific.trigger.action}}
+        field: {{specific.trigger.field}}
+        condition: checked
+{% endif %}
+{% if specific.default  %}
+    default: {{specific.default}}
+{% endif %}
+{% if specific.commentAbove  %}
+    commentAbove: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{specific.var}}_com
+{% endif %}
+{% if specific.comment  %}
+    comment: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{specific.var}}_com
+{% endif %}
+{% if specific.permissions  %}
+    permissions: [{{specific.permissions}}]
+{% endif %}
+{% if specific.tab  %}
+    tab: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{specific.tab}}
+{% endif %}
+{% if specific.sidebar and dataName=="field_side_bar" %}
+{% if specific.sb_type  %}
+    infoType: {{specific.sb_type}}
+{% endif %}
+{% if specific.type is null  %}
+    noUpdate: true
+{% endif %}
+{% for sboption in specific.sb_opt %}
+    {{sboption}}
+{% endfor %}
+{% endif %}
+{% if specific.field_type == 'modelinfo' and specific.field_opt.src is null %}
+    src: {{lower_author}}/{{lower_plugin}}/models/{{lower_name}}/fields_for_side_bar.yaml
+{% endif %}

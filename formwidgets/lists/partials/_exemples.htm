@@ -1,0 +1,8 @@
+<div class="br-p-s10 w-medium" style="display:bloc">
+    Exemples:
+</div>
+<div>
+    <?php foreach($values as $key=>$value) : ?>
+    <span><?=$value['email']?></span><input type="hidden" name="<?=$name?>[]" value="<?=$value['id']?>"> |
+    <?php endforeach ?>
+</div>

@@ -5,12 +5,18 @@
         <?php if($btns) : ?>
         <!--IL Y A DES BOUTONS -->
 
-        <?php foreach($btns as $btn) : ?>
-
-        <?php if($btn['btns'] ?? false) : ?>
-        <!--SI LE BOUTON A DES SOUS BOUTON C EST UN GROUPE -->
-        <?= $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'popupAction' => false, 'isLot' => false, 'dropup' =>true]);?>
-        <?php else : ?>
+        <?php foreach($btns as $btn) {
+            $subBtns = $btn['btns'] ?? [];
+            if(count($subBtns) > 1 ) {
+                //SI LE BOUTON A DES SOUS BOUTON C EST UN GROUPE -->
+                $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'popupAction' => false, 'isLot' => false, 'dropup' =>true]);
+            } else { 
+                if(count($subBtns) == 1 ) {
+                    $btn = array_shift($subBtns);
+                    //trace_log($btn);
+                        //-SI LE BOUTON A UN SEUL SOUS BOUTON CONVERSION EN BTN SEUL -->
+                }
+        ?>
         <!--SINON C EST UN BOUTON SEUL -->
         <button href="javascript:;"
                 class="btn btn-secondary <?=$btn['icon'] ?? null?>"
@@ -19,8 +25,8 @@
                 data-handler="<?=$btn['ajaxCaller'] ??''?>">
             <?= e(trans($btn['label'] ?? 'Inc'))?>
         </button>
-        <?php endif ?>
-        <?php endforeach ?>
+        <?php } ?>
+        <?php } ?>
         <?php endif ?>
 
 

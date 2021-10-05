@@ -6,16 +6,17 @@
 use ApplicationException;
 use Config;
 use Winter\Storm\Support\Collection;
-use Winter\Storm\Extension\ExtensionBase;
+use Winter\Storm\Extension\Extendable;
 use Ds;
 use Yaml;
 
 
-class DataSource extends ExtensionBase
+class DataSource extends Extendable
 {
     /**Clean */
     use \Waka\Utils\Classes\Traits\StringRelation;
     //
+    public $config;
     public $code;
     public $class;
     //
@@ -33,9 +34,14 @@ class DataSource extends ExtensionBase
     //Après instanciation
     public $modelId;
     public $model;
+    //
+    public $modelPath;
+    
 
     public function __construct($config, $key) {
         //
+        
+        $this->config = $config;
         $this->code = $key;
         $this->class = $config['class'] ?? null;
         if (!$this->class) {
@@ -64,13 +70,18 @@ class DataSource extends ExtensionBase
         //
         $this->relations = $config['relations'] ?? [];
         //
-        $this->attributes = $config['attributes'] ?? null;
+        $attributes = $config['attributes'] ?? null;
+        $this->attributes = $attributes ? $attributes : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower($this->name);
+         //
+        $modelPath = $config['modelPath'] ?? null;
+        $this->modelPath = $modelPath ? $modelPath : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower($this->name).'/';
         //
         $this->emails = $config['emails'] ?? [];
         //
         $this->publications = $config['publications'] ?? [];
         /**Kill ? utilisé dans le datasource helper */
         $this->outputName = $config['outputName'] ?? 'name';
+        parent::__construct();
         
     }
 
@@ -89,6 +100,12 @@ class DataSource extends ExtensionBase
             \Flash::error("ATTENTION : instanciateModel impossible premier id trouvé instancié");
             //throw new \SystemException("ID non trouvé ou Il n'y a pas de modele disponible pour : " . $this->class." Veuillez créer au moins une valuer dans cette ressource");
         }
+    }
+
+    public function getModel($modelId)
+    {
+        $this->instanciateModel($modelId);
+        return $this->model;
     }
 
     public function getProductorOptions($productorModel, $modelId = null)
@@ -217,6 +234,39 @@ class DataSource extends ExtensionBase
             }
         }
         return $askArray;
+    }
+
+    /**
+     * PARTIUE PERMETTATN DE GERER LES SCOPES --------------
+     */
+    public function getScopesLists() {
+        $scopes = $this->config['scopes'];
+        $array = [];
+        foreach($scopes as $key=>$scope) {
+            $array[$key] = $scope['label'];
+
+        }
+        //trace_log($array);
+        return $array;
+
+    }
+     public function getScopeOptions($key) {
+         //trace_log($key);
+        $scope = $this->config['scopes'][$key];
+        //trace_log($scope);
+        if($fromModel = $scope['options']['fromModel'] ?? false) {
+            $nameFrom = $scope['nameFrom'] ?? 'name'; 
+            return $fromModel::lists($nameFrom, 'id');
+        } elseif ($fromSetting = $scope['options']['fromSetting'] ?? false) {
+            return \Settings::get($fromSetting );
+       } elseif ($fromSetting = $scope['options']['fromConfig'] ?? false) {
+            return \Config::get($fromSetting );
+       } elseif ($noOptions = $scope['noOptions'] ?? false) {
+           return['no' => "Selection Inutile"];
+       } else {
+           throw new \ApplicationException('Probleme de configuration des scopes');
+       }
+
     }
 
     /**
@@ -373,6 +423,45 @@ class DataSource extends ExtensionBase
     }
 
     /**
+     * NOUVEAU PRINCIPE POUR LES IMAGES
+     */
+
+    public function getSrcImage() {
+        $array = [];
+        $array[$this->code] = $this->name;
+        $relations = new Collection($this->relations);
+        if ($relations->count()) {
+            $relationArray =  $relations->where('images', true)->transform(function ($item, $key) {
+                 $item = $item['label'];
+                 return $item;
+             })->toArray();
+             $array = array_merge($array, $relationArray);
+        }
+        return $array; 
+       
+
+    }
+
+    public function getImagesFilesFrom($type, $code = null) {
+        $code ? $code : $this->code;
+        $staticModel = new $this->class;
+        //trace_log("code = ".$code);
+        if($code != $this->code) {
+            $relation = \DataSources::find($code);
+            $staticModel = new $relation->class;
+        }
+        $files = $staticModel->attachOne; 
+        $fiesFiltered =  array_filter($files, function($value) use ($type) {
+            return $value == [$type];
+        });
+        $finalArray = [];
+        foreach($fiesFiltered as $key=>$file) {
+            $finalArray[$key] = $key;
+        }
+        return  $finalArray;
+    }
+
+    /**
      * PARTIE SUR LES PUBLICATIONS ----
      */
     public function getPublicationsType()
@@ -403,7 +492,7 @@ class DataSource extends ExtensionBase
     public function getAttributesConfig() {
         $attributesConfig = null;
         if($this->attributes) {
-            return \Yaml::parseFile(plugins_path().'/'.$this->attributes);
+            return \Yaml::parseFile(plugins_path('/'.$this->attributes));
         }
         return $attributesConfig['fields'] ?? [];
     }

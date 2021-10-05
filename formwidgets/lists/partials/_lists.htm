@@ -1,0 +1,18 @@
+<div style="display:flex">
+    <div><input
+               type="hidden"
+               name="scopeDatas"
+               value="<?=e(json_encode($scopeDatas))?>" />
+
+        <button href="javascript:;"
+                class="btn"
+                data-request-data="classQuery:'<?=$classQuery?>'"
+                data-control="popup"
+                data-handler="onCallTargets"
+                data-toggle="dropdown">Cibles
+        </button>
+    </div>
+    <div id="<?= $this->getId('input').'exemples' ?>" class="p-l">
+        <?= $this->makePartial('exemples', ['values' => $values]) ?>
+    </div>
+</div>

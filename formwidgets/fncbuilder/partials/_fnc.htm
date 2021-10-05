@@ -4,11 +4,11 @@
     class="fnc-item <?= $fnc->hasFieldConfig() ? '' : 'no-form' ?>">
     <div>
         <div class="icons">
-            <span class="icon"><i class="icon-bolt"></i></span>
+            <span class="icon"><i class="icon-calculator"></i></span>
             <span class="icon"><i class="<?= e($fnc->getFncIcon()) ?>"></i></span>
         </div>
         <a href="javascript:;" data-fncs-settings>
-            <span class="title"><?= e($this->getCacheFncTitle($fnc)) ?></span>
+            <span class="title" style="margin-left: 0"><b><?= e($this->getCacheFncText($fnc)) ?></b></span>
             <div class="comment"><?= $this->getCacheFncText($fnc) ?></div>
         </a>
         <?php if(!$isRestrictedMode) : ?>

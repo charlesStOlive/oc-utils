@@ -1,0 +1,26 @@
+<p class="subtitle">Blocs</p>
+<div class="list">
+    <div class="callout fade in no-subheader">
+        <div class="">
+            <?php foreach($blocs as $value) : ?>
+            <p><?=$value['name']?> <span style="font-size:0.em;"><a
+                       href="<?=Backend::url('waka/mailer/blocs/update').'/'.$value['id']?>"
+                       target="_blank">éditer</a></p>
+            <button type="button"
+                    class="btn btn-xs btn-default"
+                    style="width:100%"
+                    data-control="dragvalue"
+                    data-text-value="<?=$value['code']?>"
+                    data-drag-click="true">
+                <?=$value['code']?>
+            </button>
+            <?php endforeach ?>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    new ClipboardJS('.btn');
+});
+</script>

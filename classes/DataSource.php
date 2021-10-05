@@ -535,7 +535,7 @@ class DataSource
     public function getImagesFilesFrom($type, $code = null) {
         $code ? $code : $this->code;
         $staticModel = new $this->class;
-        trace_log("code = ".$code);
+        //trace_log("code = ".$code);
         if($code != $this->code) {
             $relation = new DataSource($code);
             $staticModel = new $relation->class;

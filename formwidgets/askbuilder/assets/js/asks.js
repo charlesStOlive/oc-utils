@@ -146,9 +146,13 @@ function showAskSettings(id) {
         return this
     }
 
+
+
     // Add this only if required
     $(document).render(function () {
         $('[data-control="ruleasks"]').ruleAsks()
     })
 
 }(window.jQuery);
+
+

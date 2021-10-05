@@ -29,12 +29,6 @@ interface Fnc
     public function resolve($modelSrc, $poductorDs);
 
     /**
-     * Liste les champs de sortie
-     * @return string
-     */
-    public function output();
-
-    /**
      * Returns information about this fnc, including name and description.
      */
     public function fncDetails();

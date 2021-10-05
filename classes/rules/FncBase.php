@@ -184,6 +184,11 @@ class FncBase extends ExtensionBase
         return array_get($this->fncDetails(), 'icon', 'icon-dot-circle-o');
     }
 
+    public function getOutputs() {
+        //trace_log($this->fieldConfig->outputs);
+        return $this->fieldConfig->outputs ?? [];
+    }
+
     
 
     /**
@@ -253,18 +258,13 @@ class FncBase extends ExtensionBase
         return 'resolve is missing in '.$this->getFncName();
     }
 
-    public function output()
-    {
-        return [];
-    }
-
     /**
      * Spins over types registered in plugin base class with `registerFncRules`.
      * @return array
      */
     public static function findFncs($targetProductor, $dataSourceCode)
     {
-        trace_log($dataSourceCode);
+        //trace_log($dataSourceCode);
         $results = [];
         $bundles = PluginManager::instance()->getRegistrationMethodValues('registerWakaRules');
 

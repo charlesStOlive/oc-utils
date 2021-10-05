@@ -1,0 +1,33 @@
+<h3>Les attributs disponibles</h3>
+<p class="help-block">Liste des attributs et des relations disponibles.</p>
+<p class="help-block"><b><?= $text_info ?></b></p>
+<h3>Attributs du modèle</h3>
+<div class="list">
+    <?php foreach($attributesArray as $keyCategorie=>$arrayCategories) : ?>
+    <?php if(count($arrayCategories)>1) : ?>
+    <div class="callout fade in no-subheader">
+        <div class="header">
+            <i class="<?=$arrayCategories['icon']?>"></i>
+            <h3><?=$keyCategorie?></h3>
+        </div>
+        <div class="">
+            <?php foreach($arrayCategories['values'] as $key=>$value) : ?>
+            <button type="button"
+                    class="btn btn-xm btn-default"
+                    style="width:100%"
+                    data-clipboard-text="<?=$key?>">
+                <?= e(trans($value)); ?><br><span style="font-size:0.8em"><?=$key?></span>
+            </button>
+            <?php endforeach ?>
+        </div>
+    </div>
+    <?php endif ?>
+    <?php endforeach ?>
+</div>
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+    new ClipboardJS('.btn');
+});
+</script>

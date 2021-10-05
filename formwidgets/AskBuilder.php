@@ -63,7 +63,8 @@ class AskBuilder extends FormWidgetBase
     protected function loadAssets()
     {
         $this->addJs('js/asks.js');
-        $this->addCss('css/asks.css');
+        $this->addJs('js/ac.js'); /**Clean ? Degeu je repèt le principe d'ascenseur... */
+        $this->addCss('../../../../../wcli/wconfig/assets/css/formwidgets/asks.css');
     }
 
     /**
@@ -86,7 +87,7 @@ class AskBuilder extends FormWidgetBase
         $this->vars['isRestrictedMode'] = $this->isRestrictedMode();
         //trace_log($this->getAsks());
         $this->vars['askFormWidget'] = $this->askFormWidget;
-        $this->vars['availableTags'] = $this->getAvailableTags();
+        $this->vars['attributesArray'] = $this->getAvailableTags();
     }
 
     /**
@@ -336,19 +337,14 @@ class AskBuilder extends FormWidgetBase
 
     protected function getAvailableTags()
     {
-        $tags = [];
-        //travaille sur les tags. 
-        //$ds = \DataSources::find(get_class($this->model),'class');
-
-        if ($this->model->methodExists('defineParams')) {
-            $params = $this->model->defineParams();
-
-            foreach ($params as $param => $definition) {
-                $tags[$param] = array_get($definition, 'label');
-            }
+        if (!$ask = $this->findAskObj(null, false)) {
+            return null;
         }
-
-        return $tags;
+        if(!$ask->showAttribute()) {
+            return null;
+        }
+        $attributes = new \Waka\utils\Classes\Wattributes($this->model, $this->type);
+        return  $attributes->getAttributes();
     }
 
     /**

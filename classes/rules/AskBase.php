@@ -37,6 +37,7 @@ class AskBase extends ExtensionBase implements AskInterface
             'name'        => 'Ask',
             'description' => 'Ask description',
             'icon'        => 'icon-dot-circle-o',
+            'show_attributes' => true,
         ];
     }
 
@@ -160,6 +161,11 @@ class AskBase extends ExtensionBase implements AskInterface
         return array_get($this->askDetails(), 'icon', 'icon-dot-circle-o');
     }
 
+    public function showAttribute()
+    {
+        return array_get($this->askDetails(), 'show_attributes');
+    }
+
     
 
     /**
@@ -246,7 +252,7 @@ class AskBase extends ExtensionBase implements AskInterface
                     continue;
                 }
                 if (!in_array($targetClass, $classType) && $classType != [] && $targetClass != null) {
-                    trace_log('merde');
+                    //trace_log('merde');
                     continue;
                 }
                 $obj = new $class;

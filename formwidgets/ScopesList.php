@@ -55,8 +55,8 @@ class ScopesList extends FormWidgetBase
      */
     public function loadAssets()
     {
-        $this->addCss('css/scopeslist.css', 'Waka.Utils');
-        $this->addJs('js/scopeslist.js', 'Waka.Utils');
+        // $this->addCss('css/scopeslist.css', 'Waka.Utils');
+        // $this->addJs('js/scopeslist.js', 'Waka.Utils');
     }
 
     /**

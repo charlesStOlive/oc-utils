@@ -5,12 +5,12 @@ return [
     'basic_state' => ['Brouillon' =>'Brouillon','Désactivé' => 'Désactivé','Actif' =>'Actif'],
     'btns' => [
         'duplicate' => [
-            'label' => 'Duplicate',
+            'label' => 'waka.utils::lang.duplicateBehavior.title',
             'ajaxCaller' => 'onLoadDuplicateForm',
             'ajaxInlineCaller' => 'onLoadDuplicateContentForm',
             'icon' => 'oc-icon-files-o',
         ],
-         'lot_fnc' => [
+        'lot_fnc' => [
             'label' => 'Fonctions par lot',
             'class' => 'btn-secondary',
             'ajaxInlineCaller' => 'onExecuteLotFnc',

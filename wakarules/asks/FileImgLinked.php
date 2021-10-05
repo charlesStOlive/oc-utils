@@ -64,7 +64,7 @@ class FileImgLinked extends AskBase
     public function listCropMode()
     {
         $config =  \Config::get('waka.utils::image.baseCrop');
-        trace_log($config);
+        //trace_log($config);
         return $config;
         
     }
@@ -92,7 +92,7 @@ class FileImgLinked extends AskBase
         } else {
             $finalModel = $clientModel;
         }
-        trace_log($finalModel->name);
+        //trace_log($finalModel->name);
         if($context == 'twig' ) {
             return [
                 'path' => $finalModel->{$keyImage}->getThumb($imgWidth, $imgHeight, ['mode' => $crop]),

@@ -58,7 +58,7 @@ class ModelInfo extends FormWidgetBase
         $modelClass = get_class($this->model);
         //trace_log($modelClass);
         //trace_log(get_class($this->getController()));
-        $this->ds = \DataSources::find($modelClass, 'class');
+        $this->ds = \DataSources::findByClass($modelClass);
         if(!$this->ds) {
             throw new \SystemException('DS info pas trouvé');
         }
@@ -224,8 +224,7 @@ class ModelInfo extends FormWidgetBase
      */
     public function loadAssets()
     {
-        $this->addCss('css/modelinfo.css', 'waka.utils');
-        $this->addJs('js/modelinfo.js', 'waka.utils');
+        // $this->addCss(); INUTILE EST GERE DANS LE WAKA.LESS de WCONFIG
     }
 
     /**

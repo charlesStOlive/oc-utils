@@ -4,160 +4,141 @@ use Winter\Storm\Support\Collection;
 
 class Wattributes
 {
-    use \Waka\Utils\Classes\Traits\StringRelation;
 
-    private $model;
-    protected $relations;
-
-    public function __construct($model, $relations = [])
+    public $dataSource;
+    public $model;
+    public $type;
+    public function __construct($model, $type)
     {
         $this->model = $model;
-        $this->relations = $relations;
+        $this->dataSource = \DataSources::find($this->model->data_source);
     }
 
-    public function getAllPicturesKey()
+    public function getAttributes()
     {
-        $collection = $this->listAll($this->model);
-        if ($collection) {
-            return $collection->lists('name', 'key');
-        } else {
-            return null;
-        }
-    }
+        $attributeArray = [];
 
-    public function getOnePictureKey($key)
-    {
-        $collection = $this->listAll($this->model);
-        return $collection->where('key', $key)->first();
-    }
-
-    // public function getOne($dataSource, $key)
-    // {
-    //     $collection = $this->listAll();
-    //     return $collection->where('key', $key)->first();
-    // }
-
-    public function listAll()
-    {
-        $all = new Collection();
-        // $cloudiList = $this->listCloudis();
-        // $montages = $this->listMontages();
-        // $allImages = $allImages->merge($cloudiList);
-        // $allImages = $allImages->merge($montages);
-        //
-        $listAttributes = $this->listAttributes();
-        $listRelationsAttributes = $this->listRelation();
-        //trace_log('listRelationsImages');
-        //trace_log($listRelationsImages);
-        $all = $all->merge($listAttributes);
-        //$all = $all->merge($listAttributes);
-
-        return $allImages;
-    }
-
-    public function listAttributes($model = null, $relation = null)
-    {
-        if (!$model) {
-            $model = $this->model;
-        }
-        $modelClassName = get_class($model);
-        $shortName = (new \ReflectionClass($modelClassName))->getShortName();
-        $cloudiKeys = [];
-        if (!$relation) {
-            $relation = 'self';
-        }
-
-        $files = $model->attachOne;
-        foreach ($files as $key => $value) {
-            if ($value == 'System\Models\File') {
-                $img = [
-                    'field' => $key,
-                    'type' => 'file',
-                    'relation' => $relation,
-                    'key' => $shortName . '_' . $key,
-                    'name' => $shortName . ' : ' . $key . ' (Image)',
-                ];
-                array_push($cloudiKeys, $img);
+        $attributesConfig = $this->dataSource->getAttributesConfig();
+        $maped = $this->remapAttributes($attributesConfig['attributes'], 'ds');
+        $attributeArray[$this->dataSource->code]['values'] = $maped;
+        $attributeArray[$this->dataSource->code]['icon'] = $attributesConfig['icon'];;
+        if ($this->dataSource->relations) {
+            foreach ($this->dataSource->relations as $key => $relation) {
+                //trace_log("key ".$key);
+                $ex = explode('.', $key);
+                $relationcode = array_pop($ex);
+                //trace_log("Relation name : ".$relationName);
+                //trace_log(\DataSources::list());
+                $relationAttributesConfig = \DataSources::find($relationcode)->getAttributesConfig();
+                //trace_log($relationcode);
+                //trace_log($relationAttributesConfig);
+                $maped = $this->remapAttributes($relationAttributesConfig['attributes'], $key, 'ds');
+                $attributeArray[$relationcode]['values'] = $maped;
+                $attributeArray[$relationcode]['icon'] = $relationAttributesConfig['icon'];
             }
+            //trace_log($attributeArray);
         }
-        return $cloudiKeys;
+        return $attributeArray;
     }
 
-    public function listRelation()
+    private function remapAttributes(array $attributes, $relationOrName, $name = null, $row = false)
     {
-        $relationImages = new Collection();
-        $relationWithImages = new Collection($this->relations);
-        //trace_log($relationWithImages->toArray());
-        if ($relationWithImages->count()) {
-            $relationWithImages = $relationWithImages->where('images', true)->keys();
-            foreach ($relationWithImages as $relation) {
-                //trace_log($relation);
-                $subModel = $this->getStringModelRelation($this->model, $relation);
-                //trace_log($subModel->name);
-                if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
-                    $cloudiList = \Waka\Cloudis\Classes\Cloudi::listCloudis($subModel, $relation);
-                    $montages = \Waka\Cloudis\Classes\Cloudi::listMontages($subModel, $relation);
-                    $relationImages = $relationImages->merge($cloudiList);
-                    $relationImages = $relationImages->merge($montages);
-                }
-                $files = $this->listFile($subModel, $relation);
-            }
+        $transformers = \Config::get('waka.utils::transformers');
+        $documentType = 'twig';
+        if ($this->type == 'word') {
+            $documentType = 'word';
+            $row = false;
         }
-        return $relationImages;
-    }
 
-    public function getPicturesUrl($dataImages)
-    {
-        if (!$dataImages) {
-            return;
-        }
-        $allPictures = [];
-        foreach ($dataImages as $image) {
-            //trace_log($image);
-            //On recherche le bon model
-            $modelImage = $this->model;
-            $img;
+        $mapedResult = [];
+        foreach ($attributes as $key => $attribute) {
+            //trace_log($attribute);
+            $type = $attribute['type'] ?? null;
+            $label = $attribute['label'] ?? null;
 
-            if ($image['relation'] != 'self') {
-                $modelImage = $this->getStringModelRelation($this->model, $image['relation']);
+            //Gestion du keyName
+            $KeyName;
+            if ($relationOrName == "modelImage") {
+                $KeyName = $key;
+            } elseif ($row && $name) {
+                $KeyName = 'row.' . $relationOrName . '.' . $key;
+            } elseif ($row && !$name) {
+                $KeyName = 'row.' . $key;
+            } elseif ($name) {
+                $KeyName = $name . '.' . $relationOrName . '.' . $key;
+            } else {
+                $KeyName = $relationOrName . '.' . $key;
             }
-            //trace_log("nom du model " . $modelImage->name);
-
-            $options = [
-                'width' => $image['width'] ?? null,
-                'height' => $image['height'] ?? null,
-                'crop' => $image['crop'] ?? null,
-                'gravity' => $image['gravity'] ?? null,
-            ];
-            if ($image['type'] == 'cloudi') {
-                $img = $modelImage->{$image['field']};
-                if ($img) {
-                    $img = $img->getUrl($options);
+            //Application de la transformation
+            //trace_log("type : " . $type . " | " . $KeyName);
+            if ($type) {
+                $transformer = $transformers['types'][$type][$documentType] ?? null;
+                //trace_log($transformer);
+                if ($transformer) {
+                    $KeyName = sprintf($transformer, $KeyName);
                 } else {
-                    $img = \Cloudder::secureShow(CloudisSettings::get('srcPath'));
+                    $documentTypeTransformer = $transformers[$documentType];
+                    $KeyName = sprintf($documentTypeTransformer, $KeyName);
                 }
-                // trace_log('image cloudi---' . $img);
+            } else {
+                $documentTypeTransformer = $transformers[$documentType];
+                $KeyName = sprintf($documentTypeTransformer, $KeyName);
             }
-            if ($image['type'] == 'montage') {
-                $montage = $modelImage->montages->find($image['id']);
-                $img = $modelImage->getMontage($montage, $options);
-                // trace_log('montage ---' . $img);
-            }
-            if ($image['type'] == 'file') {
-                $img = $modelImage->{$image['field']};
-                if ($img) {
-                    $img = $img->getThumb($options['width'], $options['height'], ['mode' => $options['crop']]);
-                } else {
-                    //trace_log('error');
-                }
-                // trace_log('montage ---' . $img);
-            }
-            $allPictures[$image['code']] = [
-                'path' => $img,
-                'width' => $options['width'],
-                'height' => $options['height'],
-            ];
+            $mapedResult[$KeyName] = $label;
         }
-        return $allPictures;
+        //trace_log($mapedResult);
+        return $mapedResult;
     }
+
+    public function getFncOutput($fnc)
+    {
+        $code = $fnc->getCode();
+        $outputConfig = $fnc->getOutputs();
+        //trace_log("code : -----------------".$code);
+        //trace_log($outputConfig);
+        if ($outputAttributes = $outputConfig['attributes'] ?? false) {
+                $tempAttributeArray = [];
+                foreach ($outputAttributes as $key => $attributeAdresse) {
+                    //trace_log('attributeArray : '.$key);
+                    $attributeArray = \Yaml::parseFile(plugins_path() . '/' . $attributeAdresse);
+
+                    if ($key == "main") {
+                        $maped = $this->remapAttributes($attributeArray['attributes'], $code, null, true);
+                    } else {
+                        $maped = $this->remapAttributes($attributeArray['attributes'], $key, $code, true);
+                    }
+                    $tempAttributeArray = array_merge($tempAttributeArray, $maped);
+                }
+                $result[$code] = $tempAttributeArray;
+            $values = $outputs['values'] ?? null;
+        }
+        if ($outputValues = $outputConfig['values'] ?? false) {
+            $maped = $this->remapAttributes($outputValues, $code, null, true);
+            if ($result[$code] ?? null) {
+                $result[$code] = array_merge($result[$code], $maped);
+            } else {
+                $result[$code] = $maped;
+            }
+        }
+        //trace_log($result);
+        return $result;
+    }
+
+    public function getFncsOutputs($fncs)
+    {
+        if (!$fncs) {
+            return [];
+        }
+        $result = [];
+        foreach ($fncs as $fnc) {
+            $outputFnc = $this->getFncOutput($fnc);
+            $result = array_merge($result, $outputFnc);
+        }
+
+        return $result;
+    }
+
+
+
+
 }

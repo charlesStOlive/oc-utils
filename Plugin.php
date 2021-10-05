@@ -60,6 +60,11 @@ class Plugin extends PluginBase
                     $colorArray = [];
                     return $colorArray;
                 },
+                'ident' => function ($string, $number) {
+                    $number = $number * 4;
+                    $spaces = str_repeat(' ', $number);
+                    return rtrim(preg_replace('#^(.+)$#m', sprintf('%1$s$1', $spaces), $string));
+                }
             ],
             'functions' => [
                 // Using an inline closure
@@ -88,7 +93,18 @@ class Plugin extends PluginBase
                             return '#' . $finalColor->getHex();
                     }
                 },
+                'stubCreator' => function ($template, $allData, $secificData, $dataName = null) {
+                    $allData['specific'] = $secificData;
+                    $allData['dataName'] = $dataName;
+                    //trace_log($allData['specific']);
+                    $templatePath = plugins_path('waka/utils/console/model/'.$template);
+                    $templateContent = \File::get($templatePath);
+                    $content = \Twig::parse($templateContent, $allData);
+                    return $content;
+                },
             ],
+           
+           
         ];
     }
 
@@ -116,13 +132,7 @@ class Plugin extends PluginBase
         $this->registerConsoleCommand('waka:createSeed', 'Waka\Utils\Console\CreateSeedsFiles');
         //$this->registerConsoleCommand('waka.workflowOnline', 'Waka\Utils\Console\WorkflowOnlineCreate');
         $this->registerConsoleCommand('waka.workflowOnlineCreate', 'Waka\Utils\Console\WorkflowOnlineDump');
-        CombineAssets::registerCallback(function ($combiner) {
-            $combiner->registerBundle('$/waka/utils/assets/css/waka.less');
-            $combiner->registerBundle('$/wcli/wconfig/assets/css/simple_grid/pdf.less');
-            $combiner->registerBundle('$/wcli/wconfig/assets/css/simple_grid/email.less');
-            $combiner->registerBundle('$/waka/utils/formwidgets/askbuilder/assets/less/asks.less');
-            $combiner->registerBundle('$/waka/utils/formwidgets/fncbuilder/assets/less/fncs.less');
-        });
+        
         
     }
 
@@ -130,7 +140,10 @@ class Plugin extends PluginBase
     {
         return [
             'asks' => [
-                ['\Waka\Utils\WakaRules\Asks\HtmlAsk', 'only' => ['wakaMail']],
+                [
+                    '\Waka\Utils\WakaRules\Asks\HtmlAsk', 
+                    // 'only' => ['wakaMail']
+                ],
                 ['\Waka\Utils\WakaRules\Asks\ImageAsk'],
                 ['\Waka\Utils\WakaRules\Asks\FileImgLinked'],
             ],
@@ -172,6 +185,9 @@ class Plugin extends PluginBase
             'Waka\Utils\FormWidgets\ModelInfo' => 'modelinfo',
             'Waka\Utils\FormWidgets\AskBuilder' => 'askbuilder',
             'Waka\Utils\FormWidgets\FncBuilder' => 'fncbuilder',
+            'Waka\Utils\FormWidgets\Attributs' => 'attributs',
+            'Waka\Utils\FormWidgets\ComonBlocs' => 'comonblocs',
+            'Waka\Utils\FormWidgets\Lists' => 'lists',
         ];
     }
 
@@ -186,10 +202,7 @@ class Plugin extends PluginBase
         // $alias = AliasLoader::getInstance();
         // $alias->alias('Excel', '\\Maatwebsite\\Excel\\Facades\\Excel');
 
-        Event::listen('backend.page.beforeDisplay', function($controller, $action, $params) {
-            //trace_log('/plugins/waka/utils/assets/css/waka.css');
-            $controller->addCss('/plugins/waka/utils/assets/css/waka.css');
-        });
+        
 
         \Storage::extend('utils_gd_backup', function ($app, $config) {
             $client = new \Google_Client();
@@ -265,13 +278,7 @@ class Plugin extends PluginBase
         });
 
 
-        //Foralaedotor
-        \Backend\Classes\Controller::extend(function($controller) {
-            $controller->addJs('/plugins/waka/utils/assets/js/froala.js');
-        });
-
-        $localeCode = Lang::getLocale();
-        setlocale(LC_TIME, $localeCode . '_' . strtoupper($localeCode) . '.UTF-8');
+        
     }
 
     /**

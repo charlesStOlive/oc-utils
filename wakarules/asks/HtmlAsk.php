@@ -19,6 +19,7 @@ class HtmlAsk extends AskBase
             'icon'        => 'icon-html5',
             'premission'  => 'wcli.utils.ask.edit.admin',
             'ask_emit'    => 'richeditor',
+            'show_attributes' => true,
         ];
     }
 
@@ -29,7 +30,7 @@ class HtmlAsk extends AskBase
         //trace_log($hostObj->config_data);
         $text = $hostObj->config_data['html'] ?? null;
         if($text) {
-            return $text;
+            return strip_tags($text, '<p><br><b><strong><i><em>');
         }
         return parent::getText();
 
@@ -46,8 +47,8 @@ class HtmlAsk extends AskBase
         if(!$text) {
             throw new ApplicationException('le texte html du ask : '.$this->getCode().' n\'a pas été trouvé'); 
         }
-        trace_log("data for twig");
-        trace_log($dataForTwig);
+        //trace_log("data for twig");
+        //trace_log($dataForTwig);
         return \Twig::parse($text, $dataForTwig);
     }
 }

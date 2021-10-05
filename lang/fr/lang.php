@@ -208,5 +208,9 @@ return [
             'label' => 'Accès impossible',
         ],
     ],
+    'base_tabs' => [
+        'tab_attributs' => 'Attributs',
+        'tab_infos' => 'Infos',
+    ],
 
 ];

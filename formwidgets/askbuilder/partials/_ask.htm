@@ -4,11 +4,11 @@
     class="ask-item <?= $ask->hasFieldConfig() ? '' : 'no-form' ?>">
     <div>
         <div class="icons">
-            <span class="icon"><i class="icon-bolt"></i></span>
+            <span class="icon"><i class="icon-pencil"></i></span>
             <span class="icon"><i class="<?= e($ask->getAskIcon()) ?>"></i></span>
         </div>
         <a href="javascript:;" data-asks-settings>
-            <span class="title"><?= e($this->getCacheAskTitle($ask)) ?></span>
+            <span class="title" style="margin-left: 0"><b><?= e($this->getCacheAskTitle($ask)) ?></b></span>
             <div class="comment"><?= $this->getCacheAskText($ask) ?></div>
         </a>
         <?php if(!$isRestrictedMode) : ?>

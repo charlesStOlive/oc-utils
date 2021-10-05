@@ -41,6 +41,398 @@ class CreateModelController extends GeneratorCommand
     //
     public $pluginObj = [];
     public $relations;
+
+    /**
+     * Prepare variables for stubs.
+     *
+     * return @array
+     */
+    protected function prepareVars()
+    {
+        //trace_log("start");
+        $pluginCode = $this->argument('plugin');
+
+        $parts = explode('.', $pluginCode);
+        $this->w_plugin = array_pop($parts);
+        $this->w_author = array_pop($parts);
+
+        $this->w_model = $this->argument('model');
+
+        // $values = $this->ask('Coller des valeurs excels ', true);
+        // trace_log($values);
+
+        $fileName = $this->w_model;
+
+        if ($this->argument('src')) {
+            $fileName = $this->argument('src');
+        }
+        $startPath = null;
+        //trace_log($this->w_author);
+        if($this->w_author == 'waka') {
+            $startPath = env('SRC_WAKA');
+        } 
+        if($this->w_author == 'wcli') {
+            //trace_log(env('SRC_WCLI','merde'));
+            $startPath = env('SRC_WCLI');
+        }
+
+        $filePath =  $startPath.'/'.$fileName.'.xlsx';
+
+        $this->maker = [
+            'model' => true,
+            'lang_field_attributes' => true,
+            'yaml_relation' => true,
+            'only_langue' => false,
+            'only_attribute' => false,
+            'update' => true,
+            'controller' => true,
+            'controller_config' => true,
+            'controller_htm' => true,
+            'excel' => true,
+
+        ];
+        $this->version = null;
+        $this->keepOldContent = true;
+        if($this->option('noKeep')) {
+            $this->keepOldContent = false;
+        }
+        $this->takeParentValues = true;
+        if($this->option('noTake')) {
+            $this->takeParentValues = false;
+        }
+
+        if ($this->option('option')) {
+            $this->maker = [
+                'model' => false,
+                'lang_field_attributes' => false,
+                'yaml_relation' => false,
+                'only_langue' => false,
+                'only_attribute' => false,
+                'update' => false,
+                'controller' => false,
+                'controller_config' => false,
+                'controller_htm' => false,
+                'excel' => false,
+
+            ];
+            $types = $this->choice('Database type', ['model', 'update', 'lang_field_attributes', 'yaml_relation', 'only_langue', 'only_attribute',  'controller', 'controller_config', 'controller_htm', 'excel'], 0, null, true);
+            //trace_log($types);
+            foreach ($types as $type) {
+                $this->maker[$type] = true;
+                if ($type == 'update') {
+                    $this->version = $this->ask('version');
+                }
+            }
+        }
+
+        //trace_log($this->maker);
+
+        $importExcel = new \Waka\Utils\Classes\Imports\ImportModelController($this->w_model);
+        \Excel::import($importExcel, $filePath);
+        $rows = new Collection($importExcel->data->data);
+        $this->config = $importExcel->config->data;
+        $relations = $importExcel->relations->data;
+
+        $this->relations = new \Waka\Utils\Classes\CreateRelations($this,$relations);
+        $modelRelations = $this->relations->getModelRelations();
+        $controllerRelations = $this->relations->getControllerRelations();
+        $isBehaviorRelationNeeded = $this->relations->isBehaviorRelationNeeded();
+
+        //Suppresion des lignes vides ( sans var )
+        $rows = $rows->where('var', '<>', null);
+
+        $rows = $rows->map(function ($item, $key) {
+            if($label = $item['name'] ?? null) {
+                if($label == 'NON') $item['name'] = null;
+            }
+            $trigger = $item['trigger'] ?? null;
+            if ($trigger) {
+                if (starts_with($trigger, '!')) {
+                    $item['trigger'] = [
+                        'field' => str_replace('!', "", $trigger),
+                        'action' => 'hide',
+                    ];
+                } else {
+                    $item['trigger'] = [
+                        'field' => $trigger,
+                        'action' => 'show',
+                    ];
+                }
+            }
+            $options = $item['field_opt'] ?? null;
+            $noPlaceHolder = false;
+            if ($options) {
+                $array = explode('|', $options);
+                foreach($array as $key=>$row) {
+                    if(starts_with($row, 'config::')) {
+                        $configRaw = str_replace('config::', "", $row);
+                        $item['field_config'] = $this->config[$configRaw];
+                        unset($array[$key]);
+                    }
+                    if($row == 'noPlaceHolder') {
+                        $noPlaceHolder = true;
+                        unset($array[$key]);
+                    }
+                }
+                $item['field_opt'] = $array;
+            }
+
+            $options = $item['c_field_opt'] ?? null;
+            if ($options) {
+                $array = explode('|', $options);
+                
+                foreach($array as $key=>$row) {
+
+                    if(starts_with($row, 'config::')) {
+                        $configRaw = str_replace('config::', "", $row);
+                        $item['c_field_config'] = $this->config[$configRaw];
+                        unset($array[$key]);
+                    }  
+                    if($row == 'noPlaceHolder') {
+                        $noPlaceHolder = true;
+                        unset($array[$key]);
+                    }
+                }
+                $item['c_field_opt'] = $array;
+                
+            }
+            if($noPlaceHolder) {
+                //trace_log('NO PLACE HOLDER');
+                $item['noPlaceHolder'] = true;
+            }
+            
+
+
+            $model_opt = $item['model_opt'] ?? null;
+            if ($model_opt) {
+                $arrayOpt = explode('|', $model_opt);
+                $item['append'] = in_array('append', $arrayOpt);
+                $item['json'] = in_array('json', $arrayOpt);
+                $item['getter'] = in_array('getter', $arrayOpt);
+                $item['purgeable'] = in_array('purgeable', $arrayOpt);
+            }
+            // $options = $item['c_field_opt'] ?? null;
+            // if ($options) {
+            //     $array = explode('|', $options);
+            //     $item['c_field_opt'] = $array;
+            // }
+            
+
+            $optionsCol = $item['col_opt'] ?? null;
+            if ($optionsCol) {
+                $array = explode('|', $optionsCol);
+                $item['col_opt'] = $array;
+            }
+
+            $optionsAtt = $item['att_opt'] ?? null;
+            if ($optionsAtt) {
+                $array = explode('|', $optionsAtt);
+                $item['att_opt'] = $array;
+            }
+            //
+            if ($optionsSb =  $item['sb_opt'] ?? null) {
+                $arraySb = explode('|', $optionsSb);
+                foreach($arraySb as $key=>$row) {
+                    if(starts_with($row, 'config::')) {
+                        //trace_log("il y a une config");
+                        $configRaw = str_replace('config::', "", $row);
+                        //trace_log($this->config[$configRaw]);
+                        $item['sb_config'] = $this->config[$configRaw];
+                        unset($arraySb[$key]);
+                    }  
+                }
+                $item['sb_opt'] = $arraySb;
+            }
+            if($fieldTab = $item['tab'] ?? null) {
+                if (starts_with($fieldTab, 'primary::')) {
+                    $fieldTab = str_replace('primary::', "tab_", $fieldTab);
+                    $item['tab'] = $fieldTab;
+                    $item['tabType'] = 'primary';
+                }
+                if (starts_with($fieldTab, 'secondary::')) {
+                    $fieldTab = str_replace('secondary::', "tab_", $fieldTab);
+                    $item['tab'] = $fieldTab;
+                    $item['tabType'] = 'secondary';
+                }
+                if (starts_with($fieldTab, 'outside')) {
+                    $item['tab'] = null;
+                    $item['tabType'] = 'outside';
+                }
+            }
+            $rel = $item['relation'] ?? null;
+            if ($rel) {
+                $item['relation_parsed'] = $this->relations->getOneRelation($rel);
+            }
+            
+
+            return $item;
+        });
+
+        $columns = $rows->where('column', '<>', null)->sortBy('column')->toArray();
+
+         //R2cuperqtion des listes uniques. 
+        $this->config['lists'] = $rows->where('lists', '!=', null)->unique('lists')->pluck('lists', 'lists')->toArray();
+        //trace_log($this->config['lists']);
+        
+        
+        //GESTION DES TRADUCTIONS
+        $trads = $rows->where('name', '<>', null)->sortBy('var')->toArray();
+        $finalTrads = [];
+        foreach($trads as $trad) {
+            $var = $trad['var'] ?? null;
+            if (!$var) {
+                continue;
+            }
+            if ($trad['name'] ?? false) {
+                $finalTrads[$var] = $trad['name'] ?? null;
+            }
+            if ($trad['comment'] ?? false) {
+                $finalTrads[$var.'_com'] = $trad['comment'] ?? null;
+            }
+        }
+        //Construction d'un array errors à partir de config, il sera utiliser dans le fichier de lang du modele
+        $errors = [];
+        foreach ($this->config as $key => $value) {
+            if (starts_with($key, 'e.')) {
+                $key = str_replace('e.', "", $key);
+                $errors[$key] = $value;
+            }
+        }
+        if($errors) {
+            $finalTrads['e'] = $errors;
+        }
+        //Fin de la gestion des langues
+
+        
+        $finalTrads = VarExporter::export($finalTrads,VarExporter::NO_CLOSURES);
+        //
+        $dbs = $rows->where('type', '<>', null)->where('version', '==', null)->toArray();
+        $dbVersion = $rows->where('type', '<>', null)->where('version', '==', $this->version)->toArray();
+
+        //
+        $fields = $rows->where('field', '<>', null)->sortBy('field')->toArray();
+        $fieldsInfo = $rows->where('sidebar', '<>', null)->sortBy('sidebar');
+        $fieldsInfo = $fieldsInfo->map(function ($item, $key) {
+                if($item['field_type'] == 'partial_relation') {
+                    $item['field_type'] = 'relation';
+                };
+                return $item;
+            })->toArray();
+        $this->fields_create = $rows->where('c_field', '<>', null);
+        if ($this->fields_create) {
+            $this->fields_create = $this->fields_create->sortBy('c_field');
+            $this->fields_create = $this->fields_create->map(function ($item, $key) {
+                $item['field_opt'] = $item['c_field_opt'];
+                if($item['c_span'] != null) {
+                    $item['span'] = $item['c_span'];
+                }
+                return $item;
+            });
+            $this->fields_create = $this->fields_create->toArray();
+        }
+        $primaryFields = $rows->where('tabType', '==', 'primary')->sortBy('field')->toArray();
+        $secondaryFields = $rows->where('tabType', '==', 'secondary')->sortBy('field')->toArray();
+        if(count($secondaryFields)) {
+            $this->config['has_side_bar'] = true;
+        }
+        $outsideFields = $rows->where('tabType', '==', 'outside')->sortBy('field')->toArray();
+        $this->config['has_side_bar_info'] = $rows->where('tabType', '==', 'secondary')->count();
+        //trace_log($this->fields_create);
+        //trace_log($fields);
+        $attributes = $rows->where('attribute', '<>', null)->toArray();
+
+        //Recherche des tables dans la config
+        $tabs = [];
+        foreach ($this->config as $key => $value) {
+            if (starts_with($key, 'tab::')) {
+                $key = str_replace('tab::', "", $key);
+                $tabs[$key] = $value;
+            }
+        }
+        if($this->config['use_classes_in_model'] ?? false) {
+            $this->config['use_classes_in_model'] = explode('|' ,  $this->config['use_classes_in_model'] );
+        } else {
+            $this->config['use_classes_in_model'] = null;
+        }
+
+        
+
+        $excels = $rows->where('excel', '<>', null)->toArray();
+        $excelHeaders = [];
+        foreach($excels as $key=>$row) {
+            $var = $row['var'];
+            if($row['relation']) {
+                $var = $var.'_id';
+            }
+            $excelHeaders[$key] = $var;
+        }
+        array_unshift($excelHeaders , 'id');
+
+        
+        //
+
+
+
+        $titles = $rows->where('title', '<>', null)->pluck('name', 'var')->toArray();
+        $appends = $rows->where('append', '<>', null)->pluck('name', 'var')->toArray();
+        $dates1 = $rows->where('type', '==', 'date');
+        $dates2 = $rows->where('type', '==', 'timestamp');
+        $dates = $dates1->merge($dates2)->pluck('name', 'var')->toArray();
+        $requireds = $rows->where('required', '<>', null)->pluck('required', 'var')->toArray();
+        $jsons = $rows->where('json', '<>', null)->pluck('json', 'var')->toArray();
+        $getters = $rows->where('getter', '<>', null)->pluck('json', 'var')->toArray();
+        $purgeables = $rows->where('purgeable', '<>', null)->pluck('purgeable', 'var')->toArray();
+
+        //trace_log($errors);
+
+        $all = [
+            'name' => $this->w_model,
+            'ctname' => $this->w_model . 's',
+            'author' => $this->w_author,
+            'plugin' => $this->w_plugin,
+            'configs' => $this->config,
+            
+            'dbs' => $dbs,
+            'dbVersion' => $dbVersion,
+            'version' => $this->version,
+            'columns' => $columns,
+            'fields' => $fields,
+            //
+            'primaryFields' =>$primaryFields,
+            'outsideFields' =>$outsideFields,
+            'secondaryFields' =>$secondaryFields,
+            //
+            'fields_create' => $this->fields_create,
+            'fieldsInfo' => $fieldsInfo,
+            'attributes' => $attributes,
+            'titles' => $titles,
+            'appends' => $appends,
+            'dates' => $dates,
+            'requireds' => $requireds,
+            'jsons' => $jsons,
+            'getters' => $getters,
+            'purgeables' => $purgeables,
+            //
+            'tabs' => $tabs,
+            //Ancien trad a supprimer
+            'trads' => $trads,
+            'errors' => $errors,
+            //nouveau trad
+            'finalTrads' => $finalTrads,
+            //
+            'modelRelations' => $modelRelations,
+            'controllerRelations' => $controllerRelations,
+            'isBehaviorRelationNeeded' => $isBehaviorRelationNeeded,
+            //
+            'excels' => $excels,
+            'excelHeaders' => $excelHeaders
+
+        ];
+        //trace_log($this->config);
+
+        return $all;
+    }
+
     /**
      * Execute the console command.
      *
@@ -88,7 +480,7 @@ class CreateModelController extends GeneratorCommand
             if ($this->fields_create) {
                 $this->stubs['model/fields_create.stub'] = 'models/{{lower_name}}/fields_create.yaml';
             }
-            if ($this->config['side_bar_info']) {
+            if ($this->config['has_side_bar_info']) {
                 $this->stubs['model/fields_for_side_bar.stub'] = 'models/{{lower_name}}/fields_for_side_bar.yaml';
             }
             if ($this->config['use_tab']) {
@@ -115,9 +507,9 @@ class CreateModelController extends GeneratorCommand
             if ($this->config['behav_duplicate'] ?? false) {
                 $this->stubs['controller/config_duplicate.stub'] = 'controllers/{{lower_ctname}}/config_duplicate.yaml';
             }
-            if ($this->config['side_bar_attributes'] ?? false) {
-                $this->stubs['controller/config_attributes.stub'] = 'controllers/{{lower_ctname}}/config_attributes.yaml';
-            }
+            // if ($this->config['side_bar_attributes'] ?? false) {
+            //     $this->stubs['controller/config_attributes.stub'] = 'controllers/{{lower_ctname}}/config_attributes.yaml';
+            // }
             if ($this->config['side_bar_update']) {
                 $stub = 'controller/config_side_bar_update.stub';
                 $destination = 'controllers/{{lower_ctname}}/config_side_bar_update.yaml';
@@ -191,7 +583,7 @@ class CreateModelController extends GeneratorCommand
                     'controller/update.stub' => 'controllers/{{lower_ctname}}/update.htm',
                 ];
                 $this->stubs = array_merge($this->stubs,  $controllerHtmStubs);
-                if ($this->config['side_bar_attributes'] || $this->config['side_bar_info']) {
+                if ($this->config['has_side_bar']) {
                     unset($this->stubs['controller/update.stub']);
                     //trace_log('controller avec sidebar');
                     $this->stubs['controller/update_sidebar.stub'] = 'controllers/{{lower_ctname}}/update.htm';
@@ -339,354 +731,7 @@ class CreateModelController extends GeneratorCommand
         $this->info($this->type . 'created successfully.');
     }
 
-    /**
-     * Prepare variables for stubs.
-     *
-     * return @array
-     */
-    protected function prepareVars()
-    {
-        //trace_log("start");
-        $pluginCode = $this->argument('plugin');
-
-        $parts = explode('.', $pluginCode);
-        $this->w_plugin = array_pop($parts);
-        $this->w_author = array_pop($parts);
-
-        $this->w_model = $this->argument('model');
-
-        // $values = $this->ask('Coller des valeurs excels ', true);
-        // trace_log($values);
-
-        $fileName = $this->w_model;
-
-        if ($this->argument('src')) {
-            $fileName = $this->argument('src');
-        }
-        $startPath = null;
-        //trace_log($this->w_author);
-        if($this->w_author == 'waka') {
-            $startPath = env('SRC_WAKA');
-        } 
-        if($this->w_author == 'wcli') {
-            //trace_log(env('SRC_WCLI','merde'));
-            $startPath = env('SRC_WCLI');
-        }
-
-        $filePath =  $startPath.'/'.$fileName.'.xlsx';
-
-        $this->maker = [
-            'model' => true,
-            'lang_field_attributes' => true,
-            'yaml_relation' => true,
-            'only_langue' => false,
-            'only_attribute' => false,
-            'update' => true,
-            'controller' => true,
-            'controller_config' => true,
-            'controller_htm' => true,
-            'excel' => true,
-
-        ];
-        $this->version = null;
-        $this->keepOldContent = true;
-        if($this->option('noKeep')) {
-            $this->keepOldContent = false;
-        }
-        $this->takeParentValues = true;
-        if($this->option('noTake')) {
-            $this->takeParentValues = false;
-        }
-
-        if ($this->option('option')) {
-            $this->maker = [
-                'model' => false,
-                'lang_field_attributes' => false,
-                'yaml_relation' => false,
-                'only_langue' => false,
-                'only_attribute' => false,
-                'update' => false,
-                'controller' => false,
-                'controller_config' => false,
-                'controller_htm' => false,
-                'excel' => false,
-
-            ];
-            $types = $this->choice('Database type', ['model', 'update', 'lang_field_attributes', 'yaml_relation', 'only_langue', 'only_attribute',  'controller', 'controller_config', 'controller_htm', 'excel'], 0, null, true);
-            //trace_log($types);
-            foreach ($types as $type) {
-                $this->maker[$type] = true;
-                if ($type == 'update') {
-                    $this->version = $this->ask('version');
-                }
-            }
-        }
-
-        //trace_log($this->maker);
-
-        $importExcel = new \Waka\Utils\Classes\Imports\ImportModelController($this->w_model);
-        \Excel::import($importExcel, $filePath);
-        $rows = new Collection($importExcel->data->data);
-        $this->config = $importExcel->config->data;
-        $relations = $importExcel->relations->data;
-
-        $this->relations = new \Waka\Utils\Classes\CreateRelations($this,$relations);
-        $modelRelations = $this->relations->getModelRelations();
-        $controllerRelations = $this->relations->getControllerRelations();
-        $isBehaviorRelationNeeded = $this->relations->isBehaviorRelationNeeded();
-
-        //Suppresion des lignes vides ( sans var )
-        $rows = $rows->where('var', '<>', null);
-
-        $rows = $rows->map(function ($item, $key) {
-            $trigger = $item['trigger'] ?? null;
-            if ($trigger) {
-                if (starts_with($trigger, '!')) {
-                    $item['trigger'] = [
-                        'field' => str_replace('!', "", $trigger),
-                        'action' => 'hide',
-                    ];
-                } else {
-                    $item['trigger'] = [
-                        'field' => $trigger,
-                        'action' => 'show',
-                    ];
-                }
-            }
-            $options = $item['field_opt'] ?? null;
-            if ($options) {
-                $array = explode('|', $options);
-                foreach($array as $key=>$row) {
-                    if(starts_with($row, 'config::')) {
-                        $configRaw = str_replace('config::', "", $row);
-                        $item['field_config'] = $this->config[$configRaw];
-                        unset($array[$key]);
-                    }  
-                }
-                $item['field_opt'] = $array;
-            }
-
-
-            $model_opt = $item['model_opt'] ?? null;
-            if ($model_opt) {
-                $arrayOpt = explode('|', $model_opt);
-                $item['append'] = in_array('append', $arrayOpt);
-                $item['json'] = in_array('json', $arrayOpt);
-                $item['getter'] = in_array('getter', $arrayOpt);
-                $item['purgeable'] = in_array('purgeable', $arrayOpt);
-            }
-            // $options = $item['c_field_opt'] ?? null;
-            // if ($options) {
-            //     $array = explode('|', $options);
-            //     $item['c_field_opt'] = $array;
-            // }
-            $options = $item['c_field_opt'] ?? null;
-            if ($options) {
-                $array = explode('|', $options);
-                foreach($array as $key=>$row) {
-                    if(starts_with($row, 'config::')) {
-                        $configRaw = str_replace('config::', "", $row);
-                        $item['c_field_config'] = $this->config[$configRaw];
-                        unset($array[$key]);
-                    }  
-                }
-                $item['c_field_opt'] = $array;
-            }
-
-            $optionsCol = $item['col_opt'] ?? null;
-            if ($optionsCol) {
-                $array = explode('|', $optionsCol);
-                $item['col_opt'] = $array;
-            }
-
-            $optionsAtt = $item['att_opt'] ?? null;
-            if ($optionsAtt) {
-                $array = explode('|', $optionsAtt);
-                $item['att_opt'] = $array;
-            }
-            //
-            $optionsSb = $item['sb_opt'] ?? null;
-            if ($optionsSb) {
-                $arraySb = explode('|', $optionsSb);
-                foreach($arraySb as $key=>$row) {
-                    if(starts_with($row, 'config::')) {
-                        //trace_log("il y a une config");
-                        $configRaw = str_replace('config::', "", $row);
-                        //trace_log($this->config[$configRaw]);
-                        $item['sb_config'] = $this->config[$configRaw];
-                        unset($arraySb[$key]);
-                    }  
-                }
-                $item['sb_opt'] = $arraySb;
-            }
-            // $optionsSb = $item['sb_opt'] ?? null;
-            // if ($optionsSb && starts_with($optionsSb, 'config::')) {
-            //     $configRaw = str_replace('config::', "", $item['sb_opt']);
-            //     $item['sb_config'] = $this->config[$configRaw];
-            //     $item['sb_opt'] = null;
-            // } elseif ($optionsSb) {
-            //     $array = explode('|', $optionsSb);
-            //     $item['sb_opt'] = $array;
-            // }
-            $rel = $item['relation'] ?? null;
-            if ($rel) {
-                $item['relation_parsed'] = $this->relations->getOneRelation($rel);
-            }
-            
-
-            return $item;
-        });
-
-        $columns = $rows->where('column', '<>', null)->sortBy('column')->toArray();
-
-         //R2cuperqtion des listes uniques. 
-        $this->config['lists'] = $rows->where('lists', '!=', null)->unique('lists')->pluck('lists', 'lists')->toArray();
-        //trace_log($this->config['lists']);
-        
-        
-        //GESTION DES TRADUCTIONS
-        $trads = $rows->where('name', '<>', null)->toArray();
-        $finalTrads = [];
-        foreach($trads as $trad) {
-            $var = $trad['var'] ?? null;
-            if (!$var) {
-                continue;
-            }
-            if ($trad['name'] ?? false) {
-                $finalTrads[$var] = $trad['name'] ?? null;
-            }
-            if ($trad['comment'] ?? false) {
-                $finalTrads[$var.'_com'] = $trad['comment'] ?? null;
-            }
-        }
-        //Construction d'un array errors à partir de config, il sera utiliser dans le fichier de lang du modele
-        $errors = [];
-        foreach ($this->config as $key => $value) {
-            if (starts_with($key, 'e.')) {
-                $key = str_replace('e.', "", $key);
-                $errors[$key] = $value;
-            }
-        }
-        if($errors) {
-            $finalTrads['e'] = $errors;
-        }
-        //Fin de la gestion des langues
-
-        
-        $finalTrads = VarExporter::export($finalTrads,VarExporter::NO_CLOSURES);
-        //
-        $dbs = $rows->where('type', '<>', null)->where('version', '==', null)->toArray();
-        $dbVersion = $rows->where('type', '<>', null)->where('version', '==', $this->version)->toArray();
-
-        //
-        $fields = $rows->where('field', '<>', null)->sortBy('field')->toArray();
-        $fieldsInfo = $rows->where('sidebar', '<>', null)->sortBy('sidebar');
-        $fieldsInfo = $fieldsInfo->map(function ($item, $key) {
-                if($item['field_type'] == 'partial_relation') {
-                    $item['field_type'] = 'relation';
-                };
-                return $item;
-            })->toArray();
-        $this->fields_create = $rows->where('c_field', '<>', null);
-        if ($this->fields_create) {
-            $this->fields_create = $this->fields_create->sortBy('c_field');
-            $this->fields_create = $this->fields_create->map(function ($item, $key) {
-                $item['field_opt'] = $item['c_field_opt'];
-                return $item;
-            });
-            $this->fields_create = $this->fields_create->toArray();
-        }
-        //trace_log($this->fields_create);
-        //trace_log($fields);
-        $attributes = $rows->where('attribute', '<>', null)->toArray();
-
-        //Recherche des tables dans la config
-        $tabs = [];
-        foreach ($this->config as $key => $value) {
-            if (starts_with($key, 'tab::')) {
-                $key = str_replace('tab::', "", $key);
-                $tabs[$key] = $value;
-            }
-        }
-        if($this->config['use_classes_in_model'] ?? false) {
-            $this->config['use_classes_in_model'] = explode('|' ,  $this->config['use_classes_in_model'] );
-        } else {
-            $this->config['use_classes_in_model'] = null;
-        }
-
-        
-
-        $excels = $rows->where('excel', '<>', null)->toArray();
-        $excelHeaders = [];
-        foreach($excels as $key=>$row) {
-            $var = $row['var'];
-            if($row['relation']) {
-                $var = $var.'_id';
-            }
-            $excelHeaders[$key] = $var;
-        }
-        array_unshift($excelHeaders , 'id');
-
-        
-        //
-
-
-
-        $titles = $rows->where('title', '<>', null)->pluck('name', 'var')->toArray();
-        $appends = $rows->where('append', '<>', null)->pluck('name', 'var')->toArray();
-        $dates1 = $rows->where('type', '==', 'date');
-        $dates2 = $rows->where('type', '==', 'timestamp');
-        $dates = $dates1->merge($dates2)->pluck('name', 'var')->toArray();
-        $requireds = $rows->where('required', '<>', null)->pluck('required', 'var')->toArray();
-        $jsons = $rows->where('json', '<>', null)->pluck('json', 'var')->toArray();
-        $getters = $rows->where('getter', '<>', null)->pluck('json', 'var')->toArray();
-        $purgeables = $rows->where('purgeable', '<>', null)->pluck('purgeable', 'var')->toArray();
-
-        //trace_log($errors);
-
-        $all = [
-            'name' => $this->w_model,
-            'ctname' => $this->w_model . 's',
-            'author' => $this->w_author,
-            'plugin' => $this->w_plugin,
-            'configs' => $this->config,
-            
-            'dbs' => $dbs,
-            'dbVersion' => $dbVersion,
-            'version' => $this->version,
-            'columns' => $columns,
-            'fields' => $fields,
-            'fields_create' => $this->fields_create,
-            'fieldsInfo' => $fieldsInfo,
-            'attributes' => $attributes,
-            'titles' => $titles,
-            'appends' => $appends,
-            'dates' => $dates,
-            'requireds' => $requireds,
-            'jsons' => $jsons,
-            'getters' => $getters,
-            'purgeables' => $purgeables,
-            //
-            'tabs' => $tabs,
-            //Ancien trad a supprimer
-            'trads' => $trads,
-            'errors' => $errors,
-            //nouveau trad
-            'finalTrads' => $finalTrads,
-            //
-            'modelRelations' => $modelRelations,
-            'controllerRelations' => $controllerRelations,
-            'isBehaviorRelationNeeded' => $isBehaviorRelationNeeded,
-            //
-            'excels' => $excels,
-            'excelHeaders' => $excelHeaders
-
-        ];
-        //trace_log($this->config);
-
-        return $all;
-    }
-
+    
     
 
     

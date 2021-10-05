@@ -7,10 +7,6 @@ trait DataSourceHelpers
         return \DataSources::list();
     }
 
-    public function listAllDataSourceToArray()
-    {
-        return $this->listDataSource()->toArray();
-    }
     public function listDataSourceTarget()
     {
         if(!$this->data_source) {

@@ -86,7 +86,8 @@ class DuplicateModel extends ControllerBehavior
 
         $transformations = new Collection($this->getConfig('duplication[transformation]'));
         $manipulations = new Collection($this->getConfig('duplication[fields]'));
-        $relations = $this->getConfig('duplication[relations]');
+        $relationsMany = $this->getConfig('duplication[relationsMany]');
+        $relationsBelongsToMany = $this->getConfig('duplication[relationsBelongsToMany]');
         //$relationsManyToMany = new Collection($this->getConfig('duplication[relationsManyToMany]'));
 
         $modelClass = $this->getConfig('modelClass');
@@ -113,14 +114,26 @@ class DuplicateModel extends ControllerBehavior
 
         $cloneModel->save();
 
+        if ($relationsMany) {
+            foreach($relationsMany as $relation) {
+                $items = $sourceModel->{$relation};
+                foreach($items as $item) {
+                    $newItem = $item->replicate();
+                    $cloneModel->{$relation}()->save($newItem);
+                }
+            }
+        }
+
         //load relations on EXISTING MODEL
-        if ($relations) {
-            $sourceModel->load($relations);
+        if ($relationsBelongsToMany) {
+            $sourceModel->load($relationsBelongsToMany);
             //re-sync everything
             foreach ($sourceModel->getRelations() as $relationName => $values) {
                 $cloneModel->{$relationName}()->sync($values);
             }
         }
+
+        
 
         // if($relations) {
         //     foreach($relations as $Keyrelation => $fieldRelation  ) {

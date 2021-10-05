@@ -1,8 +1,5 @@
-<h3>Les attributs disponibles</h3>
-<p class="help-block">Liste des attributs et des relations disponibles.</p>
-<p class="help-block">Les valeurs affiché sont celles du modèle de test.</p>
-<p class="help-block"><b><?= $text_info ?></b></p>
 <h3>Attributs du modèle</h3>
+<p class="help-block"><b><?= $text_info ?></b></p>
 <div class="list">
     <?php foreach($attributesArray as $keyCategorie=>$arrayCategories) : ?>
 
@@ -20,7 +17,7 @@
                     data-control="dragvalue"
                     data-text-value="<?=$key?>"
                     data-drag-click="true">
-                <?= e(trans($value)); ?><br><span style="font-size:0.8em"><?=$key?></span>
+                <?= e(trans($value)); ?>< : <span style="font-size:0.8em"><?=$key?></span>
             </button>
             <?php endforeach ?>
         </div>

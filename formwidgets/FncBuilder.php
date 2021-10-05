@@ -63,7 +63,7 @@ class FncBuilder extends FormWidgetBase
     protected function loadAssets()
     {
         $this->addJs('js/fncs.js');
-        $this->addCss('css/fncs.css');
+        $this->addCss('../../../../../wcli/wconfig/assets/css/formwidgets/fncs.css');
     }
 
     /**
@@ -86,7 +86,7 @@ class FncBuilder extends FormWidgetBase
         $this->vars['isRestrictedMode'] = $this->isRestrictedMode();
         //trace_log($this->getFncs());
         $this->vars['fncFormWidget'] = $this->fncFormWidget;
-        $this->vars['availableTags'] = $this->getAvailableTags();
+        $this->getAvailableTags();
     }
 
     /**
@@ -132,7 +132,7 @@ class FncBuilder extends FormWidgetBase
 
     public function onLoadCreateFncForm()
     {
-        trace_log($this->model->data_source);
+        //trace_log($this->model->data_source);
         try {
             $fncs = FncBase::findFncs($this->targetProductor, $this->model->data_source);
             $this->vars['fncs'] = $fncs;
@@ -337,19 +337,12 @@ class FncBuilder extends FormWidgetBase
 
     protected function getAvailableTags()
     {
-        $tags = [];
-        //travaille sur les tags. 
-        //$ds = new DataSource(get_class($this->model));
-
-        if ($this->model->methodExists('defineParams')) {
-            $params = $this->model->defineParams();
-
-            foreach ($params as $param => $definition) {
-                $tags[$param] = array_get($definition, 'label');
-            }
+        if (!$fnc = $this->findFncObj(null, false)) {
+            return null;
         }
-
-        return $tags;
+        $attributes = new \Waka\utils\Classes\Wattributes($this->model, $this->type);
+        $this->vars['keyFnc'] = $fnc->getCode();
+        $this->vars['fncAttributs'] = $attributes->getFncOutput($fnc);
     }
 
     /**
