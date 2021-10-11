@@ -84,6 +84,7 @@ class FncBuilder extends FormWidgetBase
         $this->vars['formModel'] = $this->model;
         $this->vars['fncs'] = $this->getFncs();
         $this->vars['isRestrictedMode'] = $this->isRestrictedMode();
+        $this->vars['targetProductor'] = $this->targetProductor;
         //trace_log($this->getFncs());
         $this->vars['fncFormWidget'] = $this->fncFormWidget;
         $this->getAvailableTags();
@@ -132,7 +133,7 @@ class FncBuilder extends FormWidgetBase
 
     public function onLoadCreateFncForm()
     {
-        //trace_log($this->model->data_source);
+        //trace_log($this->targetProductor);
         try {
             $fncs = FncBase::findFncs($this->targetProductor, $this->model->data_source);
             $this->vars['fncs'] = $fncs;

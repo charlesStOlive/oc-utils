@@ -17,6 +17,7 @@ class ImageAsk extends AskBase
             'name'        => 'Une image dans le répertoire média',
             'description' => 'Choisissez Une image dans le répertoire média',
             'icon'        => 'icon-picture-o',
+            'word_type' => 'IMG',
         ];
     }
 

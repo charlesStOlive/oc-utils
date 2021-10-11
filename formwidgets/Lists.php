@@ -81,7 +81,7 @@ class Lists extends FormWidgetBase
         $ds = \DataSOurces::find($this->model->data_source);
         $dbValues = $ds->class::whereIn('id', $values)->select('id', 'email')->get();
         if($dbValues) {
-            trace_log($dbValues->toArray());
+            //trace_log($dbValues->toArray());
             return $dbValues->toArray();
         } else {
             return [];
@@ -94,9 +94,9 @@ class Lists extends FormWidgetBase
      */
     public function getSaveValue($values)
     {
-        trace_log(post());
-        trace_log('getSaveValue');
-        trace_log($values);
+        //trace_log(post());
+        //trace_log('getSaveValue');
+        //trace_log($values);
         return $values;
     }
 

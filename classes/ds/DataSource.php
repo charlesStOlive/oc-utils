@@ -102,7 +102,7 @@ class DataSource extends Extendable
         }
     }
 
-    public function getModel($modelId)
+    public function getModel($modelId = null)
     {
         $this->instanciateModel($modelId);
         return $this->model;
@@ -112,7 +112,7 @@ class DataSource extends Extendable
     {
 
         $documents = $productorModel::where('data_source', $this->code);
-        $this->instanciateModel($modelId);/**NETOYAGE**/
+        $this->instanciateModel($modelId);/**NETOYAGE ? */
 
         $optionsList = [];
 
@@ -166,7 +166,7 @@ class DataSource extends Extendable
         return $optionsList;
     }
 
-    /**NETOYAGE**/
+    /**NETOYAGE ? */
     public function dynamyseText($content,$modelId =null) {
         if($modelId) {
             $this->instanciateModel($modelId);
@@ -177,7 +177,7 @@ class DataSource extends Extendable
         return \Twig::parse($content, ['ds' => $this->model]);
     }
 
-    /**NETOYAGE**/
+    /**NETOYAGE ? */
     public function getProductorAsks($productorClass, $productorId, $modelId)
     {
         if(!$productorId) {
@@ -438,8 +438,6 @@ class DataSource extends Extendable
              $array = array_merge($array, $relationArray);
         }
         return $array; 
-       
-
     }
 
     public function getImagesFilesFrom($type, $code = null) {

@@ -1,5 +1,6 @@
 <div id="att_list">
     <p><b>Attributs</b></p>
+    <p class="help-block">Glissez déposez un attribut dans un éditeur</p>
     <p class="help-block"><b><?= $text_info ?></b></p>
     <ul class="w-accordion">
         <?php foreach($attributesArray as $keyCategorie=>$arrayCategories) : ?>
@@ -69,6 +70,7 @@
     </ul>
 </div>
 <script>
+new ClipboardJS('.btn');
 $('#att_list .w-ac-toggle').click(function(e) {
     e.preventDefault();
 

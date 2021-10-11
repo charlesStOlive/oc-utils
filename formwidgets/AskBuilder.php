@@ -63,7 +63,6 @@ class AskBuilder extends FormWidgetBase
     protected function loadAssets()
     {
         $this->addJs('js/asks.js');
-        $this->addJs('js/ac.js'); /**Clean ? Degeu je repèt le principe d'ascenseur... */
         $this->addCss('../../../../../wcli/wconfig/assets/css/formwidgets/asks.css');
     }
 

@@ -112,7 +112,7 @@ class Wimages
                 //trace_log($relation);
                 $subModel = $this->getStringModelRelation($this->model, $relation);
                 $files = $this->listFile($subModel, $relation);
-                //trace_log($files);
+                //trace_log($subModel->name);
                 $relationImages = $relationImages->merge($files);
                 if (class_exists('\Waka\Cloudis\Classes\Cloudi')) {
                     $cloudiList = \Waka\Cloudis\Classes\Cloudi::listCloudis($subModel, $relation);

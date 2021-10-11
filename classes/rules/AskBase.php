@@ -165,6 +165,10 @@ class AskBase extends ExtensionBase implements AskInterface
     {
         return array_get($this->askDetails(), 'show_attributes');
     }
+    public function getWordType()
+    {
+        return array_get($this->askDetails(), 'word_type');
+    }
 
     
 
@@ -246,9 +250,11 @@ class AskBase extends ExtensionBase implements AskInterface
 
         foreach ($bundles as $plugin => $bundle) {
             foreach ((array) array_get($bundle, 'asks', []) as $conditionClass) {
+                //trace_log($conditionClass[0]);
                 $class = $conditionClass[0];
                 $classType = $conditionClass['only'] ?? [];
                 if (!class_exists($class)) {
+                    \Log::error($conditionClass[0]. " n'existe pas dans le register asks du ".$plugin);
                     continue;
                 }
                 if (!in_array($targetClass, $classType) && $classType != [] && $targetClass != null) {

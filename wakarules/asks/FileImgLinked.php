@@ -17,6 +17,7 @@ class FileImgLinked extends AskBase
             'name'        => 'Une image liée',
             'description' => 'Une image du modèle ou d\'un modèle parent',
             'icon'        => 'icon-picture-o',
+            'word_type' => 'IMG',
         ];
     }
 

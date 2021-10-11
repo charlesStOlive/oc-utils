@@ -7,10 +7,11 @@ class Wattributes
 
     public $dataSource;
     public $model;
-    public $type;
-    public function __construct($model, $type)
+    public $mode;
+    public function __construct($model, $mode)
     {
         $this->model = $model;
+        $this->mode = $mode;
         $this->dataSource = \DataSources::find($this->model->data_source);
     }
 
@@ -45,7 +46,7 @@ class Wattributes
     {
         $transformers = \Config::get('waka.utils::transformers');
         $documentType = 'twig';
-        if ($this->type == 'word') {
+        if ($this->mode == 'word') {
             $documentType = 'word';
             $row = false;
         }

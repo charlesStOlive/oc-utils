@@ -20,6 +20,7 @@ class HtmlAsk extends AskBase
             'premission'  => 'wcli.utils.ask.edit.admin',
             'ask_emit'    => 'richeditor',
             'show_attributes' => true,
+            'word_type' => 'HTM',
         ];
     }
 
@@ -47,8 +48,6 @@ class HtmlAsk extends AskBase
         if(!$text) {
             throw new ApplicationException('le texte html du ask : '.$this->getCode().' n\'a pas été trouvé'); 
         }
-        //trace_log("data for twig");
-        //trace_log($dataForTwig);
         return \Twig::parse($text, $dataForTwig);
     }
 }

@@ -122,6 +122,18 @@ class Plugin extends PluginBase
             return new \Waka\Utils\Classes\Ds\DataSources;
         });
 
+        \Event::listen('backend.page.beforeDisplay', function($controller, $action, $params) {
+            $controller->addJs('/plugins/waka/utils/assets/js/froala.js');
+            $controller->addJs('/plugins/waka/utils/assets/js/clipboard.min.js');
+            $controller->addCss('/plugins/wcli/wconfig/assets/css/waka.css');
+            
+        });
+
+        //Foralaedotor
+        \Backend\Classes\Controller::extend(function($controller) {
+            
+        });
+
         $this->registerConsoleCommand('waka.injector', 'Waka\Utils\Console\CreateInjector');
         $this->registerConsoleCommand('waka.mc', 'Waka\Utils\Console\CreateModelController');
         $this->registerConsoleCommand('waka.uicolors', 'Waka\Utils\Console\CreateUiColors');
