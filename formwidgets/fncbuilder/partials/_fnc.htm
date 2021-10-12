@@ -8,7 +8,9 @@
             <span class="icon"><i class="<?= e($fnc->getFncIcon()) ?>"></i></span>
         </div>
         <a href="javascript:;" data-fncs-settings>
-            <span class="title" style="margin-left: 0"><b><?= e($this->getCacheFncText($fnc)) ?></b></span>
+            <div class="m-t-0" style="position: absolute; right: 70px">Code: <b><?= $this->getCacheFncCode($fnc)?></b>
+            </div>
+            <div class="title m-t-0 m-l-0"><b><?= e($this->getCacheFncTitle($fnc)) ?></b></div>
             <div class="comment"><?= $this->getCacheFncText($fnc) ?></div>
         </a>
         <?php if(!$isRestrictedMode) : ?>

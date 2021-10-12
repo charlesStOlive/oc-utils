@@ -254,6 +254,10 @@ class AskBuilder extends FormWidgetBase
     //
     // Postback deferring
     //
+    public function getCacheAskCode($fnc)
+    {
+        return array_get($this->getCacheAskData($fnc), 'attributes')['code'] ?? 'ERROR';
+    }
 
     public function getCacheAskAttributes($ask)
     {

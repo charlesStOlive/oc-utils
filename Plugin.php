@@ -152,10 +152,8 @@ class Plugin extends PluginBase
     {
         return [
             'asks' => [
-                [
-                    '\Waka\Utils\WakaRules\Asks\HtmlAsk', 
-                    // 'only' => ['wakaMail']
-                ],
+                ['\Waka\Utils\WakaRules\Asks\LabelAsk'], 
+                ['\Waka\Utils\WakaRules\Asks\HtmlAsk'], 
                 ['\Waka\Utils\WakaRules\Asks\ImageAsk'],
                 ['\Waka\Utils\WakaRules\Asks\FileImgLinked'],
             ],

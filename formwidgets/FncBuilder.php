@@ -163,14 +163,33 @@ class FncBuilder extends FormWidgetBase
 
     }
 
+    public function checkJsonableData($fnc, $datas) {
+        if(!$fnc->jsonable) {
+            return $datas;
+        }
+        $returnDatas = [];
+        foreach($datas as $key=>$data) {
+            if(in_array($key,$fnc->jsonable)) {
+                $returnDatas[$key] = implode(",", $data);
+            } else {
+                $returnDatas[$key] = $data;
+            }
+        }
+        return $returnDatas;
+
+    }
+
     public function onSaveFnc()
     {
-        // trace_log("On Save ASK");
+        
+        
        
 
         $this->restoreCacheFncDataPayload();
 
         $fnc = $this->findFncObj();
+
+        
 
         $oldData = $this->restoreRestrictedField($fnc);
 
@@ -180,6 +199,8 @@ class FncBuilder extends FormWidgetBase
         $data = array_merge($data, $oldData);
         //trace_log("Data to save");
         //trace_log($data);
+        $data = $this->checkJsonableData($fnc, $data);
+
 
         $fnc->fill($data);
         $fnc->validate();
@@ -265,6 +286,12 @@ class FncBuilder extends FormWidgetBase
     public function getCacheFncTitle($fnc)
     {
         return array_get($this->getCacheFncData($fnc), 'title');
+    }
+
+    public function getCacheFncCode($fnc)
+    {
+        trace_log($this->getCacheFncData($fnc));
+        return array_get($this->getCacheFncData($fnc), 'attributes')['code'] ?? 'ERROR';
     }
 
     public function getCacheFncText($fnc)

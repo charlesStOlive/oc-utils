@@ -87,12 +87,10 @@ class RuleAsk extends Model
     public function afterSave()
     {
         // Make sure that this record is removed from the DB after being removed from a rule
-        //"La partie ci dessous est à retravailler. elle ne fonctionnait pas avant semble t il et encore moins avec les modifs pour asks;
-        \Log::error('voir 91 todo  fichier rule ask');
-        // $removedFromRule = $this->rule_host_id === null && $this->getOriginal('rule_host_id');
-        // if ($removedFromRule && !$this->notification_rule()->withDeferred(post('_session_key'))->exists()) {
-        //     $this->delete();
-        // }
+        $removedFromRule = $this->rule_askeable_id === null && $this->getOriginal('rule_askeable_id');
+        if ($removedFromRule && !$this->notification_rule()->withDeferred(post('_session_key'))->exists()) {
+            $this->delete();
+        }
     }
 
     public function applyCustomData()

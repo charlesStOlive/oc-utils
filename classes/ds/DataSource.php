@@ -50,7 +50,7 @@ class DataSource extends Extendable
         //
         $explodedClass = explode('\\', $this->class);
 
-        $this->name = Ucfirst($config['label']);
+        $this->name = $config['name'] ?? Ucfirst($config['label']);
         $firstExploded = array_shift($explodedClass);
         if($firstExploded) {
             $this->author = $firstExploded;
@@ -71,7 +71,7 @@ class DataSource extends Extendable
         $this->relations = $config['relations'] ?? [];
         //
         $attributes = $config['attributes'] ?? null;
-        $this->attributes = $attributes ? $attributes : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower($this->name);
+        $this->attributes = $attributes ? $attributes : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower($this->name).'/attributes.yaml';
          //
         $modelPath = $config['modelPath'] ?? null;
         $this->modelPath = $modelPath ? $modelPath : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower($this->name).'/';

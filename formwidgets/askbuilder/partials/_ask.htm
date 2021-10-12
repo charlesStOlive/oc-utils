@@ -8,6 +8,8 @@
             <span class="icon"><i class="<?= e($ask->getAskIcon()) ?>"></i></span>
         </div>
         <a href="javascript:;" data-asks-settings>
+            <div class="m-t-0" style="position: absolute; right: 70px">Code: <b><?= $this->getCacheAskCode($ask)?></b>
+            </div>
             <span class="title" style="margin-left: 0"><b><?= e($this->getCacheAskTitle($ask)) ?></b></span>
             <div class="comment"><?= $this->getCacheAskText($ask) ?></div>
         </a>

@@ -29,6 +29,8 @@ class FncBase extends ExtensionBase
 
     public $parentClass = null;
 
+    public $jsonable = [];
+
     /**
      * Returns information about this fnc, including name and description.
      */
@@ -70,7 +72,12 @@ class FncBase extends ExtensionBase
 
     public function isCodeInBridge($code) 
     {
-        return array_key_exists($code, $this->fncBridges());
+        if($this->fncBridges()['all'] ?? false) {
+            return true;
+        } else {
+            return array_key_exists($code, $this->fncBridges());
+        }
+        
     }
 
     public function getBridge($code) 
@@ -81,7 +88,10 @@ class FncBase extends ExtensionBase
     public function getBridgeQuery($modelSrc, $code) 
     {
         $bridge = $this->getBridge($code);
-        $relation = $bridge['relation'];
+        $relation = $bridge['relation'] ?? false;
+        if(!$relation) {
+            return $modelSrc;
+        }
         $relationExploded = explode('.', $relation);
         foreach($relationExploded as $key=>$subrelation) {
             if ($key === array_key_last($relationExploded)) {
@@ -152,6 +162,30 @@ class FncBase extends ExtensionBase
     {
         //trace_log('getText dans fnc base');
         return $this->host->config_data['code'] ?? 'En attente';
+    }
+
+    public function getConfig($key)
+    {
+        $data = $this->host->config_data[$key] ?? null;
+        if(in_array($key,$this->jsonable)) {
+            return explode(",",$data);
+        } else {
+            return $data;
+        }
+    }
+
+    public function getConfigs()
+    {
+        $datas = $this->host->config_data ?? null;
+        $returnDatas = [];
+        foreach($datas as $key=>$data) {
+            if(in_array($key,$this->jsonable)) {
+                $returnDatas[$key] = explode(",", $data);
+            } else {
+                $returnDatas[$key] = $data;
+            }
+        }
+        return $returnDatas;
     }
 
     public function isEditable()

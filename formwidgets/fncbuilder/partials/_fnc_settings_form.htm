@@ -21,14 +21,14 @@
         <div class="col-md-12">
             <?= $fncFormWidget->render() ?>
         </div>
-        <<!--div class="col-md-4 m-y">
+        <!--div class="col-md-4 m-y">
             <?php if($targetProductor == 'Document') : ?>
             <?= $this->makePartial('available_tags_word') ?>
             <?php else : ?>
             <?= $this->makePartial('available_tags') ?>
             <?php endif ?>
     </div>!-->
-</div>
+    </div>
 </div>
 <div class="modal-footer">
     <button
@@ -74,6 +74,5 @@
 
 <?php Form::close() ?>
 <script>
-console.log('yo');
 new ClipboardJS('.btn');
 </script>
