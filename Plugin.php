@@ -142,8 +142,9 @@ class Plugin extends PluginBase
         $this->registerConsoleCommand('waka:trad', 'Waka\Utils\Console\PluginTrad');
         $this->registerConsoleCommand('waka:excelTrad', 'Waka\Utils\Console\ExcelTrad');
         $this->registerConsoleCommand('waka:createSeed', 'Waka\Utils\Console\CreateSeedsFiles');
+        $this->registerConsoleCommand('waka:createSeed', 'Waka\Utils\Console\CreateSeedsFiles');
         //$this->registerConsoleCommand('waka.workflowOnline', 'Waka\Utils\Console\WorkflowOnlineCreate');
-        $this->registerConsoleCommand('waka.workflowOnlineCreate', 'Waka\Utils\Console\WorkflowOnlineDump');
+        $this->registerConsoleCommand('waka.rulefnc', 'Waka\Utils\Console\CreateRuleFnc');
         
         
     }
@@ -321,17 +322,21 @@ class Plugin extends PluginBase
                 'tab' => 'Waka - Utils',
                 'label' => "Lecteur des taches de l'app",
             ],
-            'waka.formwidget.functionlist.admin' => [
+            'waka.rules.asks.user' => [
                 'tab' => 'Waka - Utils',
-                'label' => "Administrateur des fonctionslists ( dans email, pdf, word, etc.)",
+                'label' => "Utilisateur des ASKS",
             ],
-             'waka.formwidget.imagelist.admin' => [
+            'waka.rules.asks.admin' => [
                 'tab' => 'Waka - Utils',
-                'label' => "Administrateur des imagelist ( dans email, pdf, word, etc.)",
+                'label' => "Administrateur des ASKS",
             ],
-             'waka.formwidget.scopelist.user' => [
+            'waka.rules.fncs.user' => [
                 'tab' => 'Waka - Utils',
-                'label' => "Administrateur des scopelist ( dans email, pdf, word, etc.)",
+                'label' => "Utilisateur des FNCS",
+            ],
+            'waka.rules.fncs.admin' => [
+                'tab' => 'Waka - Utils',
+                'label' => "Adminsitrateur des FNCS",
             ],
         ];
     }

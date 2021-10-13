@@ -378,6 +378,7 @@ class AskBuilder extends FormWidgetBase
         }
 
         //trace_log('makeAskFormWidget----------------');
+        //trace_log($this->isRestrictedMode());
 
         $config = $model->getFieldConfig($this->isRestrictedMode());
         $config->model = $model;

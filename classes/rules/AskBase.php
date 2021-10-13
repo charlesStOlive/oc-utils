@@ -28,6 +28,8 @@ class AskBase extends ExtensionBase implements AskInterface
 
     public $parentClass = null;
 
+    public $jsonable = [];
+
     /**
      * Returns information about this ask, including name and description.
      */
@@ -112,6 +114,30 @@ class AskBase extends ExtensionBase implements AskInterface
             return $clientModel;
         }
         
+    }
+
+    public function getConfig($key)
+    {
+        $data = $this->host->config_data[$key] ?? null;
+        if(in_array($key,$this->jsonable)) {
+            return explode(",",$data);
+        } else {
+            return $data;
+        }
+    }
+
+    public function getConfigs()
+    {
+        $datas = $this->host->config_data ?? null;
+        $returnDatas = [];
+        foreach($datas as $key=>$data) {
+            if(in_array($key,$this->jsonable)) {
+                $returnDatas[$key] = explode(",", $data);
+            } else {
+                $returnDatas[$key] = $data;
+            }
+        }
+        return $returnDatas;
     }
 
     public function getTitle()

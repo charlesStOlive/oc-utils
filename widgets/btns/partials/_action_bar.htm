@@ -9,7 +9,7 @@
             $subBtns = $btn['btns'] ?? [];
             if(count($subBtns) > 1 ) {
                 //SI LE BOUTON A DES SOUS BOUTON C EST UN GROUPE -->
-                $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'popupAction' => false, 'isLot' => false, 'dropup' =>true]);
+                echo $this->makePartial('sub/dd_btn', ['databtn' => $btn, 'popupAction' => false, 'isLot' => false, 'dropup' =>true]);
             } else { 
                 if(count($subBtns) == 1 ) {
                     $btn = array_shift($subBtns);

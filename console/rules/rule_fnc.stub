@@ -1,0 +1,55 @@
+<?php namespace {{studly_author}}\{{studly_plugin}}\WakaRules\Fncs;
+
+use Waka\Utils\Classes\Rules\FncBase;
+use Waka\Utils\Interfaces\Fnc as FncInterface;
+
+class {{studly_name}} extends FncBase implements FncInterface
+{
+    /**
+     * Returns information about this fnc, including name and description.
+     */
+
+    public $jsonable = [];
+    //
+    public function fncDetails()
+    {
+        return [
+            'name'        =>  '{{lower_name}}',
+            'description' => 'description de {{lower_name}} ',
+            'icon'        => 'icon-users',
+            'premission'  => 'wcli.utils.fnc.edit.admin',
+        ];
+    }
+
+    public function fncBridges()
+    {
+        return [
+            'xxx'        => [
+                '{{studly_author}}\{{studly_plugin}}\Models\Xxx',
+                'relation' => '{{lower_name}}s'
+            ],
+        ];
+    }
+
+
+    public function getText()
+    {
+        $hostObj = $this->host;
+        //trace_log($hostObj->config_data);
+        $text = $hostObj->config_data['fromDate'] ?? null;
+        if($text) {
+            return "Sélection log : ".$text; 
+        } else {
+            return "Attente paramètres {{studly_name}}";
+        }
+    }
+
+
+    public function resolve($modelSrc, $poductorDs) {
+        $query = $this->getBridgeQuery($modelSrc, $poductorDs);
+        //
+
+        //
+        return $query->get()->toArray();
+    }
+}

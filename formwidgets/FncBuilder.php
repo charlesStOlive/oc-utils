@@ -290,7 +290,7 @@ class FncBuilder extends FormWidgetBase
 
     public function getCacheFncCode($fnc)
     {
-        trace_log($this->getCacheFncData($fnc));
+        //trace_log($this->getCacheFncData($fnc));
         return array_get($this->getCacheFncData($fnc), 'attributes')['code'] ?? 'ERROR';
     }
 

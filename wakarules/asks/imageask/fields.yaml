@@ -13,5 +13,10 @@ fields:
     height:
         label: height
         span: auto
-        dependsOn: width
+    crop:
+        label: Méthode de reditionement
+        span: auto
+        type: dropdown
+        options: listCropMode
+        default: fit
     

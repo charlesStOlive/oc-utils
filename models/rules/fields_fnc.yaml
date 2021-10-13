@@ -6,3 +6,4 @@ fields:
     code:
         label: Code
         span: auto
+        restricted: true

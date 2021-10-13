@@ -33,7 +33,7 @@ class CreateUiColors extends GeneratorCommand
      * @var array
      */
     protected $stubs = [
-        'ui_less/vars.stub' => '/assets/css/simple_grid/vars.less',
+        'ui_less/vars.stub' => '/assets/css/vars.less',
     ];
 
     /**

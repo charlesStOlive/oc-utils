@@ -6,9 +6,11 @@ fields:
     code:
         label: Code
         span: auto
+        restricted: true
     ask_emit: 
         label: Demander lors de la création d'un email
         type: checkbox
         span: auto
         cssClass: p-t-md
+        restricted: true
 

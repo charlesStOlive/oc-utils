@@ -66,15 +66,15 @@ class DataSource extends Extendable
         }
         //
         $controller = $config['controller'] ?? null;
-        $this->controller = $controller ? $controller : strtolower($this->author) . '/' . strtolower($this->plugin) . '/' . strtolower($this->name).'s';
+        $this->controller = $controller ? $controller : strtolower($this->author) . '/' . strtolower($this->plugin) . '/' . strtolower(camel_case($this->code)).'s';
         //
         $this->relations = $config['relations'] ?? [];
         //
         $attributes = $config['attributes'] ?? null;
-        $this->attributes = $attributes ? $attributes : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower($this->name).'/attributes.yaml';
+        $this->attributes = $attributes ? $attributes : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower(camel_case($this->code)).'/attributes.yaml';
          //
         $modelPath = $config['modelPath'] ?? null;
-        $this->modelPath = $modelPath ? $modelPath : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower($this->name).'/';
+        $this->modelPath = $modelPath ? $modelPath : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower(camel_case($this->code)).'/';
         //
         $this->emails = $config['emails'] ?? [];
         //
@@ -240,7 +240,7 @@ class DataSource extends Extendable
      * PARTIUE PERMETTATN DE GERER LES SCOPES --------------
      */
     public function getScopesLists() {
-        $scopes = $this->config['scopes'];
+        $scopes = $this->config['scopes'] ?? [];
         $array = [];
         foreach($scopes as $key=>$scope) {
             $array[$key] = $scope['label'];

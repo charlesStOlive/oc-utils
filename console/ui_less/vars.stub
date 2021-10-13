@@ -10,7 +10,7 @@
 @prefix: w-;
 
 
-@pm-step: 1rem; 
+@pm-step: 1; 
 @base-margin: 0.5rem;
 
 

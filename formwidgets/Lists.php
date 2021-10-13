@@ -78,6 +78,9 @@ class Lists extends FormWidgetBase
     }
 
     private function processValues($values) {
+        if(!$values) {
+            return [];
+        }
         $ds = \DataSOurces::find($this->model->data_source);
         $dbValues = $ds->class::whereIn('id', $values)->select('id', 'email')->get();
         if($dbValues) {
