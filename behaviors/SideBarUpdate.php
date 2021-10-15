@@ -13,6 +13,13 @@ class SideBarUpdate extends ControllerBehavior
     public function __construct($controller)
     {
         parent::__construct($controller);
+
+        if (!\BackendAuth::check()) {
+            return \Request::ajax()
+                ? \Response::make(\Lang::get('backend::lang.page.access_denied.label'), 403)
+                : \Backend::redirectGuest('backend/auth');
+        }
+            
         $this->sideBarConfig = $this->makeConfig($controller->sideBarUpdateConfig, $this->requiredConfig);
         $this->sideBarPopupWidget = $this->createSideBarPopupWidget();
     }

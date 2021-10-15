@@ -1,4 +1,9 @@
+<?php if($isRestrictedMode && !$asks->count()) : ?>
+<div class="title " style="color:grey"><i>Aucun champs disponibles...</i></div>
+<?php else : ?>
 <div class="title">Champs éditables</div>
+
+
 <div class="ask-set">
     <ol>
         <?php foreach ($asks as $ask): ?>
@@ -20,4 +25,5 @@
 <script>
 showAskSettings('<?= e($newAskId) ?>')
 </script>
+<?php endif ?>
 <?php endif ?>
