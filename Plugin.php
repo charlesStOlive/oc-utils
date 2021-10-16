@@ -97,7 +97,7 @@ class Plugin extends PluginBase
                     $allData['specific'] = $secificData;
                     $allData['dataName'] = $dataName;
                     //trace_log($allData['specific']);
-                    $templatePath = plugins_path('waka/utils/console/model/'.$template);
+                    $templatePath = plugins_path('waka/utils/console/'.$template);
                     $templateContent = \File::get($templatePath);
                     $content = \Twig::parse($templateContent, $allData);
                     return $content;

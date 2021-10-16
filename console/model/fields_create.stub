@@ -4,5 +4,5 @@
 
 fields:
 {% for field in fields_create  %}
-{{ stubCreator('field.stub', _context, field) | ident(1) }}
+{{ stubCreator('model/field.stub', _context, field) | ident(1) }}
 {% endfor %}

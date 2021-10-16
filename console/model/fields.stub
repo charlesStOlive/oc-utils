@@ -4,7 +4,7 @@
 
 fields:
 {% for field in fields  %}
-{{ stubCreator('field.stub', _context, field) | ident(1) }}
+{{ stubCreator('model/field.stub', _context, field) | ident(1) }}
 {% endfor %}
 {% if configs.side_bar_info %}
 secondaryTabs:

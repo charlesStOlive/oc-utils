@@ -1,0 +1,13 @@
+{% for file in datas %}
+{% if file.mode == 'copyUpload'%}
+        $inject->{{file.attribute}} = plugins_path('{{lower_author}}/{{lower_plugin}}{{file.srcPath}}');
+        $inject->save();
+
+{% elseif file.mode == 'copyStore' %}
+        $optionalPath = "{{ file.dirname }}";
+        $localDisk = new \Waka\Utils\Classes\WorkDirFiles();
+        $file = plugins_path('{{lower_author}}/{{lower_plugin}}{{file.srcPath}}');
+        $localDisk->putFile($file, $optionalPath);
+            //
+{% endif %}
+{% endfor %} 

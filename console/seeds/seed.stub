@@ -9,28 +9,39 @@ class Seed{{ seedClassName }} extends Seeder
     public function run()
     {
 {% if classOptions.datasource %}
-        \{{className}}::where('data_source', '{{lower_model}}')->delete();;
+        $toDeletes = \{{className}}::where('data_source', '{{lower_model}}')->get();
+        foreach($toDeletes as $delete) {
+                $delete->forceDelete();
+        }
 {% else %}
         \{{className}}::truncate();
 {% endif %}
             
-{% for data in datas %}
-        $inject = \{{className}}::create({{data.w_dataString |raw}});
+{% for numKey,data in datas %}
+{% if conserveId %}
+        $inject_{{numKey}} = new \{{className}}();
+        $inject_{{numKey}}->id = {{data.id}};
+        $inject_{{numKey}}->fill({{data.w_dataString |raw}});
+{% else %}
+        $inject_{{numKey}} = \{{className}}::create({{data.w_dataString |raw}});
+{% endif %}
+        
 {% if data.w_fileconfig%}
-{% for file in data.w_fileconfig %}
-{% if file.mode == 'copyUpload'%}
-        $inject->{{file.attribute}} = plugins_path('{{lower_author}}/{{lower_plugin}}{{file.srcPath}}');
-        $inject->save();
+        {{ stubCreator('seeds/fileupload.stub', _context, data.w_fileconfig) | ident(1) }}
+{% endif %}
 
-{% elseif file.mode == 'copyStore' %}
-        $optionalPath = "{{ file.dirname }}";
-        $localDisk = new \Waka\Utils\Classes\WorkDirFiles();
-        $file = plugins_path('{{lower_author}}/{{lower_plugin}}{{file.srcPath}}');
-        $localDisk->putFile($file, $optionalPath);
-            //
+{% for ask in  data.rules.rule_asks %}
+{% if ask.data_to_string %}
+        $inject_{{numKey}}->rule_asks()->create({{ask.data_to_string |raw}});
 {% endif %}
-{% endfor %} 
+{% endfor %}
+{% for fnc in  data.rules.rule_fncs %}
+{% if fnc.data_to_string %}
+        $inject_{{numKey}}->rule_fncs()->create({{fnc.data_to_string |raw}});
 {% endif %}
+{% endfor %}
+        $inject_{{numKey}}->save();
+
 {% endfor %} 
     }
 

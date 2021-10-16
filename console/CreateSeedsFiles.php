@@ -71,6 +71,7 @@ class CreateSeedsFiles extends GeneratorCommand
         $plugin = array_pop($parts);
         $author = array_pop($parts);
         $this->model = $this->argument('model');
+        $this->conserveId = $this->option('id');
         //
         $classes = $this->getModelsConfig();
         $classes = array_keys($classes);
@@ -81,6 +82,7 @@ class CreateSeedsFiles extends GeneratorCommand
             'plugin' => $plugin,
             'model' => $this->model,
             'version' => $this->argument('version'),
+            'conserveId' => $this->option('id'),
         ];
 
     }
@@ -116,7 +118,7 @@ class CreateSeedsFiles extends GeneratorCommand
             $seedFileName = $this->vars['lower_model'].'_'.$this->vars['version'];
             $seedClassName = $this->vars['studly_model'].$this->vars['version'];
         }
-        $destinationFile = $this->getDestinationPath() . '/updates/seed_' . $seedFileName .'.php';
+        $destinationFile = $this->getDestinationPath() . '/updates/seeds/seed_' . $seedFileName .'.php';
         //
         $className = $class['class'];
         $files = $class['files'] ?? [];
@@ -131,22 +133,44 @@ class CreateSeedsFiles extends GeneratorCommand
         $datas = [];
         //Recherche des modèles existants : 
         if($class['options']['datasource'] ?? false) {
-            $datas = $className::where('data_source', $dataSourceName)->get();
+            $datas = $className::where('data_source', $dataSourceName);
         } else {
-             $datas = $className::with($fileUploads)->get();
+             $datas = $className::with($fileUploads);
         }
+        if($withRules = $class['options']['with'] ?? false) {
+            $withImploded = implode(",",$withRules);
+            //trace_log($withImploded);
+            $datas = $datas->with($withRules);
+        }
+
+        //
+        $datas = $datas->get();
         //Remove ID for each row
-        $datas->transform(function ($item, $key) use ($files) {
-            unset($item['id']);
-            return $item;
-        });
+        // $datas->transform(function ($item, $key) use ($files) {
+        //     unset($item['id']);
+        //     return $item;
+        // });
         //$datas = $datas->toArray();
         //Création des fichiers
         $finalDatas = [];
         foreach($datas as $key=>$data) {
             //trace_log($data->toArray());
             $inject = [];
+            $subDatas = [];
             $subDatas = $data->toArray();
+            if($withRules) {
+                foreach($withRules as $key=>$rule) {
+                    $rules = $subDatas[$rule] ?? []; 
+                    foreach($rules as $keyRow=>$rowRule) {
+                        unset($rowRule['id']);
+                        $inject['rules'][$rule][$keyRow] = $rowRule;
+                        $inject['rules'][$rule][$keyRow]['data_to_string'] = VarExporter::export($rowRule,VarExporter::NO_CLOSURES,3);
+                    }
+                    unset($subDatas[$rule]);
+                }
+            }
+            $inject['id'] = $subDatas['id'];
+            unset($subDatas['id']);
             $inject['w_fileconfig'] = [];
             foreach($files as $filekey=>$file) {
                 // On parocur la liste des fichier a copier
@@ -159,7 +183,7 @@ class CreateSeedsFiles extends GeneratorCommand
                         $pathinfo = pathinfo($path);
                         $file['dirname'] = $pathinfo['dirname'] ?? '/';
                         $file['name'] = $pathinfo['basename'];
-                        $file['srcPath'] = '/updates/files/'.$file['name'];
+                        $file['srcPath'] = '/updates/seeds/files/'.$file['name'];
                         $path = storage_path('app/media'.$path);
                         $file['originalPath'] = $path;
                         
@@ -168,13 +192,13 @@ class CreateSeedsFiles extends GeneratorCommand
                         //trace_log($path);
                         $file['originalPath'] = $path;
                         $file['name'] = $data->{$attributeName}->getFilename();
-                        $file['srcPath'] = '/updates/files/'.$file['name'];
+                        $file['srcPath'] = '/updates/seeds/files/'.$file['name'];
                     }
                     //On ajoute les information du fichier dans le row de données. 
                    
                     //On continue la création.
                     if($file['originalPath'] ?? false) {
-                        $filePath = $this->getDestinationPath() . '/updates/files/'.$file['name'];
+                        $filePath = $this->getDestinationPath() . '/updates/seeds/files/'.$file['name'];
                         $this->makeDirectory($filePath);
                         $fileContent = $this->files->get($file['originalPath']);
                         $this->files->put($filePath, $fileContent);
@@ -185,6 +209,7 @@ class CreateSeedsFiles extends GeneratorCommand
                     //$item['files'][$attributeName] = $file;
                     //
                 //}
+                
                 array_push($inject['w_fileconfig'],$file);
 
             }
@@ -196,6 +221,7 @@ class CreateSeedsFiles extends GeneratorCommand
                     unset($subDatas[$key]);
                 }
             }
+            trace_log($inject);
             $inject['w_dataString'] = VarExporter::export($subDatas,VarExporter::NO_CLOSURES,3);
             array_push($finalDatas, $inject);  
         }
@@ -277,6 +303,10 @@ class CreateSeedsFiles extends GeneratorCommand
                 'options' => [
                     'datasource' => true,
                     'prod' => true,
+                    'with' => [
+                        'rule_asks',
+                        'rule_fncs',
+                    ]
                 ]
             ],
             'waka_mailer_wakaMail' => [
@@ -284,6 +314,10 @@ class CreateSeedsFiles extends GeneratorCommand
                 'options' => [
                     'datasource' => true,
                     'prod' => true,
+                    'with' => [
+                        'rule_asks',
+                        'rule_fncs',
+                    ]
                 ]
             ],
             'waka_mailer_bloc' => [
@@ -303,6 +337,10 @@ class CreateSeedsFiles extends GeneratorCommand
                 'options' => [
                     'datasource' => true,
                     'prod' => true,
+                    'with' => [
+                        'rule_asks',
+                        'rule_fncs',
+                    ]
                 ]
             ],
             'waka_pdfer_bloc' => [
@@ -395,6 +433,7 @@ class CreateSeedsFiles extends GeneratorCommand
     {
         return [
             ['force', null, InputOption::VALUE_NONE, 'Ecraser les fichiers'],
+            ['id', null, InputOption::VALUE_NONE, 'Ajouter les id'],
         ];
     }
 }

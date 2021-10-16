@@ -4,7 +4,7 @@
 {% if outsideFields %}
 fields:
 {% for field in outsideFields  %}
-{{ stubCreator('field.stub', _context, field) | ident(1) }}
+{{ stubCreator('model/field.stub', _context, field) | ident(1) }}
 {% endfor %}
 {% endif %}
 tabs:
@@ -15,7 +15,7 @@ tabs:
 {% endfor %}
     fields:    
 {% for field in primaryFields  %}
-{{ stubCreator('field.stub', _context, field) | ident(2) }}
+{{ stubCreator('model/field.stub', _context, field) | ident(2) }}
 {% endfor %}
 {% if secondaryFields %}
 secondaryTabs:
@@ -25,6 +25,6 @@ secondaryTabs:
         #     mode: secondary
         #     src: /{{lower_author}}/{{lower_plugin}}/models/{{lower_name}}/fields_for_side_bar.yaml
 {% for field in secondaryFields  %}
-{{ stubCreator('field.stub', _context, field) | ident(2) }}
+{{ stubCreator('model/field.stub', _context, field) | ident(2) }}
 {% endfor %}
 {% endif %}

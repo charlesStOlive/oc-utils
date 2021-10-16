@@ -3,6 +3,6 @@
 # ===================================
 fields:
 {% for field in fieldsInfo  %}
-{{ stubCreator('field.stub', _context, field, 'field_side_bar') | ident(1) }}
+{{ stubCreator('model/field.stub', _context, field, 'field_side_bar') | ident(1) }}
 {% endfor %}
 
