@@ -334,6 +334,8 @@ class CreateModelController extends GeneratorCommand
         $secondaryFields = $rows->where('tabType', '==', 'secondary')->sortBy('field')->toArray();
         if(count($secondaryFields)) {
             $this->config['has_side_bar'] = true;
+        } else {
+            $this->config['has_side_bar'] = false;
         }
         $outsideFields = $rows->where('tabType', '==', 'outside')->sortBy('field')->toArray();
         $this->config['has_side_bar_info'] = $rows->where('tabType', '==', 'secondary')->count();

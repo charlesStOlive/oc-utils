@@ -5,6 +5,7 @@ return [
         'data_sources' => 'Sources des données',
         'data_sources_description' => 'Gérer les sources et leur relation pour publisher, mailing, etc.',
         'settings_category' => 'Configuration ',
+        'settings_controle' => 'Contrôles',
         'settings_category_model' => 'Gestion des Modèles',
         'job_list' => "Liste des taches",
         'job_list_s' => "Taches",
