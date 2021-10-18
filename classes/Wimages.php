@@ -72,6 +72,9 @@ class Wimages
         if (!$model) {
             $model = $this->model;
         }
+        if(!$model) {
+            return [];
+        }
         $modelClassName = get_class($model);
         $shortName = (new \ReflectionClass($modelClassName))->getShortName();
         $cloudiKeys = [];
