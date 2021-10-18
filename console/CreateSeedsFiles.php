@@ -162,6 +162,7 @@ class CreateSeedsFiles extends GeneratorCommand
                 foreach($withRules as $key=>$rule) {
                     $rules = $subDatas[$rule] ?? []; 
                     foreach($rules as $keyRow=>$rowRule) {
+                        //$rowRule = $this->cleanAskFncRow($rowRule);
                         unset($rowRule['id']);
                         $inject['rules'][$rule][$keyRow] = $rowRule;
                         $inject['rules'][$rule][$keyRow]['data_to_string'] = VarExporter::export($rowRule,VarExporter::NO_CLOSURES,3);
@@ -221,7 +222,7 @@ class CreateSeedsFiles extends GeneratorCommand
                     unset($subDatas[$key]);
                 }
             }
-            trace_log($inject);
+            //trace_log($inject);
             $inject['w_dataString'] = VarExporter::export($subDatas,VarExporter::NO_CLOSURES,3);
             array_push($finalDatas, $inject);  
         }
@@ -230,6 +231,27 @@ class CreateSeedsFiles extends GeneratorCommand
         //trace_log($seedVars);
         $destinationContent = Twig::parse($destinationContent, $seedVars);
         $this->files->put($destinationFile, $destinationContent);
+
+    }
+
+    public function cleanAskFncRow($rule) {
+        $toKeep = [
+            'fnceable_id',
+            'fnceable_type',
+            'askeable_id',
+            'askeable_type',
+            'class_name',
+            'data_source',
+            'config_data',
+            'created_at',
+            'updated_at'
+        ];
+        foreach($rule as $key=>$column) {
+            if(!in_array($key, $toKeep)) {
+                unset($rule[$key]);
+            }
+        }
+        return $rule;
 
     }
 
@@ -333,7 +355,7 @@ class CreateSeedsFiles extends GeneratorCommand
                 ]
             ],
             'waka_pdfer_wakaPdf' => [
-                'class' => 'Waka\Mailer\Models\WakaMail',
+                'class' => 'Waka\Pdfer\Models\WakaPdf',
                 'options' => [
                     'datasource' => true,
                     'prod' => true,

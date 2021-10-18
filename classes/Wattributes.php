@@ -94,6 +94,7 @@ class Wattributes
     public function getFncOutput($fnc)
     {
         $code = $fnc->getCode();
+        $result = [];
         $outputConfig = $fnc->getOutputs();
         //trace_log("code : -----------------".$code);
         //trace_log($outputConfig);

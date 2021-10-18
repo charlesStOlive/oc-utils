@@ -108,9 +108,12 @@ class RuleFnc extends Model
 
     protected function setCustomData()
     {
+        //trace_log('Set CUSTOM DATA');
         if (!$fncObj = $this->getFncObject()) {
+            //trace_log('Set CUSTOM DATA problem');
             throw new SystemException(sprintf('Unable to find fnc object [%s]', $this->getFncClass()));
         }
+        //trace_log('next');
 
         /*
          * Spin over each field and add it to config_data
@@ -157,7 +160,11 @@ class RuleFnc extends Model
     {
         $this->applyFncClass();
 
-        return $this->asExtension($this->getFncClass());
+        if($this->getFncClass()) {
+            return $this->asExtension($this->getFncClass());
+        }
+
+        
     }
 
     public function getFncClass()
