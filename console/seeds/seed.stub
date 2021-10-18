@@ -27,7 +27,7 @@ class Seed{{ seedClassName }} extends Seeder
 {% endif %}
         
 {% if data.w_fileconfig%}
-        {{ stubCreator('seeds/fileupload.stub', _context, data.w_fileconfig) | ident(1) }}
+{{ stubCreator('seeds/fileupload.stub', _context, data.w_fileconfig) | ident(1) }}
 {% endif %}
 
 {% for ask in  data.rules.rule_asks %}

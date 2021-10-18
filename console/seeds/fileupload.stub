@@ -1,4 +1,4 @@
-{% for file in datas %}
+{% for file in specific %}
 {% if file.mode == 'copyUpload'%}
         $inject->{{file.attribute}} = plugins_path('{{lower_author}}/{{lower_plugin}}{{file.srcPath}}');
         $inject->save();
