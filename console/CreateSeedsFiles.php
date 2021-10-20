@@ -164,6 +164,10 @@ class CreateSeedsFiles extends GeneratorCommand
                     foreach($rules as $keyRow=>$rowRule) {
                         //$rowRule = $this->cleanAskFncRow($rowRule);
                         unset($rowRule['id']);
+                        unset($rowRule['fnceable_id']);
+                        unset($rowRule['fnceable_type']);
+                        unset($rowRule['askeable_id']);
+                        unset($rowRule['askeable_type']);
                         $inject['rules'][$rule][$keyRow] = $rowRule;
                         $inject['rules'][$rule][$keyRow]['data_to_string'] = VarExporter::export($rowRule,VarExporter::NO_CLOSURES,3);
                     }
@@ -236,10 +240,6 @@ class CreateSeedsFiles extends GeneratorCommand
 
     public function cleanAskFncRow($rule) {
         $toKeep = [
-            'fnceable_id',
-            'fnceable_type',
-            'askeable_id',
-            'askeable_type',
             'class_name',
             'data_source',
             'config_data',
