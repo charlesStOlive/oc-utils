@@ -120,7 +120,12 @@ class AskBase extends ExtensionBase implements AskInterface
     {
         $data = $this->host->config_data[$key] ?? null;
         if(in_array($key,$this->jsonable)) {
-            return explode(",",$data);
+            if(!$data) {
+                return [];
+            } else {
+                return explode(",",$data);
+            }
+            
         } else {
             return $data;
         }
@@ -132,7 +137,12 @@ class AskBase extends ExtensionBase implements AskInterface
         $returnDatas = [];
         foreach($datas as $key=>$data) {
             if(in_array($key,$this->jsonable)) {
-                $returnDatas[$key] = explode(",", $data);
+                if(!$data) {
+                    $returnDatas[$key] = [];
+                } else {
+                    $returnDatas[$key] = explode(",", $data);
+                }
+                
             } else {
                 $returnDatas[$key] = $data;
             }
