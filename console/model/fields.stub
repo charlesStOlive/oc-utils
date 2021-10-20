@@ -6,7 +6,7 @@ fields:
 {% for field in fields  %}
 {{ stubCreator('model/field.stub', _context, field) | ident(1) }}
 {% endfor %}
-{% if configs.side_bar_info %}
+{% if secondaryFields %}
 secondaryTabs:
     fields:
         info:

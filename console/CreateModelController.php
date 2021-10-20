@@ -310,7 +310,7 @@ class CreateModelController extends GeneratorCommand
         $dbVersion = $rows->where('type', '<>', null)->where('version', '==', $this->version)->toArray();
 
         //
-        $fields = $rows->where('field', '<>', null)->sortBy('field')->toArray();
+        $fields = $rows->where('field', '<>', null)->where('tabType', '==', null)->sortBy('field')->toArray();
         $fieldsInfo = $rows->where('sidebar', '<>', null)->sortBy('sidebar');
         $fieldsInfo = $fieldsInfo->map(function ($item, $key) {
                 if($item['field_type'] == 'partial_relation') {
