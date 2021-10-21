@@ -4,28 +4,28 @@ use Winter\Storm\Scaffold\GeneratorCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
-class CreateRuleFnc extends GeneratorCommand
+class CreateRuleAsk extends GeneratorCommand
 {
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'waka:ruleFnc';
+    protected $name = 'waka:ruleAsk';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Creates a new rule Fnc.';
+    protected $description = 'Creates a new rule Ask.';
 
     /**
      * The type of class being generated.
      *
      * @var string
      */
-    protected $type = 'Fnc';
+    protected $type = 'Ask';
 
     /**
      * A mapping of stub to generated file.
@@ -33,8 +33,8 @@ class CreateRuleFnc extends GeneratorCommand
      * @var array
      */
     protected $stubs = [
-        'rules/rule_fnc_fields.stub'        => 'wakarules/fncs/{{lower_name}}/fields.yaml',
-        'rules/rule_fnc.stub'       => 'wakarules/fncs/{{studly_name}}.php',
+        'rules/rule_ask_fields.stub'        => 'wakarules/asks/{{lower_name}}/fields.yaml',
+        'rules/rule_ask.stub'       => 'wakarules/asks/{{studly_name}}.php',
     ];
 
     /**

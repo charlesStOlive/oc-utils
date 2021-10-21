@@ -142,9 +142,10 @@ class Plugin extends PluginBase
         $this->registerConsoleCommand('waka:trad', 'Waka\Utils\Console\PluginTrad');
         $this->registerConsoleCommand('waka:excelTrad', 'Waka\Utils\Console\ExcelTrad');
         $this->registerConsoleCommand('waka:createSeed', 'Waka\Utils\Console\CreateSeedsFiles');
-        $this->registerConsoleCommand('waka:createSeed', 'Waka\Utils\Console\CreateSeedsFiles');
         //$this->registerConsoleCommand('waka.workflowOnline', 'Waka\Utils\Console\WorkflowOnlineCreate');
-        $this->registerConsoleCommand('waka.rulefnc', 'Waka\Utils\Console\CreateRuleFnc');
+        $this->registerConsoleCommand('waka.ruleAsk', 'Waka\Utils\Console\CreateRuleAsk');
+        $this->registerConsoleCommand('waka.ruleFnc', 'Waka\Utils\Console\CreateRuleFnc');
+        $this->registerConsoleCommand('waka:cleanModels', 'Waka\Utils\Console\CleanModels');
         
         
     }

@@ -1,0 +1,47 @@
+<?php namespace {{studly_author}}\{{studly_plugin}}\WakaRules\Fncs;
+
+use Waka\Utils\Classes\Rules\FncBase;
+use Waka\Utils\Interfaces\Fnc as FncInterface;
+
+class {{studly_name}} extends FncBase implements FncInterface
+{
+    /**
+     * Returns information about this ask, including name and description.
+     */
+
+    public $jsonable = [];
+    //
+    public function askDetails()
+    {
+        return [
+            'name'        =>  '{{lower_name}}',
+            'description' => 'description de {{lower_name}} ',
+            'icon'        => 'icon-users',
+            'premission'  => 'wcli.utils.ask.edit.admin',
+        ];
+    }
+
+    public function defineValidationRules()
+    {
+        return [];
+    }
+
+
+    public function getText()
+    {
+        $hostObj = $this->host;
+        //trace_log($hostObj->config_data);
+        $text = $hostObj->config_data['fromDate'] ?? null;
+        if($text) {
+            return "Sélection log : ".$text; 
+        } else {
+            return "Attente paramètres {{studly_name}}";
+        }
+    }
+
+
+    public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
+
+        return ;
+    }
+}

@@ -1,0 +1,9 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    
+outputs:
+    attributes: 
+        main: {{lower_author}}/{{lower_plugin}}/models/{{lower_name}}/attributes.yaml
