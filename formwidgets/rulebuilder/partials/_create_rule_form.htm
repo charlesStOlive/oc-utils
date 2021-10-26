@@ -1,0 +1,48 @@
+<?= Form::open(['id' => 'addRuleRuleForm']) ?>
+
+<input type="hidden" name="current_rule_data" value="<?= e(json_encode($this->getCacheRuleDataPayload())) ?>" />
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="popup">&times;</button>
+    <h4 class="modal-title">Choisissez un type de champs éditable</h4>
+</div>
+<div class="modal-body">
+
+    <?php if ($this->fatalError): ?>
+    <p class="flash-message static error"><?= $fatalError ?></p>
+    <?php else: ?>
+
+    <div class="list-preview">
+        <div class="control-simplelist is-selectable is-scrollable size-large" data-control="simplelist">
+            <ul>
+                <?php foreach ($rules as $class => $rule): ?>
+
+                <li>
+                    <a
+                       href="javascript:;"
+                       data-request="<?= $this->getEventHandler('onCreateRule') ?>"
+                       data-request-data="rule_class: '<?= addslashes($class) ?>'"
+                       data-popup-load-indicator>
+                        <h5 class="heading"><?= e(trans($rule->getRuleName())) ?></h5>
+                        <p class="description"><?= e(trans($rule->getRuleDescription())) ?></p>
+                    </a>
+                </li>
+
+                <?php endforeach ?>
+            </ul>
+        </div>
+    </div>
+
+    <?php endif ?>
+
+</div>
+
+<div class="modal-footer">
+    <button
+            type="button"
+            class="btn btn-default"
+            data-dismiss="popup">
+        <?= e(trans('backend::lang.form.cancel')) ?>
+    </button>
+</div>
+<?= Form::close() ?>

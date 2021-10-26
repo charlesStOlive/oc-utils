@@ -1,0 +1,29 @@
+<?php if($isRestrictedMode && !$rules->count()) : ?>
+<div class="title " style="color:grey"><i>Non disponible</i></div>
+<?php else : ?>
+<div class="title"><?= e(trans($label))?></div>
+
+
+<div class="rule-set">
+    <ol>
+        <?php foreach ($rules as $rule): ?>
+        <?= $this->makePartial('rule', ['rule' => $rule]) ?>
+        <?php endforeach ?>
+    </ol>
+    <?php if(!$isRestrictedMode) : ?>
+    <a
+       href="javascript:;"
+       data-control="popup"
+       data-handler="<?= $this->getEventHandler('onLoadCreateRuleForm') ?>"
+       class="menu-control">
+        <i class="icon-plus"></i> <?= e(trans($prompt))?>
+    </a>
+    <?php endif ?>
+</div>
+
+<?php if (isset($newRuleId)): ?>
+<script>
+showRuleSettings('<?= e($newRuleId) ?>')
+</script>
+<?php endif ?>
+<?php endif ?>

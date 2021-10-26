@@ -161,6 +161,10 @@ class Plugin extends PluginBase
             ],
             'fncs' => [
             ],
+            'conditions' => [
+                ['\Waka\Utils\WakaRules\Conditions\BackUser'], 
+                ['\Waka\Utils\WakaRules\Conditions\ModelValue'], 
+            ]
         ];
     }
 
@@ -197,6 +201,7 @@ class Plugin extends PluginBase
             'Waka\Utils\FormWidgets\ModelInfo' => 'modelinfo',
             'Waka\Utils\FormWidgets\AskBuilder' => 'askbuilder',
             'Waka\Utils\FormWidgets\FncBuilder' => 'fncbuilder',
+            'Waka\Utils\FormWidgets\RuleBuilder' => 'rulebuilder',
             'Waka\Utils\FormWidgets\Attributs' => 'attributs',
             'Waka\Utils\FormWidgets\ComonBlocs' => 'comonblocs',
             'Waka\Utils\FormWidgets\Lists' => 'lists',

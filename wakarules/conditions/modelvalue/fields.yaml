@@ -1,0 +1,30 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    mode:
+        label: Mode
+        type: dropdown
+        options:
+            self: Sur le modèle
+            parent: Sur une relation parente
+            childs: Existance d'une relation enfants
+    relation:
+        label: Relation
+        comment: Utiliser des points pour des multiples relations
+        trigger:
+            action: hide
+            condition: value[self]
+            field: mode
+    field:
+        label: Nom du champs ou attribut
+        trigger:
+            action: hide
+            condition: value[childs]
+            field: mode
+    exist:
+        label: La valeur doit exister
+        type: checkbox
+        default: 1
+

@@ -83,6 +83,10 @@ return [
         "no_productor_com" => "Soit aucun modèle n'est configuré pour ce levier soit des restrictions bloquent le modèles.",
 
     ],
+    'rules' => [
+        'label' => 'Règles dynamiques',
+        'prompt' => 'Ajouter une règle dynamique',
+    ],
     'datasource' => [
         'title' => 'Source de données',
         'placeholder' => 'Choisissez une source',

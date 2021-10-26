@@ -1,0 +1,38 @@
+<?php namespace Waka\Utils\Classes\Rules;
+
+use System\Classes\PluginManager;
+use Winter\Storm\Extension\ExtensionBase;
+use Waka\Utils\Classes\DataSource;
+use Waka\Utils\Interfaces\Rule as RuleInterface;
+
+/**
+ * Notification rule base class
+ *
+ * @package waka\utils
+ * @author Alexey Bobkov, Samuel Georges
+ */
+class RuleConditionBase extends RuleBase implements RuleInterface
+{
+    
+    /**
+     * Returns information about this rule, including name and description.
+     */
+    public function ruleDetails()
+    {
+        return [
+            'name'        => 'Condition',
+            'description' => 'Condition description',
+            'icon'        => 'icon-dot-circle-o',
+        ];
+    }
+
+    /**
+     * Boot method called when the condition class is first loaded
+     * with an existing model.
+     * @return array
+     */
+
+    public function getModel() {
+        return $this->host->conditioneable;
+    }
+}

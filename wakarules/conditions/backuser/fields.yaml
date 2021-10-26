@@ -1,0 +1,14 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    mode:
+        label: Mode
+        type: dropdown
+        options:
+            permissions: Permissions
+            roleCode: Code du rôle
+    value:
+        label: Valeur attendu
+

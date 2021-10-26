@@ -1,0 +1,33 @@
+<li
+    id="<?= 'rule'.$rule->id ?>"
+    data-rule-id="<?= $rule->id ?>"
+    class="rule-item <?= $rule->hasFieldConfig() ? '' : 'no-form' ?>">
+    <div>
+        <div class="icons">
+            <span class="icon"><i class="icon-pencil"></i></span>
+            <span class="icon"><i class="<?= e($rule->getRuleIcon()) ?>"></i></span>
+        </div>
+        <a href="javascript:;" data-rules-settings>
+            <div class="m-t-0" style="position: absolute; right: 70px">Code: <b><?= $this->getCacheRuleCode($rule)?></b>
+            </div>
+            <span class="title" style="margin-left: 0"><b><?= e($this->getCacheRuleTitle($rule)) ?></b></span>
+            <div class="comment"><?= $this->getCacheRuleText($rule) ?></div>
+        </a>
+        <?php if(!$isRestrictedMode) : ?>
+        <ul class="submenu">
+            <li>
+                <p>
+                    <a href="javascript:;" data-rules-delete>
+                        <i class="icon-trash-o control-icon"></i>
+                    </a>
+                </p>
+            </li>
+        </ul>
+        <?php endif ?>
+    </div>
+
+    <input
+           type="hidden"
+           name="rule_data[<?= $rule->id ?>]"
+           value="<?= e(json_encode($this->getCacheRuleData($rule))) ?>" />
+</li>

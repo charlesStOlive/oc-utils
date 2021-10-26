@@ -111,20 +111,19 @@ class DataSource extends Extendable
     public function getProductorOptions($productorModel, $modelId = null)
     {
 
-        $documents = $productorModel::where('data_source', $this->code);
+        $productors = $productorModel::where('data_source', $this->code);
         $this->instanciateModel($modelId);/**NETOYAGE ? */
 
         $optionsList = [];
 
-        foreach ($documents->get() as $document) {
-            if ($document->is_scope) {
-                //Si il y a des limites
-                $scope = new \Waka\Utils\Classes\Scopes($document, $this->model);
-                if ($scope->checkScopes()) {
-                    $optionsList[$document->id] = $document->name;
+        foreach ($productors->get() as $productor) {
+            $condtions = new \Waka\Utils\Classes\Conditions($productor, $this->model);
+            if ($condtions->hasConditions()) {
+                if ($condtions->checkConditions()) {
+                    $optionsList[$productor->id] = $productor->name;
                 }
             } else {
-                $optionsList[$document->id] = $document->name;
+                $optionsList[$productor->id] = $productor->name;
             }
         }
         return $optionsList;
@@ -142,28 +141,26 @@ class DataSource extends Extendable
     }
     public function getPartialIndexOptions($productorModel, $relation = false)
     {
-        $documents = $productorModel::where('data_source', $this->code)->get();
+        $productors = $productorModel::where('data_source', $this->code)->get();
 
         if ($relation) {
-            $documents = $documents->where('relation', '<>', null);
+            $productors = $productors->where('relation', '<>', null);
         } else {
-            $documents = $documents->where('relation', '=', null);
+            $productors = $productors->where('relation', '=', null);
         }
 
         $optionsList = [];
 
-        foreach ($documents as $document) {
-            if ($document->is_scope) {
-                //Si il y a des limites
-                $scope = new \Waka\Utils\Classes\Scopes($document);
-                if ($scope->checkIndexScopes()) {
-                    $optionsList[$document->id] = $document->name;
+        foreach ($productors as $productor) {
+            $condtions = new \Waka\Utils\Classes\Conditions($productor, $this->model);
+            if ($condtions->hasConditions()) {
+                if ($condtions->checkConditions()) {
+                    $optionsList[$productor->id] = $productor->name;
                 }
             } else {
-                $optionsList[$document->id] = $document->name;
+                $optionsList[$productor->id] = $productor->name;
             }
         }
-        return $optionsList;
     }
 
     /**NETOYAGE ? */
@@ -237,7 +234,7 @@ class DataSource extends Extendable
     }
 
     /**
-     * PARTIUE PERMETTATN DE GERER LES SCOPES --------------
+     * PARTIE PERMETTANT DE GERER LES SCOPES CAMPAGNES ??--------------
      */
     public function getScopesLists() {
         $scopes = $this->config['scopes'] ?? [];
