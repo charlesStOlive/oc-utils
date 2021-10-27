@@ -43,7 +43,14 @@ class Conditions
         return $this->checked == $this->checkedOk;
     }
     public function hasConditions() {
-        return $this->conditions->count();
+        if(!$this->conditions) {
+            return false;
+        } elseif(!$this->conditions->count()) {
+            return false;
+        } else {
+            return true;
+        }
+        
     }
     public function getLogs() {
 
