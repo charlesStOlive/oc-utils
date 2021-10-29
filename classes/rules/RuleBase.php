@@ -284,9 +284,8 @@ class RuleBase extends ExtensionBase implements RuleInterface
     {
         $results = [];
         $bundles = PluginManager::instance()->getRegistrationMethodValues('registerWakaRules');
-
+        $mode = $mode.'s';
         foreach ($bundles as $plugin => $bundle) {
-            $mode = $mode.'s';
             foreach ((array) array_get($bundle, $mode, []) as $conditionClass) {
                 trace_log($conditionClass[0]);
                 $class = $conditionClass[0];
