@@ -9,8 +9,7 @@ fields:
 {% if secondaryFields %}
 secondaryTabs:
     fields:
-        info:
-            type: modelinfo
-            mode: secondary
-            src: /{{lower_author}}/{{lower_plugin}}/models/{{lower_name}}/fields_for_side_bar.yaml
+{% for field in secondaryFields  %}
+{{ stubCreator('model/field.stub', _context, field) | ident(2) }}
+{% endfor %}
 {% endif %}

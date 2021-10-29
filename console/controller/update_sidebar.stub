@@ -24,8 +24,8 @@
 
 <!-- Complimentary sidebar -->
 <?php Block::put('form-sidebar') ?>
-<div{% if configs.has_side_bar > 1 %} class="hide-tabs"{% endif %}>
-{% if configs.has_side_bar %}
+<div{% if secondaryFields | length < 2 %} class="hide-tabs"{% endif %}>
+{% if secondaryFields %}
     <?= $this->formRenderSecondaryTabs() ?>
 {% endif %}
 </div>

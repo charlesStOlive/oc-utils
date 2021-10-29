@@ -110,9 +110,9 @@ class {{studly_ctname}} extends Controller
         SettingsManager::setContext('{{studly_author}}.{{studly_plugin}}', '{{studly_ctname}}');
 {% else %}
 {% if configs.controller_no_left_bar %}
-        BackendMenu::setContext('{{studly_author}}.{{studly_plugin}}', '{{lower_plugin}}', '{{lower_ctname}}');
+        BackendMenu::setContext('{{studly_author}}.{{studly_plugin}}', '{% if configs.context_name %}{{configs.context_name}}{% else %}{{lower_plugin}}{% endif %}', '{{lower_ctname}}');
 {% else %}
-        BackendMenu::setContext('{{studly_author}}.{{studly_plugin}}', '{{lower_plugin}}', 'side-menu-{{lower_ctname}}');
+        BackendMenu::setContext('{{studly_author}}.{{studly_plugin}}', '{% if configs.context_name %}{{configs.context_name}}{% else %}{{lower_plugin}}{% endif %}', 'side-menu-{{lower_ctname}}');
 {% endif %}
 {% endif %}
     }
