@@ -20,22 +20,23 @@ class Conditions
         if (!$this->model) {
             throw new \ApplicationException("Il manque le modèle cible pour l'analyse des conditions");
         }
-        $this->checked = 0;
-        $this->checkedOK = 0;
+        
 
         //s'il n'y a pas de scope on retourne la valeur directement.
         if (!$this->hasConditions()) {
             return true;
         }
 
+        $this->checked = 0;
+        $this->checkedOk = 0;
         foreach ($this->conditions as $condition) {
             //trace_log($condition->toArray());
             if($condition->resolve($this->model)) {
-                $this->checkedOK++;
+                $this->checkedOk++;
                 trace_log('ok');
             } else {
                 trace_log('pas ok');
-                //$this->setLogs($this->model->id, 'error');
+                $this->setLogs($this->model->id, 'error');
             }
             
             $this->checked++;
@@ -58,7 +59,7 @@ class Conditions
     public function setLogs($id, $reason) {
         array_push($this->logs, [
             'id' => $id,
-            'reason' => $reson,
+            'reason' => $reason,
         ]);
 
         

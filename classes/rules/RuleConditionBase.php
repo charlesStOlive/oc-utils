@@ -35,4 +35,16 @@ class RuleConditionBase extends RuleBase implements RuleInterface
     public function getModel() {
         return $this->host->conditioneable;
     }
+
+    public function listOperators() {
+        return [
+            'where' => "Est égale à ",
+            'whereNot' => "Est différent de",
+            'wherein' => "Est dans ces valeurs",
+            'whereNotIn' => "N'est pas dans ces valeurs",
+            // 'like' => "contient",
+            // 'notLke' => "ne contient pas",
+        ];
+    }
+    
 }

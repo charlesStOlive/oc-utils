@@ -9,6 +9,11 @@ fields:
         options:
             permissions: Permissions
             roleCode: Code du rôle
+    operator:
+        label: Opérateur
+        type: dropdown
+        options: listOperators
     value:
         label: Valeur attendu
+
 

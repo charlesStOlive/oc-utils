@@ -44,15 +44,41 @@ class BackUser extends RuleConditionBase
         // }
         $user = \BackendAuth::getUser();
         $mode = $this->getConfig('mode');
+        $operator = $this->getConfig('operator');
         $value = $this->getConfig('value');
-        trace_log($mode);
-        trace_log($value);
-        // if($mode == "permissions") {
-        //     return $user->hasAccess($value);
-        // }
-        // if($mode == "roleCode") {
-        //     return $user->role->code == $value;
-        // }
-        return true;
+        if($mode == "permissions") {
+            return $this->comparePermissions($user, $operator, $value);
+        }
+        if($mode == "roleCode") {
+            return $this->compareRole($user->role->code, $operator, $value);
+        }
+        //return true;
+    }
+
+    public function comparePermissions($user, $operator, $value) {
+        switch ($operator) {
+            case 'where' :
+                return $user->hasAccess($value);
+            case 'whereNot' :
+                return !$user->hasAccess($value);;
+            case 'wherein' :
+                return $user->hasAccess([$value]);
+            case 'whereNotIn' :
+                return !$user->hasAccess([$value]);
+        }
+    }
+
+    public function compareRole($code, $operator, $value) {
+        switch ($operator) {
+            case 'where' :
+                return $code == $value;
+            case 'whereNot' :
+                trace_log('whereNot : '.$code != $value);
+                return $code != $value;
+            case 'wherein' :
+                return in_array($code, [$value]);
+            case 'whereNotIn' :
+                return !in_array($code, [$value]);
+        }
     }
 }
