@@ -73,7 +73,7 @@ class BackUser extends RuleConditionBase
             case 'where' :
                 return $code == $value;
             case 'whereNot' :
-                trace_log('whereNot : '.$code != $value);
+                //trace_log('whereNot : '.$code != $value);
                 return $code != $value;
             case 'wherein' :
                 return in_array($code, [$value]);

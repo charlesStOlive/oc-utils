@@ -40,7 +40,7 @@ class ModelValue extends RuleConditionBase
      */
 
     public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
-        trace_log('check model value');
+        //trace_log('check model value');
         $field = $this->getConfig('field');
         $relation = $this->getConfig('relation');
         $mode = $this->getConfig('mode');
@@ -50,10 +50,10 @@ class ModelValue extends RuleConditionBase
         } elseif($mode == 'childs') {
             return $this->getStringRequestRelation($model, $relation)->count();
         } 
-        trace_log($mode);
-        trace_log($relation);
-        trace_log($field);
-        trace_log($model);
+        //trace_log($mode);
+        //trace_log($relation);
+        //trace_log($field);
+        //trace_log($model);
         if($model['iland_3d'] ?? false) {
             return true;
         } else {

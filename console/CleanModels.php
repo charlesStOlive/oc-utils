@@ -68,7 +68,7 @@ class CleanModels extends Command
         foreach($modelsToClean as $model=>$time) {
             if($time == 0) $time = 7;
             $limitDate = $today->copy()->subDays($time);
-            trace_log($model::onlyTrashed()->where('deleted_at', '<', $limitDate)->get()->pluck('name')->toArray());
+            //trace_log($model::onlyTrashed()->where('deleted_at', '<', $limitDate)->get()->pluck('name')->toArray());
             //$model::onlyTrashed()->where('soft_deleted', '<', $limitDate)->forceDelete();
         }
     }
@@ -85,7 +85,7 @@ class CleanModels extends Command
             if($scope) {
                 $model = $model->$scope();
             }
-            trace_log($model->get()->toArray());
+            //trace_log($model->get()->toArray());
             //$model::onlyTrashed()->where('soft_deleted', '<', $limitDate)->forceDelete();
         }
         

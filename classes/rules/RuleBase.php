@@ -287,7 +287,7 @@ class RuleBase extends ExtensionBase implements RuleInterface
         $mode = $mode.'s';
         foreach ($bundles as $plugin => $bundle) {
             foreach ((array) array_get($bundle, $mode, []) as $conditionClass) {
-                trace_log($conditionClass[0]);
+                //trace_log($conditionClass[0]);
                 $class = $conditionClass[0];
                 $classType = $conditionClass['only'] ?? [];
                 if (!class_exists($class)) {

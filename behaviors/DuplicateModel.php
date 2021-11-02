@@ -132,7 +132,7 @@ class DuplicateModel extends ControllerBehavior
                 $cloneModel->{$relationName}()->sync($values);
             }
         }
-        trace_log($sourceModel->sort_order);
+        //trace_log($sourceModel->sort_order);
         if($sourceModel->sort_order) {
             $cloneModel->sort_order = $cloneModel->id;
             $cloneModel->save();

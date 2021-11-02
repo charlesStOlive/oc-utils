@@ -69,7 +69,7 @@ trait WakaWorkflowTrait
                 //trace_log('beforeValidate');
                 //trace_log($model->name);
                 $changeState = $model->change_state;
-                trace_log('beforeValidate : ' .$model->change_state);
+                //trace_log('beforeValidate : ' .$model->change_state);
                 $wf_try = strpos($changeState, ',');
                 if ($wf_try && $changeState) {
                     //trace_log("On test un changement de transition");
@@ -141,7 +141,7 @@ trait WakaWorkflowTrait
                 if(!$changeState) {
                     return;
                 }
-                trace_log("beforeSave change State: ".$changeState);
+                //trace_log("beforeSave change State: ".$changeState);
                 $transition = self::getWfTransition($changeState, $model);
                 $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
                 $rules = $model->getWfRules($rulesSet);

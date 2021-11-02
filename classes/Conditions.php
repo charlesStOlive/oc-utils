@@ -33,9 +33,9 @@ class Conditions
             //trace_log($condition->toArray());
             if($condition->resolve($this->model)) {
                 $this->checkedOk++;
-                trace_log('ok');
+                //trace_log('ok');
             } else {
-                trace_log('pas ok');
+                //trace_log('pas ok');
                 $this->setLogs($this->model->id, 'error');
             }
             
