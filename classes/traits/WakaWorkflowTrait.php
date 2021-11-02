@@ -69,6 +69,7 @@ trait WakaWorkflowTrait
                 //trace_log('beforeValidate');
                 //trace_log($model->name);
                 $changeState = $model->change_state;
+                trace_log('beforeValidate : ' .$model->change_state);
                 $wf_try = strpos($changeState, ',');
                 if ($wf_try && $changeState) {
                     //trace_log("On test un changement de transition");
@@ -107,9 +108,7 @@ trait WakaWorkflowTrait
                         }
                         if(!$error) {
                             //trace_log("try ok : ".$try);
-                            $trySuccess = $model->change_state = $try;
-                            $model->workflow_get()->apply($model, $model->change_state);
-                            \Session::put('wf_redirect', $transitionMetaData['redirect']);
+                            $model->change_state = $try;
                             break;
                         }
                     }
@@ -132,49 +131,80 @@ trait WakaWorkflowTrait
                         }
                     }
                     //trace_log($model->toArray());
-                    $model->workflow_get()->apply($model, $changeState);
+                    //$model->workflow_get()->apply($model, $changeState);
                 } else if ($model->wfMustTrans) {
                     //throw new \ValidationException(['memo' => \Lang::get('waka.utils::lang.workflow.must_trans')]);
                 }
             });
-            
-            $model->bindEvent('model.afterSave', function () use ($model) {
-                //trace_log('model.afterSave');
-                //trace_log($model->change_state);
-                //trace_log($model->getOriginalPurgeValue('change_state'));
-
-                $changeState = $model->getOriginalPurgeValue('change_state');
-                //trace_log($changeState);
-                if ($changeState) {
-                    //Preparation de l'evenement
-                    $workflowName = $model->workflow_get()->getName();
-                    $transition = self::getWfTransition($changeState, $model);
-                    $afterSaveFunction = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['fncs'] ?? null;
-                    
-                    if ($afterSaveFunction) {
-                        $afterSaveFunction = new \Winter\Storm\Support\Collection($afterSaveFunction);
-                        $fnc = $afterSaveFunction->where('type', 'prod')->toArray();
-                        \Event::fire('workflow.' . $workflowName . '.afterModelSaved', [$model, $fnc]);
-                    }
-                    //fin de la sauvegarde evenement
-                    if (!$model->noStateSave) {
-                        $user = \BackendAuth::getUser();
-                        if($user) {
-                            $user = $user->fullName;
-
-                        } else {
-                            $user = 'App';
-                        }
-                        $state = new \Waka\Utils\Models\StateLog([
-                            'name' => $changeState,
-                            'state' => $transition->getTos()[0],
-                            'user' => $user,
-                            ]);
-                        $model->state_logs()->add($state);
+            $model->bindEvent('model.beforeSave', function () use ($model) {
+                $changeState = $model->change_state ? $model->change_state  : $model->getOriginalPurgeValue('change_state');
+                if(!$changeState) {
+                    return;
+                }
+                trace_log("beforeSave change State: ".$changeState);
+                $transition = self::getWfTransition($changeState, $model);
+                $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
+                $rules = $model->getWfRules($rulesSet);
+                if ($rules['fields'] ?? false) {
+                    foreach($rules['fields'] as $key=>$rule) {
+                        $model->rules[$key] = $rule;
                     }
                 }
+                    //trace_log($model->toArray());
+                $model->workflow_get()->apply($model, $changeState); 
+            });
+
+            
+            $model->bindEvent('model.afterSave', function () use ($model) {
+                $changeState = $model->change_state ? $model->change_state  : $model->getOriginalPurgeValue('change_state');
+                $model->storeStatelog($changeState);
+                $model->executeWorkflowFunctionAfterSave($changeState);
+                
             });
         });
+    }
+    
+
+    public function executeWorkflowFunctionAfterSave($changeState) {
+        if(!$changeState) {
+            return;
+        }
+        $workflowName = $this->workflow_get()->getName();
+        //
+        $transition = self::getWfTransition($changeState, $this);
+        $afterSaveFunction = $this->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['fncs'] ?? null;
+        if ($afterSaveFunction) {
+                $afterSaveFunction = new \Winter\Storm\Support\Collection($afterSaveFunction);
+                $fnc = $afterSaveFunction->where('type', 'prod')->toArray();
+                \Event::fire('workflow.' . $workflowName . '.afterModelSaved', [$this, $fnc]);
+        }
+
+    }
+
+    public function storeStatelog($changeState) {
+        
+        if (!$changeState) {
+            return;
+        }
+        //Preparation de l'evenement
+        $transition = self::getWfTransition($changeState, $this);
+        
+        
+        //fin de la sauvegarde evenement
+        if (!$this->noStateSave) {
+            $user = \BackendAuth::getUser();
+            if($user) {
+                $user = $user->fullName;
+            } else {
+                $user = 'App';
+            }
+            $state = new \Waka\Utils\Models\StateLog([
+                'name' => $changeState,
+                'state' => $transition->getTos()[0],
+                'user' => $user,
+                ]);
+            $this->state_logs()->add($state);
+        }
     }
 
     public function getWfPlaces() {

@@ -112,7 +112,7 @@ class WorkflowBehavior extends ControllerBehavior
             $this->controller->asExtension('FormController')->update_onSave($recordId, $context);
             $redirect = \Session::pull('wf_redirect');
             $model = $this->controller->formFindModelObject($recordId);
-            //trace_log("REDIRECTION : ".$redirect);
+            trace_log("REDIRECTION : ".$redirect);
             if($redirect == "refresh:1" || !$redirect) {
                     return Redirect::refresh();
                 }
