@@ -183,6 +183,9 @@ class Plugin extends PluginBase
                 return \DataSources::getLabel($code);
             },
             'workflow' => [WorkflowColumn::class, 'render'],
+            'raw' => function ($value) {
+                return $value;
+            },
         ];
     }
 
