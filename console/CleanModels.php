@@ -71,6 +71,7 @@ class CleanModels extends Command
         $this->cleanSoftDeleteModels($sofDeleteToClean);
         $this->deleteModels($modelToDelete);
         $this->anonymizeModels($modelToAnonymize);
+        $this->purgeFileOrphans();
         //On purge les modèles inutiles.
         if($this->cleanFile) {
             $this->utilPurgeUploads();
@@ -146,11 +147,20 @@ class CleanModels extends Command
         }
     }
 
+    public function purgeFileOrphans() {
+        $yesterday = \Carbon\Carbon::now()->subDay();
+        $query = \System\Models\File::whereNull('field')->whereNull('attachment_id')->whereNull('attachment_type')->where('updated_at', '<', $yesterday);
+        $count = $query->count();
+        $this->info('Delete file orphans : '.$count);
+        if($count && $this->executeClean) {
+            $this->info('Netoyage file orphans');
+            $query->get()->each->delete();
+        }
+    }
+
     protected function utilPurgeUploads()
     {
-        // if (!$this->confirmToProceed('This will PERMANENTLY DELETE files in the uploads directory that do not exist in the "system_files" table.')) {
-        //     return;
-        // }
+        $days45Ago = \Carbon\Carbon::now()->subDays(45);
 
         $uploadsDisk = Config::get('cms.storage.uploads.disk', 'local');
         if ($uploadsDisk !== 'local') {
@@ -163,7 +173,7 @@ class CleanModels extends Command
         $uploadsPath = Config::get('filesystems.disks.local.root', storage_path('app')) . '/' . Config::get('cms.storage.uploads.folder', 'uploads');
 
         // Recursive function to scan the directory for files and ensure they exist in system_files.
-        $purgeFunc = function ($targetDir) use (&$purgeFunc, &$totalCount, $uploadsPath, $validFiles) {
+        $purgeFunc = function ($targetDir) use (&$purgeFunc, &$totalCount, $uploadsPath, $validFiles, $days45Ago) {
             if ($files = File::glob($targetDir.'/*')) {
                 if ($dirs = File::directories($targetDir)) {
                     foreach ($dirs as $dir) {
@@ -197,6 +207,12 @@ class CleanModels extends Command
                         $this->warn('Skipped file in use: '. str_replace($uploadsPath, '', $file));
                         continue;
                     }
+                    $date = \Carbon\Carbon::parse(filemtime($file));
+                    if($date->gte($days45Ago)) {
+                        $this->warn('Skipped file to young: '. str_replace($uploadsPath, '', $file));
+                        continue;
+                    }
+                    
                     if($this->executeClean) {
                         unlink($file);
                         $this->info('Purged: '. str_replace($uploadsPath, '', $file));
@@ -210,9 +226,9 @@ class CleanModels extends Command
 
         $purgeFunc($uploadsPath);
 
-        if ($totalCount > 0 && $this->execute) {
+        if ($totalCount > 0 && $this->executeClean) {
             $this->comment(sprintf('Successfully deleted %d invalid file(s), leaving %d valid files', $totalCount, count($validFiles)));
-        } elseif($totalCount > 0 && !$this->execute) {
+        } elseif($totalCount > 0 && !$this->executeClean) {
              $this->comment(sprintf('if executed it will  delete %d invalid file(s), leaving %d valid files', $totalCount, count($validFiles)));
         } else {
             $this->comment('No files found to purge.');
