@@ -44,7 +44,9 @@ columns:
 {% elseif column.col_type == 'switch'  %}
         searchable: false
         sortable: true
-{% elseif column.colType is null or column.col_type == 'relation' %}
+{% elseif column.col_type == 'relation' %}
+        searchable: true
+{% elseif column.colType is null and column.col_opt is null %}
         searchable: true
 {% endif %}
 {% for c_option in column.col_opt %}

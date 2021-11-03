@@ -39,6 +39,10 @@ class Create{{studly_plural_name}}Table extends Migration
             //reorder
             $table->integer('sort_order')->default(0);
 {% endif %}
+{% if anonymizables %}
+            //anaymisation
+            $table->boolean('is_anonymized')->default(0);
+{% endif %}
 {% if configs.trait_soft_delete %}
             //softDelete
             $table->softDeletes();

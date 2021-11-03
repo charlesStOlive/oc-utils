@@ -30,6 +30,10 @@ class CleanModels extends Command
      */
     protected $description = 'Permet de nettoyer les models enregistré dans la méthode registerModelToClean';
 
+    protected $extecute = false;
+
+    protected $cleanFile = false;
+
 
     /**
      * A mapping of stub to generated file.
@@ -47,35 +51,52 @@ class CleanModels extends Command
         $bundles = PluginManager::instance()->getRegistrationMethodValues('registerModelToClean');
         $sofDeleteToClean = [];
         $modelToDelete = [];
+        $modelToAnonymize = [];
+        if($this->option('execute')) {
+            $this->execute = true;
+        }
+        if($this->option('cleanFile')) {
+            $this->cleanFile = true;
+        }
         foreach ($bundles as $bundle) {
             $bundleSoftDelete = $bundle['cleanSoftDelete'] ?? [];
             $sofDeleteToClean = array_merge($sofDeleteToClean, $bundleSoftDelete);
             //
             $deleteBundle = $bundle['delete'] ?? [];
             $modelToDelete = array_merge($modelToDelete, $deleteBundle);
-           
 
+            $anonymizeBundle = $bundle['anonymize'] ?? [];
+            $modelToAnonymize = array_merge($modelToAnonymize, $anonymizeBundle);
         }
         $this->cleanSoftDeleteModels($sofDeleteToClean);
         $this->deleteModels($modelToDelete);
+        $this->anonymizeModels($modelToAnonymize);
         //On purge les modèles inutiles.
-        $this->utilPurgeUploads();
+        if($this->cleanFile) {
+            $this->utilPurgeUploads();
+        }
+        
     }
 
     public function cleanSoftDeleteModels($modelsToClean) {
         $today = \Carbon\Carbon::now();
         
         foreach($modelsToClean as $model=>$time) {
+            $this->info('clean soft delete model : '.(string) $model);
             if($time == 0) $time = 7;
             $limitDate = $today->copy()->subDays($time);
-            //trace_log($model::onlyTrashed()->where('deleted_at', '<', $limitDate)->get()->pluck('name')->toArray());
-            //$model::onlyTrashed()->where('soft_deleted', '<', $limitDate)->forceDelete();
+            $query = $model::onlyTrashed()->where('deleted_at', '<', $limitDate);
+            trace_log($query->get()->pluck('id')->toArray());
+            $this->info('qty : '.$query->count());
+            //$query->->forceDelete();
+
         }
     }
 
     public function deleteModels($modelsToDelete) {
         $today = \Carbon\Carbon::now();
         foreach($modelsToDelete as $model=>$data) {
+            $this->info('delete model : '.(string) $model);
             $time = $data['nb_day'] ?? 7;
             $column = $data['column'] ?? 'updated_at';
             $scope = $data['scope'] ?? null;
@@ -85,10 +106,32 @@ class CleanModels extends Command
             if($scope) {
                 $model = $model->$scope();
             }
-            //trace_log($model->get()->toArray());
+            \Log::info($model->get()->pluck('id')->toArray());
+            $this->info('qty : '.$model->count());
+           //$this->table(['ids'], [$model->get()->pluck('id')->toArray()]);
             //$model::onlyTrashed()->where('soft_deleted', '<', $limitDate)->forceDelete();
         }
-        
+    }
+
+    public function anonymizeModels($modelToAnonymize) {
+        $today = \Carbon\Carbon::now();
+        foreach($modelToAnonymize as $model=>$data) {
+            $this->info('Anonymize model : '.(string) $model);
+            $time = $data['nb_day'] ?? 7;
+            $column = $data['column'] ?? 'updated_at';
+            $scope = $data['scope'] ?? null;
+            if($time == 0) $time = 7;
+            $limitDate = $today->copy()->subDays($time);
+            $model = $model::where($column, '<', $limitDate);
+            if($scope) {
+                $model = $model->$scope();
+            }
+            \Log::info($model->get()->pluck('id')->toArray());
+            $this->info('qty : '.$model->count());
+            $model->get()->each->wakAnonymize();
+            //$this->table([['ids']], [$model->get()->pluck('id')->toArray()]);
+            //$model::onlyTrashed()->where('soft_deleted', '<', $limitDate)->forceDelete();
+        }
     }
 
     protected function utilPurgeUploads()
@@ -142,9 +185,12 @@ class CleanModels extends Command
                         $this->warn('Skipped file in use: '. str_replace($uploadsPath, '', $file));
                         continue;
                     }
-
-                    unlink($file);
-                    $this->info('Purged: '. str_replace($uploadsPath, '', $file));
+                    if($this->execute) {
+                        unlink($file);
+                        $this->info('Purged: '. str_replace($uploadsPath, '', $file));
+                    } else {
+                        $this->info('Will be Purged: '. str_replace($uploadsPath, '', $file));
+                    }
                     $totalCount++;
                 }
             }
@@ -152,8 +198,10 @@ class CleanModels extends Command
 
         $purgeFunc($uploadsPath);
 
-        if ($totalCount > 0) {
+        if ($totalCount > 0 && $this->execute) {
             $this->comment(sprintf('Successfully deleted %d invalid file(s), leaving %d valid files', $totalCount, count($validFiles)));
+        } elseif($totalCount > 0 && !$this->execute) {
+             $this->comment(sprintf('if executed it will  delete %d invalid file(s), leaving %d valid files', $totalCount, count($validFiles)));
         } else {
             $this->comment('No files found to purge.');
         }
@@ -176,6 +224,9 @@ class CleanModels extends Command
      */
     protected function getOptions()
     {
-        return [];
+        return [
+            ['execute', null, InputOption::VALUE_NONE, 'Executer le clean sinon affiche en log uniquement'],
+            ['cleanFile', null, InputOption::VALUE_NONE, 'Execute le clean des files'],
+        ];
     }
 }

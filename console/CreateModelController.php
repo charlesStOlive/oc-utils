@@ -308,6 +308,7 @@ class CreateModelController extends GeneratorCommand
         //
         $dbs = $rows->where('type', '<>', null)->where('version', '==', null)->toArray();
         $dbVersion = $rows->where('type', '<>', null)->where('version', '==', $this->version)->toArray();
+        $anonymizables = $rows->where('is_anonymizable', '<>', null)->pluck('var')->toArray();
 
         //
         $fields = $rows->where('field', '<>', null)->where('tabType', '==', null)->sortBy('field')->toArray();
@@ -399,6 +400,7 @@ class CreateModelController extends GeneratorCommand
             'version' => $this->version,
             'columns' => $columns,
             'fields' => $fields,
+            'anonymizables' => $anonymizables,
             //
             'primaryFields' =>$primaryFields,
             'outsideFields' =>$outsideFields,

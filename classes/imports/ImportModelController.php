@@ -92,6 +92,7 @@ class DataImport implements ToCollection, WithHeadingRow
                 'sb_opt' => $row['sb_opt'] ?? null,
                 //
                 'excel' => $row['excel'] ?? null,
+                'is_anonymizable' => $row['is_anonymizable'],
                 'version' => $row['version'] ?? null,
             ];
             array_push($this->data, $obj);

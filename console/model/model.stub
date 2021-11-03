@@ -45,6 +45,9 @@ class {{studly_name}} extends Model
 {% if configs.trait_dbutils %}
     use \Waka\Utils\Classes\Traits\DbUtils;
 {% endif %}
+{% if anonymizables %}
+    use \Waka\Utils\Classes\Traits\WakAnonymize;
+{% endif %}
 
 
     /**
@@ -115,6 +118,17 @@ class {{studly_name}} extends Model
 {% endif %}
 {% endfor %}
     ];
+
+{%if anonymizables %}
+    /**
+     * @var array field anaymisés par wakAnonymize
+     */
+    public $anonymizeFields = [
+{% for anonymizable in anonymizables %}
+        '{{anonymizable}}',
+{% endfor %}
+    ];
+{% endif %}
 
     /**
      * @var array Attributes to be cast to native types
