@@ -30,7 +30,7 @@ class CleanModels extends Command
      */
     protected $description = 'Permet de nettoyer les models enregistré dans la méthode registerModelToClean';
 
-    protected $extecute = false;
+    protected $executeClean = false;
 
     protected $cleanFile = false;
 
@@ -52,8 +52,8 @@ class CleanModels extends Command
         $sofDeleteToClean = [];
         $modelToDelete = [];
         $modelToAnonymize = [];
-        if($this->option('execute')) {
-            $this->execute = true;
+        if($this->option('executeClean')) {
+            $this->executeClean = true;
         }
         if($this->option('cleanFile')) {
             $this->cleanFile = true;
@@ -82,12 +82,16 @@ class CleanModels extends Command
         $today = \Carbon\Carbon::now();
         
         foreach($modelsToClean as $model=>$time) {
-            $this->info('clean soft delete model : '.(string) $model);
+            $modelName = (string) $model;
             if($time == 0) $time = 7;
             $limitDate = $today->copy()->subDays($time);
             $query = $model::onlyTrashed()->where('deleted_at', '<', $limitDate);
-            trace_log($query->get()->pluck('id')->toArray());
-            $this->info('qty : '.$query->count());
+            $count = $query->count();
+            $this->info('Delete Soft delete model : '.$modelName.' qty '.$count);
+            if($count && $this->executeClean) {
+                $this->info('Netoyage de  : '.$modelName);
+                $query->forceDelete();
+            }
             //$query->->forceDelete();
 
         }
@@ -96,7 +100,7 @@ class CleanModels extends Command
     public function deleteModels($modelsToDelete) {
         $today = \Carbon\Carbon::now();
         foreach($modelsToDelete as $model=>$data) {
-            $this->info('delete model : '.(string) $model);
+            $modelName = (string) $model;
             $time = $data['nb_day'] ?? 7;
             $column = $data['column'] ?? 'updated_at';
             $scope = $data['scope'] ?? null;
@@ -106,17 +110,20 @@ class CleanModels extends Command
             if($scope) {
                 $model = $model->$scope();
             }
-            \Log::info($model->get()->pluck('id')->toArray());
-            $this->info('qty : '.$model->count());
-           //$this->table(['ids'], [$model->get()->pluck('id')->toArray()]);
-            //$model::onlyTrashed()->where('soft_deleted', '<', $limitDate)->forceDelete();
+            $count = $model->count();
+            $this->info('Delete model : '.$modelName.' qty '.$count);
+            if($count && $this->executeClean) {
+                $this->info('Netoyage de  : '.$modelName);
+                $model->delete();
+            }
         }
     }
 
     public function anonymizeModels($modelToAnonymize) {
         $today = \Carbon\Carbon::now();
         foreach($modelToAnonymize as $model=>$data) {
-            $this->info('Anonymize model : '.(string) $model);
+            $modelName = $model;
+            // $this->info('Anonymize model : '.(string) $model);
             $time = $data['nb_day'] ?? 7;
             $column = $data['column'] ?? 'updated_at';
             $scope = $data['scope'] ?? null;
@@ -126,9 +133,14 @@ class CleanModels extends Command
             if($scope) {
                 $model = $model->$scope();
             }
-            \Log::info($model->get()->pluck('id')->toArray());
-            $this->info('qty : '.$model->count());
-            $model->get()->each->wakAnonymize();
+            $model = $model->notAnonymized();
+            $count = $model->count();
+            $this->info('Anonymize model : '.$modelName.' qty '.$count);
+            if($count && $this->executeClean) {
+                $this->info('Netoyage de  : '.$modelName);
+                $model->get()->each->wakAnonymize();
+            }
+            
             //$this->table([['ids']], [$model->get()->pluck('id')->toArray()]);
             //$model::onlyTrashed()->where('soft_deleted', '<', $limitDate)->forceDelete();
         }
@@ -185,7 +197,7 @@ class CleanModels extends Command
                         $this->warn('Skipped file in use: '. str_replace($uploadsPath, '', $file));
                         continue;
                     }
-                    if($this->execute) {
+                    if($this->executeClean) {
                         unlink($file);
                         $this->info('Purged: '. str_replace($uploadsPath, '', $file));
                     } else {
@@ -225,7 +237,7 @@ class CleanModels extends Command
     protected function getOptions()
     {
         return [
-            ['execute', null, InputOption::VALUE_NONE, 'Executer le clean sinon affiche en log uniquement'],
+            ['executeClean', null, InputOption::VALUE_NONE, 'Executer le clean sinon affiche en log uniquement'],
             ['cleanFile', null, InputOption::VALUE_NONE, 'Execute le clean des files'],
         ];
     }

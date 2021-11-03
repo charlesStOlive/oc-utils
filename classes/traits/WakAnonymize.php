@@ -11,6 +11,14 @@ trait WakAnonymize
 
     //public $anoymizeFields = [];
 
+
+    public function scopeNotAnonymized($query) {
+        $query->where('is_anonymized','<>', true);
+    }
+    public function scopeAnonymized($query) {
+        $query->where('is_anonymized', true);
+    }
+
     
     
 
