@@ -21,6 +21,7 @@ class ModelInfo extends FormWidgetBase
     public $ds;
     public $src;
     public $parsedFields;
+    public $editPermissions = null;
 
     /**
      * @inheritDoc
@@ -34,6 +35,7 @@ class ModelInfo extends FormWidgetBase
         $this->fillFromConfig([
             'label',
             'src',
+            'editPermissions'
         ]);
     }
 
@@ -46,6 +48,11 @@ class ModelInfo extends FormWidgetBase
         $this->vars['parsedFields'] = $this->parsedFields;
         $this->vars['label'] = $this->label;
         $this->vars['modelId'] = $this->model->id;
+        $hasEditpermission = true;
+        if($this->editPermissions) {
+            $hasEditpermission = \BackendAuth::getUser()->hasAccess($this->editPermissions);
+        }
+        $this->vars['hasEditpermission'] = $hasEditpermission;
         return $this->makePartial('modelinfo');
     }
 

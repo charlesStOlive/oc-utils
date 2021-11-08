@@ -1,5 +1,5 @@
 <div class="sidebar_info">
-    <?php if ($this->controller->sideBarUpdateConfig) : ?>
+    <?php if ($this->controller->sideBarUpdateConfig && $hasEditpermission) : ?>
     <button type="button" style="margin-left: auto;"
             class="oc-icon-pencil btn-icon success pull-right"
             data-request-data="modelId:<?=$modelId?>"

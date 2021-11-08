@@ -173,6 +173,10 @@ class CreateModelController extends GeneratorCommand
                         $noPlaceHolder = true;
                         unset($array[$key]);
                     }
+                    if(starts_with($row, 'editPermissions')) {
+                        $valueRaw = str_replace('editPermissions: ', "", $row);
+                        $array[$key] = 'editPermissions: ['.$valueRaw.']';
+                    }
                 }
                 $item['field_opt'] = $array;
             }
