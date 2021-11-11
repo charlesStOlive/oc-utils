@@ -135,6 +135,31 @@ trait ScopePeriodes
         ];
     }
 
+    public function listPeriode()
+    {
+        return  [
+            'all' => "Tout le temps",
+            'd_30' => "Trentes derniers jours",
+            'd_365' => "Les 365 derniers jours",
+            'y' => "Année N",
+            'y_1' => "N-1",
+            'y_to_d' => "Année jusqu'à aujourd'hui",
+            'y_1_to_d' => "Année dernière jusqu'à jours n-1",
+            't' => 'Trimestre T',
+            't_1' => "T-1",
+            't_n_1' => "T N-1 ( trimestre  de l'année précédente)",
+            't_1_n_1' => "T-1 N-1 ( trimestre prescedent de l'année précédente)",
+            'm' => 'Mois M',
+            'm_1' => "M-1",
+            'm_n_1' => "M-1 N-1 ( mois  de l'année précédente)",
+            'm_1_n_1' => "M-1 N-1 ( mois prescedent de l'année précédente)",
+            'w' => 'Semaine S',
+            'w_1' => "S-1",
+            'w_n_1' => "S-1 S-1 ( semaine  de l'année précédente)",
+            'w_1_n_1' => "S-1 S-1 ( semaine prescedent de l'année précédente)",
+        ];
+    }
+
     public function getPeriodeConfig($label = 'Choisssez une période', $span = "full")
     {
         return [

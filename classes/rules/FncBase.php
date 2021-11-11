@@ -92,6 +92,9 @@ class FncBase extends ExtensionBase
         if(!$relation) {
             return $modelSrc;
         }
+        if($relation == 'wakaAll') {
+            return 'wakaAll';
+        }
         $relationExploded = explode('.', $relation);
         foreach($relationExploded as $key=>$subrelation) {
             if ($key === array_key_last($relationExploded)) {
@@ -332,4 +335,41 @@ class FncBase extends ExtensionBase
 
         return $results;
     }
+
+    /**
+     * Méthode pour ajouter des attributs à un array.
+     */
+    public function getAttributesDs($model)
+    {
+        return $model->map(function ($item) {
+            $atts = $item->attributesToDs;
+            foreach ($atts as $att) {
+                $item->append($att);
+            }
+            return $item;
+        });
+    }
+
+    public function listCalculConfig() {
+        return [
+            '=' => "égale à",
+            '>' => "supérieur à",
+            '<' => 'inférieur à',
+            '>=' => "supérieur ou égale à",
+            '<=' => "inférieur ou égale à",
+        ];
+    }
+
+    function dynamic_comparison ($var1, $op, $var2) {
+        switch ($op) {
+            case "=":  return $var1 == $var2;
+            case "!=": return $var1 != $var2;
+            case ">=": return $var1 >= $var2;
+            case "<=": return $var1 <= $var2;
+            case ">":  return $var1 >  $var2;
+            case "<":  return $var1 <  $var2;
+            default:       return true;
+        }   
+    }
+
 }

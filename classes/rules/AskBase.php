@@ -304,4 +304,18 @@ class AskBase extends ExtensionBase implements AskInterface
 
         return $results;
     }
+
+    /**
+     * Méthode pour ajouter des attributs à un array.
+     */
+    public function getAttributesDs($model)
+    {
+        return $model->map(function ($item) {
+            $atts = $item->attributesToDs;
+            foreach ($atts as $att) {
+                $item->append($att);
+            }
+            return $item;
+        });
+    }
 }
