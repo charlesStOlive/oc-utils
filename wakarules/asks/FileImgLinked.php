@@ -99,6 +99,7 @@ class FileImgLinked extends AskBase
                 'path' => $finalModel->{$keyImage}->getThumb($imgWidth, $imgHeight, ['mode' => $crop]),
                 'width' => $width . 'px',
                 'height' => $height . 'px',
+                'title' => $this->getConfig('title'),
             ];
         } else {
             return [
@@ -106,6 +107,7 @@ class FileImgLinked extends AskBase
                 'width' => $width . 'px',
                 'height' => $height . 'px',
                 'ratio' => true,
+                'title' => $this->getConfig('title'),
             ];
         }
     }

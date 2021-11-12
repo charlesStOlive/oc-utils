@@ -3,6 +3,8 @@
 # ===================================
 
 fields:
+    title:
+        label: Titre
     srcImage:
         label: source de l'image
         type: dropdown

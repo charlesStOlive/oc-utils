@@ -35,8 +35,9 @@ class ImageAsk extends AskBase
     {
         $hostObj = $this->host;
         $url = $hostObj->config_data['image'] ?? null;
+        $title = $hostObj->config_data['title'] ?? 'inc';
         if($url) {
-            return "image : ".$url;
+            return "Titre : ".$title." | image : ".$url;
         }
         return parent::getText();
 
@@ -54,6 +55,7 @@ class ImageAsk extends AskBase
                         'path' => $imageUrl,
                         'width' => $this->getConfig('width') . 'px',
                         'height' => $this->getConfig('height') . 'px',
+                        'title' => $this->getConfig('title'),
                     ];
         //trace_log($imageobj);
         return $imageobj;

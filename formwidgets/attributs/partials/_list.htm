@@ -35,11 +35,34 @@
             <div
                  class="w-ac-inner w-ac-list ">
                 <button type="button"
+                        class="btn btn-md btn-secondary"
+                        style="width:100%"
+                        data-control="dragvalue"
+                        class="bg-a"
+                        data-text-value="{% if fncs.<?=$key?>.count %}
+<p>{{ fncs.<?=$key?>.title }}</p>
+{%for row in fncs.<?=$key?>.datas %}
+<li>{{row.name}}</li>
+{% endfor %}
+{% endif %}"
+                        data-drag-click="true">
+                    fonction : <b><?=$key?></b> complète
+                </button>
+                <button type="button"
+                        class="btn btn-md btn-secondary"
+                        style="width:100%"
+                        data-control="dragvalue"
+                        class="bg-a"
+                        data-text-value="<p>{{ fncs.<?=$key?>.title }}</p>"
+                        data-drag-click="true">
+                    Titre de la fonction : <b><?=$key?></b>
+                </button>
+                <button type="button"
                         class="btn btn-md btn-primary"
                         style="width:100%"
                         data-control="dragvalue"
                         class="bg-a"
-                        data-text-value="{%for row in FNC.<?=$key?>%}"
+                        data-text-value="{%for row in fncs.<?=$key?>.datas %}"
                         data-drag-click="true">
                     Code <b>ouvrant</b> la fonction : <b><?=$key?></b>
                 </button>

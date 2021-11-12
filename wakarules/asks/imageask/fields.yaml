@@ -3,6 +3,8 @@
 # ===================================
 
 fields:
+    title: 
+        label: Titre
     image:
         label: Choisissez une image
         type: mediafinder
