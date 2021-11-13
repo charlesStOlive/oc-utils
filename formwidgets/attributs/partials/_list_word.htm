@@ -33,11 +33,38 @@
             <div
                  class="w-ac-inner w-ac-list ">
                 <button type="button"
+                        class="btn btn-md btn-primary"
+                        style="width:100%"
+                        class="bg-a"
+                        data-clipboard-text="
+${IS_FNC.<?=$key?>}
+${FNC_M.<?=$key?>.title}
+${FNC.<?=$key?>}
+-${<?=$key?>.name}
+${/FNC.<?=$key?>}
+${/IS_FNC.<?=$key?>}">
+                    fonction : <b><?=$key?></b> complète
+                </button>
+                <button type="button"
                         class="btn btn-md btn-secondary"
                         style="width:100%"
                         class="bg-a"
                         data-clipboard-text="${FNC_M.<?=$key?>.title}">
                     Titre de la fonction : <b><?=$key?></b>
+                </button>
+                <button type="button"
+                        class="btn btn-md btn-primary"
+                        style="width:100%"
+                        class="bg-a"
+                        data-clipboard-text="${IS_FNC.<?=$key?>}">
+                    Code ouvrant <b>test</b> <?=$key?>
+                </button>
+                <button type="button"
+                        class="btn btn-xl btn-primary"
+                        style="width:100%"
+                        class="bg-a"
+                        data-clipboard-text="${/IS_FNC.<?=$key?>}">
+                    Code fermant <b>test</b> <?=$key?>
                 </button>
                 <button type="button"
                         class="btn btn-md btn-primary"

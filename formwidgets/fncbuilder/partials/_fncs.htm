@@ -1,8 +1,6 @@
 <?php if($isRestrictedMode && !$fncs->count()) : ?>
 <div class="title " style="color:grey"><i>Aucune fonctions disponibles...</i></div>
 <?php else : ?>
-<div class="title">Fonctions éditables</div>
-<?php endif ?>
 <div class="fnc-set">
     <ol>
         <?php foreach ($fncs as $fnc): ?>
@@ -19,7 +17,7 @@
     </a>
     <?php endif ?>
 </div>
-
+<?php endif ?>
 <?php if (isset($newFncId)): ?>
 <script>
 showFncSettings('<?= e($newFncId) ?>')
