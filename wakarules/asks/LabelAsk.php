@@ -18,7 +18,7 @@ class LabelAsk extends AskBase
             'description' => 'Ajoute un champs texte simple',
             'icon'        => 'wicon-pencil2',
             'premission'  => 'wcli.utils.ask.edit.admin',
-            'ask_emit'    => 'label',
+            'ask_emit'    => 'text',
             'show_attributes' => true,
             'word_type' => null,
         ];
