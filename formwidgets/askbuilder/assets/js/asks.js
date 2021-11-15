@@ -30,12 +30,16 @@ function showAskSettings(id) {
     RuleAsks.prototype.init = function () {
         this.$el.on('click', '[data-asks-settings]', this.proxy(this.onShowSettings))
         this.$el.on('click', '[data-asks-delete]', this.proxy(this.onDeleteAsk))
+        this.$el.on('click', '[data-asks-reorderup]', this.proxy(this.onReorderUpAsk))
+        this.$el.on('click', '[data-asks-reorderdown]', this.proxy(this.onReorderDownAsk))
         this.$el.one('dispose-control', this.proxy(this.dispose))
     }
 
     RuleAsks.prototype.dispose = function () {
         this.$el.off('click', '[data-asks-settings]', this.proxy(this.onShowSettings))
         this.$el.off('click', '[data-asks-delete]', this.proxy(this.onDeleteAsk))
+        this.$el.off('click', '[data-asks-reorderup]', this.proxy(this.onReorderUpAsk))
+        this.$el.off('click', '[data-asks-reorderdown]', this.proxy(this.onReorderDownAsk))
         this.$el.off('dispose-control', this.proxy(this.dispose))
         this.$el.removeData('oc.ruleAsks')
 
@@ -55,6 +59,20 @@ function showAskSettings(id) {
         $el.request(this.options.deleteHandler, {
             data: { current_ask_id: askId },
             confirm: 'Do you really want to delete this ask?'
+        })
+    }
+    RuleAsks.prototype.onReorderUpAsk = function (event) {
+        var $el = $(event.target),
+            askId = getAskIdFromElement($el)
+        $el.request(this.options.reorderupHandler, {
+            data: { current_ask_id: askId },
+        })
+    }
+    RuleAsks.prototype.onReorderDownAsk = function (event) {
+        var $el = $(event.target),
+            askId = getAskIdFromElement($el)
+        $el.request(this.options.reorderdownHandler, {
+            data: { current_ask_id: askId },
         })
     }
 
@@ -115,6 +133,8 @@ function showAskSettings(id) {
     RuleAsks.DEFAULTS = {
         settingsHandler: null,
         deleteHandler: null,
+        reorderupHandler: null,
+        reorderdownHandler: null,
         cancelHandler: null,
         createHandler: null
     }

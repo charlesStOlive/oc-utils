@@ -42,6 +42,8 @@ class AskBuilder extends FormWidgetBase
 
     public $restrictedMode = true;
 
+    public $autoSave = true;
+
     /**
      * {@inheritDoc}
      */
@@ -50,6 +52,7 @@ class AskBuilder extends FormWidgetBase
         $this->fillFromConfig([
             'targetClass',
             'full_access',
+            'autoSave',
         ]);
 
         if ($widget = $this->makeAskFormWidget()) {
@@ -84,7 +87,6 @@ class AskBuilder extends FormWidgetBase
         $this->vars['formModel'] = $this->model;
         $this->vars['asks'] = $this->getAsks();
         $this->vars['isRestrictedMode'] = $this->isRestrictedMode();
-        //trace_log($this->getAsks());
         $this->vars['askFormWidget'] = $this->askFormWidget;
         $this->vars['attributesArray'] = $this->getAvailableTags();
     }
@@ -99,6 +101,12 @@ class AskBuilder extends FormWidgetBase
         });
 
         return FormField::NO_SAVE_DATA;
+    }
+
+    public function autoSAve() {
+        if($this->autoSave) {
+            $this->processSave();
+        }
     }
 
     public function isRestrictedMode() {
@@ -188,6 +196,8 @@ class AskBuilder extends FormWidgetBase
 
         $this->setCacheAskData($ask);
 
+        $this->autoSAve();
+
         return $this->renderAsks($ask);
     }
 
@@ -224,11 +234,14 @@ class AskBuilder extends FormWidgetBase
         $newAsk->askeable_type = get_class($this->model);
         $newAsk->askeable_id = $this->model->id;
         $newAsk->class_name = $className;
+
         $newAsk->save();
 
         $this->model->rule_asks()->add($newAsk, post('_session_key'));
 
         $this->vars['newAskId'] = $newAsk->id;
+        //Sauvegarde auto
+        $this->autoSAve();
 
         return $this->renderAsks();
     }
@@ -236,10 +249,50 @@ class AskBuilder extends FormWidgetBase
     public function onDeleteAsk()
     {
         $ask = $this->findAskObj();
-
-        $this->model->rule_asks()->remove($ask, post('_session_key'));
-
+        if($this->autoSave) {
+            $this->model->rule_asks()->remove($ask);
+        } else {
+            $this->model->rule_asks()->remove($ask, post('_session_key'));
+        }
         return $this->renderAsks();
+    }
+
+    public function onReorderUpAsk()
+    {
+        $ask = $this->findAskObj();
+        $this->getNewOrderValue($ask, true);
+        return $this->renderAsks();
+    }
+    public function onReorderDownAsk()
+    {
+        $ask = $this->findAskObj();
+        $this->getNewOrderValue($ask, false);
+        return $this->renderAsks();
+    }
+
+    public function getNewOrderValue($ask, $up = true) {
+        $collection = $this->model->rule_asks()->get();
+        if($up) {
+            $collection = $collection->reverse();
+        }
+        $nextAsk = false;
+        foreach($collection as $testedAsk) {
+            if($nextAsk) {
+                $previousOrder = $ask->sort_order;
+                $ask->sort_order = $testedAsk->sort_order;
+                $this->model->rule_asks()->save($ask, post('_session_key'));
+                $testedAsk->sort_order = $previousOrder;
+                $this->model->rule_asks()->save($testedAsk, post('_session_key'));
+                return;
+            }
+            if($testedAsk->id == $ask->id) {
+                // $testedAsk->sort_order = $ask->sort_order;
+                // $this->model->rule_asks()->save($testedAsk, post('_session_key'));
+                $nextAsk = $testedAsk;
+            }
+            
+        }
+        return $ask->sort_order;
     }
 
     public function onCancelAskSettings()
@@ -261,7 +314,9 @@ class AskBuilder extends FormWidgetBase
 
     public function getCacheAskAttributes($ask)
     {
-        return array_get($this->getCacheAskData($ask), 'attributes');
+        $attributes = array_get($this->getCacheAskData($ask), 'attributes');
+        $datas = array_get($this->getCacheAskData($ask), 'datas');
+        return array_merge($attributes, ["datas" => $datas]);
     }
 
     public function getCacheAskTitle($ask)
@@ -295,16 +350,16 @@ class AskBuilder extends FormWidgetBase
 
     public function makeCacheAskData($ask)
     {
-        //trace_log('makeCacheAskData');
         
         $data = [
             'attributes' => $ask->config_data,
             'title' => $ask->getTitle(),
             'text' => $ask->getText(),
+            'sort_order' => $ask->sort_order,
+            'datas' => $ask->datas,
+            'photo' => $ask->photo,
+            'photos' => $ask->photos,
         ];
-
-
-        //trace_log($data);
 
         return $data;
     }
@@ -398,7 +453,7 @@ class AskBuilder extends FormWidgetBase
         
 
         $relationObject = $this->getRelationObject();
-        $asks = $relationObject->withDeferred($this->sessionKey)->get();
+        $asks = $relationObject->withDeferred($this->sessionKey)->get()->sortby('sort_order');
 
         return $this->asksCache = $asks ?: null;
     }

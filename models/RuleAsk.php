@@ -10,6 +10,7 @@ use SystemException;
 class RuleAsk extends Model
 {
     use \Winter\Storm\Database\Traits\Validation;
+    use \Winter\Storm\Database\Traits\Sortable;
 
     /**
      * @var string The database table used by the model.
@@ -34,13 +35,26 @@ class RuleAsk extends Model
     /**
      * @var array List of attribute names which are json encoded and decoded from the database.
      */
-    protected $jsonable = ['config_data'];
+    protected $jsonable = ['config_data', 'datas'];
 
     /**
      * @var array Relations
      */
     public $morphTo = [
         'askeable' => [],
+    ];
+    
+    public $attachOne = [
+        'photo' => [
+            'System\Models\File',
+            'delete' => true
+        ],
+    ];
+    public $attachMany = [
+        'photos' => [
+            'System\Models\File',
+            'delete' => true
+        ],
     ];
 
     public function triggerAsk($params)
@@ -123,14 +137,18 @@ class RuleAsk extends Model
         }
 
         $staticAttributes = ['ask_text'];
+        $realFields = ['datas', 'photo', 'photos'];
 
-        $fieldAttributes = array_merge($staticAttributes, array_keys($config->fields));
+        $fieldInConfig = array_diff(array_keys($config->fields), $realFields);
+
+        $fieldAttributes = array_merge($staticAttributes, $fieldInConfig);
 
         $dynamicAttributes = array_only($this->getAttributes(), $fieldAttributes);
 
         $this->config_data = $dynamicAttributes;
 
         $this->setRawAttributes(array_except($this->getAttributes(), $fieldAttributes));
+        
     }
 
     public function afterFetch()

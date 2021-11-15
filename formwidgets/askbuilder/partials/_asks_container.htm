@@ -4,6 +4,8 @@
          class="control-ruleasks"
          data-settings-handler="<?= $this->getEventHandler('onLoadAskSetup') ?>"
          data-delete-handler="<?= $this->getEventHandler('onDeleteAsk') ?>"
+         data-reorderup-handler="<?= $this->getEventHandler('onReorderUpAsk') ?>"
+         data-reorderdown-handler="<?= $this->getEventHandler('onReorderDownAsk') ?>"
          data-cancel-handler="<?= $this->getEventHandler('onCancelAskSettings') ?>"
          data-create-handler="<?= $this->getEventHandler('onLoadCreateChildAsk') ?>"
          data-control="ruleasks">
