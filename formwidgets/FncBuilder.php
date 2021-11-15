@@ -42,6 +42,8 @@ class FncBuilder extends FormWidgetBase
 
     public $restrictedMode = true;
 
+    public $autoSave = true;
+
     /**
      * {@inheritDoc}
      */
@@ -50,6 +52,7 @@ class FncBuilder extends FormWidgetBase
         $this->fillFromConfig([
             'targetProductor',
             'full_access',
+            'autoSave',
         ]);
 
         if ($widget = $this->makeFncFormWidget()) {
@@ -85,7 +88,6 @@ class FncBuilder extends FormWidgetBase
         $this->vars['fncs'] = $this->getFncs();
         $this->vars['isRestrictedMode'] = $this->isRestrictedMode();
         $this->vars['targetProductor'] = $this->targetProductor;
-        //trace_log($this->getFncs());
         $this->vars['fncFormWidget'] = $this->fncFormWidget;
         $this->getAvailableTags();
     }
@@ -100,6 +102,12 @@ class FncBuilder extends FormWidgetBase
         });
 
         return FormField::NO_SAVE_DATA;
+    }
+
+    public function autoSAve() {
+        if($this->autoSave) {
+            $this->processSave();
+        }
     }
 
     public function isRestrictedMode() {
@@ -211,6 +219,8 @@ class FncBuilder extends FormWidgetBase
 
         $this->setCacheFncData($fnc);
 
+        $this->autoSAve();
+
         return $this->renderFncs($fnc);
     }
 
@@ -260,9 +270,50 @@ class FncBuilder extends FormWidgetBase
     {
         $fnc = $this->findFncObj();
 
-        $this->model->rule_fncs()->remove($fnc, post('_session_key'));
-
+        if($this->autoSave) {
+            $this->model->rule_fncs()->remove($fnc);
+        } else {
+            $this->model->rule_fncs()->remove($fnc, post('_session_key'));
+        }
         return $this->renderFncs();
+    }
+
+    public function onReorderUpFnc()
+    {
+        $fnc = $this->findFncObj();
+        $this->getNewOrderValue($fnc, true);
+        return $this->renderFncs();
+    }
+    public function onReorderDownFnc()
+    {
+        $fnc = $this->findFncObj();
+        $this->getNewOrderValue($fnc, false);
+        return $this->renderFncs();
+    }
+
+    public function getNewOrderValue($fnc, $up = true) {
+        $collection = $this->model->rule_fncs()->get();
+        if($up) {
+            $collection = $collection->reverse();
+        }
+        $nextFnc = false;
+        foreach($collection as $testedFnc) {
+            if($nextFnc) {
+                $previousOrder = $fnc->sort_order;
+                $fnc->sort_order = $testedFnc->sort_order;
+                $this->model->rule_fncs()->save($fnc, post('_session_key'));
+                $testedFnc->sort_order = $previousOrder;
+                $this->model->rule_fncs()->save($testedFnc, post('_session_key'));
+                return;
+            }
+            if($testedFnc->id == $fnc->id) {
+                // $testedFnc->sort_order = $fnc->sort_order;
+                // $this->model->rule_fncs()->save($testedFnc, post('_session_key'));
+                $nextFnc = $testedFnc;
+            }
+            
+        }
+        return $fnc->sort_order;
     }
 
     public function onCancelFncSettings()
@@ -280,7 +331,9 @@ class FncBuilder extends FormWidgetBase
 
     public function getCacheFncAttributes($fnc)
     {
-        return array_get($this->getCacheFncData($fnc), 'attributes');
+        $attributes = array_get($this->getCacheFncData($fnc), 'attributes');
+        $datas = array_get($this->getCacheFncData($fnc), 'datas');
+        return array_merge($attributes, ["datas" => $datas]);
     }
 
     public function getCacheFncTitle($fnc)
@@ -326,6 +379,10 @@ class FncBuilder extends FormWidgetBase
             'attributes' => $fnc->config_data,
             'title' => $fnc->getTitle(),
             'text' => $fnc->getText(),
+            'sort_order' => $fnc->sort_order,
+            'datas' => $fnc->datas,
+            'photo' => $fnc->photo,
+            'photos' => $fnc->photos,
         ];
 
 
@@ -420,7 +477,7 @@ class FncBuilder extends FormWidgetBase
         
 
         $relationObject = $this->getRelationObject();
-        $fncs = $relationObject->withDeferred($this->sessionKey)->get();
+        $fncs = $relationObject->withDeferred($this->sessionKey)->get()->sortby('sort_order');
 
         return $this->fncsCache = $fncs ?: null;
     }

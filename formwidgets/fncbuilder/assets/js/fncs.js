@@ -30,12 +30,16 @@ function showFncSettings(id) {
     RuleFncs.prototype.init = function () {
         this.$el.on('click', '[data-fncs-settings]', this.proxy(this.onShowSettings))
         this.$el.on('click', '[data-fncs-delete]', this.proxy(this.onDeleteFnc))
+        this.$el.on('click', '[data-fncs-reorderup]', this.proxy(this.onReorderUpFnc))
+        this.$el.on('click', '[data-fncs-reorderdown]', this.proxy(this.onReorderDownFnc))
         this.$el.one('dispose-control', this.proxy(this.dispose))
     }
 
     RuleFncs.prototype.dispose = function () {
         this.$el.off('click', '[data-fncs-settings]', this.proxy(this.onShowSettings))
         this.$el.off('click', '[data-fncs-delete]', this.proxy(this.onDeleteFnc))
+        this.$el.off('click', '[data-fncs-reorderup]', this.proxy(this.onReorderUpFnc))
+        this.$el.off('click', '[data-fncs-reorderdown]', this.proxy(this.onReorderDownFnc))
         this.$el.off('dispose-control', this.proxy(this.dispose))
         this.$el.removeData('oc.ruleFncs')
 
@@ -55,6 +59,21 @@ function showFncSettings(id) {
         $el.request(this.options.deleteHandler, {
             data: { current_fnc_id: fncId },
             confirm: 'Do you really want to delete this fnc?'
+        })
+    }
+
+    RuleFncs.prototype.onReorderUpFnc = function (event) {
+        var $el = $(event.target),
+            fncId = getFncIdFromElement($el)
+        $el.request(this.options.reorderupHandler, {
+            data: { current_fnc_id: fncId },
+        })
+    }
+    RuleFncs.prototype.onReorderDownFnc = function (event) {
+        var $el = $(event.target),
+            fncId = getFncIdFromElement($el)
+        $el.request(this.options.reorderdownHandler, {
+            data: { current_fnc_id: fncId },
         })
     }
 
@@ -115,6 +134,8 @@ function showFncSettings(id) {
     RuleFncs.DEFAULTS = {
         settingsHandler: null,
         deleteHandler: null,
+        reorderupHandler: null,
+        reorderdownHandler: null,
         cancelHandler: null,
         createHandler: null
     }
