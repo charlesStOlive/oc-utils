@@ -44,6 +44,8 @@ class RuleBuilder extends FormWidgetBase
 
     public $restrictedMode = true;
 
+    public $autoSave = true;
+
     public $label = "waka.utils::lang.rules.label";
     public $prompt = "waka.utils::lang.rules.prompt";
 
@@ -58,6 +60,7 @@ class RuleBuilder extends FormWidgetBase
             'ruleMode',
             'label',
             'prompt',
+            'autoSave',
         ]);
 
         if ($widget = $this->makeRuleFormWidget()) {
@@ -110,6 +113,12 @@ class RuleBuilder extends FormWidgetBase
         });
 
         return FormField::NO_SAVE_DATA;
+    }
+
+    public function autoSAve() {
+        if($this->autoSave) {
+            $this->processSave();
+        }
     }
 
     public function isRestrictedMode() {
@@ -199,6 +208,8 @@ class RuleBuilder extends FormWidgetBase
 
         $this->setCacheRuleData($rule);
 
+        $this->autoSAve();
+
         return $this->renderRules($rule);
     }
 
@@ -242,6 +253,8 @@ class RuleBuilder extends FormWidgetBase
 
         $this->vars['newRuleId'] = $newRule->id;
 
+        $this->autoSAve();
+
         return $this->renderRules();
     }
 
@@ -253,9 +266,50 @@ class RuleBuilder extends FormWidgetBase
     {
         $rule = $this->findRuleObj();
 
-        $this->getRuleRelation()->remove($rule, post('_session_key'));
-
+        if($this->autoSave) {
+            $this->model->rule_rules()->remove($rule);
+        } else {
+            $this->model->rule_rules()->remove($rule, post('_session_key'));
+        }
         return $this->renderRules();
+    }
+
+    public function onReorderUpRule()
+    {
+        $rule = $this->findRuleObj();
+        $this->getNewOrderValue($rule, true);
+        return $this->renderRules();
+    }
+    public function onReorderDownRule()
+    {
+        $rule = $this->findRuleObj();
+        $this->getNewOrderValue($rule, false);
+        return $this->renderRules();
+    }
+
+    public function getNewOrderValue($rule, $up = true) {
+        $collection = $this->model->rule_rules()->get();
+        if($up) {
+            $collection = $collection->reverse();
+        }
+        $nextRule = false;
+        foreach($collection as $testedRule) {
+            if($nextRule) {
+                $previousOrder = $rule->sort_order;
+                $rule->sort_order = $testedRule->sort_order;
+                $this->model->rule_rules()->save($rule, post('_session_key'));
+                $testedRule->sort_order = $previousOrder;
+                $this->model->rule_rules()->save($testedRule, post('_session_key'));
+                return;
+            }
+            if($testedRule->id == $rule->id) {
+                // $testedRule->sort_order = $rule->sort_order;
+                // $this->model->rule_rules()->save($testedRule, post('_session_key'));
+                $nextRule = $testedRule;
+            }
+            
+        }
+        return $rule->sort_order;
     }
 
     public function onCancelRuleSettings()
@@ -277,7 +331,9 @@ class RuleBuilder extends FormWidgetBase
 
     public function getCacheRuleAttributes($rule)
     {
-        return array_get($this->getCacheRuleData($rule), 'attributes');
+        $attributes = array_get($this->getCacheRuleData($rule), 'attributes');
+        $datas = array_get($this->getCacheRuleData($rule), 'datas');
+        return array_merge($attributes, ["datas" => $datas]);
     }
 
     public function getCacheRuleTitle($rule)
@@ -317,6 +373,10 @@ class RuleBuilder extends FormWidgetBase
             'attributes' => $rule->config_data,
             'title' => $rule->getTitle(),
             'text' => $rule->getText(),
+            'sort_order' => $rule->sort_order,
+            'datas' => $rule->datas,
+            'photo' => $rule->photo,
+            'photos' => $rule->photos,
         ];
 
 
@@ -414,7 +474,7 @@ class RuleBuilder extends FormWidgetBase
         
 
         $relationObject = $this->getRelationObject();
-        $rules = $relationObject->withDeferred($this->sessionKey)->get();
+        $rules = $relationObject->withDeferred($this->sessionKey)->get()->sortby('sort_order');
 
         return $this->rulesCache = $rules ?: null;
     }

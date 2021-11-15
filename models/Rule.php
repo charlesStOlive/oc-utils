@@ -36,13 +36,26 @@ class Rule extends Model
     /**
      * @var array List of attribute names which are json encoded and decoded from the database.
      */
-    protected $jsonable = ['config_data'];
+    protected $jsonable = ['config_data', 'datas'];
 
     /**
      * @var array Relations
      */
     public $morphTo = [
         'ruleeable' => [],
+    ];
+
+    public $attachOne = [
+        'photo' => [
+            'System\Models\File',
+            'delete' => true
+        ],
+    ];
+    public $attachMany = [
+        'photos' => [
+            'System\Models\File',
+            'delete' => true
+        ],
     ];
 
     
@@ -127,8 +140,11 @@ class Rule extends Model
         }
 
         $staticAttributes = ['rule_text'];
+        $realFields = ['datas', 'photo', 'photos'];
 
-        $fieldAttributes = array_merge($staticAttributes, array_keys($config->fields));
+        $fieldInConfig = array_diff(array_keys($config->fields), $realFields);
+
+        $fieldAttributes = array_merge($staticAttributes, $fieldInConfig);
 
         $dynamicAttributes = array_only($this->getAttributes(), $fieldAttributes);
 

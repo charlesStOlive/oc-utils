@@ -4,6 +4,8 @@
          class="control-rulerules"
          data-settings-handler="<?= $this->getEventHandler('onLoadRuleSetup') ?>"
          data-delete-handler="<?= $this->getEventHandler('onDeleteRule') ?>"
+         data-reorderup-handler="<?= $this->getEventHandler('onReorderUpRule') ?>"
+         data-reorderdown-handler="<?= $this->getEventHandler('onReorderDownRule') ?>"
          data-cancel-handler="<?= $this->getEventHandler('onCancelRuleSettings') ?>"
          data-create-handler="<?= $this->getEventHandler('onLoadCreateChildRule') ?>"
          data-control="rulerules">
