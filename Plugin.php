@@ -164,6 +164,11 @@ class Plugin extends PluginBase
             'conditions' => [
                 ['\Waka\Utils\WakaRules\Conditions\BackUser'], 
                 ['\Waka\Utils\WakaRules\Conditions\ModelValue'], 
+            ],
+            'contents' => [
+                ['\Waka\Utils\WakaRules\Contents\Html'], 
+                ['\Waka\Utils\WakaRules\Contents\Vimeo'], 
+                ['\Waka\Utils\WakaRules\Contents\ComonPartials'], 
             ]
         ];
     }
@@ -308,7 +313,9 @@ class Plugin extends PluginBase
      */
     public function registerComponents()
     {
-        return [];
+        return [
+            'Waka\Utils\Components\WakaContent' => 'wakacontent'
+        ];
     }
 
     /**

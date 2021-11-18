@@ -1,0 +1,8 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    partial:
+        label: Nom du partial
+

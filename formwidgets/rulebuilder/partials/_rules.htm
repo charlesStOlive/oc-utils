@@ -1,9 +1,6 @@
 <?php if($isRestrictedMode && !$rules->count()) : ?>
 <div class="title " style="color:grey"><i>Non disponible</i></div>
 <?php else : ?>
-<div class="title"><?= e(trans($label))?></div>
-
-
 <div class="rule-set">
     <ol>
         <?php foreach ($rules as $rule): ?>

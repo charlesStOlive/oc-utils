@@ -1,0 +1,27 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    title:
+        label: Titre
+    vimeo_code:
+        label: Code de la vidéo viméo
+    content:
+        label: Text HTML
+        type: richeditor
+        size: huge
+        toolbarButtons: bold|italic|underline|align|clearFormatting|fullscreen|html
+    s_options:
+        label: Options
+        type: section
+    opt_width:
+        label: Largeur (px ou  %)
+    opt_height:
+        label: Largeur (px ou  %)
+    opt_container:
+        label: Dans un container
+        type: checkbox
+
+
+

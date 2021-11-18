@@ -1,0 +1,40 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    title:
+        label: Titre
+    html:
+        label: Text HTML
+        type: richeditor
+        size: huge
+        toolbarButtons: bold|italic|underline|align|inlineStyle|paragraphStyle|insertLink|redo|clearFormatting|fullscreen|html
+    staticImage:
+        label: Mettre une image statique
+        type: radio
+        options:
+            null: Aucune
+            linked: Image pour ce post
+            media: Image dans le répertoire média
+    photo:
+        type: fileupload
+        mode: image
+        imageHeight: 100
+        imageWidth: 260
+        trigger:
+            field: staticImage
+            action: show
+            condition: value[linked]
+    image:
+        type: mediafinder
+        mode: image
+        imageHeight: 100
+        imageWidth: 260
+        trigger:
+            field: staticImage
+            action: show
+            condition: value[media]
+
+
+

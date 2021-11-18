@@ -1,0 +1,21 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    code:
+        label: Code
+        span: auto
+        restricted: true
+    placement:
+        label: Emplacement
+        comment: laisser vide pour l'emplacement par défaut
+        restricted: true
+        span: left
+    view:
+        label: Vue à utiliser
+        type: dropdown
+        restricted: true
+        span: right
+        options: listViews
+

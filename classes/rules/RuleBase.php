@@ -11,7 +11,7 @@ use Waka\Utils\Interfaces\Rule as RuleInterface;
  * @package waka\utils
  * @author Alexey Bobkov, Samuel Georges
  */
-class RuleBase extends ExtensionBase implements RuleInterface
+class RuleBase extends ExtensionBase
 {
     use \System\Traits\ConfigMaker;
     use \System\Traits\ViewMaker;
@@ -270,10 +270,6 @@ class RuleBase extends ExtensionBase implements RuleInterface
     public function defineValidationRules()
     {
         return [];
-    }
-
-    public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
-        return 'resolve is missing in '.$this->getRuleName();
     }
 
     /**

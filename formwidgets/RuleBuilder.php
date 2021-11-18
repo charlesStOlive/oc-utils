@@ -267,9 +267,9 @@ class RuleBuilder extends FormWidgetBase
         $rule = $this->findRuleObj();
 
         if($this->autoSave) {
-            $this->model->rule_rules()->remove($rule);
+            $this->getRuleRelation()->remove($rule);
         } else {
-            $this->model->rule_rules()->remove($rule, post('_session_key'));
+            $this->getRuleRelation()->remove($rule, post('_session_key'));
         }
         return $this->renderRules();
     }
@@ -288,7 +288,7 @@ class RuleBuilder extends FormWidgetBase
     }
 
     public function getNewOrderValue($rule, $up = true) {
-        $collection = $this->model->rule_rules()->get();
+        $collection = $this->getRuleRelation()->get();
         if($up) {
             $collection = $collection->reverse();
         }
@@ -297,9 +297,9 @@ class RuleBuilder extends FormWidgetBase
             if($nextRule) {
                 $previousOrder = $rule->sort_order;
                 $rule->sort_order = $testedRule->sort_order;
-                $this->model->rule_rules()->save($rule, post('_session_key'));
+                $this->getRuleRelation()->save($rule, post('_session_key'));
                 $testedRule->sort_order = $previousOrder;
-                $this->model->rule_rules()->save($testedRule, post('_session_key'));
+                $this->getRuleRelation()->save($testedRule, post('_session_key'));
                 return;
             }
             if($testedRule->id == $rule->id) {
