@@ -3,6 +3,5 @@
 # ===================================
 
 fields:
-    partial:
-        label: Nom du partial
+    options:
 

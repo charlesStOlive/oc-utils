@@ -4,18 +4,25 @@
 
 fields:
     code:
-        label: Code
-        span: auto
+        label: Code 
+        span: left
         restricted: true
     placement:
-        label: Emplacement
-        comment: laisser vide pour l'emplacement par défaut
+        label: Emplacement (laisser vide  pour empl. défaut)
+        comment: 
         restricted: true
-        span: left
+        span: right
     view:
         label: Vue à utiliser
         type: dropdown
         restricted: true
-        span: right
+        span: left
         options: listViews
+    partial:
+        label: chemin du partial
+        span: right
+        trigger:
+            field: view
+            condition: value[partial]
+            action: show
 

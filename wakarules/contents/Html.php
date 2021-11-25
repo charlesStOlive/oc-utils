@@ -3,6 +3,7 @@
 use Waka\Utils\Classes\Rules\RuleContentBase;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use ApplicationException;
+use ToughDeveloper\ImageResizer\Classes\Image;
 
 class Html extends RuleContentBase
 {
@@ -34,15 +35,49 @@ class Html extends RuleContentBase
 
     }
 
+    public function listCropMode()
+    {
+        $config =  \Config::get('waka.utils::image.baseCrop');
+        //trace_log($config);
+        return $config;
+        
+    }
+
     /**
      * IS true
      */
 
     public function resolve() {
-        return [
-            'title' => $this->getConfig('title'),
-            'html' => $this->getConfig('html'),
+        $width = $this->getConfig('width');
+        $height = $this->getConfig('height');
+        $crop = $this->getConfig('crop');
+        $staticImage = $this->getConfig('staticImage');
+        $modePhoto;
+        $objImage = null;
+        if($staticImage == 'linked') {
+            $objImage = [
+                'path' => $this->host->photo->getThumb($width, $height, ['mode' => $crop]),
+                'width' => $width ? $width  . 'px' : null,
+                'height' => $height ? $height  . 'px' : null,
+            ];
+        } elseif ($staticImage == 'media') {
+            $path = storage_path('app/media/' . $this->getConfig('image'));
+            //trace_log($path);
+            $image = new Image($path);
+            $imageUrl = $image->resize($width, $height, [ 'mode' =>$crop ]);
+            $objImage = [
+                    'path' => $imageUrl,
+                    'width' => $width ? $width  . 'px' : null,
+                    'height' => $height ? $height  . 'px' : null,
+                ];
+        }
+        $obj =  [
+            'image' => $objImage,
         ];
+        $data = $this->getConfigs();
+        //on ajoute toutes les données du formulaire
+        $data = array_merge($data, $obj);
+        return $data;
     }
 
     

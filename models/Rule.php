@@ -142,7 +142,13 @@ class Rule extends Model
         $staticAttributes = ['rule_text'];
         $realFields = ['datas', 'photo', 'photos'];
 
-        $fieldInConfig = array_diff(array_keys($config->fields), $realFields);
+        $fieldInConfig = $this->getFieldsFromConfig($config);
+
+        //trace_log($fieldInConfig);
+
+        $fieldInConfig = array_diff(array_keys($fieldInConfig), $realFields);
+
+        
 
         $fieldAttributes = array_merge($staticAttributes, $fieldInConfig);
 
@@ -151,6 +157,15 @@ class Rule extends Model
         $this->config_data = $dynamicAttributes;
 
         $this->setRawAttributes(array_except($this->getAttributes(), $fieldAttributes));
+    }
+
+    public function getFieldsFromConfig($config) {
+        $fields = $config->fields;
+        $tabs = $config->tabs['fields'] ?? [];
+        trace_log($tabs);
+        //trace_log(array_merge($fields, $tabs));
+        return array_merge($fields, $tabs);
+
     }
 
     public function afterFetch()

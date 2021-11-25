@@ -39,7 +39,7 @@ class Vimeo extends RuleContentBase
      */
 
     public function resolve() {
-        trace_log($this->getConfigs());
+        //trace_log($this->getConfigs());
         return $this->getConfigs();
     }
 }

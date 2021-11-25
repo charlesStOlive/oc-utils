@@ -314,7 +314,7 @@ class Plugin extends PluginBase
     public function registerComponents()
     {
         return [
-            'Waka\Utils\Components\WakaContent' => 'wakacontent'
+            
         ];
     }
 

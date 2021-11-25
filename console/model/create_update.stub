@@ -10,14 +10,20 @@ class Create{{studly_plural_name}}TableU{{version}} extends Migration
     {
         Schema::table('{{lower_author}}_{{lower_plugin}}_{{snake_plural_name}}', function (Blueprint $table) {
 {% for db in dbVersion  %}
-{% if db.type == 'liaison_id' %}
-            $table->integer('{{db.var|snakeCase}}_id')->unsigned(){% if not db.not_null %}->nullable(){%endif%};
+{% if db.versionMode == 'delete' and db.type == 'liaison_id'  %}
+            $table->dropColumn('{{db.var|snakeCase}}_id')
+{% elseif db.versionMode == 'delete' and db.type == 'string_id'  %}
+            $table->dropColumn('{{db.var|snakeCase}}_id')
+{% elseif db.versionMode == 'delete' %}
+            $table->dropColumn('{{db.var|snakeCase}}')
+{% elseif db.type == 'liaison_id' %}
+            $table->integer('{{db.var|snakeCase}}_id')->unsigned(){% if not db.not_null %}->nullable(){%endif%}{% if db.versionMode == 'update' %}->change(){% endif %};
 {% elseif db.type == 'string_id' %}
-            $table->string('{{db.var|snakeCase}}_id'){% if not db.not_null %}->nullable(){%endif%};
+            $table->string('{{db.var|snakeCase}}_id'){% if not db.not_null %}->nullable(){%endif%}{% if db.versionMode == 'update' %}->change(){% endif %};
 {% elseif db.type == 'double' %}
-            $table->double('{{db.var|snakeCase}}', 15, 2){% if not db.not_null %}->nullable(){%endif%};
+            $table->double('{{db.var|snakeCase}}', 15, 2){% if not db.not_null %}->nullable(){%endif%}{% if db.versionMode == 'update' %}->change(){% endif %};
 {% else %}
-            $table->{{db.type}}('{{db.var|snakeCase}}'){% if not db.not_null %}->nullable(){%endif%}{% if db.default %}->default({% if db.type =='boolean' %}{{ db.default}}{% else %}'{{db.default}}'{% endif %}){% endif %};
+            $table->{{db.type}}('{{db.var|snakeCase}}'){% if not db.not_null %}->nullable(){%endif%}{% if db.default %}->default({% if db.type =='boolean' %}{{ db.default}}{% else %}'{{db.default}}'{% endif %}){% endif %}{% if db.versionMode == 'update' %}->change(){% endif %};
 {% endif %}
 {% endfor %}
         });
@@ -27,7 +33,19 @@ class Create{{studly_plural_name}}TableU{{version}} extends Migration
     {
         Schema::table('{{lower_author}}_{{lower_plugin}}_{{snake_plural_name}}', function (Blueprint $table) {
 {% for db in dbVersion  %}
-{% if db.type == 'liaison_id' %}
+{% if db.versionMode == 'delete' or db.versionMode == 'update' %}
+{% if db.old_version.type == 'liaison_id' %}
+            $table->integer('{{db.old_version.var|snakeCase}}_id')->unsigned(){% if not db.old_version.not_null %}->nullable(){%endif%}{% if db.versionMode == 'update' %}->change(){% endif %};
+{% elseif db.old_version.type == 'string_id' %}
+            $table->string('{{db.old_version.var|snakeCase}}_id'){% if not db.old_version.not_null %}->nullable(){%endif%}{% if db.versionMode == 'update' %}->change(){% endif %};
+{% elseif db.old_version.type == 'double' %}
+            $table->double('{{db.old_version.var|snakeCase}}', 15, 2){% if not db.old_version.not_null %}->default(0){%endif%}{% if db.versionMode == 'update' %}->change(){% endif %};
+{% elseif db.old_version.type == 'integer' %}
+            $table->integer('{{db.old_version.var|snakeCase}}'){% if not db.old_version.not_null %}->nullable(){%endif%}{% if db.old_version.default %}->default({{ db.old_version.default}}){%endif%}{% if db.versionMode == 'update' %}->change(){% endif %};
+{% else %}
+            $table->{{db.old_version.type}}('{{db.old_version.var|snakeCase}}'){% if not db.old_version.not_null %}->nullable(){%endif%}{% if db.old_version.default %}->default({% if db.old_version.type =='boolean' %}{{ db.old_version.default}}{% else %}'{{db.old_version.default}}'{% endif %}){% endif %}{% if db.versionMode == 'update' %}->change(){% endif %};
+{% endif %}
+{% elseif db.type == 'liaison_id' %}
             $table->dropColumn('{{db.var|snakeCase}}_id');
 {% elseif db.type == 'string_id' %}
             $table->dropColumn('{{db.var|snakeCase}}_id');

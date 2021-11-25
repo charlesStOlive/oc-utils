@@ -2,39 +2,90 @@
 #  Field Definitions
 # ===================================
 
-fields:
-    title:
-        label: Titre
-    html:
-        label: Text HTML
-        type: richeditor
-        size: huge
-        toolbarButtons: bold|italic|underline|align|inlineStyle|paragraphStyle|insertLink|redo|clearFormatting|fullscreen|html
-    staticImage:
-        label: Mettre une image statique
-        type: radio
-        options:
-            null: Aucune
-            linked: Image pour ce post
-            media: Image dans le répertoire média
-    photo:
-        type: fileupload
-        mode: image
-        imageHeight: 100
-        imageWidth: 260
-        trigger:
-            field: staticImage
-            action: show
-            condition: value[linked]
-    image:
-        type: mediafinder
-        mode: image
-        imageHeight: 100
-        imageWidth: 260
-        trigger:
-            field: staticImage
-            action: show
-            condition: value[media]
+tabs:
+    defaultTab: Configuration
+    fields:
+        title:
+            label: Titre
+        html:
+            label: Text HTML
+            type: richeditor
+            size: huge
+            toolbarButtons: bold|italic|underline|align|inlineStyle|paragraphStyle|insertLink|redo|clearFormatting|fullscreen|html
+        staticImage:
+            label: Mettre une image statique
+            type: radio
+            span: left
+            options:
+                null: Aucune
+                linked: Image pour ce post
+                media: Image dans le répertoire média
+        photo:
+            type: fileupload
+            mode: image
+            imageHeight: 100
+            imageWidth: 260
+            span: right
+            trigger:
+                field: staticImage
+                action: show
+                condition: value[linked]
+        image:
+            type: mediafinder
+            mode: image
+            imageHeight: 100
+            imageWidth: 260
+            span: right
+            trigger:
+                field: staticImage
+                action: show
+                condition: value[media]
+
+
+        s_opt_t:
+            tab: options
+            label: Option globales
+            type: section
+        opt_env_colors:
+            tab: options
+            type: dropdown
+            options:
+                env-white: Blanc & textes noirs
+                env-primary: Couleurs primaires de fond
+                env-secondary: Couleurs secondaire de fond
+        opt_css_container:
+            tab: options
+            label: Class
+            comment: aspect-w-16 aspect-h-10 h-screen-25 h-screen-50 h-screen-90  h-screen
+
+
+        s_opt:
+            tab: options
+            label: Option pour l'image
+            type: section
+        opt_object_cover:
+            tab: options
+            type: checkbox
+            label: object-cover ?
+            defaultValue: 1
+        crop:
+            tab: options
+            label: Méthode de reditionement
+            span: auto
+            type: dropdown
+            options: listCropMode
+            default: fit
+        width:
+            tab: options
+            label: width
+            span: auto
+        height:
+            tab: options
+            label: height
+            span: auto
+        
+        
+
 
 
 

@@ -29,7 +29,7 @@ class RuleContentBase extends RuleBase implements RuleContentInterface
 
     public function transformClassToDotedView() {
         $class = get_class($this);
-        trace_log($class);
+        //trace_log($class);
         $viewPath = $this->guessViewPath();
         $class = explode('\\', $class);
         $author = strtolower($class[0]);
@@ -48,15 +48,15 @@ class RuleContentBase extends RuleBase implements RuleContentInterface
 
     public function listViews() {
         $viewObject = $this->transformClassToDotedView();
-        trace_log($viewObject);
+        //trace_log($viewObject);
         $views = [];
         $configViews = $viewObject['viewPathUrl'];
-        trace_log($configViews);
+        //trace_log($configViews);
         if (file_exists($configViews)) {
             $filesInFolder = \File::files($configViews);
             if($filesInFolder) {
                 foreach($filesInFolder as $file) { 
-                trace_log($file);
+                //trace_log($file);
                 $fileBase = ltrim($file->getBasename('.htm'), '_');
                 $viewPath = $viewObject['viewPathCode'].'.'.$fileBase;
                 $viewName = "Interne :: ".$file->getFilename();
@@ -65,6 +65,7 @@ class RuleContentBase extends RuleBase implements RuleContentInterface
             }
         }
         $views['code'] = "pas de vue, code seulement";
+        $views['partial'] = "Un partial du theme";
         return $views;
     }
 
@@ -102,7 +103,7 @@ class RuleContentBase extends RuleBase implements RuleContentInterface
     }
     public function makeView($view = null) {
         $view = $this->getConfig('view');
-        trace_log($view);
+        //trace_log($view);
         if(!View::exists($view)) {
             \Log::error('la vue '.$view.' n \'exite pas');
         }

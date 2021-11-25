@@ -2,26 +2,51 @@
 #  Field Definitions
 # ===================================
 
-fields:
-    title:
-        label: Titre
-    vimeo_code:
-        label: Code de la vidéo viméo
-    content:
-        label: Text HTML
-        type: richeditor
-        size: huge
-        toolbarButtons: bold|italic|underline|align|clearFormatting|fullscreen|html
-    s_options:
-        label: Options
-        type: section
-    opt_width:
-        label: Largeur (px ou  %)
-    opt_height:
-        label: Largeur (px ou  %)
-    opt_container:
-        label: Dans un container
-        type: checkbox
+tabs:
+    defaultTab: Configuration
+    fields:
+        title:
+            label: Titre
+        vimeo_code:
+            label: Code de la vidéo viméo
+        content:
+            label: Text HTML
+            type: richeditor
+            size: huge
+            toolbarButtons: bold|italic|underline|align|clearFormatting|fullscreen|html
+        s_opt_t:
+                tab: options
+                label: Option globales
+                type: section
+                tab: options
+        opt_env_colors:
+            tab: options
+            type: dropdown
+            options:
+                env-white: Blanc & textes noirs
+                env-primary: Couleurs primaires de fond
+                env-secondary: Couleurs secondaire de fond
+        opt_is_container:
+            label: Dans un container
+            type: checkbox
+            tab: options
+        opt_css_container:
+            tab: options
+            label: Class
+            comment: aspect-w-16 aspect-h-10 h-screen-25 h-screen-50 h-screen-90  h-screen  
+
+        s_video_options:
+            label: Options vidéos
+            tab: options
+            type: section
+        opt_video_width:
+            label: Largeur (px ou  %)
+            tab: options
+            span: auto
+        opt_video_height:
+            label: Largeur (px ou  %)
+            tab: options
+            span: auto
 
 
 

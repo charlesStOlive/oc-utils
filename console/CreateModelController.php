@@ -141,6 +141,8 @@ class CreateModelController extends GeneratorCommand
         //Suppresion des lignes vides ( sans var )
         $rows = $rows->where('var', '<>', null);
 
+        
+
         $rows = $rows->map(function ($item, $key) {
             if($label = $item['name'] ?? null) {
                 if($label == 'NON') $item['name'] = null;
@@ -263,6 +265,13 @@ class CreateModelController extends GeneratorCommand
                     $item['tabType'] = 'outside';
                 }
             }
+            if($version = $item['version'] ?? null) {
+                // attendu 110 ou 110::create ou 110::delete ou 110::change
+                $version = explode('::', $version);
+                $item['version'] = $version[0];
+                $item['versionMode'] = $version[1] ?? null;
+
+            }
             $rel = $item['relation'] ?? null;
             if ($rel) {
                 $item['relation_parsed'] = $this->relations->getOneRelation($rel);
@@ -272,8 +281,33 @@ class CreateModelController extends GeneratorCommand
             return $item;
         });
 
-        $columns = $rows->where('column', '<>', null)->sortBy('column')->toArray();
+        $dbs = $rows->where('type', '<>', null)->where('version', '==', null)->toArray();
+        //On verivie les versions et on range les anciennes versions dans une var old_version
+        $rows = $rows->map(function ($item, $key) use ($rows){
+            $var = $item['var'];
+            $version = (int)($item['version']);
+            $olderVersion = $rows->where('type', '<>', null)->where('var', '==', $var)->where('version', '<', $version)->sortby('version');
+            if($olderVersion->count()) {
+                $item['old_version'] = $olderVersion->first();
+                
+            } 
+            return $item;
+        });
+        //On supprime les versions les acniennes versions des rows
+        $rows = $rows->reject(function ($item, $key) use ($rows){
+            $var = $item['var'];
+            $version = (int)($item['version']);
+            $recentVersion = $rows->where('type', '<>', null)->where('var', '==', $var)->where('version', '>', $version);
+            if($recentVersion->count()) {
+                return true;
+            } 
+        });
 
+        $dbVersion = $rows->where('type', '<>', null)->where('version', '==', $this->version)->toArray();
+        
+
+
+        $columns = $rows->where('column', '<>', null)->sortBy('column')->toArray();
          //R2cuperqtion des listes uniques. 
         $this->config['lists'] = $rows->where('lists', '!=', null)->unique('lists')->pluck('lists', 'lists')->toArray();
         //trace_log($this->config['lists']);
@@ -310,10 +344,7 @@ class CreateModelController extends GeneratorCommand
         
         $finalTrads = VarExporter::export($finalTrads,VarExporter::NO_CLOSURES);
         //
-        $dbs = $rows->where('type', '<>', null)->where('version', '==', null)->toArray();
-        $dbVersion = $rows->where('type', '<>', null)->where('version', '==', $this->version)->toArray();
         $anonymizables = $rows->where('is_anonymizable', '<>', null)->pluck('var')->toArray();
-
         //
         $fields = $rows->where('field', '<>', null)->where('tabType', '==', null)->sortBy('field')->toArray();
         $fieldsInfo = $rows->where('sidebar', '<>', null)->sortBy('sidebar');

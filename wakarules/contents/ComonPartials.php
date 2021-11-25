@@ -45,7 +45,7 @@ class ComonPartials extends RuleContentBase
 
     public function resolve() {
         //ici on recupère les configs et le champs json datas...
-        return $this->getConfig('partial');
+        return [];
     }
     
 
