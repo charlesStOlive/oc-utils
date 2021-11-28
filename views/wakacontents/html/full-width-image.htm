@@ -2,7 +2,7 @@
     <img class="{% if data.opt_object_cover %}  object-cover {% else %} object-contain {% endif %} h-full w-full max-h-full" src="{{ data.image.path }}">
     <div class="absolute  bottom-0 left-0  z-30 p-5 max-w-md ">
         <div class="{{ data.opt_env_colors | default('env-white') }} bg-transparent-10 p-4 rounded-lg bg-opacity-75">
-                <div class="w-h3">{{data.title}}</div>
+                <div class="w-title w-title-h3">{{data.title}}</div>
                 <div>{{data.html | raw}}</div>
             </div>
     </div>

@@ -162,7 +162,7 @@ class Rule extends Model
     public function getFieldsFromConfig($config) {
         $fields = $config->fields;
         $tabs = $config->tabs['fields'] ?? [];
-        trace_log($tabs);
+        //trace_log($tabs);
         //trace_log(array_merge($fields, $tabs));
         return array_merge($fields, $tabs);
 
