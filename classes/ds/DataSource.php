@@ -258,7 +258,16 @@ class DataSource extends Extendable
         if($fromModel = $scope['options']['fromModel'] ?? false) {
             $nameFrom = $scope['nameFrom'] ?? 'name'; 
             return $fromModel::lists($nameFrom, 'id');
-        } elseif ($fromSetting = $scope['options']['fromSetting'] ?? false) {
+        }
+        //NE MARCHE PAS
+        //  elseif ($fromClassFnc = $scope['options']['fromClassFnc'] ?? false) {
+        //     trace_log($fromClassFnc);
+        //     trace_log($this->config['class']);
+        //     $model = new $this->config['class'];
+        //     //trace_log($model::$fromClassFnc);
+        //     return $model->{$fromClassFnc};
+        // }
+         elseif ($fromSetting = $scope['options']['fromSetting'] ?? false) {
             return \Settings::get($fromSetting );
        } elseif ($fromSetting = $scope['options']['fromConfig'] ?? false) {
             return \Config::get($fromSetting );
