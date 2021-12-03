@@ -26,6 +26,10 @@ class RuleConditionBase extends RuleBase implements RuleInterface
         ];
     }
 
+    public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
+
+    }
+
     /**
      * Boot method called when the condition class is first loaded
      * with an existing model.
@@ -46,5 +50,7 @@ class RuleConditionBase extends RuleBase implements RuleInterface
             // 'notLke' => "ne contient pas",
         ];
     }
+
+
     
 }
