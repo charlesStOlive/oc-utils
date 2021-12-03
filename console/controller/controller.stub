@@ -65,11 +65,14 @@ class {{studly_ctname}} extends Controller
 {% if configs.behav_cloud_word %}
         'Waka.Cloud.Behaviors.CloudWord',
 {% endif %}
-{% if configs.behav_calcultags %}
-        'Waka.Segator.Behaviors.CalculTags',
-{% endif %}
-{% if configs.beahav_aggregator %}
+{% if configs.behav_aggregator %}
         'Waka.Agg.Behaviors.AggCreator',
+{% endif %}
+{% if configs.behav_wakatag_manual %}
+        'Waka.Segator.Behaviors.ManualTagBehavior',
+{% endif %}
+{% if configs.behav_wakatag_calcul %}
+        'Waka.Segator.Behaviors.CalculTags',
 {% endif %}
     ];
     public $formConfig = 'config_form.yaml';
