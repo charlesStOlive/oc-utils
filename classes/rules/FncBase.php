@@ -164,7 +164,7 @@ class FncBase extends ExtensionBase
     public function getCode()
     {
         //trace_log('getText dans fnc base');
-        return $this->host->config_data['code'] ?? 'En attente';
+        return $this->host->code ?? 'En attente';
     }
 
     public function getConfig($key)

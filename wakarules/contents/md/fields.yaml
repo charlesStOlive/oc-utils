@@ -1,0 +1,18 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+tabs:
+    defaultTab: Configuration
+    fields:
+        title:
+            label: Titre
+        md:
+            label: Text HTML
+            type: markdown
+        
+        
+
+
+
+

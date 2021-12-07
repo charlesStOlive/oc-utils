@@ -137,7 +137,7 @@ class RuleAsk extends Model
         }
 
         $staticAttributes = ['ask_text'];
-        $realFields = ['datas', 'photo', 'photos'];
+        $realFields = ['datas', 'photo', 'photos', 'code'];
 
         $fieldInConfig = array_diff(array_keys($config->fields), $realFields);
 

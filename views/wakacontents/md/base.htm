@@ -1,0 +1,10 @@
+<div class=" {{ data.opt_env_colors | default('env-white') }} {{ data.opt_css_container }}">
+    <div class="flex justify-center items-center  h-full w-full">
+        <div class=" p-4  align-middle w-full">
+            <h3 class="w-title w-title-h3">{{data.title}}</h3>
+            <div>
+                {{data.md | md }}
+            </div>
+        </div>
+    </div>
+</div>

@@ -142,7 +142,7 @@ class RuleFnc extends Model
         }
 
         $staticAttributes = ['fnc_text'];
-        $realFields = ['datas', 'photo', 'photos'];
+        $realFields = ['datas', 'photo', 'photos', 'code'];
 
         $fieldInConfig = array_diff(array_keys($config->fields), $realFields);
 

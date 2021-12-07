@@ -307,16 +307,19 @@ class AskBuilder extends FormWidgetBase
     //
     // Postback deferring
     //
-    public function getCacheAskCode($fnc)
+    public function getCacheAskCode($ask)
     {
-        return array_get($this->getCacheAskData($fnc), 'attributes')['code'] ?? 'ERROR';
+        return array_get($this->getCacheAskData($ask), 'code') ?? 'ERROR';
     }
 
     public function getCacheAskAttributes($ask)
     {
         $attributes = array_get($this->getCacheAskData($ask), 'attributes');
         $datas = array_get($this->getCacheAskData($ask), 'datas');
-        return array_merge($attributes, ["datas" => $datas]);
+        $code = array_get($this->getCacheAskData($ask), 'code');
+        $photos = array_get($this->getCacheAskData($ask), 'photos');
+        $photo = array_get($this->getCacheAskData($ask), 'photo');
+        return array_merge($attributes, ["datas" => $datas], ["code" => $code]);
     }
 
     public function getCacheAskTitle($ask)
@@ -359,6 +362,7 @@ class AskBuilder extends FormWidgetBase
             'datas' => $ask->datas,
             'photo' => $ask->photo,
             'photos' => $ask->photos,
+            'code' => $ask->code
         ];
 
         return $data;

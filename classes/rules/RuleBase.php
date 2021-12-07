@@ -165,7 +165,7 @@ class RuleBase extends ExtensionBase
     public function getCode()
     {
         //trace_log('getText dans rule base');
-        return $this->host->config_data['code'] ?? 'En attente';
+        return $this->host->code ?? 'En attente';
     }
 
     public function isEditable()

@@ -140,7 +140,7 @@ class Rule extends Model
         }
 
         $staticAttributes = ['rule_text'];
-        $realFields = ['datas', 'photo', 'photos'];
+        $realFields = ['datas', 'photo', 'photos', 'code'];
 
         $fieldInConfig = $this->getFieldsFromConfig($config);
 

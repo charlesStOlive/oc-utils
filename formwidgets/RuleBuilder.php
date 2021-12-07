@@ -326,14 +326,17 @@ class RuleBuilder extends FormWidgetBase
     //
     public function getCacheRuleCode($fnc)
     {
-        return array_get($this->getCacheRuleData($fnc), 'attributes')['code'] ?? 'ERROR';
+        return array_get($this->getCacheRuleData($fnc), 'code') ?? 'ERROR';
     }
 
     public function getCacheRuleAttributes($rule)
     {
         $attributes = array_get($this->getCacheRuleData($rule), 'attributes');
         $datas = array_get($this->getCacheRuleData($rule), 'datas');
-        return array_merge($attributes, ["datas" => $datas]);
+        $code = array_get($this->getCacheRuleData($rule), 'code');
+        $photos = array_get($this->getCacheRuleData($rule), 'photos');
+        $photo = array_get($this->getCacheRuleData($rule), 'photo');
+        return array_merge($attributes, ["datas" => $datas], ["code" => $code]);
     }
 
     public function getCacheRuleTitle($rule)
@@ -377,6 +380,7 @@ class RuleBuilder extends FormWidgetBase
             'datas' => $rule->datas,
             'photo' => $rule->photo,
             'photos' => $rule->photos,
+            'code' => $rule->code
         ];
 
 

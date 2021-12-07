@@ -164,7 +164,7 @@ class AskBase extends ExtensionBase implements AskInterface
     public function getCode()
     {
         //trace_log('getText dans ask base');
-        return $this->host->config_data['code'] ?? 'En attente';
+        return $this->host->code ?? 'En attente';
     }
 
     public function isEditable()

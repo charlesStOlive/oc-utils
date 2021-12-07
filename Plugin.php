@@ -64,7 +64,16 @@ class Plugin extends PluginBase
                     $number = $number * 4;
                     $spaces = str_repeat(' ', $number);
                     return rtrim(preg_replace('#^(.+)$#m', sprintf('%1$s$1', $spaces), $string));
-                }
+                },
+                'getContent' => function ($twig, $code, $column) {
+                    $content = $twig->getContent($code);
+                    return  $content[$column] ?? null;
+                },
+                'getRecursiveContent' => function ($twig, $code,$column) {
+                    $content = $twig->getResursiveContent($code);
+                    return  $content[$column] ?? null;
+                },
+                
             ],
             'functions' => [
                 // Using an inline closure
@@ -167,6 +176,7 @@ class Plugin extends PluginBase
             ],
             'contents' => [
                 ['\Waka\Utils\WakaRules\Contents\Html'], 
+                ['\Waka\Utils\WakaRules\Contents\Md'], 
                 ['\Waka\Utils\WakaRules\Contents\Vimeo'], 
                 ['\Waka\Utils\WakaRules\Contents\ComonPartials'], 
             ]

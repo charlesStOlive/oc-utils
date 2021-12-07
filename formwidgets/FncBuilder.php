@@ -329,22 +329,27 @@ class FncBuilder extends FormWidgetBase
     // Postback deferring
     //
 
-    public function getCacheFncAttributes($fnc)
-    {
-        $attributes = array_get($this->getCacheFncData($fnc), 'attributes');
-        $datas = array_get($this->getCacheFncData($fnc), 'datas');
-        return array_merge($attributes, ["datas" => $datas]);
-    }
-
     public function getCacheFncTitle($fnc)
     {
         return array_get($this->getCacheFncData($fnc), 'title');
     }
 
+    public function getCacheFncAttributes($fnc)
+    {
+        $attributes = array_get($this->getCacheFncData($fnc), 'attributes');
+        $datas = array_get($this->getCacheFncData($fnc), 'datas');
+        $code = array_get($this->getCacheFncData($fnc), 'code');
+        $photos = array_get($this->getCacheFncData($fnc), 'photos');
+        $photo = array_get($this->getCacheFncData($fnc), 'photo');
+        return array_merge($attributes, ["datas" => $datas], ["code" => $code]);
+    }
+
+    
+
     public function getCacheFncCode($fnc)
     {
         //trace_log($this->getCacheFncData($fnc));
-        return array_get($this->getCacheFncData($fnc), 'attributes')['code'] ?? 'ERROR';
+        return array_get($this->getCacheFncData($fnc), 'code') ?? 'ERROR';
     }
 
     public function getCacheFncText($fnc)
@@ -383,6 +388,7 @@ class FncBuilder extends FormWidgetBase
             'datas' => $fnc->datas,
             'photo' => $fnc->photo,
             'photos' => $fnc->photos,
+            'code' => $fnc->code
         ];
 
 
