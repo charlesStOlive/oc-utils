@@ -48,6 +48,11 @@ class HtmlAsk extends AskBase
         if(!$text) {
             throw new ApplicationException('le texte html du ask : '.$this->getCode().' n\'a pas été trouvé'); 
         }
-        return \Twig::parse($text, $dataForTwig);
+        if($context == 'txt') {
+            return strip_tags(\Twig::parse($text, $dataForTwig));
+        } else {
+            return \Twig::parse($text, $dataForTwig);;
+        }
+        
     }
 }
