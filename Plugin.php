@@ -167,6 +167,7 @@ class Plugin extends PluginBase
                 ['\Waka\Utils\WakaRules\Asks\HtmlAsk'], 
                 ['\Waka\Utils\WakaRules\Asks\ImageAsk'],
                 ['\Waka\Utils\WakaRules\Asks\FileImgLinked'],
+                ['\Waka\Utils\WakaRules\Asks\Content'], 
             ],
             'fncs' => [
             ],

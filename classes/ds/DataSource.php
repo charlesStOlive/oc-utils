@@ -263,8 +263,8 @@ class DataSource extends Extendable
         }
         //NE MARCHE PAS
         //  elseif ($fromClassFnc = $scope['options']['fromClassFnc'] ?? false) {
-        //     trace_log($fromClassFnc);
-        //     trace_log($this->config['class']);
+        //     //trace_log($fromClassFnc);
+        //     //trace_log($this->config['class']);
         //     $model = new $this->config['class'];
         //     //trace_log($model::$fromClassFnc);
         //     return $model->{$fromClassFnc};
@@ -433,6 +433,12 @@ class DataSource extends Extendable
         //trace_log($results);
         return $results;
     }
+
+    /**
+     * RETROUVER LES BLOCS DE CONTENUS
+     */
+    
+
 
     /**
      * NOUVEAU PRINCIPE POUR LES IMAGES

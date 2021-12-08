@@ -1,0 +1,13 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    relation:
+        label: relation ( laisser vide si self ) 
+    contentCode:
+        label: Choisissez un
+    is_recursif:
+        label: Utiliser la recursivité si disponible ?
+        type: checkbox
+      

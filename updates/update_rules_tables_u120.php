@@ -47,9 +47,9 @@ class CreateStateteablesTableU120 extends Migration
         }
         foreach($rules as $rule) {
             $config = $rule->config_data;
-            trace_log($config);
+            //trace_log($config);
             $code = $config['code'] ?? false;
-            trace_log($code);
+            //trace_log($code);
             if($code) {
                 $rule->code = $code;
                 $rule->save();
