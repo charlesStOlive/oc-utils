@@ -45,12 +45,14 @@ class Content extends AskBase
     public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
         $relation = $this->getConfig('relation');
         $contentCode = $this->getConfig('contentCode');
+        $isRecursif = $this->getConfig('is_recursif');
         if($relation) {
             $modelSrc =  $this->getStringModelRelation($modelSrc, $relation);
         }
-        if($modelSrc->rule_contents) {
-            $content = $modelSrc->rule_contents->where('code', $contentCode)->first()->toArray();
-            return  $content;
+        if($modelSrc->methodExists('getContent') && !$isRecursif) {
+            return $modelSrc->getContent($contentCode);
+        } else if($modelSrc->methodExists('getResursiveContent') && $isRecursif) {
+            return $modelSrc->getResursiveContent($contentCode);
         } else {
             \Log::error('Le trait \Waka\Utils\Classes\Traits\WakaContent n existe pas');
             return null;
