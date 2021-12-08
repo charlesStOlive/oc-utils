@@ -42,6 +42,9 @@ class {{studly_name}} extends Model
 {% if configs.trait_informer %}
     use \Waka\Informer\Classes\Traits\InformerTrait;
 {% endif %}
+{% if configs.trait_wakaContent %}
+    use \Waka\Utils\Classes\Traits\WakaContent;
+{% endif %}
 {% if configs.trait_dbutils %}
     use \Waka\Utils\Classes\Traits\DbUtils;
 {% endif %}

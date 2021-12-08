@@ -2,6 +2,23 @@
 
 trait WakaContent
 {
+    /*
+     * Constructor
+     */
+    public static function bootWakaContent()
+    {
+        static::extend(function ($model) {
+            /*
+             * Define relationships
+             */
+            $model->morphMany['rule_contents'] = [
+                'Waka\Utils\Models\RuleContent',
+                'name' => 'contenteable',
+                'delete' => true
+            ];
+        });
+    }
+
     public function getContent($code) {
         $content = $this->rule_contents()->where('code', $code);
         if($content->count()) {
