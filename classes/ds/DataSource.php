@@ -110,7 +110,7 @@ class DataSource extends Extendable
 
     public function getProductorOptions($productorModel, $modelId = null)
     {
-        //trace_log('getProductorOptions');
+        trace_log('getProductorOptions');
         $productors = $productorModel::where('data_source', $this->code);
         if($modelId) {
             $this->instanciateModel($modelId);

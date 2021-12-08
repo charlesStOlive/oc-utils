@@ -39,9 +39,11 @@ class BackUser extends RuleConditionBase
      */
 
     public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
-        // if(\App::runningInConsole()) {
-        //     return true;
-        // }
+        trace_log("check user");
+        if(\App::runningInConsole()) {
+            return true;
+        }
+
         $user = \BackendAuth::getUser();
         $mode = $this->getConfig('mode');
         $operator = $this->getConfig('operator');

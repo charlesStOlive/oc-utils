@@ -40,25 +40,40 @@ class ModelValue extends RuleConditionBase
      */
 
     public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
-        //trace_log('check model value');
-        $field = $this->getConfig('field');
-        $relation = $this->getConfig('relation');
+        trace_log('check model value');
         $mode = $this->getConfig('mode');
+        
+        $relation = $this->getConfig('relation');
         $model = $modelSrc;
         if($mode == 'parent') {
             $model = $this->getStringModelRelation($model, $relation);
-        } elseif($mode == 'childs') {
-            return $this->getStringRequestRelation($model, $relation)->count();
         } 
-        //trace_log($mode);
-        //trace_log($relation);
-        //trace_log($field);
-        //trace_log($model);
-        if($model['iland_3d'] ?? false) {
-            return true;
-        } else {
-            return false;
-        }
+        $field = $this->getConfig('field');
+        $operator = $this->getConfig('operator');
+        $value = $this->getConfig('value');
+
+        $fieldValue = $model->{$field};
+
+        trace_log($fieldValue);
+        trace_log($operator);
+        trace_log($value);
+        trace_log("result : ".$this->compareValue($fieldValue, $operator, $value));
         
+
+        return $this->compareValue($fieldValue, $operator, $value);
+        
+    }
+
+    public function compareValue($fieldValue, $operator, $valueSearched) {
+        switch ($operator) {
+            case 'where' :
+                return $fieldValue == $valueSearched;
+            case 'whereNot' :
+                return $fieldValue != $valueSearched;
+            case 'wherein' :
+                return in_array($fieldValue, [$valueSearched]);
+            case 'whereNotIn' :
+                return !in_array($fieldValue, [$valueSearched]);
+        }
     }
 }

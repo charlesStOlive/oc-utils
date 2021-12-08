@@ -9,6 +9,7 @@ fields:
         options:
             self: Sur le modèle
             parent: Sur une relation parente
+            childs: Existance d'une relation enfants
     relation:
         label: Relation
         comment: Utiliser des points pour des multiples relations
@@ -18,11 +19,12 @@ fields:
             field: mode
     field:
         label: Nom du champs ou attribut
-    operator:
-        label: Opérateur
-        type: dropdown
-        options: listOperators
-    value:
-        label: Valeur
-        comment: Si vous cherchez sur plusieurs valeurs separés les pat une , sans espaces. 
+        trigger:
+            action: hide
+            condition: value[childs]
+            field: mode
+    exist:
+        label: La valeur doit exister
+        type: checkbox
+        default: 1
 

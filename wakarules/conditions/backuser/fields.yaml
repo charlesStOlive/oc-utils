@@ -6,6 +6,7 @@ fields:
     mode:
         label: Mode
         type: dropdown
+        placeholder: --Choisissez une valeur--
         options:
             permissions: Permissions
             roleCode: Code du rôle
