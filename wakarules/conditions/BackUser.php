@@ -39,7 +39,7 @@ class BackUser extends RuleConditionBase
      */
 
     public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
-        trace_log("check user");
+       //trace_log("check user");
         if(\App::runningInConsole()) {
             return true;
         }

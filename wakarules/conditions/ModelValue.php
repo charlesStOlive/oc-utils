@@ -40,7 +40,7 @@ class ModelValue extends RuleConditionBase
      */
 
     public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
-        trace_log('check model value');
+       //trace_log('check model value');
         $mode = $this->getConfig('mode');
         
         $relation = $this->getConfig('relation');
@@ -54,10 +54,10 @@ class ModelValue extends RuleConditionBase
 
         $fieldValue = $model->{$field};
 
-        trace_log($fieldValue);
-        trace_log($operator);
-        trace_log($value);
-        trace_log("result : ".$this->compareValue($fieldValue, $operator, $value));
+       //trace_log($fieldValue);
+       //trace_log($operator);
+       //trace_log($value);
+       //trace_log("result : ".$this->compareValue($fieldValue, $operator, $value));
         
 
         return $this->compareValue($fieldValue, $operator, $value);
