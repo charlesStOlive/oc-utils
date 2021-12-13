@@ -43,11 +43,18 @@ class Content extends AskBase
      */
 
     public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
+        $modelSrcClassNameForLog = get_class($modelSrc);
+        $modelSrcIdForLog = $modelSrc->id;
+
         $relation = $this->getConfig('relation');
         $contentCode = $this->getConfig('contentCode');
         $isRecursif = $this->getConfig('is_recursif');
         if($relation) {
             $modelSrc =  $this->getStringModelRelation($modelSrc, $relation);
+        }
+        if(!$modelSrc) {
+            \Log::error("Erreur dans resolve content sur src ".$modelSrcClassNameForLog ." et ID : ".$modelSrcIdForLog);
+            return null;
         }
         if($modelSrc->methodExists('getContent') && !$isRecursif) {
             return $modelSrc->getContent($contentCode);
