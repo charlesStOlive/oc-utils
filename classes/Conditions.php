@@ -4,16 +4,19 @@ class Conditions
 {
     public $conditions;
     public $target;
-    public $mode;
+    public $productoreName;
     public $checked;
     public $checkedOk;
-    private $logs = [];
+    private $logs;
+
 
     public function __construct($productor, $model = null)
     {
         $this->conditions = $productor->rule_conditions;
+        $this->productoreName = $productor->name ?? "Producteur Inconnu";
         $this->model = $model;
         $this->mode = $productor->is_scope;
+        $this->logs = [];
     }
     public function checkConditions()
     {
@@ -35,8 +38,8 @@ class Conditions
                 $this->checkedOk++;
                 //trace_log('ok');
             } else {
-                //trace_log('pas ok');
-                $this->setLogs($this->model->id, 'error');
+                //trace_log('pas ok : '.$this->productoreName);
+                $this->setLogs($this->productoreName, $condition->getError());
             }
             
             $this->checked++;
@@ -54,15 +57,14 @@ class Conditions
         
     }
     public function getLogs() {
+        return $this->logs;
 
     }
-    public function setLogs($id, $reason) {
+    public function setLogs($id, $error) {
         array_push($this->logs, [
             'id' => $id,
-            'reason' => $reason,
+            'error' => $error,
         ]);
-
-        
     }
     
 }

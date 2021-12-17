@@ -13,6 +13,7 @@ use Waka\Utils\Interfaces\Rule as RuleInterface;
  */
 class RuleConditionBase extends RuleBase implements RuleInterface
 {
+    private $error;
     
     /**
      * Returns information about this rule, including name and description.
@@ -40,6 +41,14 @@ class RuleConditionBase extends RuleBase implements RuleInterface
         return $this->host->conditioneable;
     }
 
+    public function setError($error = null) {
+        $errorName = $error ? $error : $this->getText()." non compatible";
+        $this->error = $errorName;
+    }
+
+    public function getError() {
+        return $this->error ? $this->error : 'Erreur condition non spécifié';
+    }
     public function listOperators() {
         return [
             'where' => "Est égale à ",

@@ -1,0 +1,21 @@
+<?php if ($errors) : ?>
+<a
+    href="javascript:;"
+    data-control="popover"
+    data-content-from="#myPopoverContent">
+    Modèles bloqués par conditions
+</a>
+<script type="text/template" id="myPopoverContent">
+    <div class="popover-head">
+        <h3>Fichiers</h3>
+        <button type="button" class="close" data-dismiss="popover">&times;</button>
+    </div>
+    <div class="popover-body">
+        <ul>
+            <?php foreach($errors as $error) : ?>
+            <li><?=$error['id']?> : <?=$error['error']?></li>
+            <?php endforeach ?>
+        </ul>
+    </div>
+</script>
+<?php endif ?>

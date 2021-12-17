@@ -46,6 +46,7 @@ class {{studly_ctname}} extends Controller
         'Backend.Behaviors.ReorderController',
 {% endif %}
 {% if configs.behav_cloudis %}
+        'Waka.Cloudis.Behaviors.MontageBehavior',
 {% endif %}
 {% if configs.behav_workflow %}
         'Waka.Utils.Behaviors.WorkflowBehavior',

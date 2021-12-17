@@ -111,7 +111,7 @@ class DataSource extends Extendable
     public function getProductorOptions($productorModel, $modelId = null)
     {
        //trace_log('getProductorOptions');
-        $productors = $productorModel::where('data_source', $this->code);
+        $productors = $productorModel::where('data_source', $this->code)->active();
         if($modelId) {
             $this->instanciateModel($modelId);
         }
@@ -120,12 +120,14 @@ class DataSource extends Extendable
         $optionsList = [];
 
         foreach ($productors->get() as $productor) {
-            $condtions = new \Waka\Utils\Classes\Conditions($productor, $this->model);
+            $conditions = new \Waka\Utils\Classes\Conditions($productor, $this->model);
             //trace_log($productor->name);
 
-            if ($condtions->hasConditions()) {
-                if ($condtions->checkConditions()) {
+            if ($conditions->hasConditions()) {
+                if ($conditions->checkConditions()) {
                     $optionsList[$productor->id] = $productor->name;
+                } else {
+                    \Event::fire('waka.utils::conditions.error', $conditions->getLogs());
                 }
             } else {
                 $optionsList[$productor->id] = $productor->name;

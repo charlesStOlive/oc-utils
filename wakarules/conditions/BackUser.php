@@ -25,8 +25,8 @@ class BackUser extends RuleConditionBase
     {
         //trace_log('getText HTMLASK---');
         $hostObj = $this->host;
-        //trace_log($hostObj->config_data);
-        $text = $hostObj->config_data['txt'] ?? null;
+        $mode = $this->getConfig('mode');
+        $text = "Verification user en mode : ".$this->getConfig('mode');
         if($text) {
             return $text;
         }
@@ -38,7 +38,7 @@ class BackUser extends RuleConditionBase
      * IS true
      */
 
-    public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
+    private function check($modelSrc, $context = 'twig', $dataForTwig = []) {
        //trace_log("check user");
         if(\App::runningInConsole()) {
             return true;
@@ -56,6 +56,16 @@ class BackUser extends RuleConditionBase
         }
         //return true;
     }
+
+    public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
+        $ok = $this->check($modelSrc, $context, $dataForTwig);
+        if(!$ok) {
+            $this->setError();
+        }
+        return $ok;
+
+    }
+    
 
     public function comparePermissions($user, $operator, $value) {
         switch ($operator) {

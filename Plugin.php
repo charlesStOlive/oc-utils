@@ -174,6 +174,7 @@ class Plugin extends PluginBase
             'conditions' => [
                 ['\Waka\Utils\WakaRules\Conditions\BackUser'], 
                 ['\Waka\Utils\WakaRules\Conditions\ModelValue'], 
+                ['\Waka\Utils\WakaRules\Conditions\ModelExist'], 
             ],
             'contents' => [
                 ['\Waka\Utils\WakaRules\Contents\Html'], 

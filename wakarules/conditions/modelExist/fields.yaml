@@ -23,8 +23,4 @@ fields:
             action: hide
             condition: value[childs]
             field: mode
-    exist:
-        label: La valeur doit exister
-        type: checkbox
-        default: 1
 

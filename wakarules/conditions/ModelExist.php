@@ -26,8 +26,12 @@ class ModelExist extends RuleConditionBase
     {
         //trace_log('getText HTMLASK---');
         $hostObj = $this->host;
+        $field = $this->getConfig('field');
+        $relation = $this->getConfig('relation');
+        $mode = $this->getConfig('mode');
+        $field = $field ? $field : '*';
         //trace_log($hostObj->config_data);
-        $text = $hostObj->config_data['txt'] ?? null;
+        $text = "Verification existance valeur : R=".$relation.' | M='.$mode.' | F='.$field;
         if($text) {
             return $text;
         }
@@ -39,26 +43,33 @@ class ModelExist extends RuleConditionBase
      * IS true
      */
 
-    public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
+    private function check($modelSrc, $context = 'twig', $dataForTwig = []) {
         //trace_log('check model value');
         $field = $this->getConfig('field');
         $relation = $this->getConfig('relation');
         $mode = $this->getConfig('mode');
         $model = $modelSrc;
-        if($mode == 'parent') {
-            $model = $this->getStringModelRelation($model, $relation);
-        } elseif($mode == 'childs') {
+
+
+        if($mode == 'childs') {
             return $this->getStringRequestRelation($model, $relation)->count();
-        } 
-        //trace_log($mode);
-        //trace_log($relation);
-        //trace_log($field);
-        //trace_log($model);
-        if($model['iland_3d'] ?? false) {
-            return true;
+        } elseif($mode == 'parent') {
+            $model = $this->getStringModelRelation($model, $relation);
+        }  
+        if(!$field) {
+            return $model ? true : false;
         } else {
-            return false;
+            $check =  $model[$field] ?? false;
+            return $check ? true : false;
         }
         
+    }
+
+    public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
+        $ok = $this->check($modelSrc, $context, $dataForTwig);
+        if(!$ok) {
+            $this->setError();
+        }
+        return $ok;
     }
 }

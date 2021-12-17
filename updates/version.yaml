@@ -29,3 +29,6 @@
 1.2.40:
     - "Changement du champs config en champs JSON et sortie du champs code"
     - update_rules_tables_u120.php
+1.3.0:
+    - "Ajout des tempfile"
+    - create_temp_files_table.php

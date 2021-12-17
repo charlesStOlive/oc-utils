@@ -80,7 +80,7 @@ return [
         "btn_add_row" => "Ajouter une ligne",
         "btn_delete_row" => "Supprimer une ligne",
         "no_productor" => "Aucun modèle disponible",
-        "no_productor_com" => "Soit aucun modèle n'est configuré pour ce levier soit des restrictions bloquent le modèles.",
+        "no_productor_com" => "Aucun modèle actif trouvé. Verifiez dans les réglaes ou demandez à votre administrateur",
 
     ],
     'rules' => [

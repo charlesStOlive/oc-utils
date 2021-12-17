@@ -26,8 +26,12 @@ class ModelValue extends RuleConditionBase
     {
         //trace_log('getText HTMLASK---');
         $hostObj = $this->host;
+        $field = $this->getConfig('field');
+        $operator = $this->getConfig('operator');
+        $value = $this->getConfig('value');
+        $relation = $this->getConfig('relation');
         //trace_log($hostObj->config_data);
-        $text = $hostObj->config_data['txt'] ?? null;
+        $text = "Verification existance valeur : R=".$relation.' | F='.$field.' | O='.$operator.' | V='.$value;
         if($text) {
             return $text;
         }
@@ -39,7 +43,7 @@ class ModelValue extends RuleConditionBase
      * IS true
      */
 
-    public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
+    private function check($modelSrc, $context = 'twig', $dataForTwig = []) {
        //trace_log('check model value');
         $mode = $this->getConfig('mode');
         
@@ -62,6 +66,14 @@ class ModelValue extends RuleConditionBase
 
         return $this->compareValue($fieldValue, $operator, $value);
         
+    }
+
+    public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
+        $ok = $this->check($modelSrc, $context, $dataForTwig);
+        if(!$ok) {
+            $this->setError();
+        }
+        return $ok;
     }
 
     public function compareValue($fieldValue, $operator, $valueSearched) {
