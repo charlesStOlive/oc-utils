@@ -1,5 +1,5 @@
 <?= e(trans($field['label'])) ?>
-<div class="small p-l">
+<p class="small p-l">
     <?php if(count($field['value'])) :  ?>
     <?php foreach($field['value'] as $row) :  ?>
     <?= $row ?><?php if(next( $field['value'])) { ?> <br> <?php } ?>
@@ -7,4 +7,4 @@
     <?php else :  ?>
     <i style="color: gray;">Aucun</i>
     <?php endif  ?>
-</div>
+</p>

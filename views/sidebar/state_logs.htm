@@ -1,0 +1,8 @@
+<ul>
+    {% for log in data.value %}
+        <li class="">
+            -{{log.label}}<br>
+            <p class="small"> Date : {{log.created_at}} | {{log.user}} </p>
+        </li>
+    {% endfor %}
+</ul>

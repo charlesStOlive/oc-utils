@@ -7,11 +7,11 @@
             data-handler="onLoadSideBarUpdateForm">
     </button>
     <?php endif ?>
-    <ul>
+    <ul style="line-height:1.4em">
         <?php foreach($parsedFields as $field) {  ?>
-        <li class="<?=$field['cssInfoClass']?>">
-            <?=$this->makePartial('infotype/'.$field['infoType'],['field'=>$field])?>
-        </li>
+            <li class="<?=$field['cssInfoClass']?>">
+                <?=$field['contenu']?>
+            </li>
         <?php } ?>
     </ul>
 </div>

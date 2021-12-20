@@ -109,14 +109,15 @@ class ModelInfo extends FormWidgetBase
                 }
             }
             $type = $field['infoType'] ?? 'label';
-            $icon = $field['icon'] ?? null;
-
+            
             $label = $field['label'] ?? null;
+            $icon = $field['icon'] ?? null;
+            //
             $labelFrom = $field['labelFrom'] ?? null;
             if ($labelFrom) {
                 $label = $dotedValues[$labelFrom] ?? "inconnu";
             }
-
+            //
             $value = null;
             $fieldValue = $field['value'] ?? $key;
             if ($fieldValue) {
@@ -182,8 +183,8 @@ class ModelInfo extends FormWidgetBase
                         array_push($value, $obj);
                     }
                 }
-            }
-           
+            }            
+            // Gestion du type array;
             if ($type == 'array') {
                 $value = [];
                 $fieldValues = $field['values'] ?? null;
@@ -209,21 +210,65 @@ class ModelInfo extends FormWidgetBase
                     }
                 }
             }
-
-            $field = [
-                'infoType' => $type,
+            $data = [
                 'icon' => $icon,
                 'label' => lang::get($label),
                 'value' => $value,
                 'cssInfoClass' => $cssInfoClass,
                 'link' => $link,
             ];
-            //trace_log($field);
 
-            array_push($parsedFields, $field);
+            $view = $this->findView($type);
+            
+            $viewLi = [
+                'contenu' => \View::make($view)->withData($data),
+                'cssInfoClass' => $cssInfoClass,
+            ];
+
+            array_push($parsedFields, $viewLi);
         }
         //trace_log($parsedFields);
         return $parsedFields;
+    }
+
+    public function findView($infoType) {
+        switch ($infoType) {
+            case 'array':
+                return "waka.utils::sidebar.array";
+                break;
+            case 'date':
+                return "waka.utils::sidebar.label";
+                break;
+            case 'euro':
+                return "waka.utils::sidebar.euro";
+                break;
+            case 'label_br_value':
+                return "waka.utils::sidebar.label_br";
+                break;
+            case 'label':
+                return "waka.utils::sidebar.label";
+                break;
+            case 'link':
+                return "waka.utils::sidebar.link";
+                break;
+            case 'section':
+                return "waka.utils::sidebar.section";
+                break;
+            case 'state_logs':
+                return "waka.utils::sidebar.state_logs";
+                break;
+            case 'switch':
+                return "waka.utils::sidebar.switch";
+                break;
+            case 'title':
+                return "waka.utils::sidebar.title";
+                break;
+            case 'workflow':
+                return "waka.utils::sidebar.workflow";
+                break;
+            default:
+                return $infoType;
+        }
     }
 
     /**
