@@ -105,7 +105,9 @@ class Plugin extends PluginBase
                 'stubCreator' => function ($template, $allData, $secificData, $dataName = null) {
                     $allData['specific'] = $secificData;
                     $allData['dataName'] = $dataName;
+                    //trace_log('stubCreator');
                     //trace_log($allData['specific']);
+                    //trace_log($allData['dataName']);
                     $templatePath = plugins_path('waka/utils/console/'.$template);
                     $templateContent = \File::get($templatePath);
                     $content = \Twig::parse($templateContent, $allData);

@@ -84,6 +84,9 @@
 {% if specific.field_config  %}
 {{specific.field_config | raw | ident(1)}} 
 {% endif %}
+{% if specific.sb_config and dataName == 'field_side_bar'  %}
+{{specific.sb_config | raw | ident(1)}} 
+{% endif %}
 {% if specific.lists  %}
     options: {{specific.lists}}
 {% endif %}

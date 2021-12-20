@@ -119,10 +119,16 @@ class ModelInfo extends FormWidgetBase
             }
             //
             $value = null;
-            $fieldValue = $field['value'] ?? $key;
-            if ($fieldValue) {
-                $value = $dotedValues[$fieldValue] ?? "inconnu";
+            if($modelValue = $field['modelValue'] ?? false) {
+                //Si il y a une valeur modèle valeur on va chercher la valeur dans le modèle et non dans le dotedArray
+                $value = $this->ds->getModel()->{$modelValue};
+            } else {
+                $fieldValue = $field['value'] ?? $key;
+                if ($fieldValue) {
+                    $value = $dotedValues[$fieldValue] ?? "inconnu";
+                }
             }
+            
 
             //trace_log($key .' : '.$value);
 
@@ -184,32 +190,6 @@ class ModelInfo extends FormWidgetBase
                     }
                 }
             }            
-            // Gestion du type array;
-            if ($type == 'array') {
-                $value = [];
-                $fieldValues = $field['values'] ?? null;
-                $options = $field['options'] ?? null;
-                if($options) {
-                    $this->ds->model->{$options};
-                    $options = $this->ds->model->{$options}();
-                }
-                //Array on enregistre la valeur dans values
-                $rows = [];
-                if($fieldValues) {
-                    $rows = $modelvalues[$fieldValues] ?? [];
-                }
-                if (count($rows)) {
-                    foreach ($rows as $key=>$row) {
-                        if($options) {
-                            //trace_log($options);
-                            //trace_log($row);
-                            array_push($value, $options[$row] ?? '');
-                        } else {
-                            array_push($value, $row); 
-                        }
-                    }
-                }
-            }
             $data = [
                 'icon' => $icon,
                 'label' => lang::get($label),
@@ -217,8 +197,10 @@ class ModelInfo extends FormWidgetBase
                 'cssInfoClass' => $cssInfoClass,
                 'link' => $link,
             ];
+            //trace_log($data);
 
             $view = $this->findView($type);
+            //trace_log($view);
             
             $viewLi = [
                 'contenu' => \View::make($view)->withData($data),
@@ -247,6 +229,9 @@ class ModelInfo extends FormWidgetBase
                 break;
             case 'label':
                 return "waka.utils::sidebar.label";
+                break;
+            case 'switch':
+                return "waka.utils::sidebar.switch";
                 break;
             case 'link':
                 return "waka.utils::sidebar.link";
