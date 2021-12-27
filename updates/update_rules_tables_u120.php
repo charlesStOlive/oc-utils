@@ -64,16 +64,16 @@ class CreateStateteablesTableU120 extends Migration
             $table->dropColumn('code');
         });
         Schema::table('waka_utils_rule_fncs', function (Blueprint $table) {
-            $table->dropColumn('sort_order');
+            $table->dropColumn('code');
         });
         Schema::table('waka_utils_rule_asks', function (Blueprint $table) {
-            $table->dropColumn('sort_order');
+            $table->dropColumn('code');
         });
         Schema::table('waka_utils_rules_filters', function (Blueprint $table) {
-            $table->dropColumn('sort_order');
+            $table->dropColumn('code');
         });
         Schema::table('waka_utils_rules_conditions', function (Blueprint $table) {
-            $table->dropColumn('sort_order');
+            $table->dropColumn('code');
         });
     }
 }
