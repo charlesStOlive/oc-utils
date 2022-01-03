@@ -4,8 +4,8 @@ use Config;
 use Illuminate\Console\Command;
 use Winter\Storm\Support\Collection;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Process\Process;
 use Twig;
+use Symfony\Component\Process\Process;
 use Waka\Utils\Classes\GraphvizDumper;
 use Workflow;
 // use Symfony\Component\Console\Input\InputArgument;
@@ -139,26 +139,38 @@ class WorkflowOnlineDump extends WorkflowCreate
 
         $dumper = new GraphvizDumper();
 
-        //Création de l'image en 16/
-        $dotCommand = $this->createDotCommand($workflowSlug, 'tb', $format);
+        $dotCommand = $this->createDotCommand($workflowName, 'tb', 'jpeg');
+        trace_log($dotCommand);
         $tdOptions = ["graph" => ['rankdir' => 'TB']];
         $process = new Process($dotCommand);
         $process->setInput($dumper->dump($definition, null, $tdOptions));
+        trace_log($dumper->dump($definition, null, $tdOptions));
         $process->mustRun();
 
-        $dotCommand = $this->createDotCommand($workflowSlug, 'lr', $format);
-        $lrOptions = ["graph" => ['rankdir' => 'LR']];
-        $process = new Process($dotCommand);
-        $process->setInput($dumper->dump($definition, null, $lrOptions));
-        $process->mustRun();
+        // //Création de l'image en 16/
+        // $dotCommand = $this->createDotCommand($workflowSlug, 'tb', $format);
+        // $tdOptions = ["graph" => ['rankdir' => 'TB']];
+        // $process = new Process($dotCommand);
+        // trace_log($dotCommand);
+        // $process->setInput($dumper->dump($definition, null, $tdOptions));
+        // $process->mustRun();
+
+        // trace_log("ok");
+
+        // $dotCommand = $this->createDotCommand($workflowSlug, 'lr', $format);
+        // $lrOptions = ["graph" => ['rankdir' => 'LR']];
+        // $process = new Process($dotCommand);
+        // $process->setInput($dumper->dump($definition, null, $lrOptions));
+        // $process->mustRun();
 
         $srcModel->description = $this->workflowData['workflow/description.stub'];
         $srcModel->workflow = html_entity_decode($this->workflowData['workflow/workflow.stub'], ENT_QUOTES);
         $srcModel->places = html_entity_decode($this->workflowData['workflow/places.stub'], ENT_QUOTES);
         $srcModel->transitions = html_entity_decode($this->workflowData['workflow/transitions.stub'], ENT_QUOTES);
         $srcModel->infos = html_entity_decode($this->workflowData['workflow/infos.stub'], ENT_QUOTES);
-        $this->tryCopyImage($srcModel, 'tb', $format, 2);
-        $this->tryCopyImage($srcModel, 'lr', $format, 2);
+        $srcModel->save();
+        // $this->tryCopyImage($srcModel, 'tb', $format, 2);
+        // $this->tryCopyImage($srcModel, 'lr', $format, 2);
     }
 
     public function createDotCommand($workflowSlug, $type, $format)

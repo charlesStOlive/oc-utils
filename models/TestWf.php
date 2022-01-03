@@ -14,4 +14,6 @@ class TestWf extends Model
     ];
     public $purgeable = [
     ];
+    public $attributesToDs = [
+    ];
 }
