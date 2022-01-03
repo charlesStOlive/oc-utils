@@ -208,7 +208,7 @@ class GraphvizDumper implements DumperInterface
         $automatisations = $this->createRow($automatisations);
         $placeName = $this->escape($placeName);
         $placeName = str_replace('|', '<BR/>', $placeName);
-        $text = sprintf('<<table border="0" style="width:100px" cellborder="0"><tr><td><b>%s</b></td></tr>%s</table>>', $placeName, $automatisations);
+        $text = sprintf('<<table border="0"  cellborder="0"><tr><td><b>%s</b></td></tr>%s</table>>', $placeName, $automatisations);
         return $text;
     }
 

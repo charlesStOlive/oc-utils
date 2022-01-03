@@ -150,7 +150,7 @@ class Plugin extends PluginBase
         $this->registerConsoleCommand('waka.uicolors', 'Waka\Utils\Console\CreateUiColors');
         $this->registerConsoleCommand('waka.workflow', 'Waka\Utils\Console\WorkflowCreate');
         $this->registerConsoleCommand('waka.workflowDump', 'Waka\Utils\Console\WorkflowDump');
-        //$this->registerConsoleCommand('waka:workflowODump', 'Waka\Utils\Console\WorkflowOnlineDump');
+        $this->registerConsoleCommand('waka:workflowODump', 'Waka\Utils\Console\WorkflowOnlineDump');
         $this->registerConsoleCommand('waka:trad', 'Waka\Utils\Console\PluginTrad');
         $this->registerConsoleCommand('waka:excelTrad', 'Waka\Utils\Console\ExcelTrad');
         $this->registerConsoleCommand('waka:createSeed', 'Waka\Utils\Console\CreateSeedsFiles');
