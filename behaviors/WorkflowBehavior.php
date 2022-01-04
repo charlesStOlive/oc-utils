@@ -23,6 +23,8 @@ class WorkflowBehavior extends ControllerBehavior
      */
     protected $requiredConfig = ['places'];
 
+    public $popupAfterSave;
+
     /**
      * @inheritDoc
      */
@@ -40,6 +42,14 @@ class WorkflowBehavior extends ControllerBehavior
         $this->workflowWidget->model = $controller->formGetModel();
         $this->workflowWidget->config = $this->config = $this->makeConfig($controller->workflowConfig, $this->requiredConfig);
         $this->workflowWidget->bindToController();
+
+        \Event::listen('waka.workflow.popup_afterSave', function($data) {
+            \Session::put('popup_afterSave', $data);
+        });
+        $wfPopupAfterSave = \Session::get('popup_afterSave');
+        if($wfPopupAfterSave) {
+            $this->addJs('/plugins/waka/utils/assets/js/popup_after.js');
+        }
     }
 
     public function listInjectRowClass($record, $value)
@@ -57,9 +67,7 @@ class WorkflowBehavior extends ControllerBehavior
             foreach($fieldsToHide as $field) {
                 $form->removeField($field);
             }
-            
         }
-        
     }
     
 

@@ -232,6 +232,13 @@ trait WakaWorkflowTrait
         }
     }
 
+    public function getWfTransitionRedirection($label_transition = null)
+    {
+        $transition = self::getWfTransition($label_transition, $this);
+        $redirection  = $this->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['redirect'] ?? null;
+        return $redirection; // string place name
+    }
+
     // public static function getManualTransitionobject($changeState, $model)
     // {
     //     $transitions = $model->workflow_get()->getDefinition()->getTransitions();
@@ -341,15 +348,21 @@ trait WakaWorkflowTrait
         return Lang::get($label);
     }
 
-    public function getWfMustTransAttribute()
+    
+
+    public function getWfMustTransAttribute($place = null)
     {
-        $place = $this->state;
+        if(!$place) {
+            $place = $this->state;
+        }
         return $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['must_trans'] ?? false; // string place name
     }
 
-    public function getWfHiddenFields()
+    public function getWfHiddenFields($place = null)
     {
-        $place = $this->state;
+        if(!$place) {
+            $place = $this->state;
+        }
         return $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['hidden_fields'] ?? []; // string place name
     }
     //

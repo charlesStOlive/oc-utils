@@ -153,7 +153,7 @@ class WorkflowOnlineDump extends WorkflowCreate
         $process->setInput($dumper->dump($definition, null, $tdOptions));
         $process->mustRun();
 
-        trace_log("ok");
+        //trace_log("ok");
 
         $dotCommand = $this->createDotCommand($workflowSlug, 'lr', $format);
         $lrOptions = ["graph" => ['rankdir' => 'LR']];
@@ -166,7 +166,7 @@ class WorkflowOnlineDump extends WorkflowCreate
         $srcModel->places = html_entity_decode($this->workflowData['workflow/places.stub'], ENT_QUOTES);
         $srcModel->transitions = html_entity_decode($this->workflowData['workflow/transitions.stub'], ENT_QUOTES);
         $srcModel->infos = html_entity_decode($this->workflowData['workflow/infos.stub'], ENT_QUOTES);
-        trace_log(get_class($srcModel));
+        //trace_log(get_class($srcModel));
         $srcModel->save();
         $this->tryCopyImage($srcModel, 'tb', $format, 2);
         $this->tryCopyImage($srcModel, 'lr', $format, 2);

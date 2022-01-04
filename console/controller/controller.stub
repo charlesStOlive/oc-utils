@@ -105,7 +105,8 @@ class {{studly_ctname}} extends Controller
     public $requiredPermissions = ['{{configs.controller_permission}}'];
 {% endif %}
     //FIN DE LA CONFIG AUTO
-
+    //startKeep/
+    
     public function __construct()
     {
         parent::__construct();
@@ -121,7 +122,7 @@ class {{studly_ctname}} extends Controller
 {% endif %}
     }
 
-    //startKeep/
+    
 
 {% if configs.side_bar_attributes or  configs.side_bar_info or  configs.declare_update  %}
     public function update($id)
