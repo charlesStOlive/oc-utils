@@ -279,7 +279,7 @@ class AskBase extends ExtensionBase implements AskInterface
      * Spins over types registered in plugin base class with `registerAskRules`.
      * @return array
      */
-    public static function findAsks($targetClass = null)
+    public static function findAsks($targetProductor = null)
     {
         $results = [];
         $bundles = PluginManager::instance()->getRegistrationMethodValues('registerWakaRules');
@@ -288,13 +288,13 @@ class AskBase extends ExtensionBase implements AskInterface
             foreach ((array) array_get($bundle, 'asks', []) as $conditionClass) {
                 //trace_log($conditionClass[0]);
                 $class = $conditionClass[0];
-                $classType = $conditionClass['only'] ?? [];
+                $onlyProductors = $conditionClass['onlyProductors'] ?? [];
+
                 if (!class_exists($class)) {
                     \Log::error($conditionClass[0]. " n'existe pas dans le register asks du ".$plugin);
                     continue;
                 }
-                if (!in_array($targetClass, $classType) && $classType != [] && $targetClass != null) {
-                    //trace_log('merde');
+                if (!in_array($targetProductor, $onlyProductors) && $onlyProductors != [] && $targetProductor != null) {
                     continue;
                 }
                 $obj = new $class;

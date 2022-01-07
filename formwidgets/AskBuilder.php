@@ -36,7 +36,7 @@ class AskBuilder extends FormWidgetBase
 
     protected $type = 'asks';
 
-    protected $targetClass = null;
+    protected $targetProductor = null;
 
     protected $full_access = 'noBody';
 
@@ -50,7 +50,7 @@ class AskBuilder extends FormWidgetBase
     public function init()
     {
         $this->fillFromConfig([
-            'targetClass',
+            'targetProductor',
             'full_access',
             'autoSave',
         ]);
@@ -141,7 +141,7 @@ class AskBuilder extends FormWidgetBase
     public function onLoadCreateAskForm()
     {
         try {
-            $asks = AskBase::findAsks($this->targetClass);
+            $asks = AskBase::findAsks($this->targetProductor);
             $this->vars['asks'] = $asks;
         }
         catch (Exception $ex) {
