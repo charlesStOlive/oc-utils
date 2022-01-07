@@ -28,6 +28,12 @@ trait ScopePeriodes
             $end_at = $date;
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
+        if ($periode == 'd_365_n1') {
+            $date = Carbon::now()->subYear();
+            $start_at = $date->copy()->subDays(365);
+            $end_at = $date;
+            return $request->whereBetween($column, [$start_at, $end_at]);
+        }
         if ($periode == 'm_6') {
             $date = Carbon::now();
             $start_at = $date->copy()->subMonths(6);

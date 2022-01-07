@@ -40,6 +40,11 @@ class Seed{{ seedClassName }} extends Seeder
         $inject_{{numKey}}->rule_fncs()->create({{fnc.data_to_string |raw}});
 {% endif %}
 {% endfor %}
+{% for cond in  data.rules.rule_conditions %}
+{% if cond.data_to_string %}
+        $inject_{{numKey}}->rule_conditions()->create({{cond.data_to_string |raw}});
+{% endif %}
+{% endfor %}
         $inject_{{numKey}}->save();
 
 {% endfor %} 

@@ -168,6 +168,8 @@ class CreateSeedsFiles extends GeneratorCommand
                         unset($rowRule['fnceable_type']);
                         unset($rowRule['askeable_id']);
                         unset($rowRule['askeable_type']);
+                        unset($rowRule['conditioneable_id']);
+                        unset($rowRule['conditioneable_type']);
                         $inject['rules'][$rule][$keyRow] = $rowRule;
                         $inject['rules'][$rule][$keyRow]['data_to_string'] = VarExporter::export($rowRule,VarExporter::NO_CLOSURES,3);
                     }
@@ -315,6 +317,9 @@ class CreateSeedsFiles extends GeneratorCommand
                 'options' => [
                     'datasource' => true,
                     'prod' => true,
+                    'with' => [
+                        'rule_conditions',
+                    ]
                 ]
             ],
             'waka_worder_document' => [
@@ -328,6 +333,7 @@ class CreateSeedsFiles extends GeneratorCommand
                     'with' => [
                         'rule_asks',
                         'rule_fncs',
+                        'rule_conditions',
                     ]
                 ]
             ],
@@ -339,6 +345,7 @@ class CreateSeedsFiles extends GeneratorCommand
                     'with' => [
                         'rule_asks',
                         'rule_fncs',
+                        'rule_conditions',
                     ]
                 ]
             ],
@@ -362,6 +369,7 @@ class CreateSeedsFiles extends GeneratorCommand
                     'with' => [
                         'rule_asks',
                         'rule_fncs',
+                        'rule_conditions',
                     ]
                 ]
             ],

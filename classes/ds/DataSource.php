@@ -156,19 +156,19 @@ class DataSource extends Extendable
             $productors = $productors->where('relation', '=', null);
         }
 
-        $optionsList = [];
+        // $optionsList = [];
 
-        foreach ($productors as $productor) {
-            $condtions = new \Waka\Utils\Classes\Conditions($productor, $this->model);
-            if ($condtions->hasConditions()) {
-                if ($condtions->checkConditions()) {
-                    $optionsList[$productor->id] = $productor->name;
-                }
-            } else {
-                $optionsList[$productor->id] = $productor->name;
-            }
-        }
-        return $optionsList;
+        // foreach ($productors as $productor) {
+        //     $condtions = new \Waka\Utils\Classes\Conditions($productor, $this->model);
+        //     if ($condtions->hasConditions()) {
+        //         if ($condtions->checkConditions()) {
+        //             $optionsList[$productor->id] = $productor->name;
+        //         }
+        //     } else {
+        //         $optionsList[$productor->id] = $productor->name;
+        //     }
+        // }
+        return $productors->lists('name', 'id');
     }
 
     /**NETOYAGE ? */
