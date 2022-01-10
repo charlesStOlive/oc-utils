@@ -16,47 +16,47 @@ trait ScopePeriodes
         if ($periode == 'all') {
             return $request;
         }
-        if ($periode == 'd_30') {
+        if ($periode == 'd-30_to_now') {
             $date = Carbon::now();
             $start_at = $date->copy()->subDays(30);
             $end_at = $date;
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
-        if ($periode == 'd_365') {
+        if ($periode == 'd-365_to_now') {
             $date = Carbon::now();
             $start_at = $date->copy()->subDays(365);
             $end_at = $date;
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
-        if ($periode == 'd_365_n1') {
+        if ($periode == 'd-365&y-1_to_now&y-1') {
             $date = Carbon::now()->subYear();
             $start_at = $date->copy()->subDays(365);
             $end_at = $date;
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
-        if ($periode == 'm_6') {
+        if ($periode == 'm-6_to_now') {
             $date = Carbon::now();
             $start_at = $date->copy()->subMonths(6);
             $end_at = $date;
-            //trace_log( $start_at);
-            //trace_log($end_at);
+            trace_log( $start_at->format('d/m/Y'));
+            trace_log($end_at->format('d/m/Y'));
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
-        if ($periode == 'm_6_n_1') {
+        if ($periode == 'm-6&y-1_to_now&y-1') {
             $date = Carbon::now()->subYear();
-            $start_at = $date->copy()->subYear()->subMonths(6);
+            $start_at = $date->copy()->subMonths(6);
             $end_at = $date;
-            //trace_log( $start_at);
-            //trace_log($end_at);
+            trace_log( $start_at->format('d/m/Y'));
+            trace_log($end_at->format('d/m/Y'));
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
-        if ($periode == 'y_to_d') {
+        if ($periode == 'y_to_now') {
             $date = Carbon::now();
             $start_at = $date->copy()->startOfYear();
             $end_at = $date;
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
-        if ($periode == 'y_1_to_d') {
+        if ($periode == 'y-1_to_now&y-1') {
             $date = Carbon::now()->subYear();
             $start_at = $date->copy()->startOfYear();
             $end_at = $date;
@@ -65,29 +65,29 @@ trait ScopePeriodes
         if ($periode == 'y') {
             return $request->whereYear($column, $year);
         }
-        if ($periode == 'y_1') {
+        if ($periode == 'y-1') {
             $year = Carbon::now()->subYear()->year;
             return $request->whereYear($column, $year);
         }
-        if ($periode == 't') {
+        if ($periode == 'q') {
             $date = Carbon::now();
             $start_at = $date->copy()->startOfQuarter();
             $end_at = $date->copy()->endOfQuarter();
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
-        if ($periode == 't_1') {
+        if ($periode == 'q-1') {
             $date = Carbon::now()->subQuarter();
             $start_at = $date->copy()->startOfQuarter();
             $end_at = $date->copy()->endOfQuarter();
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
-        if ($periode == 't_n_1') {
+        if ($periode == 'q&y-1') {
             $date = Carbon::now()->subYear();
             $start_at = $date->copy()->startOfQuarter();
             $end_at = $date->copy()->endOfQuarter();
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
-        if ($periode == 't_1_n_1') {
+        if ($periode == 'q-1&y-1') {
             $date = Carbon::now()->subQuarter()->subYear();
             $start_at = $date->copy()->startOfQuarter();
             $end_at = $date->copy()->endOfQuarter();
@@ -99,24 +99,26 @@ trait ScopePeriodes
             $end_at = $date->copy()->endOfMonth();
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
-        if ($periode == 'm_1') {
+        if ($periode == 'm-1') {
             $date = Carbon::now()->subMonth();
             $start_at = $date->copy()->startOfMonth();
             $end_at = $date->copy()->endOfMonth();
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
-        if ($periode == 'm_n_1') {
+        if ($periode == 'm&y-1') {
             $date = Carbon::now()->subYear();
             $start_at = $date->copy()->startOfMonth();
             $end_at = $date->copy()->endOfMonth();
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
-        if ($periode == 'm_1_n_1') {
+        if ($periode == 'm-1&y-1') {
             $date = Carbon::now()->subMonth()->subYear();
             $start_at = $date->copy()->startOfMonth();
             $end_at = $date->copy()->endOfMonth();
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
+        \Log::error('ScopePeriode : filtre pas trouvé : '.$periode);
+        return 0;
 
     }
 
@@ -124,46 +126,29 @@ trait ScopePeriodes
     {
         return  [
             'all' => "Tout le temps",
-            'd_30' => "Trentes derniers jours",
-            'd_365' => "Les 365 derniers jours",
+            'd-30_to_now' => "Trentes derniers jours",
+            'd-365_to_now' => "Les 365 derniers jours",
+            'd-365&y-1_to_now&y-1' => "Les 365 derniers jours depuis N-1",
+            'm-6_to_now' => "Les 6 derniers mois",
+            'm-6&y-1_to_now&y-1' => "Les 6 derniers mois de l'année préscedente",
+            'y_to_now' => "Debut année jusqu'à aujourd'hui",
+            'y-1_to_now&y-1' => "Debut année dernière jusqu'à jour anné dernière",
             'y' => "Année N",
-            'y_1' => "N-1",
-            'y_to_d' => "Année jusqu'à aujourd'hui",
-            'y_1_to_d' => "Année dernière jusqu'à jours n-1",
-            't' => 'Trimestre T',
-            't_1' => "T-1",
-            't_n_1' => "T N-1 ( trimestre  de l'année précédente)",
-            't_1_n_1' => "T-1 N-1 ( trimestre prescedent de l'année précédente)",
+            'y-1' => "Année dernière",
+            'q' => 'Trimestre T',
+            'q-1' => "Trimestre T-1",
+            'q&y-1' => "T N-1 ( trimestre  de l'année précédente)",
+            'q-1&y-1' => "T-1 N-1 ( trimestre prescedent de l'année précédente)",
             'm' => 'Mois M',
-            'm_1' => "M-1",
-            'm_n_1' => "M-1 N-1 ( mois  de l'année précédente)",
-            'm_1_n_1' => "M-1 N-1 ( mois prescedent de l'année précédente)",
+            'm-1' => "M-1",
+            'm&y-1' => "M-1 N-1 ( mois  de l'année précédente)",
+            'm-1&y-1' => "M-1 N-1 ( mois prescedent de l'année précédente)",
         ];
     }
 
     public function listPeriode()
     {
-        return  [
-            'all' => "Tout le temps",
-            'd_30' => "Trentes derniers jours",
-            'd_365' => "Les 365 derniers jours",
-            'y' => "Année N",
-            'y_1' => "N-1",
-            'y_to_d' => "Année jusqu'à aujourd'hui",
-            'y_1_to_d' => "Année dernière jusqu'à jours n-1",
-            't' => 'Trimestre T',
-            't_1' => "T-1",
-            't_n_1' => "T N-1 ( trimestre  de l'année précédente)",
-            't_1_n_1' => "T-1 N-1 ( trimestre prescedent de l'année précédente)",
-            'm' => 'Mois M',
-            'm_1' => "M-1",
-            'm_n_1' => "M-1 N-1 ( mois  de l'année précédente)",
-            'm_1_n_1' => "M-1 N-1 ( mois prescedent de l'année précédente)",
-            'w' => 'Semaine S',
-            'w_1' => "S-1",
-            'w_n_1' => "S-1 S-1 ( semaine  de l'année précédente)",
-            'w_1_n_1' => "S-1 S-1 ( semaine prescedent de l'année précédente)",
-        ];
+        return  $this->getPeriode();
     }
 
     public function getPeriodeConfig($label = 'Choisssez une période', $span = "full")
