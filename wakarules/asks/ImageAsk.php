@@ -52,7 +52,7 @@ class ImageAsk extends AskBase
         $image = new Image($path);
         $imageUrl = $image->resize($this->getConfig('width'), $this->getConfig('height'), [ 'mode' =>$this->getConfig('crop') ]);
         $imageobj = [
-                        'path' => $imageUrl,
+                        'path' => $imageUrl->getCachedImagePath(false),
                         'width' => $this->getConfig('width') . 'px',
                         'height' => $this->getConfig('height') . 'px',
                         'title' => $this->getConfig('title'),

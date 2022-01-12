@@ -73,7 +73,10 @@ class {{studly_ctname}} extends Controller
         'Waka.Segator.Behaviors.ManualTagBehavior',
 {% endif %}
 {% if configs.behav_wakatag_calcul %}
-        'Waka.Segator.Behaviors.CalculTags',
+        'Waka.Segator.Behaviors.CalculTags',Waka.Tbser.Behaviors.PresentationBehavior
+{% endif %}
+{% if configs.behav_ppt %}
+        'Waka.Tbser.Behaviors.PresentationBehavior',
 {% endif %}
     ];
     public $formConfig = 'config_form.yaml';
