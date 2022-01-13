@@ -142,7 +142,7 @@ class AskBuilder extends FormWidgetBase
     {
         try {
             $asks = AskBase::findAsks($this->targetProductor);
-            trace_log('je load');
+            //trace_log('je load');
             $this->vars['asks'] = $asks;
         }
         catch (Exception $ex) {
@@ -237,13 +237,13 @@ class AskBuilder extends FormWidgetBase
         $newAsk = $this->getRelationModel();
         $tempAsk = new $className;
         $defaultValues = $tempAsk->getDefaultValues();
-        trace_log($defaultValues);
+        //trace_log($defaultValues);
         // 
         $newAsk->askeable_type = get_class($this->model);
         $newAsk->askeable_id = $this->model->id;
         $newAsk->class_name = $className;
 
-        trace_log($className);
+        //trace_log($className);
         
 
         
@@ -381,7 +381,7 @@ class AskBuilder extends FormWidgetBase
 
     public function setCacheAskData($ask)
     {
-        trace_log('setCacheAskData');
+        //trace_log('setCacheAskData');
         $cache = post('ask_data', []);
 
         $cache[$ask->id] = json_encode($this->makeCacheAskData($ask));

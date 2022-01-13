@@ -41,7 +41,7 @@ class SubForm extends ExtensionBase
     public function boot($host)
     {
         // Set default data
-        trace_log("boot");
+        //trace_log("boot");
         if (!$host->exists) {
             $this->initConfigData($host);
         }
@@ -77,7 +77,7 @@ class SubForm extends ExtensionBase
     }
 
     public function getDefaultValues() {
-        trace_log($this->fieldConfig->fields);
+        //trace_log($this->fieldConfig->fields);
         return $this->getRecursiveDefaultValues($this->fieldConfig->fields);
 
     }
@@ -87,7 +87,7 @@ class SubForm extends ExtensionBase
             if($subField = $field['form']['fields'] ?? false) {
                 $fieldType = $field['type'] ?? null;
                 if($fieldType == 'repeater') {
-                    trace_log('c est  un repeater');
+                    //trace_log('c est  un repeater');
                     $defaultValues[$key] =  [$this->getRecursiveDefaultValues($subField)];
                 } else {
                     $defaultValues[$key] = $this->getRecursiveDefaultValues($subField);

@@ -185,7 +185,7 @@ class FncBuilder extends FormWidgetBase
         foreach($jsonableField as $json) {
             $keyIsOk = $data[$json] ?? false;
             if(!$keyIsOk) {
-                trace_log('on vide');
+                //trace_log('on vide');
                 //Si le champs est vide on va le remettre dans le tableau. 
                 $data[$json] = [];
             }
@@ -374,7 +374,7 @@ class FncBuilder extends FormWidgetBase
         $cache = post('fnc_data', []);
 
         $cache[$fnc->id] = json_encode($this->makeCacheFncData($fnc), JSON_UNESCAPED_SLASHES);
-        trace_log($cache[$fnc->id]);
+        //trace_log($cache[$fnc->id]);
 
         Request::merge([
             'fnc_data' => $cache
@@ -383,7 +383,7 @@ class FncBuilder extends FormWidgetBase
 
     public function restoreCacheFncDataPayload()
     {
-        trace_log("restoreCacheFncDataPayload");
+        //trace_log("restoreCacheFncDataPayload");
         Request::merge([
             'fnc_data' => json_decode(post('current_fnc_data'), true)
         ]);
