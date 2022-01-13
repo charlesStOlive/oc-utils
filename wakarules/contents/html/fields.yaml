@@ -7,6 +7,7 @@ tabs:
     fields:
         title:
             label: Titre
+            default: Titre du bloc
         html:
             label: Text HTML
             type: richeditor
@@ -20,6 +21,7 @@ tabs:
                 null: Aucune
                 linked: Image pour ce post
                 media: Image dans le répertoire média
+            default: null
         photo:
             type: fileupload
             mode: image

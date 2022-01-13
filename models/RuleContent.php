@@ -7,7 +7,7 @@ use SystemException;
 /**
  * Rule Model
  */
-class RuleContent extends Rule
+class RuleContent extends SubFormModel
 {
     
     /**
@@ -15,8 +15,23 @@ class RuleContent extends Rule
      */
     public $table = 'waka_utils_rules_contents';
 
+    public $staticAttributes = ['rule_text'];
+    public $realFields = ['photo', 'photos', 'code' , 'is_shared'];
     public $morphTo = [
         'contenteable' => [],
+    ];
+
+    public $attachOne = [
+        'photo' => [
+            'System\Models\File',
+            'delete' => true
+        ],
+    ];
+    public $attachMany = [
+        'photos' => [
+            'System\Models\File',
+            'delete' => true
+        ],
     ];
 
     public function afterSave()

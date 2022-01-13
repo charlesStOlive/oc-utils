@@ -187,7 +187,6 @@ class AskBuilder extends FormWidgetBase
         $jsonableField = $ask->jsonable;
         foreach($jsonableField as $json) {
             if(!$data[$json] ?? false ) {
-                //Si le champs est vide on va le remettre dans le tableau. 
                 $data[$json] = [];
             }
         }
@@ -233,24 +232,17 @@ class AskBuilder extends FormWidgetBase
 
         $this->restoreCacheAskDataPayload();
 
-
         $newAsk = $this->getRelationModel();
-        $tempAsk = new $className;
-        $defaultValues = $tempAsk->getDefaultValues();
-        //trace_log($defaultValues);
-        // 
+        
         $newAsk->askeable_type = get_class($this->model);
         $newAsk->askeable_id = $this->model->id;
         $newAsk->class_name = $className;
-
-        //trace_log($className);
-        
-
-        
-
         $newAsk->save();
 
         $this->model->rule_asks()->add($newAsk, post('_session_key'));
+
+        $tempModel = new $className;
+        $defaultValues = $tempModel->getDefaultValues();
         $newAsk->fill($defaultValues);
         //Je suis obligé de sauver 2 fois...sinon pas instancié et data est inconnu
         $newAsk->save();
@@ -302,8 +294,6 @@ class AskBuilder extends FormWidgetBase
                 return;
             }
             if($testedAsk->id == $ask->id) {
-                // $testedAsk->sort_order = $ask->sort_order;
-                // $this->model->rule_asks()->save($testedAsk, post('_session_key'));
                 $nextAsk = $testedAsk;
             }
             
@@ -351,7 +341,6 @@ class AskBuilder extends FormWidgetBase
     public function getCacheAskData($ask, $default = null)
     {
         $cache = post('ask_data', []);
-
         if (is_array($cache) && array_key_exists($ask->id, $cache)) {
             return json_decode($cache[$ask->id], true);
         }
@@ -359,13 +348,11 @@ class AskBuilder extends FormWidgetBase
         if ($default === false) {
             return null;
         }
-
         return $this->makeCacheAskData($ask);
     }
 
     public function makeCacheAskData($ask)
     {
-        
         $data = [
             'attributes' => $ask->config_data,
             'title' => $ask->getTitle(),
@@ -375,7 +362,6 @@ class AskBuilder extends FormWidgetBase
             'photos' => $ask->photos,
             'code' => $ask->code
         ];
-
         return $data;
     }
 
@@ -383,9 +369,7 @@ class AskBuilder extends FormWidgetBase
     {
         //trace_log('setCacheAskData');
         $cache = post('ask_data', []);
-
         $cache[$ask->id] = json_encode($this->makeCacheAskData($ask));
-
         Request::merge([
             'ask_data' => $cache
         ]);
@@ -416,6 +400,7 @@ class AskBuilder extends FormWidgetBase
             return null;
         }
         $attributes = new \Waka\utils\Classes\Wattributes($this->model, $this->type);
+        //trace_log($attributes->getAttributes());
         return  $attributes->getAttributes();
     }
 
@@ -426,7 +411,6 @@ class AskBuilder extends FormWidgetBase
     protected function renderAsks()
     {
         $this->prepareVars();
-
         return [
             '#'.$this->getId() => $this->makePartial('asks')
         ];
@@ -437,18 +421,12 @@ class AskBuilder extends FormWidgetBase
         if ($this->askFormWidget !== null) {
             return $this->askFormWidget;
         }
-
         if (!$model = $this->findAskObj(null, false)) {
             return null;
         }
-
         if (!$model->hasFieldConfig()) {
             return null;
         }
-
-        //trace_log('makeAskFormWidget----------------');
-        //trace_log($this->isRestrictedMode());
-
         $config = $model->getFieldConfig($this->isRestrictedMode());
         $config->model = $model;
         $config->alias = $this->alias . 'Form';
@@ -464,11 +442,8 @@ class AskBuilder extends FormWidgetBase
         if ($this->asksCache !== false) {
             return $this->asksCache;
         }
-        
-
         $relationObject = $this->getRelationObject();
         $asks = $relationObject->withDeferred($this->sessionKey)->get()->sortby('sort_order');
-
         return $this->asksCache = $asks ?: null;
     }
 

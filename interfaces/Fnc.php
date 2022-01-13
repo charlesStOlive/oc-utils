@@ -6,6 +6,17 @@
 interface Fnc
 {
     /**
+     * Returns information about this fnc, including name and description.
+     */
+    public function subFormDetails();
+
+    /**
+     * Triggers this fnc.
+     * @param array $params
+     * @return void
+     */
+    
+    /**
      * Déclaration des relations entre le fnc et le datasource
      * @return string
      */
@@ -28,15 +39,6 @@ interface Fnc
      */
     public function resolve($modelSrc, $poductorDs);
 
-    /**
-     * Returns information about this fnc, including name and description.
-     */
-    public function subFormDetails();
-
-    /**
-     * Triggers this fnc.
-     * @param array $params
-     * @return void
-     */
+    
     public function triggerSubForm($params);
 }

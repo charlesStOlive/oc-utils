@@ -72,19 +72,21 @@ class SubForm extends ExtensionBase
             return \DataSources::find($model->data_source);
         } else {
             return null;
-        }
-        
+        }  
     }
+    
 
     public function getDefaultValues() {
-        //trace_log($this->fieldConfig->fields);
+        //trace_log($this->fieldConfig);
         return $this->getRecursiveDefaultValues($this->fieldConfig->fields);
 
     }
     public function getRecursiveDefaultValues(array $fields) {
         $defaultValues = [];
         foreach($fields as $key=>$field) {
-            if($subField = $field['form']['fields'] ?? false) {
+            if($subField = $field['tabs'] ?? false) {
+                $defaultValues[$key] =  $this->getRecursiveDefaultValues($subField);
+            } else if($subField = $field['form']['fields'] ?? false) {
                 $fieldType = $field['type'] ?? null;
                 if($fieldType == 'repeater') {
                     //trace_log('c est  un repeater');
@@ -175,6 +177,11 @@ class SubForm extends ExtensionBase
     {
         return array_get($this->subFormDetails(), 'subform_emit');
     }
+    public function getMemo()
+    {
+        //trace_log('getText dans subform base');
+        return $this->host->config_data['memo'] ?? null;
+    }
 
     public function getKeyValue()
     {
@@ -199,6 +206,17 @@ class SubForm extends ExtensionBase
     public function showAttribute()
     {
         return array_get($this->subFormDetails(), 'show_attributes');
+    }
+    public function getShareModeConfig()
+    {
+        return array_get($this->subFormDetails(), 'share_mode');
+    }
+    public function getShareMode() {
+        //trace_log('getShareMode');
+        if(!$this->host->is_share) {
+            return null;
+        }
+        return $this->getShareModeConfig();
     }
     public function getWordType()
     {
@@ -282,5 +300,61 @@ class SubForm extends ExtensionBase
             }
             return $item;
         });
+    }
+    /**
+     * UNIQUEMENT POUR RULE pour ASK et FNC on utilise findAsk et findFnc qui sont dans leur prore classes.
+     */
+    public static function findRules($mode, $targetClass = null)
+    {
+        $results = [];
+        $bundles = PluginManager::instance()->getRegistrationMethodValues('registerWakaRules');
+        $mode = $mode.'s';
+        foreach ($bundles as $plugin => $bundle) {
+            foreach ((array) array_get($bundle, $mode, []) as $conditionClass) {
+                //trace_log($conditionClass[0]);
+                $class = $conditionClass[0];
+                $classType = $conditionClass['only'] ?? [];
+                if (!class_exists($class)) {
+                    \Log::error($conditionClass[0]. " n'existe pas dans le register rules du ".$plugin);
+                    continue;
+                }
+                if (!in_array($targetClass, $classType) && $classType != [] && $targetClass != null) {
+                    //trace_log('merde');
+                    continue;
+                }
+                $obj = new $class;
+                $results[$class] = $obj;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * CHERCHE LES COMPOSANTS PARATG2 DISPONIBLE
+     */
+    public static function findShares($mode, $model, $dataSource)
+    {
+        //trace_log('----ressource = '.$dataSource);
+        $modelClass = get_class($model);
+        $ruleModel = $model->{'rule_'.$mode.'s'}()->getRelated();
+        $components = $ruleModel->where('is_share', true)->get();
+        //trace_log($components->pluck('code'));
+        //Impossible de bosser avec each ou reject de Collection. je ne sais pas pourquoi...je crée donc une autre collection et je push les bons résultats.
+        //je bosse en collection pour garder des valeurs unique dimplement à la fin. 
+        $finalRules = new \Winter\Storm\Support\Collection();
+        foreach($components as $component) {
+            //trace_log($component->code);
+            //trace_log($component->getShareModeConfig());
+            if($component->getShareModeConfig() == 'full') {
+                //trace_log($component->code);
+                $finalRules->push($component);
+            } else if ($component->getShareModeConfig() == 'ressource') {
+                if($dataSource == $component->getDs()->code) {
+                    $finalRules->push($component);
+                }
+            }
+        }
+        return $finalRules->unique('code');
     }
 }

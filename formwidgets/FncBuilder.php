@@ -34,7 +34,7 @@ class FncBuilder extends FormWidgetBase
      */
     protected $fncFormWidget;
 
-    protected $type = 'fncs';
+    protected $type;
 
     protected $targetProductor = null;
 
@@ -89,6 +89,7 @@ class FncBuilder extends FormWidgetBase
         $this->vars['isRestrictedMode'] = $this->isRestrictedMode();
         $this->vars['targetProductor'] = $this->targetProductor;
         $this->vars['fncFormWidget'] = $this->fncFormWidget;
+        $this->vars['attributesArray'] = $this->getAvailableTags();
         $this->getAvailableTags();
     }
 
@@ -211,10 +212,7 @@ class FncBuilder extends FormWidgetBase
     {
         try {
             $fnc = $this->findFncObj();
-
-            $data = $this->getCacheFncAttributes($fnc);
-            //trace_log("onLoadFncSetup dataCache");
-            //trace_log($data);
+            $data = json_encode($this->getCacheFncAttributes($fnc));
 
             $this->fncFormWidget->setFormValues($data);
 
@@ -243,6 +241,12 @@ class FncBuilder extends FormWidgetBase
         $newFnc->save();
 
         $this->model->rule_fncs()->add($newFnc, post('_session_key'));
+
+        $tempModel = new $className;
+        $defaultValues = $tempModel->getDefaultValues();
+        $newFnc->fill($defaultValues);
+        //Je suis obligé de sauver 2 fois...sinon pas instancié et data est inconnu
+        $newFnc->save();
 
         $this->vars['newFncId'] = $newFnc->id;
 

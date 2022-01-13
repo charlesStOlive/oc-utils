@@ -18,8 +18,9 @@ class LabelAsk extends AskBase implements AskInterface
             'name'        => 'Un label/titre',
             'description' => 'Ajoute un champs texte simple',
             'icon'        => 'wicon-pencil2',
+            'share_mode'  => 'full',
             'premission'  => 'wcli.utils.ask.edit.admin',
-            'ask_emit'    => 'text',
+            'subform_emit'    => 'text',
             'show_attributes' => true,
             'outputs' => [
                 'word_type' => null,

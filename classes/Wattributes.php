@@ -17,6 +17,7 @@ class Wattributes
 
     public function getAttributes()
     {
+        //trace_log("lancement de getAttributes");
         $attributeArray = [];
 
         $attributesConfig = $this->dataSource->getAttributesConfig();

@@ -32,6 +32,9 @@ class AskBase extends SubForm
             if(!$this->getEditableOption()) {
                 unset($baseConfig['fields']['ask_emit']);
             }
+            if(!$this->getShareModeConfig()) {
+                unset($baseConfig['fields']['is_share']);
+            }
             $subformConfig = \Yaml::parseFile($this->configPath.'/'.$formFields);
             $mergeConfig = array_merge_recursive($baseConfig, $subformConfig);
             $this->fieldConfig = $this->makeConfig($mergeConfig);

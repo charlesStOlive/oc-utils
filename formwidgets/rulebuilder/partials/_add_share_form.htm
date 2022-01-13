@@ -1,10 +1,9 @@
 <?= Form::open(['id' => 'addRuleRuleForm']) ?>
 
-<input type="hidden" name="current_rule_data" value="<?= e(json_encode($this->getCacheRuleDataPayload())) ?>" />
 
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="popup">&times;</button>
-    <h4 class="modal-title">Choisissez un type de champs éditable</h4>
+    <h4 class="modal-title">Choisissez un composant paratagé</h4>
 </div>
 <div class="modal-body">
 
@@ -15,16 +14,15 @@
     <div class="list-preview">
         <div class="control-simplelist is-selectable is-scrollable size-large" data-control="simplelist">
             <ul>
-                <?php foreach ($rules as $class => $rule): ?>
+                <?php foreach ($shares as $class => $share): ?>
 
                 <li>
                     <a
                        href="javascript:;"
-                       data-request="<?= $this->getEventHandler('onCreateRule') ?>"
-                       data-request-data="rule_class: '<?= addslashes($class) ?>'"
+                       data-request="<?= $this->getEventHandler('onCreateShareRule') ?>"
+                       data-request-data="share_rule_id: '<?= addslashes($share->id) ?>'"
                        data-popup-load-indicator>
-                        <h5 class="heading"><?= e(trans($rule->getSubFormName())) ?></h5>
-                        <p class="description"><?= e(trans($rule->getSubFormDescription())) ?></p>
+                        <h5 class="heading"><?= e(trans($share->getCode())) ?> | <?= e(trans($share->getSubFormName())) ?></h5>
                     </a>
                 </li>
 

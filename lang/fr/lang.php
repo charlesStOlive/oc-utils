@@ -84,8 +84,9 @@ return [
 
     ],
     'rules' => [
-        'label' => 'Règles dynamiques',
-        'prompt' => 'Ajouter une règle dynamique',
+        'label' => 'Composant dynamiques',
+        'prompt' => 'Ajouter un composant dynamique',
+        'prompt_share' => 'Ajouter un composant partagé',
     ],
     'datasource' => [
         'title' => 'Source de données',

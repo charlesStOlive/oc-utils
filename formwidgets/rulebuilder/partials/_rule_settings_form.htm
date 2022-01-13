@@ -17,7 +17,19 @@
 <input type="hidden" name="current_rule_data" value="<?= e(json_encode($this->getCacheRuleDataPayload())) ?>" />
 
 <div class="modal-body">
-    <?= $ruleFormWidget->render() ?>
+    <?php if ($showAttributes) : ?>
+    <div class="row">
+        <div class="col-md-8">
+            <?= $ruleFormWidget->render() ?>
+        </div>
+        <div class="col-md-4">
+            <?= $this->makePartial('available_tags') ?>
+        </div>
+    </div>
+    <?php else  : ?>
+        <?= $ruleFormWidget->render() ?>
+        
+    <?php endif ?>
 </div>
 <div class="modal-footer">
     <button

@@ -7,7 +7,7 @@ use SystemException;
 /**
  * Rule Model
  */
-class RuleCondition extends Rule
+class RuleCondition extends SubFormModel
 {
     
     /**
@@ -15,9 +15,14 @@ class RuleCondition extends Rule
      */
     public $table = 'waka_utils_rules_conditions';
 
+    public $staticAttributes = ['rule_text'];
+    public $realFields = ['code' , 'is_shared'];
+
     public $morphTo = [
         'conditioneable' => [],
     ];
+
+    
 
     public function afterSave()
     {

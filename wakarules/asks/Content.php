@@ -21,8 +21,9 @@ class Content extends AskBase  implements AskInterface
             'name'        => 'Contenu',
             'description' => 'Choisissez un bloc de contenu',
             'icon'        => 'icon-html5',
+            'share_mode'  => 'ressource',
             'premission'  => 'wcli.utils.ask.edit.admin',
-            'ask_emit'    => 'richeditor',
+            'subform_emit'    => 'richeditor',
             'show_attributes' => true,
             'outputs' => [
                 'word_type' => 'HTM',

@@ -11,6 +11,7 @@ class SubFormModel extends Model
 {
     use \Winter\Storm\Database\Traits\Validation;
     use \Winter\Storm\Database\Traits\Sortable;
+    use \Winter\Storm\Database\Traits\Purgeable;
 
     /**
      * @var array Guarded fields
@@ -31,6 +32,8 @@ class SubFormModel extends Model
      * @var array List of attribute names which are json encoded and decoded from the database.
      */
     protected $jsonable = ['config_data'];
+
+    protected $purgeable = ['saved_from_builder'];
     
     
 
@@ -64,7 +67,6 @@ class SubFormModel extends Model
 
     public function applyCustomData()
     {
-        //trace_log('applyCustomData');
         $this->setCustomData();
         $this->loadCustomData(false);
     }
@@ -125,7 +127,11 @@ class SubFormModel extends Model
         $staticAttributes = $this->staticAttributes;
         $realFields = $this->realFields;
 
-        $fieldInConfig = array_diff(array_keys($config->fields), $realFields);
+        //Gestion des tabs si il y en a
+        $fieldInConfigWithTabs = $this->getFieldsFromConfig($config);
+        $fieldInConfig = array_diff(array_keys($fieldInConfigWithTabs), $realFields);
+        //trace_log("------------------------------fieldInConfig-------------------------------");
+        //trace_log($fieldInConfig);
 
         $fieldAttributes = array_merge($staticAttributes, $fieldInConfig);
 
@@ -138,7 +144,19 @@ class SubFormModel extends Model
         $this->config_data = $dynamicAttributes;
 
         $this->setRawAttributes(array_except($this->getAttributes(), $fieldAttributes));
+        if($this->getOriginalPurgeValue('saved_from_builder')) {
+            Event::fire('rules_sync', [$this]);
+        }
         
+    }
+
+    public function getFieldsFromConfig($config) {
+        $fields = $config->fields;
+        $tabs = $config->tabs['fields'] ?? [];
+        //trace_log($tabs);
+        //trace_log(array_merge($fields, $tabs));
+        return array_merge($fields, $tabs);
+
     }
 
     public function afterFetch()

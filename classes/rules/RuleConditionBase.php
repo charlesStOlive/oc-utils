@@ -3,7 +3,6 @@
 use System\Classes\PluginManager;
 use Winter\Storm\Extension\ExtensionBase;
 use Waka\Utils\Classes\DataSource;
-use Waka\Utils\Interfaces\Rule as RuleInterface;
 
 /**
  * Notification rule base class
@@ -11,34 +10,42 @@ use Waka\Utils\Interfaces\Rule as RuleInterface;
  * @package waka\utils
  * @author Alexey Bobkov, Samuel Georges
  */
-class RuleConditionBase extends RuleBase implements RuleInterface
+class RuleConditionBase extends SubForm
 {
     private $error;
-    
+    protected $morphName;                              
     /**
      * Returns information about this rule, including name and description.
      */
-    public function ruleDetails()
+    public function __construct($host = null)
     {
-        return [
-            'name'        => 'Condition',
-            'description' => 'Condition description',
-            'icon'        => 'icon-dot-circle-o',
-        ];
-    }
+        $this->morphName = 'ruleeable';
+        /*
+         * Paths
+         */
+        //trace_log($this);
+        $this->viewPath = $this->configPath = $this->guessConfigPathFrom($this);
+        /*
+         * Parse the config, if available
+         */
+        if ($formFields = $this->defineFormFields()) {
+            $baseConfig = \Yaml::parseFile(plugins_path('/waka/utils/models/rules/fields_condition.yaml'));
+            if(!$this->getEditableOption()) {
+                unset($baseConfig['fields']['ask_emit']);
+            }
+            if(!$this->getShareModeConfig()) {
+                unset($baseConfig['fields']['is_share']);
+            }
+            $askConfig = \Yaml::parseFile($this->configPath.'/'.$formFields);
+            $mergeConfig = array_merge_recursive($baseConfig, $askConfig);
+            $this->fieldConfig = $this->makeConfig($mergeConfig);
+        }
 
-    public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
+        if (!$this->host = $host) {
+            return;
+        }
 
-    }
-
-    /**
-     * Boot method called when the condition class is first loaded
-     * with an existing model.
-     * @return array
-     */
-
-    public function getModel() {
-        return $this->host->conditioneable;
+        $this->boot($host);
     }
 
     public function setError($error = null) {
@@ -55,11 +62,7 @@ class RuleConditionBase extends RuleBase implements RuleInterface
             'whereNot' => "Est différent de",
             'wherein' => "Est dans ces valeurs",
             'whereNotIn' => "N'est pas dans ces valeurs",
-            // 'like' => "contient",
-            // 'notLke' => "ne contient pas",
         ];
     }
-
-
     
 }

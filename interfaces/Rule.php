@@ -6,6 +6,11 @@
 interface Rule
 {
     /**
+     * Returns array  subFormDetails.
+     * @return string
+     */
+    public function subFormDetails();
+    /**
      * Returns a rule text summary when displaying to the user.
      * @return string
      */
@@ -24,14 +29,9 @@ interface Rule
     public function resolve($modelSrc, $context = 'twig', $dataForTwig = []);
 
     /**
-     * Returns information about this rule, including name and description.
-     */
-    public function ruleDetails();
-
-    /**
      * Triggers this rule.
      * @param array $params
      * @return void
      */
-    public function triggerRule($params);
+    public function triggerSubForm($params);
 }

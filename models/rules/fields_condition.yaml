@@ -4,11 +4,14 @@
 
 fields:
     code:
-        label: Code
-        span: auto
+        label: Code 
+        span: left
         restricted: true
         required: true
     is_share:
         label: Composant partagé
         type: checkbox
-        span: right
+        span: left
+        restricted: true
+    
+

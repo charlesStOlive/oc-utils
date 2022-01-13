@@ -2,7 +2,6 @@
 
 use Backend\Classes\FormField;
 use Backend\Classes\FormWidgetBase;
-use Waka\Utils\Classes\Rules\RuleBase;
 use ApplicationException;
 use ValidationException;
 use Exception;
@@ -18,36 +17,28 @@ class RuleBuilder extends FormWidgetBase
     //
     // Configurable properties
     //
-
-
+    protected $ruleMode = null;
+    protected $targetProductor = null;
+    protected $full_access = 'noBody';
+    public $restrictedMode = true;
+    public $autoSave = true;
+    public $showAttributes = false;
+    public $label = "waka.utils::lang.rules.label";
+    public $prompt = "waka.utils::lang.rules.prompt";
+    public $prompt_share = "waka.utils::lang.rules.prompt_share";
     //
     // Object properties
     //
-
     /**
      * @var mixed Rules cache
      */
     protected $rulesCache = false;
-
     /**
      * @var Backend\Widgets\Form
      */
     protected $ruleFormWidget;
 
-    protected $type = 'rules';
-
-    protected $ruleMode = null;
-
-    protected $targetClass = null;
-
-    protected $full_access = 'noBody';
-
-    public $restrictedMode = true;
-
-    public $autoSave = true;
-
-    public $label = "waka.utils::lang.rules.label";
-    public $prompt = "waka.utils::lang.rules.prompt";
+    
 
     /**
      * {@inheritDoc}
@@ -55,12 +46,14 @@ class RuleBuilder extends FormWidgetBase
     public function init()
     {
         $this->fillFromConfig([
-            'targetClass',
+            'targetProductor',
             'full_access',
             'ruleMode',
             'label',
             'prompt',
+            'prompt_share',
             'autoSave',
+            'showAttributes'
         ]);
 
         if ($widget = $this->makeRuleFormWidget()) {
@@ -82,11 +75,19 @@ class RuleBuilder extends FormWidgetBase
      */
     public function render()
     {
+        $this->isConfigOk();
         $this->prepareVars();
 
         return $this->makePartial('rules_container');
     }
-
+    public function isConfigOk() {
+        if(!$this->targetProductor) {
+            throw new ApplicationException('Il manque targetProductor dans la config');
+        }
+        if(!in_array($this->ruleMode, ['content', 'condition','fnc', 'ask'])) {
+            throw new ApplicationException('ruleMode doit être égale a content ou condition ou fncs ou asks');
+        }
+    }
     /**
      * Prepares the list data
      */
@@ -94,13 +95,18 @@ class RuleBuilder extends FormWidgetBase
     {
         $this->vars['label'] = $this->label;
         $this->vars['prompt'] = $this->prompt;
+        $this->vars['prompt_share'] = $this->prompt_share;
+        //
         $this->vars['ruleMode'] = $this->ruleMode;
         $this->vars['formModel'] = $this->model;
         $this->vars['rules'] = $this->getRules();
-        $this->vars['isRestrictedMode'] = $this->isRestrictedMode();
-        //trace_log($this->getRules());
+        $this->vars['targetProductor'] = $this->targetProductor;
         $this->vars['ruleFormWidget'] = $this->ruleFormWidget;
-        //$this->vars['attributesArray'] = $this->getAvailableTags();
+        $this->vars['showAttributes'] = $this->showAttributes;
+        //
+        $this->vars['isRestrictedMode'] = $this->isRestrictedMode();
+        //
+        $this->vars['attributesArray'] = $this->getAvailableTags();
     }
 
     /**
@@ -134,27 +140,82 @@ class RuleBuilder extends FormWidgetBase
     protected function processSave()
     {
         $cache = $this->getCacheRuleDataPayload();
-
         foreach ($cache as $id => $data) {
             $rule = $this->findRuleObj($id);
-
-            if ($attributes = $this->getCacheRuleAttributes($rule)) {
+            $attributes = $this->getCacheRuleAttributes($rule);
+            if ($attributes) {
                 $rule->fill($attributes);
             }
-
             $rule->save(null, $this->sessionKey);
+            if($rule->is_share) {
+                $this->saveSharedModel($rule, $attributes);
+            }
         }
+    }
+    public function saveSharedModel($rule, $attributes) {
+        
+        //trace_log($attributes);
+        $modelsSharing = $this->getSharedModel($rule);
+        foreach($modelsSharing as $model) {
+            $model->fill($attributes);
+            $model->save(null, $this->sessionKey);
+        }
+    }
+
+    public function countShareModel($rule = null) {
+        return $this->getSharedModel($rule)->count();
+    }
+
+    public function getSharedModel($rule = null) {
+        //Si rule null la requete viens du dom on va chercher le rule avec postid.rule_class SINON ça vient de l'enregistrement on connait déjà la rule.
+        if(!$rule) {
+            $rule = $this->findRuleObj();
+        }
+        $shareMode = $rule->getShareMode();
+        if(!$shareMode) {
+            return;
+        }
+        $class = get_class($rule);
+        $eable = $this->ruleMode.'eable';
+        $eable_type = $this->ruleMode.'eable_type';
+        $eable_type_value = get_class($this->model);
+        $className = $rule->class_name;
+        $dsCode = $rule->getDs()->code;
+        
+        $modelsSharing = $class::where($eable_type, $eable_type_value)->where('class_name', $className)->where('code', $rule->code)->where('is_share', true);
+        if($shareMode == 'ressource') {
+            $modelsSharing = $modelsSharing->whereHasMorph('askeable', $eable_type_value,  function ($query) use($dsCode) {
+                $query->where('data_source', $dsCode);
+            });
+        }
+        return $modelsSharing->get();
+
     }
 
     //
     // AJAX
     //
 
+    /**
+     * TODO armoniser les finRules et fnc
+     */
     public function onLoadCreateRuleForm()
     {
         try {
-            $rules = RuleBase::findRules($this->ruleMode, $this->targetClass);
+            if($this->ruleMode == 'content') {
+                $rules = $this->getRuleClass()::findRules($this->ruleMode, $this->targetProductor);
+                
+            } elseif($this->ruleMode == 'condition') {
+                $rules = $this->getRuleClass()::findRules($this->ruleMode, $this->targetProductor);
+            }
+            elseif($this->ruleMode == 'fnc') {
+                $rules = $this->getRuleClass()::findFncs($this->targetProductor, $this->model->data_source);
+            }
+            elseif($this->ruleMode == 'ask') {
+                $rules = $this->getRuleClass()::findAsks($this->targetProductor);
+            }
             $this->vars['rules'] = $rules;
+            
         }
         catch (Exception $ex) {
             $this->handleError($ex);
@@ -163,13 +224,35 @@ class RuleBuilder extends FormWidgetBase
         return $this->makePartial('create_rule_form');
     }
 
+    public function onLoadShareComponent()
+    {
+        try {
+            if($this->ruleMode == 'content') {
+                $shares = $this->getRuleClass()::findShares($this->ruleMode, $this->model, $this->model->data_source);
+            } elseif($this->ruleMode == 'condition') {
+                $shares = $this->getRuleClass()::findShares($this->ruleMode, $this->model, $this->model->data_source);
+            }
+            elseif($this->ruleMode == 'fnc') {
+                $shares = $this->getRuleClass()::findShares($this->ruleMode, $this->model, $this->model->data_source);
+            }
+            elseif($this->ruleMode == 'ask') {
+                $shares = $this->getRuleClass()::findShares($this->ruleMode, $this->model, $this->model->data_source);
+            }
+            $this->vars['shares'] = $shares;
+            
+        }
+        catch (Exception $ex) {
+            $this->handleError($ex);
+        }
+
+        return $this->makePartial('add_share_form');
+    }
+
     public function restoreRestrictedField($rule) {
         if(!$this->isRestrictedMode()) {
             return [];
         }
         $oldDatas = $this->getCacheRuleAttributes($rule);
-        //trace_log("oldDatas to restore");
-        //trace_log($oldDatas);
         $restrictedFields = $rule->getRestrictedFields();
         $dataRestricted = [];
         foreach($oldDatas as $key=>$data) {
@@ -183,33 +266,29 @@ class RuleBuilder extends FormWidgetBase
 
     public function onSaveRule()
     {
-        // trace_log("On Save ASK");
-       
-
         $this->restoreCacheRuleDataPayload();
-
         $rule = $this->findRuleObj();
-
         $oldData = $this->restoreRestrictedField($rule);
-
         $data = post('Rule', []);
-        //trace_log("posted data");
-        //trace_log($data);
+        //
+        $jsonableField = $rule->jsonable;
+        foreach($jsonableField as $json) {
+            $keyIsOk = $data[$json] ?? false;
+            if(!$keyIsOk) {
+                //Si le champs est vide on va le remettre dans le tableau. 
+                $data[$json] = [];
+            }
+        }
         $data = array_merge($data, $oldData);
-        //trace_log("Data to save");
-        //trace_log($data);
-
+        //
         $rule->fill($data);
         $rule->validate();
-    
-        $rule->rule_text = $rule->getRuleObject()->getText();
 
+        $rule->rule_text = $rule->getSubFormObject()->getText();
         $rule->applyCustomData();
-
+        //
         $this->setCacheRuleData($rule);
-
         $this->autoSAve();
-
         return $this->renderRules($rule);
     }
 
@@ -217,22 +296,21 @@ class RuleBuilder extends FormWidgetBase
     {
         try {
             $rule = $this->findRuleObj();
-
-            $data = $this->getCacheRuleAttributes($rule);
-            //trace_log("onLoadRuleSetup dataCache");
-            //trace_log($data);
-
+            $data = json_encode($this->getCacheRuleAttributes($rule));
             $this->ruleFormWidget->setFormValues($data);
-
             $this->prepareVars();
             $this->vars['rule'] = $rule;
         }
         catch (Exception $ex) {
             $this->handleError($ex);
         }
-
         return $this->makePartial('rule_settings_form');
     }
+
+    /**
+     * TODO: modifier le fonctionement de {$this->ruleMode.'eable_type'}
+     * Prendre la valeur dans $tempModel issue de classname
+     */
 
     public function onCreateRule()
     {
@@ -240,22 +318,55 @@ class RuleBuilder extends FormWidgetBase
             throw new ApplicationException('Please specify an rule');
         }
 
-        $this->restoreCacheRuleDataPayload();
-
+        //$this->restoreCacheRuleDataPayload();
+        //
         $newRule = $this->getRelationModel();
-        $newRule->mode = $this->mode;
+        //$newRule->mode = $this->mode;
         $newRule->{$this->ruleMode.'eable_type'} = get_class($this->model);
         $newRule->{$this->ruleMode.'eable_id'} = $this->model->id;
         $newRule->class_name = $className;
-        $newRule->save();
+        $newRule->forceSave();
 
         $this->getRuleRelation()->add($newRule, post('_session_key'));
+
+        $tempModel = new $className;
+        $defaultValues = $tempModel->getDefaultValues();
+        $newRule->fill($defaultValues);
+        //Je suis obligé de sauver 2 fois...sinon pas instancié et data est inconnu
+        $newRule->forceSave();
 
         $this->vars['newRuleId'] = $newRule->id;
 
         $this->autoSAve();
 
         return $this->renderRules();
+    }
+
+
+    public function onCreateShareRule()
+    {
+         if (!$id = post('share_rule_id')) {
+            throw new ApplicationException('Error on share id');
+        }
+
+        $copyClass = $this->getRelationModel();
+        $copyModel = $copyClass::find($id);
+
+
+        //$this->restoreCacheRuleDataPayload();
+
+        $newRule = $copyModel->replicate();
+        $newRule->sort_order = null;
+        $newRule->{$this->ruleMode.'eable_type'} = get_class($this->model);
+        $newRule->{$this->ruleMode.'eable_id'} = $this->model->id;
+        $newRule->getSubFormObject();
+        $newRule->applyCustomData();
+        $this->setCacheRuleData($newRule);
+        $newRule->save();
+        $this->vars['newRuleId'] = $newRule->id;
+        return $this->renderRules();
+
+        
     }
 
     public function getRuleRelation() {
@@ -303,11 +414,8 @@ class RuleBuilder extends FormWidgetBase
                 return;
             }
             if($testedRule->id == $rule->id) {
-                // $testedRule->sort_order = $rule->sort_order;
-                // $this->model->rule_rules()->save($testedRule, post('_session_key'));
                 $nextRule = $testedRule;
             }
-            
         }
         return $rule->sort_order;
     }
@@ -315,28 +423,27 @@ class RuleBuilder extends FormWidgetBase
     public function onCancelRuleSettings()
     {
         $rule = $this->findRuleObj(post('new_rule_id'));
-
         $rule->delete();
-
         return $this->renderRules();
     }
 
     //
     // Postback deferring
     //
-    public function getCacheRuleCode($fnc)
+    public function getCacheRuleCode($rule)
     {
-        return array_get($this->getCacheRuleData($fnc), 'code') ?? 'ERROR';
+        return array_get($this->getCacheRuleData($rule), 'code') ?? 'ERROR';
     }
 
     public function getCacheRuleAttributes($rule)
     {
         $attributes = array_get($this->getCacheRuleData($rule), 'attributes');
-        $datas = array_get($this->getCacheRuleData($rule), 'datas');
         $code = array_get($this->getCacheRuleData($rule), 'code');
+        $is_share = array_get($this->getCacheRuleData($rule), 'is_share');
         $photos = array_get($this->getCacheRuleData($rule), 'photos');
         $photo = array_get($this->getCacheRuleData($rule), 'photo');
-        return array_merge($attributes, ["datas" => $datas], ["code" => $code]);
+        //trace_log(array_merge($attributes, ["code" => $code], ["is_share" => $is_share]));
+        return array_merge($attributes, ["code" => $code], ["is_share" => $is_share]);
     }
 
     public function getCacheRuleTitle($rule)
@@ -344,79 +451,99 @@ class RuleBuilder extends FormWidgetBase
         return array_get($this->getCacheRuleData($rule), 'title');
     }
 
+    public function getCacheShareMode($rule)
+    {
+        return array_get($this->getCacheRuleData($rule), 'share_mode');
+    }
+    public function getCacheMemo($rule)
+    {
+        //trace_log('memo : '.array_get($this->getCacheRuleData($rule), 'memo'));
+        //trace_log($this->getCacheRuleData($rule));
+        return array_get($this->getCacheRuleData($rule), 'memo');
+    }
     public function getCacheRuleText($rule)
     {
-        //trace_log('getCacheRuleText---');
-        //trace_log($this->getCacheRuleData($rule));
         $ruleText =  array_get($this->getCacheRuleData($rule), 'text');
-        //trace_log("actopn text : ".$ruleText);
         return $ruleText;
     }
-
     public function getCacheRuleData($rule, $default = null)
     {
-        $cache = post('rule_data', []);
-
+        $cache = post($this->getId().'rule_data', []);
         if (is_array($cache) && array_key_exists($rule->id, $cache)) {
             return json_decode($cache[$rule->id], true);
         }
-
         if ($default === false) {
             return null;
         }
-
         return $this->makeCacheRuleData($rule);
     }
-
     public function makeCacheRuleData($rule)
     {
-        //trace_log('makeCacheRuleData');
-        
         $data = [
             'attributes' => $rule->config_data,
             'title' => $rule->getTitle(),
+            'memo' => $rule->getMemo(),
             'text' => $rule->getText(),
             'sort_order' => $rule->sort_order,
-            'datas' => $rule->datas,
             'photo' => $rule->photo,
             'photos' => $rule->photos,
-            'code' => $rule->code
+            'code' =>  $rule->code,
+            'is_share' => $rule->is_share,
+            'share_mode' =>  $rule->getShareMode(),
         ];
-
-
-        //trace_log($data);
-
         return $data;
+    }
+
+    public function setCacheCopyRuleData($rule)
+    {
+        $cache = post($this->getId().'rule_data', []);
+        $cache[$rule->id] = json_encode($this->makeCacheRuleData($rule));
+        Request::merge([
+            $this->getId().'rule_data' => $cache
+        ]);
     }
 
     public function setCacheRuleData($rule)
     {
-        $cache = post('rule_data', []);
-
-        //trace_log($cache);
-
+        $cache = post($this->getId().'rule_data', []);
         $cache[$rule->id] = json_encode($this->makeCacheRuleData($rule));
-
         Request::merge([
-            'rule_data' => $cache
+            $this->getId().'rule_data' => $cache
         ]);
     }
 
     public function restoreCacheRuleDataPayload()
     {
         Request::merge([
-            'rule_data' => json_decode(post('current_rule_data'), true)
+            $this->getId().'rule_data' => json_decode(post('current_rule_data'), true)
         ]);
     }
 
     public function getCacheRuleDataPayload()
     {
-        return post('rule_data', []);
+        return post($this->getId().'rule_data', []);
     }
 
     //
     // Helpers
     //
+
+    /**
+     * TODO utilser app Bind...
+     */
+    protected function getRuleClass() {
+        if($this->ruleMode == 'content') {
+           return  \Waka\Utils\Classes\Rules\RuleContentBase::class;
+        } elseif($this->ruleMode == 'condition') {
+            return \Waka\Utils\Classes\Rules\RuleConditionBase::class;
+        }
+        elseif($this->ruleMode == 'fnc') {
+            return \Waka\Utils\Classes\Rules\FncBase::class;
+        }
+        elseif($this->ruleMode == 'ask') {
+            return \Waka\Utils\Classes\Rules\AskBase::class;
+        }
+    }
 
     protected function getAvailableTags()
     {
@@ -426,7 +553,7 @@ class RuleBuilder extends FormWidgetBase
         if(!$rule->showAttribute()) {
             return null;
         }
-        $attributes = new \Waka\utils\Classes\Wattributes($this->model, $this->type);
+        $attributes = new \Waka\utils\Classes\Wattributes($this->model, $this->ruleMode.'s');
         return  $attributes->getAttributes();
     }
 
@@ -437,7 +564,6 @@ class RuleBuilder extends FormWidgetBase
     protected function renderRules()
     {
         $this->prepareVars();
-
         return [
             '#'.$this->getId() => $this->makePartial('rules')
         ];
@@ -448,25 +574,19 @@ class RuleBuilder extends FormWidgetBase
         if ($this->ruleFormWidget !== null) {
             return $this->ruleFormWidget;
         }
-
         if (!$model = $this->findRuleObj($this->mode, false)) {
             return null;
         }
-
         if (!$model->hasFieldConfig()) {
             return null;
         }
-
-        //trace_log('makeRuleFormWidget----------------');
-        //trace_log($this->isRestrictedMode());
-
         $config = $model->getFieldConfig($this->isRestrictedMode());
         $config->model = $model;
         $config->alias = $this->alias . 'Form';
         $config->arrayName = 'Rule';
-
+        //
         $widget = $this->makeWidget('Backend\Widgets\Form', $config);
-
+        //
         return $this->ruleFormWidget = $widget;
     }
 
@@ -475,8 +595,6 @@ class RuleBuilder extends FormWidgetBase
         if ($this->rulesCache !== false) {
             return $this->rulesCache;
         }
-        
-
         $relationObject = $this->getRelationObject();
         $rules = $relationObject->withDeferred($this->sessionKey)->get()->sortby('sort_order');
 
@@ -486,17 +604,13 @@ class RuleBuilder extends FormWidgetBase
     protected function findRuleObj($ruleId = null, $throw = true)
     {
         $ruleId = $ruleId ? $ruleId : post('current_rule_id');
-
         $rule = null;
-
         if (strlen($ruleId)) {
             $rule = $this->getRelationModel()->find($ruleId);
         }
-
         if ($throw && !$rule) {
             throw new ApplicationException('Rule not found');
         }
-
         return $rule;
     }
 }

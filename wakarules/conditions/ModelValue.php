@@ -3,17 +3,16 @@
 use Waka\Utils\Classes\Rules\RuleConditionBase;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use ApplicationException;
+use Waka\Utils\Interfaces\Rule as RuleInterface;
 
-class ModelValue extends RuleConditionBase
+class ModelValue extends RuleConditionBase implements RuleInterface
 {
     use \Waka\Utils\Classes\Traits\StringRelation;
     
-    protected $tableDefinitions = [];
-
     /**
      * Returns information about this event, including name and description.
      */
-    public function ruleDetails()
+    public function subFormDetails()
     {
         return [
             'name'        => 'Valeur du modèle',

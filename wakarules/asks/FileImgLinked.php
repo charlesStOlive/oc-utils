@@ -17,6 +17,7 @@ class FileImgLinked extends AskBase implements AskInterface
         return [
             'name'        => 'Une image liée',
             'description' => 'Une image du modèle ou d\'un modèle parent',
+            'share_mode' => 'ressource',
             'icon'        => 'icon-picture-o',
             'outputs' => [
                 'word_type' => 'IMG',
@@ -96,7 +97,10 @@ class FileImgLinked extends AskBase implements AskInterface
         } else {
             $finalModel = $clientModel;
         }
-        //trace_log($finalModel->name);
+        //trace_log('resolve');
+        //trace_log($configs);
+        //trace_log($this->getConfig('width'));
+        //trace_log($this->getConfig('height'));
         if($context == 'twig' ) {
             return [
                 'path' => $finalModel->{$keyImage}->getThumb($imgWidth, $imgHeight, ['mode' => $crop]),

@@ -5,12 +5,27 @@
 fields:
     code:
         label: Code
-        span: auto
+        span: storm
+        cssClass: col-xs-4
         restricted: true
+        required: true
     ask_emit: 
         label: Demander lors de la création d'un email
         type: checkbox
-        span: auto
-        cssClass: p-t-md
+        span: storm
+        cssClass: col-xs-4 p-t-md
+        restricted: true
+    is_share:
+        label: Composant partagé
+        type: checkbox
+        span: storm
+        cssClass: col-xs-4 p-t-md
+        restricted: true
+    memo:
+        label: Mémo
+        type: textarea
+        span: full
+        size: tiny
+        cssClass: txt_memo
         restricted: true
 

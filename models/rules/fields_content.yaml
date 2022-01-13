@@ -7,11 +7,17 @@ fields:
         label: Code 
         span: left
         restricted: true
+        required: true
+    is_share:
+        label: Composant partagé
+        type: checkbox
+        span: left
+        restricted: true
     placement:
         label: Emplacement (laisser vide  pour empl. défaut)
         comment: 
         restricted: true
-        span: right
+        span: left
     view:
         label: Vue à utiliser
         type: dropdown

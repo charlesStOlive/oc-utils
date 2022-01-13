@@ -32,3 +32,6 @@
 1.3.0:
     - "Ajout des tempfile"
     - create_temp_files_table.php
+1.5.0:
+    - "Modification des asks"
+    - update_rules_tables_u150.php 

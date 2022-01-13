@@ -20,7 +20,8 @@ class HtmlAsk extends AskBase implements AskInterface
             'description' => 'Ajoute un champs HTML',
             'icon'        => 'icon-html5',
             'premission'  => 'wcli.utils.ask.edit.admin',
-            'ask_emit'    => 'richeditor',
+            'share_mode' => 'full',
+            'subform_emit'    => 'richeditor',
             'show_attributes' => true,
             'outputs' => [
                 'word_type' => 'HTM',

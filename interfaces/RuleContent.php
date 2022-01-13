@@ -6,6 +6,12 @@
 interface RuleContent
 {
     /**
+     * Returns array  subFormDetails.
+     * @return string
+     */
+    public function subFormDetails();
+    
+    /**
      * Returns a rule text summary when displaying to the user.
      * @return string
      */
@@ -30,14 +36,9 @@ interface RuleContent
     public function makeView($view = null);
 
     /**
-     * Returns information about this rule, including name and description.
-     */
-    public function ruleDetails();
-
-    /**
      * Triggers this rule.
      * @param array $params
      * @return void
      */
-    public function triggerRule($params);
+    public function triggerSubForm($params);
 }

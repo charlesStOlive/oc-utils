@@ -4,15 +4,16 @@ use Waka\Utils\Classes\Rules\RuleContentBase;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use ApplicationException;
 use ToughDeveloper\ImageResizer\Classes\Image;
+use Waka\Utils\Interfaces\RuleContent as RuleContentInterface;
 
-class Html extends RuleContentBase
+class Html extends RuleContentBase implements RuleContentInterface
 {
     protected $tableDefinitions = [];
 
     /**
      * Returns information about this event, including name and description.
      */
-    public function ruleDetails()
+    public function subFormDetails()
     {
         return [
             'name'        => 'Champs HTML + image',

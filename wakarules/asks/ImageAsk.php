@@ -20,6 +20,7 @@ class ImageAsk extends AskBase implements AskInterface
             'name'        => 'Une image dans le répertoire média',
             'description' => 'Choisissez Une image dans le répertoire média',
             'icon'        => 'icon-picture-o',
+            'share_mode'  => 'full',
             'outputs' => [
                 'word_type' => 'IMG',
             ]
@@ -51,7 +52,7 @@ class ImageAsk extends AskBase implements AskInterface
             throw new ApplicationException('Image non trouvé verifiez le champs image'); 
         }
         $path = storage_path('app/media/' . $this->getConfig('image'));
-        //trace_log($path);
+        
         $image = new Image($path);
         $imageUrl = $image->resize($this->getConfig('width'), $this->getConfig('height'), [ 'mode' =>$this->getConfig('crop') ]);
         $imageobj = [

@@ -3,7 +3,6 @@
 use System\Classes\PluginManager;
 use Winter\Storm\Extension\ExtensionBase;
 use Waka\Utils\Classes\DataSource;
-use Waka\Utils\Interfaces\RuleContent as RuleContentInterface;
 use View;
 
 /**
@@ -12,20 +11,43 @@ use View;
  * @package waka\utils
  * @author Alexey Bobkov, Samuel Georges
  */
-class RuleContentBase extends RuleBase implements RuleContentInterface
+class RuleContentBase extends SubForm
 {
-    
-    /**
-     * Returns information about this rule, including name and description.
-     */
-    public function ruleDetails()
+    protected $morphName;
+
+    public function __construct($host = null)
     {
-        return [
-            'name'        => 'Contenu',
-            'description' => 'Contenu description',
-            'icon'        => 'icon-dot-circle-o',
-        ];
+        $this->morphName = 'ruleeable';
+        /*
+         * Paths
+         */
+        //trace_log($this);
+        $this->viewPath = $this->configPath = $this->guessConfigPathFrom($this);
+        /*
+         * Parse the config, if available
+         */
+        if ($formFields = $this->defineFormFields()) {
+            $baseConfig = \Yaml::parseFile(plugins_path('/waka/utils/models/rules/fields_content.yaml'));
+            if(!$this->getEditableOption()) {
+                unset($baseConfig['fields']['ask_emit']);
+            }
+            if(!$this->getShareModeConfig()) {
+                unset($baseConfig['fields']['is_share']);
+            }
+            $askConfig = \Yaml::parseFile($this->configPath.'/'.$formFields);
+            $mergeConfig = array_merge_recursive($baseConfig, $askConfig);
+            $this->fieldConfig = $this->makeConfig($mergeConfig);
+        }
+
+        if (!$this->host = $host) {
+            return;
+        }
+
+        $this->boot($host);
     }
+    
+
+    
 
     public function transformClassToDotedView() {
         $class = get_class($this);
@@ -68,39 +90,6 @@ class RuleContentBase extends RuleBase implements RuleContentInterface
         $views['partial'] = "Un partial du theme";
         return $views;
     }
-
-    public function __construct($host = null)
-    {
-        /*
-         * Paths
-         */
-        //trace_log($this);
-        $this->viewPath = $this->configPath = $this->guessConfigPathFrom($this);
-        //trace_log($this->viewPath);
-
-        /*
-         * Parse the config, if available
-         */
-        if ($formFields = $this->defineFormFields()) {
-            $baseConfig = \Yaml::parseFile(plugins_path('/waka/utils/models/rules/fields_content.yaml'));
-            if(!$this->getEditableOption()) {
-                unset($baseConfig['fields']['ask_emit']);
-            }
-            $askConfig = \Yaml::parseFile($this->configPath.'/'.$formFields);
-            $mergeConfig = array_merge_recursive($baseConfig, $askConfig);
-            $this->fieldConfig = $this->makeConfig($mergeConfig);
-        }
-
-        if (!$this->host = $host) {
-            return;
-        }
-
-        $this->boot($host);
-    }
-
-    public function resolve() {
-
-    }
     public function makeView($view = null) {
         $view = $this->getConfig('view');
         //trace_log($view);
@@ -110,13 +99,7 @@ class RuleContentBase extends RuleBase implements RuleContentInterface
         return \View::make($view)->withData($this->resolve());
     }
 
-    /**
-     * Boot method called when the condition class is first loaded
-     * with an existing model.
-     * @return array
-     */
+    
 
-    public function getModel() {
-        return $this->host->contenteable;
-    }
+    
 }

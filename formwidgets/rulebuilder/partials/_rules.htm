@@ -8,13 +8,22 @@
         <?php endforeach ?>
     </ol>
     <?php if(!$isRestrictedMode) : ?>
-    <a
-       href="javascript:;"
-       data-control="popup"
-       data-handler="<?= $this->getEventHandler('onLoadCreateRuleForm') ?>"
-       class="menu-control">
-        <i class="icon-plus"></i> <?= e(trans($prompt))?>
-    </a>
+    <div style="display:flex;width:100%">
+        <a style="width:70%"
+            href="javascript:;"
+            data-control="popup"
+            data-handler="<?= $this->getEventHandler('onLoadCreateRuleForm') ?>"
+            class="menu-control">
+                <i class="icon-plus"></i> <?= e(trans($prompt))?>
+        </a>
+        <a style="width:30%"
+            href="javascript:;"
+            data-control="popup"
+            data-handler="<?= $this->getEventHandler('onLoadShareComponent') ?>"
+            class="menu-control">
+                <i class="icon-share-alt"></i> <?= e(trans($prompt_share))?>
+            </a>
+    </div>
     <?php endif ?>
 </div>
 
