@@ -171,49 +171,32 @@ class FncBuilder extends FormWidgetBase
 
     }
 
-    public function checkJsonableData($fnc, $datas) {
-        if(!$fnc->jsonable) {
-            return $datas;
-        }
-        $returnDatas = [];
-        foreach($datas as $key=>$data) {
-            if(in_array($key,$fnc->jsonable)) {
-                $returnDatas[$key] = implode(",", $data);
-            } else {
-                $returnDatas[$key] = $data;
-            }
-        }
-        return $returnDatas;
-
-    }
-
     public function onSaveFnc()
     {
-        
-        
-       
-
         $this->restoreCacheFncDataPayload();
 
         $fnc = $this->findFncObj();
 
-        
-
         $oldData = $this->restoreRestrictedField($fnc);
 
         $data = post('Fnc', []);
-        //trace_log("posted data");
-        //trace_log($data);
-        $data = array_merge($data, $oldData);
-        //trace_log("Data to save");
-        //trace_log($data);
-        $data = $this->checkJsonableData($fnc, $data);
+        
+        $jsonableField = $fnc->jsonable;
+        foreach($jsonableField as $json) {
+            $keyIsOk = $data[$json] ?? false;
+            if(!$keyIsOk) {
+                trace_log('on vide');
+                //Si le champs est vide on va le remettre dans le tableau. 
+                $data[$json] = [];
+            }
+        }
 
+        $data = array_merge($data, $oldData);
 
         $fnc->fill($data);
         $fnc->validate();
     
-        $fnc->fnc_text = $fnc->getFncObject()->getText();
+        $fnc->fnc_text = $fnc->getSubFormObject()->getText();
 
         $fnc->applyCustomData();
 
@@ -337,32 +320,28 @@ class FncBuilder extends FormWidgetBase
     public function getCacheFncAttributes($fnc)
     {
         $attributes = array_get($this->getCacheFncData($fnc), 'attributes');
-        $datas = array_get($this->getCacheFncData($fnc), 'datas');
         $code = array_get($this->getCacheFncData($fnc), 'code');
         $photos = array_get($this->getCacheFncData($fnc), 'photos');
         $photo = array_get($this->getCacheFncData($fnc), 'photo');
-        return array_merge($attributes, ["datas" => $datas], ["code" => $code]);
+        return array_merge($attributes, ["code" => $code]);
     }
 
     
 
     public function getCacheFncCode($fnc)
     {
-        //trace_log($this->getCacheFncData($fnc));
         return array_get($this->getCacheFncData($fnc), 'code') ?? 'ERROR';
     }
 
     public function getCacheFncText($fnc)
     {
-        //trace_log('getCacheFncText---');
-        //trace_log($this->getCacheFncData($fnc));
         $fncText =  array_get($this->getCacheFncData($fnc), 'text');
-        //trace_log("actopn text : ".$fncText);
         return $fncText;
     }
 
     public function getCacheFncData($fnc, $default = null)
     {
+        //trace_log("getCacheFncData");
         $cache = post('fnc_data', []);
 
         if (is_array($cache) && array_key_exists($fnc->id, $cache)) {
@@ -378,22 +357,15 @@ class FncBuilder extends FormWidgetBase
 
     public function makeCacheFncData($fnc)
     {
-        //trace_log('makeCacheFncData');
-        
         $data = [
             'attributes' => $fnc->config_data,
             'title' => $fnc->getTitle(),
             'text' => $fnc->getText(),
             'sort_order' => $fnc->sort_order,
-            'datas' => $fnc->datas,
             'photo' => $fnc->photo,
             'photos' => $fnc->photos,
             'code' => $fnc->code
         ];
-
-
-        //trace_log($data);
-
         return $data;
     }
 
@@ -401,9 +373,8 @@ class FncBuilder extends FormWidgetBase
     {
         $cache = post('fnc_data', []);
 
-        //trace_log($cache);
-
-        $cache[$fnc->id] = json_encode($this->makeCacheFncData($fnc));
+        $cache[$fnc->id] = json_encode($this->makeCacheFncData($fnc), JSON_UNESCAPED_SLASHES);
+        trace_log($cache[$fnc->id]);
 
         Request::merge([
             'fnc_data' => $cache
@@ -412,6 +383,7 @@ class FncBuilder extends FormWidgetBase
 
     public function restoreCacheFncDataPayload()
     {
+        trace_log("restoreCacheFncDataPayload");
         Request::merge([
             'fnc_data' => json_decode(post('current_fnc_data'), true)
         ]);

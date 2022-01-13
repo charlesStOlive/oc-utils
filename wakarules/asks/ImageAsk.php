@@ -4,22 +4,25 @@ use Waka\Utils\Classes\Rules\AskBase;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use ApplicationException;
 use ToughDeveloper\ImageResizer\Classes\Image;
+use Waka\Utils\Interfaces\Ask as AskInterface;
 
 
-class ImageAsk extends AskBase
+class ImageAsk extends AskBase implements AskInterface
 {
     protected $tableDefinitions = [];
 
     /**
      * Returns information about this event, including name and description.
      */
-    public function askDetails()
+    public function subFormDetails()
     {
         return [
             'name'        => 'Une image dans le répertoire média',
             'description' => 'Choisissez Une image dans le répertoire média',
             'icon'        => 'icon-picture-o',
-            'word_type' => 'IMG',
+            'outputs' => [
+                'word_type' => 'IMG',
+            ]
         ];
     }
 

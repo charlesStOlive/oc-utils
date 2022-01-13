@@ -142,6 +142,7 @@ class AskBuilder extends FormWidgetBase
     {
         try {
             $asks = AskBase::findAsks($this->targetProductor);
+            trace_log('je load');
             $this->vars['asks'] = $asks;
         }
         catch (Exception $ex) {
@@ -181,16 +182,22 @@ class AskBuilder extends FormWidgetBase
         $oldData = $this->restoreRestrictedField($ask);
 
         $data = post('Ask', []);
-        //trace_log("posted data");
-        //trace_log($data);
+
+        //On remet le champs vide de JSON pour eviter de remettre les oldData dans le champs json.
+        $jsonableField = $ask->jsonable;
+        foreach($jsonableField as $json) {
+            if(!$data[$json] ?? false ) {
+                //Si le champs est vide on va le remettre dans le tableau. 
+                $data[$json] = [];
+            }
+        }
+
         $data = array_merge($data, $oldData);
-        //trace_log("Data to save");
-        //trace_log($data);
 
         $ask->fill($data);
         $ask->validate();
     
-        $ask->ask_text = $ask->getAskObject()->getText();
+        $ask->ask_text = $ask->getSubFormObject()->getText();
 
         $ask->applyCustomData();
 
@@ -205,11 +212,7 @@ class AskBuilder extends FormWidgetBase
     {
         try {
             $ask = $this->findAskObj();
-
-            $data = $this->getCacheAskAttributes($ask);
-            //trace_log("onLoadAskSetup dataCache");
-            //trace_log($data);
-
+            $data = json_encode($this->getCacheAskAttributes($ask));
             $this->askFormWidget->setFormValues($data);
 
             $this->prepareVars();
@@ -230,14 +233,27 @@ class AskBuilder extends FormWidgetBase
 
         $this->restoreCacheAskDataPayload();
 
+
         $newAsk = $this->getRelationModel();
+        $tempAsk = new $className;
+        $defaultValues = $tempAsk->getDefaultValues();
+        trace_log($defaultValues);
+        // 
         $newAsk->askeable_type = get_class($this->model);
         $newAsk->askeable_id = $this->model->id;
         $newAsk->class_name = $className;
 
+        trace_log($className);
+        
+
+        
+
         $newAsk->save();
 
         $this->model->rule_asks()->add($newAsk, post('_session_key'));
+        $newAsk->fill($defaultValues);
+        //Je suis obligé de sauver 2 fois...sinon pas instancié et data est inconnu
+        $newAsk->save();
 
         $this->vars['newAskId'] = $newAsk->id;
         //Sauvegarde auto
@@ -315,11 +331,10 @@ class AskBuilder extends FormWidgetBase
     public function getCacheAskAttributes($ask)
     {
         $attributes = array_get($this->getCacheAskData($ask), 'attributes');
-        $datas = array_get($this->getCacheAskData($ask), 'datas');
         $code = array_get($this->getCacheAskData($ask), 'code');
         $photos = array_get($this->getCacheAskData($ask), 'photos');
         $photo = array_get($this->getCacheAskData($ask), 'photo');
-        return array_merge($attributes, ["datas" => $datas], ["code" => $code]);
+        return array_merge($attributes, ["code" => $code]);
     }
 
     public function getCacheAskTitle($ask)
@@ -329,10 +344,7 @@ class AskBuilder extends FormWidgetBase
 
     public function getCacheAskText($ask)
     {
-        //trace_log('getCacheAskText---');
-        //trace_log($this->getCacheAskData($ask));
         $askText =  array_get($this->getCacheAskData($ask), 'text');
-        //trace_log("actopn text : ".$askText);
         return $askText;
     }
 
@@ -359,7 +371,6 @@ class AskBuilder extends FormWidgetBase
             'title' => $ask->getTitle(),
             'text' => $ask->getText(),
             'sort_order' => $ask->sort_order,
-            'datas' => $ask->datas,
             'photo' => $ask->photo,
             'photos' => $ask->photos,
             'code' => $ask->code
@@ -370,9 +381,8 @@ class AskBuilder extends FormWidgetBase
 
     public function setCacheAskData($ask)
     {
+        trace_log('setCacheAskData');
         $cache = post('ask_data', []);
-
-        //trace_log($cache);
 
         $cache[$ask->id] = json_encode($this->makeCacheAskData($ask));
 

@@ -11,7 +11,7 @@ class {{studly_name}} extends FncBase implements FncInterface
 
     public $jsonable = [];
     //
-    public function askDetails()
+    public function subFormDetails()
     {
         return [
             'name'        =>  '{{lower_name}}',

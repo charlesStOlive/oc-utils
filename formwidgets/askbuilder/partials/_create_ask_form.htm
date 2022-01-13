@@ -23,8 +23,8 @@
                        data-request="<?= $this->getEventHandler('onCreateAsk') ?>"
                        data-request-data="ask_class: '<?= addslashes($class) ?>'"
                        data-popup-load-indicator>
-                        <h5 class="heading"><?= e(trans($ask->getAskName())) ?></h5>
-                        <p class="description"><?= e(trans($ask->getAskDescription())) ?></p>
+                        <h5 class="heading"><?= e(trans($ask->getSubFormName())) ?></h5>
+                        <p class="description"><?= e(trans($ask->getSubFormDescription())) ?></p>
                     </a>
                 </li>
 

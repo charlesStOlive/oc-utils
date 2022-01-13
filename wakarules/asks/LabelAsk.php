@@ -3,15 +3,16 @@
 use Waka\Utils\Classes\Rules\AskBase;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use ApplicationException;
+use Waka\Utils\Interfaces\Ask as AskInterface;
 
-class LabelAsk extends AskBase
+class LabelAsk extends AskBase implements AskInterface
 {
     protected $tableDefinitions = [];
 
     /**
      * Returns information about this event, including name and description.
      */
-    public function askDetails()
+    public function subFormDetails()
     {
         return [
             'name'        => 'Un label/titre',
@@ -20,7 +21,9 @@ class LabelAsk extends AskBase
             'premission'  => 'wcli.utils.ask.edit.admin',
             'ask_emit'    => 'text',
             'show_attributes' => true,
-            'word_type' => null,
+            'outputs' => [
+                'word_type' => null,
+            ]
         ];
     }
 

@@ -3,15 +3,17 @@
 use Waka\Utils\Classes\Rules\AskBase;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use ApplicationException;
+use Waka\Utils\Interfaces\Ask as AskInterface;
 
-class HtmlAsk extends AskBase
+
+class HtmlAsk extends AskBase implements AskInterface
 {
     protected $tableDefinitions = [];
 
     /**
      * Returns information about this event, including name and description.
      */
-    public function askDetails()
+    public function subFormDetails()
     {
         return [
             'name'        => 'texte HTML',
@@ -20,7 +22,9 @@ class HtmlAsk extends AskBase
             'premission'  => 'wcli.utils.ask.edit.admin',
             'ask_emit'    => 'richeditor',
             'show_attributes' => true,
-            'word_type' => 'HTM',
+            'outputs' => [
+                'word_type' => 'HTM',
+            ]
         ];
     }
 

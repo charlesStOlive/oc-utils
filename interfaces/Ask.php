@@ -6,6 +6,12 @@
 interface Ask
 {
     /**
+     * Returns array  subFormDetails.
+     * @return string
+     */
+    public function subFormDetails();
+
+    /**
      * Returns a ask text summary when displaying to the user.
      * @return string
      */
@@ -24,14 +30,9 @@ interface Ask
     public function resolve($modelSrc, $context = 'twig', $dataForTwig = []);
 
     /**
-     * Returns information about this ask, including name and description.
-     */
-    public function askDetails();
-
-    /**
      * Triggers this ask.
      * @param array $params
      * @return void
      */
-    public function triggerAsk($params);
+    public function triggerSubForm($params);
 }

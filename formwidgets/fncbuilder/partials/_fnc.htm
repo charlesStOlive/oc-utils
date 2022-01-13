@@ -5,7 +5,7 @@
     <div>
         <div class="icons">
             <span class="icon"><i class="icon-calculator"></i></span>
-            <span class="icon"><i class="<?= e($fnc->getFncIcon()) ?>"></i></span>
+           <span class="icon"><i class="<?= e($fnc->getSubFormIcon()) ?>"></i></span>
         </div>
         <a href="javascript:;" data-fncs-settings>
             <div class="m-t-0" style="position: absolute; right: 70px">Code: <b><?= $this->getCacheFncCode($fnc)?></b>
@@ -45,5 +45,5 @@
     <input
            type="hidden"
            name="fnc_data[<?= $fnc->id ?>]"
-           value="<?= e(json_encode($this->getCacheFncData($fnc))) ?>" />
+           value="<?= e(json_encode($this->getCacheFncData($fnc),JSON_UNESCAPED_SLASHES )) ?>" />
 </li>

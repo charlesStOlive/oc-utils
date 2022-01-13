@@ -31,12 +31,12 @@ interface Fnc
     /**
      * Returns information about this fnc, including name and description.
      */
-    public function fncDetails();
+    public function subFormDetails();
 
     /**
      * Triggers this fnc.
      * @param array $params
      * @return void
      */
-    public function triggerFnc($params);
+    public function triggerSubForm($params);
 }
