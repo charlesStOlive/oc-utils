@@ -48,10 +48,44 @@ class SubForm extends ExtensionBase
         foreach($this->jsonable as $json) {
             $host->addJsonable($this->jsonable);
         }
-        
-
         // Apply validation rules
         $host->rules = array_merge($host->rules, $this->defineValidationRules());
+    }
+    /**
+     * INITIALISATION
+     * vars $fields adresse du fichier de config de base;
+     */
+    protected function init($baseFields) {
+        //trace_log($this);
+        $this->viewPath = $this->configPath = $this->guessConfigPathFrom($this);
+        /*
+         * Parse the config, if available
+         */
+        if ($formFields = $this->defineFormFields()) {
+            $baseConfig = \Yaml::parseFile(plugins_path($baseFields));
+            if(!$this->getEditableOption()) {
+                unset($baseConfig['fields']['ask_emit']);
+            }
+            if($mode = $this->getShareModeConfig()) {
+                if($mode == 'choose') {
+                    $shareConfig = [
+                        'label' => "Mode de partage",
+                        'type' => 'dropdown',
+                        'options' => ['Pas de partage', 'Partage ressource', 'Partage complet'],
+                        'span' => 'storm',
+                        'cssClass' =>  'col-xs-4',
+                    ];
+                    $baseConfig['fields']['is_share'] = $shareConfig;
+                } else {
+                    //On laisse le champs classique
+                }   
+            } else {
+                 unset($baseConfig['fields']['is_share']);
+            }
+            $askConfig = \Yaml::parseFile($this->configPath.'/'.$formFields);
+            $mergeConfig = array_merge_recursive($baseConfig, $askConfig);
+            $this->fieldConfig = $this->makeConfig($mergeConfig);
+        }
     }
 
     public function triggerSubForm($params)
@@ -216,8 +250,18 @@ class SubForm extends ExtensionBase
         if(!$this->host->is_share) {
             return null;
         }
-        return $this->getShareModeConfig();
+        $mode = $this->getShareModeConfig();
+        if($mode == "choose") {
+            if($this->host->is_share == 1) {
+                return 'ressource';
+            } else {
+                return 'full';
+            }
+        } else {
+            return $mode;
+        } 
     }
+
     public function getWordType()
     {
         return array_get($this->subFormDetails(), 'outputs.word_type');
@@ -304,7 +348,7 @@ class SubForm extends ExtensionBase
     /**
      * UNIQUEMENT POUR RULE pour ASK et FNC on utilise findAsk et findFnc qui sont dans leur prore classes.
      */
-    public static function findRules($mode, $targetClass = null)
+    public static function findRules($mode, $targetClass = null, $dataSourceCode = null)
     {
         $results = [];
         $bundles = PluginManager::instance()->getRegistrationMethodValues('registerWakaRules');
@@ -313,20 +357,31 @@ class SubForm extends ExtensionBase
             foreach ((array) array_get($bundle, $mode, []) as $conditionClass) {
                 //trace_log($conditionClass[0]);
                 $class = $conditionClass[0];
-                $classType = $conditionClass['only'] ?? [];
+                $onlyClass = $conditionClass['onlyClass'] ?? [];
+                $excludeClass = $conditionClass['excludeClass'] ?? [];
                 if (!class_exists($class)) {
                     \Log::error($conditionClass[0]. " n'existe pas dans le register rules du ".$plugin);
                     continue;
                 }
-                if (!in_array($targetClass, $classType) && $classType != [] && $targetClass != null) {
+                if (!in_array($targetClass, $onlyClass) && $onlyClass != [] && $targetClass != null) {
+                    //trace_log('merde');
+                    continue;
+                }
+                if (in_array($targetClass, $excludeClass) && $excludeClass != [] && $targetClass != null) {
                     //trace_log('merde');
                     continue;
                 }
                 $obj = new $class;
-                $results[$class] = $obj;
+                if($mode == 'fnc') {
+                    //Dans les fnc on s interesse au code data source et on verifie si il est dans le bridge
+                    if($obj->isCodeInBridge($dataSourceCode)) {
+                    $results[$class] = $obj;
+                    }
+                } else {
+                    $results[$class] = $obj;
+                }
             }
         }
-
         return $results;
     }
 
@@ -338,7 +393,7 @@ class SubForm extends ExtensionBase
         //trace_log('----ressource = '.$dataSource);
         $modelClass = get_class($model);
         $ruleModel = $model->{'rule_'.$mode.'s'}()->getRelated();
-        $components = $ruleModel->where('is_share', true)->get();
+        $components = $ruleModel->where('is_share','<>', null)->get();
         //trace_log($components->pluck('code'));
         //Impossible de bosser avec each ou reject de Collection. je ne sais pas pourquoi...je crée donc une autre collection et je push les bons résultats.
         //je bosse en collection pour garder des valeurs unique dimplement à la fin. 
@@ -346,10 +401,10 @@ class SubForm extends ExtensionBase
         foreach($components as $component) {
             //trace_log($component->code);
             //trace_log($component->getShareModeConfig());
-            if($component->getShareModeConfig() == 'full') {
+            if($component->getShareMode() == 'full') {
                 //trace_log($component->code);
                 $finalRules->push($component);
-            } else if ($component->getShareModeConfig() == 'ressource') {
+            } else if ($component->getShareMode() == 'ressource') {
                 if($dataSource == $component->getDs()->code) {
                     $finalRules->push($component);
                 }

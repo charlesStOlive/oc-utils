@@ -5,10 +5,13 @@
 fields:
     code:
         label: Code
-        span: auto
+        span: storm
+        cssClass: col-xs-4
         restricted: true
         required: true
     is_share:
         label: Composant partagé
         type: checkbox
-        span: right
+        span: storm
+        cssClass: col-xs-4 p-t-md
+        restricted: true

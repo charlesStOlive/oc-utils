@@ -20,31 +20,10 @@ class RuleConditionBase extends SubForm
     public function __construct($host = null)
     {
         $this->morphName = 'ruleeable';
-        /*
-         * Paths
-         */
-        //trace_log($this);
-        $this->viewPath = $this->configPath = $this->guessConfigPathFrom($this);
-        /*
-         * Parse the config, if available
-         */
-        if ($formFields = $this->defineFormFields()) {
-            $baseConfig = \Yaml::parseFile(plugins_path('/waka/utils/models/rules/fields_condition.yaml'));
-            if(!$this->getEditableOption()) {
-                unset($baseConfig['fields']['ask_emit']);
-            }
-            if(!$this->getShareModeConfig()) {
-                unset($baseConfig['fields']['is_share']);
-            }
-            $askConfig = \Yaml::parseFile($this->configPath.'/'.$formFields);
-            $mergeConfig = array_merge_recursive($baseConfig, $askConfig);
-            $this->fieldConfig = $this->makeConfig($mergeConfig);
-        }
-
+        $this->init('/waka/utils/models/rules/fields_condition.yaml');
         if (!$this->host = $host) {
             return;
         }
-
         $this->boot($host);
     }
 

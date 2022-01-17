@@ -4,29 +4,33 @@
 
 fields:
     code:
-        label: Code 
-        span: left
+        label: Code
+        span: storm
+        cssClass: col-xs-4
         restricted: true
         required: true
     is_share:
         label: Composant partagé
         type: checkbox
-        span: left
+        span: storm
+        cssClass: col-xs-4
         restricted: true
     placement:
         label: Emplacement (laisser vide  pour empl. défaut)
-        comment: 
         restricted: true
-        span: left
+        span: storm
+        cssClass: col-xs-4
     view:
         label: Vue à utiliser
         type: dropdown
         restricted: true
-        span: left
+        span: storm
+        cssClass: col-xs-4
         options: listViews
     partial:
         label: chemin du partial
-        span: right
+        span: storm
+        cssClass: col-xs-4
         trigger:
             field: view
             condition: value[partial]

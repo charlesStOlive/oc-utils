@@ -14,7 +14,7 @@ class RuleFnc extends SubFormModel
      */
     public $table = 'waka_utils_rule_fncs';
     public $staticAttributes = ['fnc_text'];
-    public $realFields = ['photo', 'photos', 'code' , 'is_shared'];
+    public $realFields = ['photo', 'photos', 'code' , 'is_share'];
 
     /**
      * @var array Relations

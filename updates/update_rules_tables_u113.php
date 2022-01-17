@@ -29,16 +29,16 @@ class CreateStateteablesTableU113 extends Migration
             $table->json('datas')->nullable();
         });
 
-        $asks = \Waka\Utils\Models\RuleAsk::get();
-        $this->setIdAsSortOrder($asks);
-        $fncs = \Waka\Utils\Models\RuleFnc::get();
-        $this->setIdAsSortOrder($fncs);
-        $conditions = \Waka\Utils\Models\RuleCondition::get();
-        $this->setIdAsSortOrder($conditions);
-        $contents = \Waka\Utils\Models\RuleContent::get();
-        $this->setIdAsSortOrder($contents);
-        $filters = \Waka\Utils\Models\RuleFilter::get();
-        $this->setIdAsSortOrder($filters);
+        // $asks = \Waka\Utils\Models\RuleAsk::get();
+        // $this->setIdAsSortOrder($asks);
+        // $fncs = \Waka\Utils\Models\RuleFnc::get();
+        // $this->setIdAsSortOrder($fncs);
+        // $conditions = \Waka\Utils\Models\RuleCondition::get();
+        // $this->setIdAsSortOrder($conditions);
+        // $contents = \Waka\Utils\Models\RuleContent::get();
+        // $this->setIdAsSortOrder($contents);
+        // $filters = \Waka\Utils\Models\RuleFilter::get();
+        // $this->setIdAsSortOrder($filters);
     }
 
     public function setIdAsSortOrder($rules) {

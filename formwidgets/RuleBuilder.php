@@ -84,7 +84,7 @@ class RuleBuilder extends FormWidgetBase
         if(!$this->targetProductor) {
             throw new ApplicationException('Il manque targetProductor dans la config');
         }
-        if(!in_array($this->ruleMode, ['content', 'condition','fnc', 'ask'])) {
+        if(!in_array($this->ruleMode, ['content', 'condition','fnc', 'ask', 'bloc'])) {
             throw new ApplicationException('ruleMode doit être égale a content ou condition ou fncs ou asks');
         }
     }
@@ -163,7 +163,10 @@ class RuleBuilder extends FormWidgetBase
     }
 
     public function countShareModel($rule = null) {
-        return $this->getSharedModel($rule)->count();
+        if($shares = $this->getSharedModel($rule)) {
+            return $shares->count();
+        }
+        return null;
     }
 
     public function getSharedModel($rule = null) {
@@ -172,8 +175,9 @@ class RuleBuilder extends FormWidgetBase
             $rule = $this->findRuleObj();
         }
         $shareMode = $rule->getShareMode();
+        trace_log("getSharedModel : ".$shareMode." rule : ".$rule->code);
         if(!$shareMode) {
-            return;
+            return ;
         }
         $class = get_class($rule);
         $eable = $this->ruleMode.'eable';
@@ -182,12 +186,14 @@ class RuleBuilder extends FormWidgetBase
         $className = $rule->class_name;
         $dsCode = $rule->getDs()->code;
         
-        $modelsSharing = $class::where($eable_type, $eable_type_value)->where('class_name', $className)->where('code', $rule->code)->where('is_share', true);
+        $modelsSharing = $class::where($eable_type, $eable_type_value)->where('class_name', $className)->where('code', $rule->code)->where('is_share','<>', null);
         if($shareMode == 'ressource') {
-            $modelsSharing = $modelsSharing->whereHasMorph('askeable', $eable_type_value,  function ($query) use($dsCode) {
+            $modelsSharing = $modelsSharing->whereHasMorph($eable, $eable_type_value,  function ($query) use($dsCode) {
                 $query->where('data_source', $dsCode);
             });
         }
+        trace_log($modelsSharing->get()->count());
+        trace_log($modelsSharing->get());
         return $modelsSharing->get();
 
     }
@@ -202,44 +208,20 @@ class RuleBuilder extends FormWidgetBase
     public function onLoadCreateRuleForm()
     {
         try {
-            if($this->ruleMode == 'content') {
-                $rules = $this->getRuleClass()::findRules($this->ruleMode, $this->targetProductor);
-                
-            } elseif($this->ruleMode == 'condition') {
-                $rules = $this->getRuleClass()::findRules($this->ruleMode, $this->targetProductor);
-            }
-            elseif($this->ruleMode == 'fnc') {
-                $rules = $this->getRuleClass()::findFncs($this->targetProductor, $this->model->data_source);
-            }
-            elseif($this->ruleMode == 'ask') {
-                $rules = $this->getRuleClass()::findAsks($this->targetProductor);
-            }
+            $rules = $this->getRuleClass()::findRules($this->ruleMode, $this->targetProductor, $this->model->data_source);
             $this->vars['rules'] = $rules;
-            
         }
         catch (Exception $ex) {
             $this->handleError($ex);
         }
-
         return $this->makePartial('create_rule_form');
     }
 
     public function onLoadShareComponent()
     {
         try {
-            if($this->ruleMode == 'content') {
-                $shares = $this->getRuleClass()::findShares($this->ruleMode, $this->model, $this->model->data_source);
-            } elseif($this->ruleMode == 'condition') {
-                $shares = $this->getRuleClass()::findShares($this->ruleMode, $this->model, $this->model->data_source);
-            }
-            elseif($this->ruleMode == 'fnc') {
-                $shares = $this->getRuleClass()::findShares($this->ruleMode, $this->model, $this->model->data_source);
-            }
-            elseif($this->ruleMode == 'ask') {
-                $shares = $this->getRuleClass()::findShares($this->ruleMode, $this->model, $this->model->data_source);
-            }
+            $shares = $this->getRuleClass()::findShares($this->ruleMode, $this->model, $this->model->data_source);
             $this->vars['shares'] = $shares;
-            
         }
         catch (Exception $ex) {
             $this->handleError($ex);
@@ -314,9 +296,12 @@ class RuleBuilder extends FormWidgetBase
 
     public function onCreateRule()
     {
+        trace_log($this->ruleMode);
+        trace_log(post());
         if (!$className = post('rule_class')) {
             throw new ApplicationException('Please specify an rule');
         }
+        
 
         //$this->restoreCacheRuleDataPayload();
         //
@@ -337,7 +322,7 @@ class RuleBuilder extends FormWidgetBase
 
         $this->vars['newRuleId'] = $newRule->id;
 
-        $this->autoSAve();
+        //$this->autoSAve();
 
         return $this->renderRules();
     }
@@ -515,7 +500,7 @@ class RuleBuilder extends FormWidgetBase
     public function restoreCacheRuleDataPayload()
     {
         Request::merge([
-            $this->getId().'rule_data' => json_decode(post('current_rule_data'), true)
+            $this->getId().'rule_data' => json_decode(post($this->getId().'current_rule_data'), true)
         ]);
     }
 
@@ -542,6 +527,9 @@ class RuleBuilder extends FormWidgetBase
         }
         elseif($this->ruleMode == 'ask') {
             return \Waka\Utils\Classes\Rules\AskBase::class;
+        }
+        elseif($this->ruleMode == 'bloc') {
+            return \Waka\Utils\Classes\Rules\BlocBase::class;
         }
     }
 

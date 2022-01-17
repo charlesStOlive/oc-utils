@@ -7,20 +7,9 @@ interface Rule
 {
     /**
      * Returns array  subFormDetails.
-     * @return string
+     * @return array
      */
     public function subFormDetails();
-    /**
-     * Returns a rule text summary when displaying to the user.
-     * @return string
-     */
-    public function getText();
-
-    /**
-     * Returns a rule title for displaying in the rule settings form.
-     * @return string
-     */
-    public function getTitle();
 
     /**
      * Resolve  rule a besoin du modèle.

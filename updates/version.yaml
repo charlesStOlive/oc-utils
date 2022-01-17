@@ -35,3 +35,6 @@
 1.5.0:
     - "Modification des asks"
     - update_rules_tables_u150.php 
+1.5.1:
+    - "creation des blocs dynamiques"
+    - create_rule_blocs_table.php
