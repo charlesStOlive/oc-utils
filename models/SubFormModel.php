@@ -130,12 +130,22 @@ class SubFormModel extends Model
         //Gestion des tabs si il y en a
         $fieldInConfigWithTabs = $this->getFieldsFromConfig($config);
         $fieldInConfig = array_diff(array_keys($fieldInConfigWithTabs), $realFields);
-        //trace_log("------------------------------fieldInConfig-------------------------------");
-        //trace_log($fieldInConfig);
+        // trace_log("------------------------------fieldInConfig-------------------------------");
+        // trace_log($fieldInConfig);
 
         $fieldAttributes = array_merge($staticAttributes, $fieldInConfig);
 
+        // trace_log("------------------------------fieldAttributes-------------------------------");
+        // trace_log($fieldAttributes);
+
         $dynamicAttributes = array_only($this->getAttributes(), $fieldAttributes);
+
+        // $attributesWithoutOldAttributes = array_diff($this->getAttributes(), array_merge($fieldAttributes, $realFields, $staticAttributes, $dynamicAttributes));
+        // trace_log("------------------------------attributesWithoutOldAttributes-------------------------------");
+        // trace_log($attributesWithoutOldAttributes);
+
+        // trace_log("------------------------------dynamicAttributes-------------------------------");
+        // trace_log($dynamicAttributes);
 
         //trace_log($dynamicAttributes);
         //TRICKY ! Gestion du problème des json. les champs json sont déjà transformé en json et le champs config va l'être aussi. donc je le decrypt juste avant l'enregistrement
@@ -143,10 +153,18 @@ class SubFormModel extends Model
 
         $this->config_data = $dynamicAttributes;
 
+        // trace_log("------------------------------fieldAttributes-------------------------------");
+        // trace_log($fieldAttributes);
+
+        // trace_log("------------------------------fieldAttributes-------------------------------");
+        // trace_log($dynamicAttributes);
+
         $this->setRawAttributes(array_except($this->getAttributes(), $fieldAttributes));
-        if($this->getOriginalPurgeValue('saved_from_builder')) {
-            Event::fire('rules_sync', [$this]);
-        }
+
+        // trace_log("------------------------------fieldAttributes-------------------------------");
+        // trace_log(array_except($this->getAttributes(), $fieldAttributes));
+
+        // trace_log($this->getAttributes());
         
     }
 
