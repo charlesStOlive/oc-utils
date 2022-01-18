@@ -175,7 +175,7 @@ class RuleBuilder extends FormWidgetBase
             $rule = $this->findRuleObj();
         }
         $shareMode = $rule->getShareMode();
-        trace_log("getSharedModel : ".$shareMode." rule : ".$rule->code);
+        //trace_log("getSharedModel : ".$shareMode." rule : ".$rule->code);
         if(!$shareMode) {
             return ;
         }
@@ -192,8 +192,8 @@ class RuleBuilder extends FormWidgetBase
                 $query->where('data_source', $dsCode);
             });
         }
-        trace_log($modelsSharing->get()->count());
-        trace_log($modelsSharing->get());
+        //trace_log($modelsSharing->get()->count());
+        //trace_log($modelsSharing->get());
         return $modelsSharing->get();
 
     }
@@ -296,8 +296,8 @@ class RuleBuilder extends FormWidgetBase
 
     public function onCreateRule()
     {
-        trace_log($this->ruleMode);
-        trace_log(post());
+        //trace_log($this->ruleMode);
+        //trace_log(post());
         if (!$className = post('rule_class')) {
             throw new ApplicationException('Please specify an rule');
         }

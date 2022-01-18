@@ -59,7 +59,7 @@ class CreateStateteablesTableU120 extends Migration
                     if($jsonField != 'datas') {
                         //trace_log("--analyse : ".$jsonField);
                         $field = $decodedConfig[$jsonField] ?? null;
-                        if($field) {
+                        if($field && is_string($field)) {
                             $modif = true;
                             $fieldToArray = explode(',',$field);
                             //trace_log($field." a modifier en --");
@@ -73,7 +73,7 @@ class CreateStateteablesTableU120 extends Migration
                     
                 }
             }
-            if($row->datas) {
+            if($row->datas ?? false) {
                 $modif = true;
                 //trace_log('--A copier dans le config');
                 //trace_log($row->datas);

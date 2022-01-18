@@ -64,7 +64,7 @@ class SubForm extends ExtensionBase
         if ($formFields = $this->defineFormFields()) {
             $baseConfig = \Yaml::parseFile(plugins_path($baseFields));
             if(!$this->getEditableOption()) {
-                unset($baseConfig['fields']['ask_emit']);
+                unset($baseConfig['fields']['subform_emit']);
             }
             if($mode = $this->getShareModeConfig()) {
                 if($mode == 'choose') {
@@ -209,6 +209,7 @@ class SubForm extends ExtensionBase
     }
     public function getEditableOption()
     {
+        trace_log(array_get($this->subFormDetails(), 'subform_emit'));
         return array_get($this->subFormDetails(), 'subform_emit');
     }
     public function getMemo()

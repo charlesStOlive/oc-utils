@@ -9,8 +9,8 @@ fields:
         cssClass: col-xs-4
         restricted: true
         required: true
-    ask_emit: 
-        label: Demander lors de la création d'un email
+    subform_emit: 
+        label: Demander lors de la création ?
         type: checkbox
         span: storm
         cssClass: col-xs-4 p-t-md
