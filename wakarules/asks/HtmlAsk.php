@@ -50,8 +50,13 @@ class HtmlAsk extends AskBase implements AskInterface
 
     public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
         $text = $this->host->config_data['html'] ?? null;
+        
         if(!$text) {
             throw new ApplicationException('le texte html du ask : '.$this->getCode().' n\'a pas été trouvé'); 
+        }
+        if(!$modelSrc) {
+            return $text;
+            
         }
         if($context == 'txt') {
             return strip_tags(\Twig::parse($text, $dataForTwig));

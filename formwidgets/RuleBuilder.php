@@ -184,13 +184,20 @@ class RuleBuilder extends FormWidgetBase
         $eable_type = $this->ruleMode.'eable_type';
         $eable_type_value = get_class($this->model);
         $className = $rule->class_name;
-        $dsCode = $rule->getDs()->code;
+        $ds = $rule->getDs();
+        $dsCode = null;
+        if($ds) {
+            $dsCode = $rule->getDs()->code;
+        }
         
         $modelsSharing = $class::where($eable_type, $eable_type_value)->where('class_name', $className)->where('code', $rule->code)->where('is_share','<>', null);
-        if($shareMode == 'ressource') {
+        if($shareMode == 'ressource' && $dsCode) {
             $modelsSharing = $modelsSharing->whereHasMorph($eable, $eable_type_value,  function ($query) use($dsCode) {
                 $query->where('data_source', $dsCode);
             });
+        }
+        if($shareMode == 'ressource' && !$dsCode) {
+            return [];
         }
         //trace_log($modelsSharing->get()->count());
         //trace_log($modelsSharing->get());

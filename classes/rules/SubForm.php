@@ -102,7 +102,7 @@ class SubForm extends ExtensionBase
 
     public function getDs() {
         $model = $this->getModel();
-        if($model) {
+        if($model->data_source) {
             return \DataSources::find($model->data_source);
         } else {
             return null;
@@ -142,6 +142,7 @@ class SubForm extends ExtensionBase
     }
 
     public function getClientModel($clientId) {
+        
         $clientModel = $this->getDs()::find($clientId);
         if(!$clientModel) {
             throw new ApplicationException('Modèle non trouvé pour la résolution de la tache demandable.'); 

@@ -12,11 +12,17 @@ class Wattributes
     {
         $this->model = $model;
         $this->mode = $mode;
-        $this->dataSource = \DataSources::find($this->model->data_source);
+        if($this->model->data_source) {
+            $this->dataSource = \DataSources::find($this->model->data_source);
+        }
+        
     }
 
     public function getAttributes()
     {
+        if(!$this->dataSource) {
+            return [];
+        }
         //trace_log("lancement de getAttributes");
         $attributeArray = [];
 
@@ -94,6 +100,9 @@ class Wattributes
 
     public function getFncOutput($fnc)
     {
+        if(!$this->dataSource) {
+            return [];
+        }
         $code = $fnc->getCode();
         $result = [];
         $outputConfig = $fnc->getOutputs();
