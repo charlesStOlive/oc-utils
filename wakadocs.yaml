@@ -1,0 +1,23 @@
+ 
+files:
+    utils_install:
+        title: Installation 
+        group: "01 Installation"
+        comment: "Niveau developpeur laravel & october/winter"
+        relativePath: waka/utils/docs
+    utils_datasource:
+        title: Principe des Datasource
+        group: "02 Configuration"
+        relativePath: waka/utils/docs
+        comment: "La Base de fusion des outils Notilac."
+    utils_rulebuilder:
+        title: Principe des Composants dynamiques
+        group: "02 Configuration"
+        relativePath: waka/utils/docs
+        comment: "Explications des asks, fncs, conditions, etc."
+    utils_comande:
+        title: Commandes artisan
+        group: "09 Commandes"
+        relativePath: waka/utils/docs
+        comment: "Niveau developpeur laravel & october/winter"
+

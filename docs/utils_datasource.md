@@ -3,7 +3,9 @@ Ces classes ne fonctioneront que dans un plugin winter.cms voir ( mais non verif
 ## Qu'est ce que le module Data Source
 Le module DataSource permet de relier entre eux vos modèles de déclarer les relations, des controlleurs des mapping pour le cloud et pleins d'autres choses. 
 
-![](../assets/docs_images/2022-01-19-17-06-41.png)
+C'est notamment via les DataSource que nous affichons dans la colonne attributs les relations disponibles dans un modèle de production
+
+![](../assets/docs_images/2022-01-21-14-17-13.png)
 
 ## Comment configurer un DataSource
 1. Ajouter cette ligne dans la fonction boot d'un plugin winter.cms
