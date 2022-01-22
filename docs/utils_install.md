@@ -5,9 +5,8 @@ Votre projet est une instance winter.cms préconfiguré :
 1. Les variables sont dans un fichier .env
 2. Le projet est normalement dans un répertoire privé et les fichiers publics dans un répertoire /public. 
    
-## Installation du repo et des librairies
-Votre système fonctione avec des sous modules et un fichier env.
-### Le fichier env
+
+## Le fichier env
 Ce fichier emabarque l'intégralité des codes d'accès à vos API, Base de données,etc. 
 Il ne faut jamais communiquer ces informations ni laisser ces informations dans un repo. Avant tout e installation verifiez que les informations du fichier .env sont complètes. Le plus simple est de copier celui en place sur l'ancien serveur et de modifier éventuellement les données. 
 ```
@@ -37,7 +36,7 @@ ENABLE_CSRF=true
 ```
 <!--includepart[env]-->
 
-### Lancer l'installation
+## Lancer l'installation
 1. Clonez votre repo ou ouvrez le fichier zip qui vous à été fournis
 1. executez les commande suivantes dans votre terminal  pour installer et mettre à jours vos sous modules
 ```
