@@ -33,7 +33,7 @@ class Plugin extends PluginBase
             'icon' => 'icon-leaf',
         ];
     }
-
+    
     public function registerMarkupTags()
     {
         return [
@@ -56,10 +56,12 @@ class Plugin extends PluginBase
                     //trace_log($dataFromConfig);
                     return $dataFromConfig;
                 },
+                // TODO A SUPPRIMER ? 
                 'colorArray' => function ($twig, $color1) {
                     $colorArray = [];
                     return $colorArray;
                 },
+                 // TODO A SUPPRIMER ? 
                 'ident' => function ($string, $number) {
                     $number = $number * 4;
                     $spaces = str_repeat(' ', $number);
@@ -105,9 +107,6 @@ class Plugin extends PluginBase
                 'stubCreator' => function ($template, $allData, $secificData, $dataName = null) {
                     $allData['specific'] = $secificData;
                     $allData['dataName'] = $dataName;
-                    //trace_log('stubCreator');
-                    //trace_log($allData['specific']);
-                    //trace_log($allData['dataName']);
                     $templatePath = plugins_path('waka/utils/console/'.$template);
                     $templateContent = \File::get($templatePath);
                     $content = \Twig::parse($templateContent, $allData);

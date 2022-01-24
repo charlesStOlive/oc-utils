@@ -12,6 +12,12 @@ files:
         relativePath: waka/utils/docs
         comment: "La Base de fusion des outils Notilac."
         order: 10
+    utils_twig:
+        title: Balise twig
+        group: "03 Edition"
+        relativePath: waka/utils/docs
+        comment: "liste des balises et fonctions twig disponibles pour l'édition"
+        order: 1
     utils_rulebuilder:
         title: Principe des Composants dynamiques
         group: "02 Configuration"
@@ -24,4 +30,9 @@ files:
         relativePath: waka/utils/docs
         comment: "Niveau developpeur laravel & october/winter"
         order: 30
-
+    
+parts:
+    utils_twig:
+        relativePath: waka/utils/docs/parts
+        code: twig
+        from: utils
