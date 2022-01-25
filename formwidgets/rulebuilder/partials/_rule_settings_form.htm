@@ -17,6 +17,14 @@
 <input type="hidden" name="current_rule_data" value="<?= e(json_encode($this->getCacheRuleDataPayload())) ?>" />
 
 <div class="modal-body">
+    <?php if($isRestrictedMode && $rule->getMemo()) : ?>
+    <div class="callout fade in callout-info no-subheader">
+        <div class="header">
+            <i class="icon-info"></i>
+            <h3><?= $rule->getMemo()?></h3>
+        </div>
+    </div>
+    <?php endif ?>
     <?php if ($showAttributes) : ?>
     <div class="row">
         <div class="col-md-8">

@@ -290,6 +290,10 @@ class SubForm extends ExtensionBase
         }
     }
 
+    public function isFnc() {
+        return $this->getConfig('is_fnc');
+    }
+
     
 
     /**

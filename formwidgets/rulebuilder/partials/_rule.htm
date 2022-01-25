@@ -4,7 +4,11 @@
     class="rule-item <?= $rule->hasFieldConfig() ? '' : 'no-form' ?>">
     <div>
         <div class="icons">
-            <span class="icon"><i class="icon-pencil"></i></span>
+            <?php if($rule->isFnc()) : ?>
+            <span class="icon"><i class=" icon-code" style="color:orange"></i></span>
+            <?php else : ?>
+            <span class="icon"><i class="icon-pencil" ></i></span>
+            <?php endif ?>
             <span class="icon"><i class="<?= e($rule->getSubFormIcon()) ?>"></i></span>
         </div>
         <a href="javascript:;" data-rules-settings>

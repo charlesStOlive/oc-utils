@@ -6,7 +6,7 @@
 
         <?php if(count($arrayCategories['values'])>1) : ?>
         <li>
-            <a class="w-ac-toggle bg-p" href=#><span
+            <a class="w-ac-toggle bg-p" href=# style="<?php if($keyCategorie == 'fonctions'):?>background-color:orange<?php endif ?>"><span
                       class="oc-<?=$arrayCategories['icon']?>"><?=$keyCategorie?></span></a>
             <div
                  class="w-ac-inner w-ac-list">
