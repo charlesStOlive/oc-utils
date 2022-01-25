@@ -85,37 +85,29 @@ class ModelInfo extends FormWidgetBase
     public function setValues($modelId, $fields)
     {
         $modelvalues = $this->ds->getValues($modelId);
-        $dotedValues = array_dot($modelvalues);
         $parsedFields = [];
         foreach ($fields as $key=>$field) {
             $showIf =  $field['showIf'] ?? null;
             if($showIf) {
                 $showField = $showIf['field'] ?? null;
-                $fieldToTest = $dotedValues[$showField];
+                $fieldToTest = array_get($modelvalues, $showField);
                 $tests = $showIf['tests'] ?? null;
                 $condition = $showIf['condition'] ?? null;
                 if(!$showField or !is_array($tests)) {
                     throw new \SystemException('Configuration sidebarinfo erreur sur du showIF');
                 }
-                //trace_log($fieldToTest);
-                //trace_log($tests);
 
                 $fieldInArray = in_array($fieldToTest, $tests);
-                //trace_log('fieldInArray : '.$fieldInArray);
-                //trace_log('condition : '.$condition);
                 if($fieldInArray != $condition) {
-                    //trace_log("PAS OK");
                     continue;
                 }
             }
             $type = $field['infoType'] ?? 'label';
-            
             $label = $field['label'] ?? null;
             $icon = $field['icon'] ?? null;
-            //
             $labelFrom = $field['labelFrom'] ?? null;
             if ($labelFrom) {
-                $label = $dotedValues[$labelFrom] ?? "inconnu";
+                $label = array_get($modelvalues, $labelFrom);
             }
             //
             $value = null;
@@ -125,7 +117,7 @@ class ModelInfo extends FormWidgetBase
             } else {
                 $fieldValue = $field['value'] ?? $key;
                 if ($fieldValue) {
-                    $value = $dotedValues[$fieldValue] ?? "inconnu";
+                    $value = array_get($modelvalues, $fieldValue);
                 }
             }
             
@@ -138,7 +130,7 @@ class ModelInfo extends FormWidgetBase
             $exRacine = $field['exRacine'] ?? null;
             $linkValue = $field['linkValue'] ?? null;
             if($linkValue) {
-                $linkValue =$dotedValues[$linkValue] ?? null;
+                $linkValue = array_get($modelvalues, $linkValue);
             } else {
                 $linkValue =$value;
             }
@@ -156,12 +148,12 @@ class ModelInfo extends FormWidgetBase
 
 
             if ($type == 'workflow') {
-                $value = $dotedValues['wfPlaceLabel'];
+                $value = array_get($modelvalues, 'wfPlaceLabel');
             }
 
             if ($type == 'date') {
                 $mode = $field['mode'] ?? 'date-time';
-                $value = $dotedValues[$fieldValue] ?? "Inconnu";
+                $value = array_get($modelvalues, $fieldValue, 'Inconnu');
                 if($value != 'Inconnu') {
                     $date = new WakaDate();
                     $value = DateTimeHelper::makeCarbon($value, false);

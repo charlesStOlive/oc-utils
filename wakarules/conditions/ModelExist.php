@@ -30,7 +30,7 @@ class ModelExist extends RuleConditionBase implements RuleInterface
         $mode = $this->getConfig('mode');
         $field = $field ? $field : '*';
         //trace_log($hostObj->config_data);
-        $text = "Verification existance valeur : R=".$relation.' | M='.$mode.' | F='.$field;
+        $text = "Verification existance valeur : Relat=".$relation.' | Modl='.$mode.' | Field='.$field;
         if($text) {
             return $text;
         }

@@ -362,18 +362,6 @@ class DataSource extends Extendable
         return $dsApi;
     }
 
-    public function getDotedValues($modelId = null, $forceSourceName = false)
-    {
-        $constructApi = $this->getValues($modelId);
-        $api = [];
-        if($forceSourceName) {
-            $api[$forceSourceName] = $constructApi;
-        } else {
-             $api[snake_case($this->name)] = $constructApi;
-        }
-        return array_dot($api);
-    }
-
     /**
      * PARTIE SUR LES WORKFLOW ----------
      */

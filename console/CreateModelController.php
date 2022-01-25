@@ -266,10 +266,12 @@ class CreateModelController extends GeneratorCommand
                 }
             }
             if($version = $item['version'] ?? null) {
-                // attendu 110 ou 110::create ou 110::delete ou 110::change
+                // attendu 110 ou 110::create ou 110::delete ou 110::change ou 110::rename::oldname
                 $version = explode('::', $version);
                 $item['version'] = $version[0];
                 $item['versionMode'] = $version[1] ?? null;
+                //
+                $item['old_name'] = $version[2] ?? null;
 
             }
             $rel = $item['relation'] ?? null;

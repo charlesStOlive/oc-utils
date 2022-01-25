@@ -353,24 +353,6 @@ class DataSource
         $dsApi = array_merge($this->getModels($modelId));
         return $dsApi;
     }
-
-    public function getDotedValues($modelId = null, $forceSourceName = false)
-    {
-        $constructApi = $this->getValues($modelId);
-        $api = [];
-        if($forceSourceName) {
-            $api[$forceSourceName] = $constructApi;
-        } else {
-             $api[snake_case($this->name)] = $constructApi;
-        }
-        return array_dot($api);
-    }
-    // public function getSimpleDotedValues($modelId = null)
-    // {
-    //     $constructApi = $this->getValues($modelId);
-    //     return array_dot($constructApi);
-    // }
-
     /**
      *
      */
