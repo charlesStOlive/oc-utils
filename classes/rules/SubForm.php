@@ -210,7 +210,7 @@ class SubForm extends ExtensionBase
     }
     public function getEditableOption()
     {
-        trace_log(array_get($this->subFormDetails(), 'subform_emit'));
+        //trace_log(array_get($this->subFormDetails(), 'subform_emit'));
         return array_get($this->subFormDetails(), 'subform_emit');
     }
     public function getMemo()
@@ -241,7 +241,11 @@ class SubForm extends ExtensionBase
 
     public function showAttribute()
     {
-        return array_get($this->subFormDetails(), 'show_attributes');
+        $baseAttributes = array_get($this->subFormDetails(), 'show_attributes');
+        // $isFnc = $this->getConfig('is_fnc');
+        // $addAttributes = $this->getConfig('fnc_name');
+
+        return $baseAttributes;
     }
     public function getShareModeConfig()
     {
@@ -267,6 +271,23 @@ class SubForm extends ExtensionBase
     public function getWordType()
     {
         return array_get($this->subFormDetails(), 'outputs.word_type');
+    }
+    public function getOutputTypes($mode = null)
+    {
+        $outputs  = array_get($this->subFormDetails(), 'outputs');
+        if($this->getConfig('is_fnc')) {
+            return 'reTwig';
+
+        }
+        if(!is_iterable($outputs)) {
+            return $outputs;
+
+        } 
+        if(!is_iterable($outputs) && $mode) {
+            return $outputs[$model] ?? null;
+        }  else {
+            return null;
+        }
     }
 
     
@@ -352,6 +373,8 @@ class SubForm extends ExtensionBase
      */
     public static function findRules($mode, $targetClass = null, $dataSourceCode = null)
     {
+        //trace_log('find rules');
+        //trace_log($mode);
         $results = [];
         $bundles = PluginManager::instance()->getRegistrationMethodValues('registerWakaRules');
         $mode = $mode.'s';
@@ -374,8 +397,9 @@ class SubForm extends ExtensionBase
                     continue;
                 }
                 $obj = new $class;
-                if($mode == 'fnc') {
+                if($mode == 'fncs') {
                     //Dans les fnc on s interesse au code data source et on verifie si il est dans le bridge
+                    //trace_log("dataSourceCode : ".$dataSourceCode);
                     if($obj->isCodeInBridge($dataSourceCode)) {
                     $results[$class] = $obj;
                     }

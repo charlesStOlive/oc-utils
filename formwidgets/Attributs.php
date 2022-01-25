@@ -17,7 +17,7 @@ class Attributs extends FormWidgetBase
 
     public $model;
     public $dataSource;
-    public $mode;
+    public $mode = 'twig';
     public $text_info;
     public $valueArray;
     public $lang_fields;
@@ -46,10 +46,12 @@ class Attributs extends FormWidgetBase
         $this->vars['text_info'] = $this->text_info;
         $this->vars['attributesArray'] = $attributes->getAttributes();
         $fncArray = $attributes->getFncsOutputs($this->model->rule_fncs);
+        $askArray = $attributes->getAsks($this->model->rule_asks);
         $this->vars['FNCSArray'] = $fncArray;
+        $this->vars['ASKSArray'] = $askArray;
         //trace_log($this->mode);
         if ($this->mode == 'word') {
-            return $this->makePartial('list_word');
+            return $this->makePartial('list');
         } else {
             return $this->makePartial('list');
         }

@@ -23,9 +23,7 @@ class HtmlAsk extends AskBase implements AskInterface
             'share_mode' => 'full',
             'subform_emit'    => 'richeditor',
             'show_attributes' => true,
-            'outputs' => [
-                'word_type' => 'HTM',
-            ]
+            'outputs' => 'htm',
         ];
     }
 
@@ -58,11 +56,18 @@ class HtmlAsk extends AskBase implements AskInterface
             return $text;
             
         }
-        if($context == 'txt') {
-            return strip_tags(\Twig::parse($text, $dataForTwig));
+        if($isForFnc = $this->getConfig('is_fnc')) {
+            //trace_log('je retourne le texte brut');
+            return $text;
+        } else {
+            if($context == 'txt') {
+                return strip_tags(\Twig::parse($text, $dataForTwig));
         } else {
             return \Twig::parse($text, $dataForTwig);;
         }
+
+        }
+        
         
     }
 }

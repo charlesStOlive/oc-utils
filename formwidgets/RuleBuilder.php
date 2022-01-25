@@ -548,8 +548,19 @@ class RuleBuilder extends FormWidgetBase
         if(!$rule->showAttribute()) {
             return null;
         }
-        $attributes = new \Waka\utils\Classes\Wattributes($this->model, $this->ruleMode.'s');
-        return  $attributes->getAttributes();
+        
+
+        $attributesObj = new \Waka\utils\Classes\Wattributes($this->model, $this->ruleMode.'s');
+        $attributes = $attributesObj->getAttributes();
+
+        //Cas des rules avec appel de fonctions
+        $isFnc = $rule->getConfig('is_fnc');
+        if(!$isFnc) {
+            return $attributes;
+        }
+        $fnc_attributes = $rule->getConfig('fnc_attributes');
+        $fncOutputs = $attributesObj->getManuelFncOutput($fnc_attributes, 'row');
+        return  array_merge($fncOutputs, $attributes);
     }
 
     /**

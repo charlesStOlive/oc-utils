@@ -38,6 +38,9 @@ class Plugin extends PluginBase
     {
         return [
             'filters' => [
+                'reTwig' => function ($twig, $drowDta, $rowDs) {
+                    return \Twig::parse($twig, ['row' => $drowDta, 'ds' => $rowDs]);
+                },
                 'localeDate' => [new \Waka\Utils\Classes\WakaDate, 'localeDate'],
                 'toJson' => function ($twig) {
                     return json_encode($twig);

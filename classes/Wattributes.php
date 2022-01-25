@@ -8,6 +8,8 @@ class Wattributes
     public $dataSource;
     public $model;
     public $mode;
+    public $btnsConfig;
+    private $typeTransformers;
     public function __construct($model, $mode)
     {
         $this->model = $model;
@@ -15,7 +17,15 @@ class Wattributes
         if($this->model->data_source) {
             $this->dataSource = \DataSources::find($this->model->data_source);
         }
+        $this->getBtnOutputs();
+        $this->typeTransformers = \Config::get('waka.utils::transformers');
+        $this->btnsConfig = \Config::get('waka.utils::transformers.add.'.$this->mode);
         
+    }
+
+    public function getBtnOutputs() {
+        
+        //trace_log($this->btnsConfig);
     }
 
     public function getAttributes()
@@ -98,6 +108,30 @@ class Wattributes
         return $mapedResult;
     }
 
+    public function getAsks($asks)
+    {
+        if (!$asks) {
+            return [];
+        }
+        $result = [];
+        //trace_log($this->mode);
+        foreach ($asks as $ask) {
+            $format = '';
+            $outputFormat =  $ask->getOutputTypes($this->mode);   
+            if($outputFormat) {
+                $format = $this->typeTransformers['types'][$outputFormat][$this->mode];
+            } else {
+                $format = $this->typeTransformers[$this->mode];
+            }
+
+            $value = sprintf($format, 'asks.'.$ask->code);
+            // $value = $ask->code;
+            $result[$value] = $value;
+        }
+
+        return $result;
+    }
+
     public function getFncOutput($fnc)
     {
         if(!$this->dataSource) {
@@ -105,6 +139,7 @@ class Wattributes
         }
         $code = $fnc->getCode();
         $result = [];
+        //
         $outputConfig = $fnc->getOutputs();
         //trace_log("code : -----------------".$code);
         //trace_log($outputConfig);
@@ -132,8 +167,56 @@ class Wattributes
                 $result[$code] = $maped;
             }
         }
+
+        //création des boutons par défauts
+        $starters = [];
+        $btns = $this->btnsConfig;
+        $btnFull = null;
+        
+        foreach($btns as $key=>$btn) {
+            $myValue = sprintf($btn, $code);
+            $starters[$myValue] =  $key;
+            $btnFull .= sprintf($btn, $code)."\n";
+        }
+        $starters[$btnFull] =  'Fonction complète';
+        $result[$code]['starters'] =  $starters;
         //trace_log($result);
         return $result;
+    }
+
+    public function getManuelFncOutput($attributeAdresse, $code) {
+        $outputConfig = \Yaml::parseFile(plugins_path() . '/' . $attributeAdresse);
+        $result = [];
+        $outputConfig = $outputConfig['outputs'] ?? [];
+        if ($outputAttributes = $outputConfig['attributes'] ?? false) {
+            $tempAttributeArray = [];
+            foreach ($outputAttributes as $key => $attributeAdresse) {
+                //trace_log('attributeArray : '.$key);
+                $attributeArray = \Yaml::parseFile(plugins_path() . '/' . $attributeAdresse);
+
+                if ($key == "main") {
+                    $maped = $this->remapAttributes($attributeArray['attributes'], $code, null, true);
+                } else {
+                    $maped = $this->remapAttributes($attributeArray['attributes'], $key, $code, true);
+                }
+                $tempAttributeArray = array_merge($tempAttributeArray, $maped);
+            }
+            $result[$code] = $tempAttributeArray;
+        }
+        if ($outputValues = $outputConfig['values'] ?? false) {
+            $maped = $this->remapAttributes($outputValues, $code, null, true);
+            if ($result[$code] ?? null) {
+                $result[$code] = array_merge($result[$code], $maped);
+            } else {
+                $result[$code] = $maped;
+            }
+        }
+        return [
+            'fonctions' => [
+                'values' => $result['row'],
+                'icon' => ' oc-icon-code',
+            ],
+        ];
     }
 
     public function getFncsOutputs($fncs)

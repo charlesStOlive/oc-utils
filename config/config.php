@@ -69,6 +69,7 @@ return [
     'transformers' => [
         'word' => "$" . "{%s}",
         'twig' => "{{ %s }}",
+        'tbs' => "[%s]",
         'types' => [
             'date' => [
                 'word' => '${%s*date}',
@@ -141,6 +142,28 @@ return [
             'nl2br' => [
                 'word' => '${%s}',
                 'twig' => "{{%s|nl2br}}",
+            ],
+            'reTwig' => [
+                'word' => 'INTERDIT',
+                'twig' => "{{%s|reTwig(row,ds)}}",
+            ],
+        ],
+        'add' => [
+            'twig' => [
+                'Si la fonction a des données' => "{% if fncs.%s.show %}",
+                'Déclaration de la boucle' => "{%for row in fncs.%s.datas %}",
+                'Exemple' => "<li>{{row.name}}</li>",
+                'Fin déclaration de la boucle' => "{%for row in fncs.%s.datas %}",
+                'Fin si fonction à des données' => "{% endif %}",
+            ],
+            'word' => [
+                'Si la fonction a des données' => '${IS_FNC.%s}',
+                'Déclaration de la boucle' => '${FNC_M.%s.title}',
+                'Exemple' => '${%s.name}',
+                'Fin déclaration de la boucle' => '${/FNC.%s}',
+                'Fin si fonction à des données' => '${/IS_FNC.%s}',
+            ],
+            'tbs' => [
             ],
         ],
 

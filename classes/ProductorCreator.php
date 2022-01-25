@@ -19,7 +19,7 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
 
     public function getProductor()
     {
-        trace_log("class : ".get_class(self::$productor));
+        //trace_log("class : ".get_class(self::$productor));
         return self::$productor;
     }
     public function setProductorss($productor)
