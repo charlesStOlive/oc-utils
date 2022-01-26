@@ -105,10 +105,6 @@ class WorkflowDump extends Command
         return "dot -T$format -o " . $path.'/' . $workflowSlug . '_' . $type . '.' . $format;
     }
 
-
-
-    }
-
     /**
      * Get the console command arguments.
      *
