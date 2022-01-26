@@ -47,6 +47,7 @@ class WorkflowCreate extends GeneratorCommand
         'workflow/temp_lang.stub' => 'lang/fr/{{lower_name}}_w.php',
         'workflow/wf_errors.stub' => 'lang/fr/{{lower_name}}_wf_errors.php',
         'workflow/listener.stub' => 'listeners/Workflow{{lower_name}}Listener.php',
+        'workflow/description.stub' => 'docs/wf_{{lower_name}}.md',
     ];
 
     /**
@@ -140,6 +141,7 @@ class WorkflowCreate extends GeneratorCommand
             'places' => $places,
             'trans' => $trans,
             'config' => $config,
+            'name' => $this->wk_name,
         ];
 
 

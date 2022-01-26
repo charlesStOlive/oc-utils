@@ -59,6 +59,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
                 //trace_log("Travail sur les fonctions de production");
                 $fncName = $item['fnc_prod'];
                 $args = $this->getArgs($fncName, $config);
+                $label = $this->getFncLabel($fncName, $config);
                 $vals = $item['fnc_prod_val'] ?? false;
                 if ($vals) {
                     $vals = explode(',', $vals);
@@ -74,6 +75,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
                     'fnc' => $fncName,
                     'type' => 'prod',
                     'arguments' => $argval,
+                    'label' => $label,
                 ];
                 $item['functions'][$fncName] = $obj;
             }
@@ -83,6 +85,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
                 //trace_log("Travail sur les fonctions de production");
                 $fncName = $item['fnc_trait'];
                 $args = $this->getArgs($fncName, $config);
+                $label = $this->getFncLabel($fncName, $config);
                 $vals = $item['fnc_trait_val'] ?? false;
                 if ($vals) {
                     $vals = explode(',', $vals);
@@ -98,6 +101,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
                     'fnc' => $fncName,
                     'type' => 'trait',
                     'arguments' => $argval,
+                    'label' => $label,
                 ];
                 $item['functions'][$fncName] = $obj;
             }
@@ -107,6 +111,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
                 //trace_log("Travail sur les fonctions de production");
                 $fncName = $item['fnc_gard'];
                 $args = $this->getArgs($fncName, $config);
+                $label = $this->getFncLabel($fncName, $config);
                 $vals = $item['fnc_gard_val'] ?? false;
                 if ($vals) {
                     $vals = explode(',', $vals);
@@ -124,6 +129,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
                     'fnc' => $fncName,
                     'type' => 'gard',
                     'arguments' => $argval,
+                    'label' => $label,
                 ];
                 $item['functions'][$fncName] = $obj;
             }
@@ -178,6 +184,17 @@ class CreateWorkflowDataFromExcel extends CreateBase
         //Les arguments sont un string séparé par une , dans la colonne data
         if ($args) {
             $args = explode(',', $args);
+            return $args;
+        }
+        return null;
+    }
+
+    public function getFncLabel($fncName, $config)
+    {
+        $args = $config->where('key', $fncName)->first();
+        $args = $args['label'] ?? false;
+        //Les arguments sont un string séparé par une , dans la colonne data
+        if ($args) {
             return $args;
         }
         return null;

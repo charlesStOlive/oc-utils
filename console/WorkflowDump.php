@@ -85,9 +85,13 @@ class WorkflowDump extends Command
 
         $dumper = new GraphvizDumper();
 
-        //trace_log($dumper);
+        //Verification si le dossier image existe pour la doc. 
+        $path = plugins_path(strtolower($author).'/'.strtolower($plugin).'/assets/docs_images');
+        \File::isDirectory($path) or \File::makeDirectory($path, 0777, true, true);
 
-        $dotCommand = $this->createDotCommand($workflowName, 'tb', 'jpeg');
+
+
+        $dotCommand = $this->createDotCommand($path, $workflowName, 'tb', 'jpeg');
         //trace_log($dotCommand);
         $tdOptions = ["graph" => ['rankdir' => 'TB']];
         $process = new Process($dotCommand);
@@ -96,9 +100,13 @@ class WorkflowDump extends Command
         $process->mustRun();
     }
 
-    public function createDotCommand($workflowSlug, $type, $format)
+    public function createDotCommand($path, $workflowSlug, $type, $format)
     {
-        return "dot -T$format -o " . storage_path('temp/' . $workflowSlug . '_' . $type . '.' . $format);
+        return "dot -T$format -o " . $path.'/' . $workflowSlug . '_' . $type . '.' . $format;
+    }
+
+
+
     }
 
     /**

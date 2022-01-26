@@ -2,13 +2,13 @@
 files:
     utils_install:
         title: Installation App
-        group: "01 Installation"
+        group: "10 Installation"
         comment: "Comment installer le projet sur un nouveau serveur"
         relativePath: waka/utils/docs
         order: 1
     utils_datasource:
         title: Principe des Datasource
-        group: "02 Configuration"
+        group: "09 Configuration"
         relativePath: waka/utils/docs
         comment: "La Base de fusion des outils Notilac."
         order: 10
@@ -20,13 +20,13 @@ files:
         order: 1
     utils_rulebuilder:
         title: Principe des Composants dynamiques
-        group: "02 Configuration"
+        group: "09 Configuration"
         relativePath: waka/utils/docs
         comment: "Explications des asks, fncs, conditions, etc."
         order: 20
     utils_comande:
         title: Commandes artisan
-        group: "09 Commandes"
+        group: "99 Commandes"
         relativePath: waka/utils/docs
         comment: "Niveau developpeur laravel & october/winter"
         order: 30

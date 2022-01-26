@@ -1,25 +1,34 @@
+# Workflow : **{{name}}**
 * type: **state_machine / single_state**
-* Nom : **{{configs.name.data}}**
+* Nom : {{name}}
 * comentaire : {{configs.com.data }}
-* Les jeux de permissions des champs : 
-{% for key, rulesSet in rulesSets %}
-    * {{key}}: {{rulesSet.message}}
-{% endfor %}
-* Liste des états
+
+## Representation graphique
+![](../assets/docs_images/{{name}}_tb.jpeg)
+
+## Liste des états
 {% for place in places %}
-    * {{place.lang}}
+* **{{place.lang}}**
 {% if place.rules %}
-       * Rôle n'ayant pas accès à cet état : [{{place.rules}}]
+    * Rôle n'ayant pas accès à cet état : [{{place.rules}}]
 {% endif %}
 {% endfor %}
-* Liste des transitions:
+
+## Liste des transitions:
 {% for transition in trans %}
-    * {{transition.lang}}
+* **{{transition.lang}}** | code : {{transition.name}}
 {% if transition.rules %}
-        * Appliquer un jeux de contrôle : {{transition.rules}}
+    * Appliquer un jeux de contrôle : {{transition.rules}}
 {% endif %}
 {% if transition.functions %}
-        * Liste des fonctions 
-            * {% for functions in transition.functions %} {{functions.fnc}}:
-{% endfor %}{% endif %}
+    * Liste des fonctions 
+{% for functions in transition.functions %}
+        *  {{functions.fnc}} | type : {{functions.type}} {% if functions.arguments %} |  Arguments : {{functions.arguments | join(', ')}} {% endif %} | description : {{ functions.label}}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+## Les jeux de permissions des champs : 
+{% for key, rulesSet in rulesSets %}
+* {{key}}: {{rulesSet.message}}
 {% endfor %}
