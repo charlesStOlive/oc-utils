@@ -174,6 +174,8 @@ class Wattributes
         $btnFull = null;
         
         foreach($btns as $key=>$btn) {
+            trace_log($btn);
+            trace_log($code);
             $myValue = sprintf($btn, $code);
             $starters[$myValue] =  $key;
             $btnFull .= sprintf($btn, $code)."\n";

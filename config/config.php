@@ -150,11 +150,11 @@ return [
         ],
         'add' => [
             'twig' => [
-                'Si la fonction a des données' => "{% if fncs.%s.show %}",
-                'Déclaration de la boucle' => "{%for row in fncs.%s.datas %}",
+                'Si la fonction a des données' => "{%% if fncs.%s.show %%}",
+                'Déclaration de la boucle' => "{%%for row in fncs.%s.datas %%}",
                 'Exemple' => "<li>{{row.name}}</li>",
-                'Fin déclaration de la boucle' => "{%for row in fncs.%s.datas %}",
-                'Fin si fonction à des données' => "{% endif %}",
+                'Fin déclaration de la boucle' => "{%%for row in fncs.%s.datas %%}",
+                'Fin si fonction à des données' => "{%% endif %%}",
             ],
             'word' => [
                 'Si la fonction a des données' => '${IS_FNC.%s}',

@@ -26,12 +26,14 @@ trait ScopePeriodes
             $date = Carbon::now();
             $start_at = $date->copy()->subDays(365);
             $end_at = $date;
+            //trace_log($periode." = ".$start_at." => ".$end_at);
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
         if ($periode == 'd-365&y-1_to_now&y-1') {
             $date = Carbon::now()->subYear();
             $start_at = $date->copy()->subDays(365);
             $end_at = $date;
+            //trace_log($periode." = ".$start_at." => ".$end_at);
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
         if ($periode == 'm-6_to_now') {
@@ -40,6 +42,7 @@ trait ScopePeriodes
             $end_at = $date;
             //trace_log( $start_at->format('d/m/Y'));
             //trace_log($end_at->format('d/m/Y'));
+            //trace_log($periode." = ".$start_at." => ".$end_at);
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
         if ($periode == 'm-6&y-1_to_now&y-1') {
@@ -48,6 +51,7 @@ trait ScopePeriodes
             $end_at = $date;
             //trace_log( $start_at->format('d/m/Y'));
             //trace_log($end_at->format('d/m/Y'));
+            //trace_log($periode." = ".$start_at." => ".$end_at);
             return $request->whereBetween($column, [$start_at, $end_at]);
         }
         if ($periode == 'y_to_now') {
