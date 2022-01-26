@@ -108,10 +108,14 @@ class ColorPickerCloudi extends FormWidgetBase
         if ($cloudiObject) {
             //trace_log('il y a un cloudiObject');
             $path = $cloudiObject->getUrl();
+            trace_log($path);
         }
         if ($path) {
-            //trace_log('il y a un patn' . $path);
+            try {
             $availableColors = ColorPalette::getPalette($path, 6, 10);
+            } catch(\RuntimeException $e) {
+                $availableColors = [];
+            }
         }
         return $availableColors;
     }
