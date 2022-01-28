@@ -442,4 +442,10 @@ class SubForm extends ExtensionBase
         }
         return $finalRules->unique('code');
     }
+
+    public function filterFields($fields, $context = null) {
+    }
+
+
+
 }

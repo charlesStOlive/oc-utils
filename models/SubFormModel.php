@@ -210,4 +210,8 @@ class SubFormModel extends Model
     {
         return $this->class_name;
     }
+
+    public function filterFields($fields, $context = null) {
+        return $this->getSubFormObject()->filterFields($fields, $context);
+    }
 }

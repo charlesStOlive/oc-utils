@@ -37,6 +37,8 @@ class TmpFiles
 
         self::$tempFolderName = self::setTempFolderName($folderName);
         self::$storageRacine = self::setStorageRacine($keepMode);
+
+        
         
         return new self;
     }
@@ -135,8 +137,10 @@ class TmpFiles
     }
     public function emptyFile(string $pathOrFilename) {
         //A terminer possibilité de mettre plusieurs fichiers et des sous dossier. 
+        //trace_log('emptyFile');
         $this->fileName = trim($pathOrFilename,'/');
         $path = $this->getFullRacine()."/".$this->fileName;
+        Storage::put($path, null);
         return $this;
     }
 

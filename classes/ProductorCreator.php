@@ -15,6 +15,7 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
     public $modelValues;
     public $askResponse;
     public $fncs;
+    public $resolveContext = 'twig';
 
 
     public function getProductor()
@@ -97,7 +98,7 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
         foreach($asks as $ask) {
             $key = $ask->getCode();
             //trace_log($key);
-            $askResolved = $ask->resolve($srcmodel, 'twig', $datas);
+            $askResolved = $ask->resolve($srcmodel, $this->resolveContext, $datas);
             $askArray[$key] = $askResolved;
         }
         //trace_log($askArray); // les $this->askResponse sont prioritaire
@@ -166,12 +167,13 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
 
     public function createTwigStrName($varName = 'output_name')
     {
-        if (!$this->getProductor()->name_construction) {
-            return str_slug($this->getProductor()->name . '-' . $this->getDsName());
+        if (!$this->getProductor()->{$varName}) {
+            return str_slug($this->getProductor()->name);
         }
         $vars = [
             'ds' => $this->getDs()->getValues(),
         ];
+        //trace_log($this->getProductor()->{$varName});
         $nameConstruction = \Twig::parse($this->getProductor()->{$varName}, $vars);
         return str_slug($nameConstruction);
     }

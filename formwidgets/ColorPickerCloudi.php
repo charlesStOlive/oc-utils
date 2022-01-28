@@ -108,7 +108,7 @@ class ColorPickerCloudi extends FormWidgetBase
         if ($cloudiObject) {
             //trace_log('il y a un cloudiObject');
             $path = $cloudiObject->getUrl();
-            trace_log($path);
+            //trace_log($path);
         }
         if ($path) {
             try {
