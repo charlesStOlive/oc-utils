@@ -92,7 +92,10 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
     public function setRuleAsksResponse($datas = [])
     {
         $askArray = [];
-        $srcmodel = $this->getDs()->getModel($this->modelId);
+        $srcmodel = null;
+        if($this->getDs()) {
+            $srcmodel = $this->getDs()->getModel($this->modelId);
+        } 
         $asks = $this->getProductor()->rule_asks()->get();
         foreach($asks as $ask) {
             $key = $ask->getCode();
@@ -132,8 +135,10 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
 
     public function getProductorVars()
     {
-        $values = $this->getDs()->getValues($this->modelId);
-
+        $values = [];
+        if($this->getDs()) {
+            $values = $this->getDs()->getValues($this->modelId);
+        } 
         $model = [
             'ds' => $values,
         ];
