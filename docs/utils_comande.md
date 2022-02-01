@@ -53,20 +53,24 @@ En opition :
 * vous pouvez recréer le fichier var.less pour cela il suffit de valider lorsque le système pose la question
 * Modifier d'anciennes couleurs déjà injecté. **Si et seulement si**, entre temps les couleurs **n'ont pas été réinitialisé** par la MAJ de l'UI via composer par exemple. En effet le système va chercher la correspondande des anciennes couleurs pour tenter une modification.  
 
-### Nettoyage des modèles et des images inutiles
+### Nettoyage des modèles 
 Pour tester le nettoyage lancer la commande suivante : 
 ```
 php artisan waka:cleanModel
 ```
 
-Vous pouvez ajouter le test sur les images du disque à éffacer, en ajoutant l'option
+Pour executer le nettoyage lancer l'option exec : 
 ```
-php artisan waka:cleanModel --cleanFile
+php artisan waka:cleanModel --exec
 ```
 
-Enfin pour executer le nettoyage lancer l'option executeClean : 
+### Nettoyage des images inutiles
+Pour tester le nettoyage lancer la commande suivante : 
 ```
-php artisan waka:cleanModel --executeClean
-# ou
-php artisan waka:cleanModel --cleanFile --executeClean
+php artisan waka:cleanFiles
+```
+
+Pour executer le nettoyage lancer l'option exec : 
+```
+php artisan waka:cleanFiles --exec
 ```

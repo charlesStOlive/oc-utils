@@ -159,6 +159,7 @@ class Plugin extends PluginBase
         $this->registerConsoleCommand('waka.ruleAsk', 'Waka\Utils\Console\CreateRuleAsk');
         $this->registerConsoleCommand('waka.ruleFnc', 'Waka\Utils\Console\CreateRuleFnc');
         $this->registerConsoleCommand('waka:cleanModels', 'Waka\Utils\Console\CleanModels');
+        $this->registerConsoleCommand('waka:cleanFiles', 'Waka\Utils\Console\CleanFiles');
         
         
     }
