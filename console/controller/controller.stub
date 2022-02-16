@@ -78,6 +78,9 @@ class {{studly_ctname}} extends Controller
 {% if configs.behav_ppt %}
         'Waka.Tbser.Behaviors.PresentationBehavior',
 {% endif %}
+{% if configs.behav_babyler %}
+        'Waka\Babyler\Behaviors\BabyController',
+{% endif %}
     ];
     public $formConfig = 'config_form.yaml';
     public $listConfig = 'config_list.yaml';
@@ -102,6 +105,9 @@ class {{studly_ctname}} extends Controller
 {% endif %}
 {% if configs.behav_workflow  %}
     public $workflowConfig = 'config_workflow.yaml'; 
+{% endif %}
+{% if configs.behav_babyler  %}
+    public $babyler_config = 'config_baby.yaml'; 
 {% endif %}
 {% if configs.controller_permission  %}
 

@@ -18,13 +18,6 @@
 {% elseif specific.field_type and specific.field_type == 'imgupload'  %}
     type: fileupload
     mode: image
-    imageHeight: 260
-    thumbOptions:
-        mode: auto
-        quality: 90
-        sharpen: 0
-        interlace: false
-        extension: auto
 {% elseif specific.field_type == 'recordfinder'  %}
     type: recordfinder
 {% if specific.field_opt is null %}
