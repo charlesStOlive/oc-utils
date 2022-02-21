@@ -48,6 +48,9 @@ class {{studly_name}} extends Model
 {% if configs.trait_dbutils %}
     use \Waka\Utils\Classes\Traits\DbUtils;
 {% endif %}
+{% if configs.trait_babyler_client %}
+    use \Waka\Babyler\Classes\Traits\BabylerClient;
+{% endif %}
 {% if anonymizables %}
     use \Waka\Utils\Classes\Traits\WakAnonymize;
 {% endif %}
