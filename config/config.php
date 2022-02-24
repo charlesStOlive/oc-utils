@@ -151,6 +151,7 @@ return [
         'add' => [
             'twig' => [
                 'Si la fonction a des données' => "{%% if fncs.%s.show %%}",
+                'Titre de la fonction' => "{%% fncs.%s.title %%}",
                 'Déclaration de la boucle' => "{%%for row in fncs.%s.datas %%}",
                 'Exemple' => "<li>{{row.name}}</li>",
                 'Fin déclaration de la boucle' => "{%%for row in fncs.%s.datas %%}",
@@ -158,7 +159,8 @@ return [
             ],
             'word' => [
                 'Si la fonction a des données' => '${IS_FNC.%s}',
-                'Déclaration de la boucle' => '${FNC_M.%s.title}',
+                'Titre de la fonction' => '${FNC_M.%s.title}',
+                'Déclaration de la boucle' => '${FNC.%s}',
                 'Exemple' => '${%s.name}',
                 'Fin déclaration de la boucle' => '${/FNC.%s}',
                 'Fin si fonction à des données' => '${/IS_FNC.%s}',
