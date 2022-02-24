@@ -1,0 +1,18 @@
+<?php if ($this->previewMode): ?>
+
+    <div class="form-control">
+        <?= $value ?>
+    </div>
+
+<?php else: ?>
+
+    
+
+        <input id="<?= $this->getId('input') ?>"
+        name="<?= $name ?>" type="range" step="<?=$step?>" value="<?= $value ?>" min="<?=$min?>" max="<?=$max?>" oninput="this.nextElementSibling.value = this.value">
+<output><?= $value ?></output>
+
+
+
+
+<?php endif ?>
