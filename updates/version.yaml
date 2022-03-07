@@ -38,3 +38,6 @@
 1.5.1:
     - "creation des blocs dynamiques"
     - create_rule_blocs_table.php
+1.5.2:
+    - "creation des actions dynamiques"
+    - create_rule_actions_table.php

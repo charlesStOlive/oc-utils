@@ -84,8 +84,8 @@ class RuleBuilder extends FormWidgetBase
         if(!$this->targetProductor) {
             throw new ApplicationException('Il manque targetProductor dans la config');
         }
-        if(!in_array($this->ruleMode, ['content', 'condition','fnc', 'ask', 'bloc'])) {
-            throw new ApplicationException('ruleMode doit être égale a content ou condition ou fncs ou asks');
+        if(!in_array($this->ruleMode, ['content', 'condition','fnc', 'ask', 'bloc', 'action'])) {
+            throw new ApplicationException('ruleMode doit être égale a content/condition/fnc/ask/action');
         }
     }
     /**
@@ -278,7 +278,7 @@ class RuleBuilder extends FormWidgetBase
         //
         $this->setCacheRuleData($rule);
         $this->autoSAve();
-        return $this->renderRules($rule);
+        return $this->renderRules('save');
     }
 
     public function onLoadRuleSetup()
@@ -427,6 +427,14 @@ class RuleBuilder extends FormWidgetBase
         return array_get($this->getCacheRuleData($rule), 'code') ?? 'ERROR';
     }
 
+    public function getPartialBtn($rule) {
+        if($pathBtn = $rule->getPartialPathBtns()) {
+            return $this->makePartial($pathBtn, ['actionId' => $rule->id]);
+        } else {
+            return null;
+        }
+    }
+
     public function getCacheRuleAttributes($rule)
     {
         $attributes = array_get($this->getCacheRuleData($rule), 'attributes');
@@ -538,6 +546,9 @@ class RuleBuilder extends FormWidgetBase
         elseif($this->ruleMode == 'bloc') {
             return \Waka\Utils\Classes\Rules\BlocBase::class;
         }
+        elseif($this->ruleMode == 'action') {
+            return \Waka\Utils\Classes\Rules\RuleActionBase::class;
+        }
     }
 
     protected function getAvailableTags()
@@ -564,15 +575,27 @@ class RuleBuilder extends FormWidgetBase
     }
 
     /**
-     * Updates the primary rule rules container
+     * Updates the primary rule rules container & send event
+     * TODO remplacer rulemode par l'attribut mais je ne trouve pas
      * @return array
      */
-    protected function renderRules()
+    protected function renderRules($context = null)
     {
+        trace_log('render rules');
+        trace_log($context);
         $this->prepareVars();
-        return [
-            '#'.$this->getId() => $this->makePartial('rules')
-        ];
+        $result = ['#'.$this->getId() => $this->makePartial('rules')];
+        if(!$context) {
+            return $result;
+        }
+        if(method_exists($this->controller, 'ruleBuilderExtendRefreshResults')) {
+            $eventResult = $this->controller->ruleBuilderExtendRefreshResults($this->ruleMode);
+            trace_log($eventResult);
+            if ($eventResult) {
+                $result = $eventResult + $result;
+            }
+        }
+        return $result;
     }
 
     protected function makeRuleFormWidget()

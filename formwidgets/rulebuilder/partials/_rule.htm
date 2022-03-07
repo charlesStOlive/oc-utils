@@ -31,27 +31,25 @@
         </a>
         <?php if(!$isRestrictedMode) : ?>
         <ul class="submenu">
+            <?php if($partial = $this->getPartialBtn($rule)) : ?>
+                <?= $partial ?>
+            <?php endif ?>
             <li>
-                <p>
+                <div>
                     <a href="javascript:;" data-rules-delete>
                         <i class="icon-trash-o control-icon"></i>
                     </a>
-                </p>
+                </div>
             </li>
             <li>
-                <p>
-                    <a href="javascript:;" data-rules-reorderup>
+                <div class="group">
+                    <a  class="btn_up" href="javascript:;" data-rules-reorderup>
                         <i class="icon-chevron-up control-icon"></i>
                     </a>
-                </p>
-                
-            </li>
-            <li>
-                <p>
                     <a href="javascript:;" data-rules-reorderdown>
                         <i class="icon-chevron-down control-icon"></i>
                     </a>
-                </p>
+                </div>
             </li>
         </ul>
         <?php endif ?>

@@ -218,6 +218,16 @@ class SubForm extends ExtensionBase
         //trace_log('getText dans subform base');
         return $this->host->config_data['memo'] ?? null;
     }
+    public function getPartialPathBtns()
+    {
+        //trace_log('getText dans subform base');
+       $partialName =  array_get($this->subFormDetails(), 'partial_btn');
+       if($partialName) {
+           return $this->viewPath.'/'.$partialName;
+       } else {
+           return null;
+       }
+    }
 
     public function getKeyValue()
     {
