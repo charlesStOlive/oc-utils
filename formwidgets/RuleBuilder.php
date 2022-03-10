@@ -84,7 +84,7 @@ class RuleBuilder extends FormWidgetBase
         if(!$this->targetProductor) {
             throw new ApplicationException('Il manque targetProductor dans la config');
         }
-        if(!in_array($this->ruleMode, ['content', 'condition','fnc', 'ask', 'bloc', 'action'])) {
+        if(!in_array($this->ruleMode, ['content', 'condition','fnc', 'ask', 'bloc', 'action', 'option'])) {
             throw new ApplicationException('ruleMode doit être égale a content/condition/fnc/ask/action');
         }
     }
@@ -93,6 +93,9 @@ class RuleBuilder extends FormWidgetBase
      */
     public function prepareVars()
     {
+        trace_log($this->getFieldName());
+        trace_log($this->formField->fieldName);
+        
         $this->vars['label'] = $this->label;
         $this->vars['prompt'] = $this->prompt;
         $this->vars['prompt_share'] = $this->prompt_share;
@@ -278,7 +281,7 @@ class RuleBuilder extends FormWidgetBase
         //
         $this->setCacheRuleData($rule);
         $this->autoSAve();
-        return $this->renderRules('save');
+        return $this->renderRules($rule->getType());
     }
 
     public function onLoadRuleSetup()
@@ -322,7 +325,7 @@ class RuleBuilder extends FormWidgetBase
         $this->getRuleRelation()->add($newRule, post('_session_key'));
 
         $tempModel = new $className;
-        $defaultValues = $tempModel->getDefaultValues();
+        $defaultValues = $newRule->getDefaultValues();
         $newRule->fill($defaultValues);
         //Je suis obligé de sauver 2 fois...sinon pas instancié et data est inconnu
         $newRule->forceSave();
@@ -362,7 +365,9 @@ class RuleBuilder extends FormWidgetBase
     }
 
     public function getRuleRelation() {
-        return $this->model->{'rule_'.$this->ruleMode.'s'}();
+        //return $this->model->{'rule_'.$this->ruleMode.'s'}();
+        $fieldName = $this->formField->fieldName;
+        return $this->model->{$fieldName}();
     }
 
     public function onDeleteRule()
@@ -547,7 +552,10 @@ class RuleBuilder extends FormWidgetBase
             return \Waka\Utils\Classes\Rules\BlocBase::class;
         }
         elseif($this->ruleMode == 'action') {
-            return \Waka\Utils\Classes\Rules\RuleActionBase::class;
+            return \Waka\Babyler\Classes\Rules\RuleActionBase::class;
+        }
+        elseif($this->ruleMode == 'option') {
+            return \Waka\Babyler\Classes\Rules\RuleOptionBase::class;
         }
     }
 
@@ -579,21 +587,29 @@ class RuleBuilder extends FormWidgetBase
      * TODO remplacer rulemode par l'attribut mais je ne trouve pas
      * @return array
      */
-    protected function renderRules($context = null)
+    protected function renderRules($type = null)
     {
-        trace_log('render rules');
-        trace_log($context);
+        trace_log("renderRules type".$type);
         $this->prepareVars();
-        $result = ['#'.$this->getId() => $this->makePartial('rules')];
-        if(!$context) {
+        $result = [];
+        if($this->splitRules) {
+            $result = ['#'.$this->getId() => $this->makePartial('rules_splited')];
+        } else {
+            $result = ['#'.$this->getId() => $this->makePartial('rules')];
+        }
+        
+        if(!$type) {
             return $result;
         }
-        if(method_exists($this->controller, 'ruleBuilderExtendRefreshResults')) {
-            $eventResult = $this->controller->ruleBuilderExtendRefreshResults($this->ruleMode);
-            trace_log($eventResult);
+        trace_log('launch ruleBuilderExtendRefreshResults');
+        if(method_exists($this->controller->asExtension('BabylerBehavior'), 'ruleBuilderExtendRefreshResults')) {
+            trace_log('la methode existe');
+            $eventResult = $this->controller->asExtension('BabylerBehavior')->ruleBuilderExtendRefreshResults($type, $this->formField->fieldName);
             if ($eventResult) {
                 $result = $eventResult + $result;
             }
+        } else {
+            trace_log('la methode existe pas');
         }
         return $result;
     }

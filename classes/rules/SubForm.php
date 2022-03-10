@@ -56,7 +56,7 @@ class SubForm extends ExtensionBase
      * vars $fields adresse du fichier de config de base;
      */
     protected function init($baseFields) {
-        //trace_log($this);
+        trace_log($baseFields);
         $this->viewPath = $this->configPath = $this->guessConfigPathFrom($this);
         /*
          * Parse the config, if available
@@ -111,32 +111,50 @@ class SubForm extends ExtensionBase
     
 
     public function getDefaultValues() {
-        //trace_log($this->fieldConfig);
-        return $this->getRecursiveDefaultValues($this->fieldConfig->fields);
+        $formFields = $this->defineFormFields();
+        $askConfig = \Yaml::parseFile($this->configPath.'/'.$formFields);
+        return $this->getRecursiveDefaultValues($askConfig);
 
     }
     public function getRecursiveDefaultValues(array $fields) {
+        if($fields['tabs'] ?? false) {
+            $fields = $fields['tabs']['fields'];
+        } elseif($fields['fields'] ?? false) {
+            $fields = $fields['fields'];
+        }
         $defaultValues = [];
         foreach($fields as $key=>$field) {
+            // if($key = 'tabs') {
+            //     trace_log('fields dans une tab');
+            //     trace_log($field);
+            //     $defaultValues = $this->getRecursiveDefaultValues($field);
+            // }
             if($subField = $field['tabs'] ?? false) {
+                trace_log("sub getRecursiveDefaultValues");
                 $defaultValues[$key] =  $this->getRecursiveDefaultValues($subField);
-            } else if($subField = $field['form']['fields'] ?? false) {
+            } 
+            else if($subField = $field['form']['fields'] ?? false) {
                 $fieldType = $field['type'] ?? null;
                 if($fieldType == 'repeater') {
                     //trace_log('c est  un repeater');
+                    trace_log("sub getRecursiveDefaultValues repeater");
                     $defaultValues[$key] =  [$this->getRecursiveDefaultValues($subField)];
                 } else {
+                    trace_log("sub getRecursiveDefaultValues pas repeater");
                     $defaultValues[$key] = $this->getRecursiveDefaultValues($subField);
                 }
                 
                 
             } else {
+                trace_log('pas une tab');
                 $defaultValue = $field['default'] ?? null;
                 if($defaultValue) {
                     $defaultValues[$key] = $defaultValue;
                 }
             }
         }
+        trace_log('terminé');
+        trace_log($defaultValues);
         return $defaultValues;
 
     }
@@ -276,6 +294,10 @@ class SubForm extends ExtensionBase
         } else {
             return $mode;
         } 
+    }
+    public function getType()
+    {
+        return array_get($this->subFormDetails(), 'type');
     }
 
     public function getWordType()
@@ -454,6 +476,7 @@ class SubForm extends ExtensionBase
     }
 
     public function filterFields($fields, $context = null) {
+        return null;
     }
 
 
