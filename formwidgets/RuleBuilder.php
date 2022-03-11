@@ -93,8 +93,8 @@ class RuleBuilder extends FormWidgetBase
      */
     public function prepareVars()
     {
-        trace_log($this->getFieldName());
-        trace_log($this->formField->fieldName);
+      ($this->getFieldName());
+      ($this->formField->fieldName);
         
         $this->vars['label'] = $this->label;
         $this->vars['prompt'] = $this->prompt;
@@ -434,7 +434,15 @@ class RuleBuilder extends FormWidgetBase
 
     public function getPartialBtn($rule) {
         if($pathBtn = $rule->getPartialPathBtns()) {
-            return $this->makePartial($pathBtn, ['actionId' => $rule->id]);
+            return $this->makePartial($pathBtn, ['rule' => $rule]);
+        } else {
+            return null;
+        }
+    }
+
+    public function getPartialComment($rule) {
+        if($pathComment = $rule->getPartialPathComment()) {
+            return $this->makePartial($pathComment, ['rule' => $rule]);
         } else {
             return null;
         }
@@ -589,7 +597,7 @@ class RuleBuilder extends FormWidgetBase
      */
     protected function renderRules($type = null)
     {
-        trace_log("renderRules type".$type);
+      ("renderRules type".$type);
         $this->prepareVars();
         $result = [];
         if($this->splitRules) {
@@ -601,15 +609,15 @@ class RuleBuilder extends FormWidgetBase
         if(!$type) {
             return $result;
         }
-        trace_log('launch ruleBuilderExtendRefreshResults');
+      ('launch ruleBuilderExtendRefreshResults');
         if(method_exists($this->controller->asExtension('BabylerBehavior'), 'ruleBuilderExtendRefreshResults')) {
-            trace_log('la methode existe');
+          ('la methode existe');
             $eventResult = $this->controller->asExtension('BabylerBehavior')->ruleBuilderExtendRefreshResults($type, $this->formField->fieldName);
             if ($eventResult) {
                 $result = $eventResult + $result;
             }
         } else {
-            trace_log('la methode existe pas');
+          ('la methode existe pas');
         }
         return $result;
     }

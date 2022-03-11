@@ -56,7 +56,7 @@ class SubForm extends ExtensionBase
      * vars $fields adresse du fichier de config de base;
      */
     protected function init($baseFields) {
-        trace_log($baseFields);
+      ($baseFields);
         $this->viewPath = $this->configPath = $this->guessConfigPathFrom($this);
         /*
          * Parse the config, if available
@@ -125,36 +125,36 @@ class SubForm extends ExtensionBase
         $defaultValues = [];
         foreach($fields as $key=>$field) {
             // if($key = 'tabs') {
-            //     trace_log('fields dans une tab');
-            //     trace_log($field);
+            //   ('fields dans une tab');
+            //   ($field);
             //     $defaultValues = $this->getRecursiveDefaultValues($field);
             // }
             if($subField = $field['tabs'] ?? false) {
-                trace_log("sub getRecursiveDefaultValues");
+              ("sub getRecursiveDefaultValues");
                 $defaultValues[$key] =  $this->getRecursiveDefaultValues($subField);
             } 
             else if($subField = $field['form']['fields'] ?? false) {
                 $fieldType = $field['type'] ?? null;
                 if($fieldType == 'repeater') {
                     //trace_log('c est  un repeater');
-                    trace_log("sub getRecursiveDefaultValues repeater");
+                  ("sub getRecursiveDefaultValues repeater");
                     $defaultValues[$key] =  [$this->getRecursiveDefaultValues($subField)];
                 } else {
-                    trace_log("sub getRecursiveDefaultValues pas repeater");
+                  ("sub getRecursiveDefaultValues pas repeater");
                     $defaultValues[$key] = $this->getRecursiveDefaultValues($subField);
                 }
                 
                 
             } else {
-                trace_log('pas une tab');
+              ('pas une tab');
                 $defaultValue = $field['default'] ?? null;
                 if($defaultValue) {
                     $defaultValues[$key] = $defaultValue;
                 }
             }
         }
-        trace_log('terminé');
-        trace_log($defaultValues);
+      ('terminé');
+      ($defaultValues);
         return $defaultValues;
 
     }
@@ -239,7 +239,18 @@ class SubForm extends ExtensionBase
     public function getPartialPathBtns()
     {
         //trace_log('getText dans subform base');
-       $partialName =  array_get($this->subFormDetails(), 'partial_btn');
+       $partialName =  array_get($this->subFormDetails(), 'partials.btns');
+       if($partialName) {
+           return $this->viewPath.'/'.$partialName;
+       } else {
+           return null;
+       }
+    }
+
+    public function getPartialPathComment()
+    {
+        //trace_log('getText dans subform base');
+       $partialName =  array_get($this->subFormDetails(), 'partials.comment');
        if($partialName) {
            return $this->viewPath.'/'.$partialName;
        } else {

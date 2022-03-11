@@ -8,20 +8,20 @@
         <?php endforeach ?>
     </ol>
     <?php if(!$isRestrictedMode) : ?>
-    <div style="display:flex;width:100%">
+    <div class="menu-div">
         <a style="width:70%"
             href="javascript:;"
             data-control="popup"
             data-handler="<?= $this->getEventHandler('onLoadCreateRuleForm') ?>"
             class="menu-control">
-                <i class="icon-plus"></i> <?= e(trans($prompt))?>
+                <p><i class="icon-plus"></i> <?= e(trans($prompt))?></p>
         </a>
         <a style="width:30%"
             href="javascript:;"
             data-control="popup"
             data-handler="<?= $this->getEventHandler('onLoadShareComponent') ?>"
             class="menu-control">
-                <i class="icon-share-alt"></i> <?= e(trans($prompt_share))?>
+                <p><i class="icon-share-alt"></i> <?= e(trans($prompt_share))?></p>
             </a>
     </div>
     <?php endif ?>

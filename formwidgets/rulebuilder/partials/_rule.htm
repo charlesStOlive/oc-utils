@@ -4,35 +4,40 @@
     class="rule-item <?= $rule->hasFieldConfig() ? '' : 'no-form' ?>">
     <div>
         <div class="icons">
-            <?php if($rule->isFnc()) : ?>
-            <span class="icon"><i class=" icon-code" style="color:orange"></i></span>
-            <?php else : ?>
-            <span class="icon"><i class="icon-pencil" ></i></span>
-            <?php endif ?>
-            <span class="icon"><i class="<?= e($rule->getSubFormIcon()) ?>"></i></span>
+            <span class="icon"><i class="<?= e($rule->getSubFormIcon()) ?>"style="<?php if($rule->isFnc()) : ?>color:orange<?php endif ?>"></i></span>
         </div>
         <a href="javascript:;" data-rules-settings>
-            <div class="m-t-0" style="position: absolute; right: 20px; text-align: right; ">
-                <p>Code: <b><?= $this->getCacheRuleCode($rule)?></b></p>
-                
-            </div>
-            <div style="margin-right:100px">
-                <span class="title" style="margin-left: 0;font-weight:bold;">
-                   <?= e($this->getCacheRuleTitle($rule)) ?></b>
-                    <?php if($share = $this->getCacheShareMode($rule)) : ?>
-                         | <i class="icon-share-alt"></i> <?=$share?> (<?= $this->countShareModel($rule) ?>)
+            <div class="bloc-title">
+                <div class="child code">
+                        <div>
+                            <span>
+                                <b><?= e($this->getCacheRuleTitle($rule)) ?></b>
+                                <?php if($share = $this->getCacheShareMode($rule)) : ?>
+                                    | <i class="icon-share-alt"></i> <?=$share?> (<?= $this->countShareModel($rule) ?>)
+                                <?php endif ?>
+                            </span>
+                        
+                        </div>
+                        <div class="subcode">
+                            <i class="icon-code"></i> : <?= $this->getCacheRuleCode($rule)?>
+                        </div>
+                        <?php if($memo = $this->getCacheMemo($rule)) : ?>
+                                <div class="memo"><i class=" icon-question-circle-o"></i> <?=$memo?></div>
+                        <?php endif ?>
+                </div>
+                <div class="child tools">
+                    <?php if($partialComment = $this->getPartialComment($rule)) : ?>
+                        <?= $partialComment ?>
+                    <?php else: ?>
+                        <?= $this->getCacheRuleText($rule) ?>
                     <?php endif ?>
-                </span>
-                <?php if($memo = $this->getCacheMemo($rule)) : ?>
-                         | <span style="font-size:0.8em;font-style: italic;"><i class=" icon-question-circle-o"></i> <?=$memo?></span>
-                    <?php endif ?>
-                <div class="comment"><?= $this->getCacheRuleText($rule) ?></div>
-            </div>
+                </div>
+            </div> 
         </a>
         <?php if(!$isRestrictedMode) : ?>
         <ul class="submenu">
-            <?php if($partial = $this->getPartialBtn($rule)) : ?>
-                <?= $partial ?>
+            <?php if($partialBtn = $this->getPartialBtn($rule)) : ?>
+                <?= $partialBtn ?>
             <?php endif ?>
             <li>
                 <div>
