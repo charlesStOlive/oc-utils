@@ -13,7 +13,7 @@ class CreateRelations
         $this->parent = $parent;
         $this->relations = new Collection();
         $this->yamlRead = false;
-        $this->typeCode = ['many','belong', 'hasOne', 'oneThrough', 'belongsMany', 'manyThrough', 'morphMany' , 'morphOne', 'attachOne', 'attachMany' ];
+        $this->typeCode = ['many','belong', 'hasOne', 'oneThrough', 'belongsMany', 'manyThrough', 'morphMany' , 'morphOne', 'attachOne', 'attachMany', 'morphTo' ];
         foreach($relations as $relation) {
             $relationParsed = $this->createRelation($relation);
             $this->relations->push($relationParsed);
@@ -200,7 +200,7 @@ class CreateRelations
 
     public function createConfig($var, $type, $item) {
         //trace_log($type);
-        if(!in_array($type, ['belong', 'oneThrough', 'belongsMany', 'hasOne', 'morphMany', 'morphOne', 'many', 'manyThrough', 'attachMany', 'attachOne' ])) {
+        if(!in_array($type, ['belong', 'oneThrough', 'belongsMany', 'hasOne', 'morphMany', 'morphOne', 'many', 'manyThrough', 'attachMany', 'attachOne', 'morphTo' ])) {
             //trace_log("il y aune erreur");
             throw new \ApplicationException('verifier la colone type de relation ');
         }
@@ -300,6 +300,11 @@ class CreateRelations
             ];
         }
         if ($type == 'attachOne') {
+            return [
+                'name' => $var,
+            ];
+        }
+        if ($type == 'morphTo') {
             return [
                 'name' => $var,
             ];

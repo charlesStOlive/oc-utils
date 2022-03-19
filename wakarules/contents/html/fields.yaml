@@ -13,17 +13,33 @@ tabs:
             type: richeditor
             size: huge
             toolbarButtons: bold|italic|underline|align|inlineStyle|paragraphStyle|insertLink|redo|clearFormatting|fullscreen|html
+        s_opt_t:
+            label: Option globales
+            type: section
+        opt_env_colors:
+            type: dropdown
+            options:
+                env-white: "Txt noir | Bg : blanc"
+                env-primary: "Txt blanc | Bg : Couleur primaire"
+                env-secondary: "Txt blanc | Bg : Couleur secondaire"
+                env-trans: "Txt Noir | Bg : Trasparent"
+                env-trans-dark: "Txt blanc | Bg : Transparent"
+        opt_css_container:
+            label: Class
+            comment: aspect-w-16 aspect-h-10 h-screen-25 h-screen-50 h-screen-90  h-screen p-2 p-4 p-8 p-16 m-2 m-4 m-8 m-16
         staticImage:
             label: Mettre une image statique
+            tab: image
             type: radio
             span: left
             options:
-                null: Aucune
+                nothing: Aucune
                 linked: Image pour ce post
                 media: Image dans le répertoire média
-            default: null
+            default: nothing
         photo:
             type: fileupload
+            tab: image
             mode: image
             imageHeight: 100
             imageWidth: 260
@@ -33,6 +49,7 @@ tabs:
                 action: show
                 condition: value[linked]
         image:
+            tab: image
             type: mediafinder
             mode: image
             imageHeight: 100
@@ -42,49 +59,92 @@ tabs:
                 field: staticImage
                 action: show
                 condition: value[media]
-
-
-        s_opt_t:
-            tab: options
-            label: Option globales
-            type: section
-        opt_env_colors:
-            tab: options
-            type: dropdown
-            options:
-                env-white: Blanc & textes noirs
-                env-primary: Couleurs primaires de fond
-                env-secondary: Couleurs secondaire de fond
-        opt_css_container:
-            tab: options
-            label: Class
-            comment: aspect-w-16 aspect-h-10 h-screen-25 h-screen-50 h-screen-90  h-screen
-
-
-        s_opt:
-            tab: options
+        s_size: 
+            tab: image
+            label: Repartition du bloc image et texte
+            comment: le total doit faire 100    
+            type: section 
+            trigger:
+                field: staticImage
+                action: hide
+                condition: value[nothing]
+        txt_size:
+            tab: image
+            label: Taille en % de l'espace textes
+            default: 50%
+            span: left
+            trigger:
+                field: staticImage
+                action: hide
+                condition: value[nothing]
+        img_size:
+            tab: image
+            label: Taille en % de l'espace image
+            default: 50%
+            span: right
+            trigger:
+                field: staticImage
+                action: hide
+                condition: value[nothing]
+        
+        s_opti:
+            tab: image
             label: Option pour l'image
             type: section
-        opt_object_cover:
-            tab: options
+            trigger:
+                field: staticImage
+                action: hide
+                condition: value[nothing]
+        opt_i_cover:
+            tab: image
             type: checkbox
             label: object-cover ?
             defaultValue: 1
-        crop:
-            tab: options
+            trigger:
+                field: staticImage
+                action: hide
+                condition: value[nothing]
+        opt_i_place:
+            tab: image
+            type: dropdown
+            label: Placement de l'image
+            options: 
+                before: En ligne préscedent le contenu
+                after: En ligne Apès le contenu
+                upper: Au dessus du texte
+                bottom: En dessous du texte
+
+            trigger:
+                field: staticImage
+                action: hide
+                condition: value[nothing]
+        opt_i_crop:
+            tab: image
             label: Méthode de reditionement
             span: auto
             type: dropdown
             options: listCropMode
             default: fit
-        width:
-            tab: options
+            trigger:
+                    field: staticImage
+                    action: hide
+                    condition: value[nothing]
+        opt_i_width:
+            tab: image
             label: width
-            span: auto
-        height:
-            tab: options
+            span: left
+            trigger:
+                field: staticImage
+                action: hide
+                condition: value[nothing]
+        opt_i_height:
+            tab: image
             label: height
-            span: auto
+            span: right
+            trigger:
+                field: staticImage
+                action: hide
+                condition: value[nothing]
         
         
 

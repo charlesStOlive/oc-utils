@@ -49,12 +49,14 @@ class Html extends RuleContentBase implements RuleContentInterface
      */
 
     public function resolve() {
-        $width = $this->getConfig('width');
-        $height = $this->getConfig('height');
-        $crop = $this->getConfig('crop');
+        
+        
         $staticImage = $this->getConfig('staticImage');
         $modePhoto;
         $objImage = null;
+        $crop = $this->getConfig('opt_i_crop');
+        $width = $this->getConfig('opt_i_width');
+        $height = $this->getConfig('opt_i_height');
         if($staticImage == 'linked') {
             $objImage = [
                 'path' => $this->host->photo->getThumb($width, $height, ['mode' => $crop]),
@@ -72,12 +74,11 @@ class Html extends RuleContentBase implements RuleContentInterface
                     'height' => $height ? $height  . 'px' : null,
                 ];
         }
-        $obj =  [
-            'image' => $objImage,
-        ];
         $data = $this->getConfigs();
         //on ajoute toutes les données du formulaire
-        $data = array_merge($data, $obj);
+        
+        $data = array_merge($data, ['image' => $objImage]);
+        trace_log($data);
         return $data;
     }
 

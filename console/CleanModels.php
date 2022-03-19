@@ -154,7 +154,7 @@ class CleanModels extends Command
     protected function getOptions()
     {
         return [
-            ['exex', null, InputOption::VALUE_NONE, 'Executer le clean sinon affiche en log uniquement'],
+            ['exec', null, InputOption::VALUE_NONE, 'Executer le clean sinon affiche en log uniquement'],
         ];
     }
 }
