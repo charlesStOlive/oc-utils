@@ -78,7 +78,7 @@ class Html extends RuleContentBase implements RuleContentInterface
         //on ajoute toutes les données du formulaire
         
         $data = array_merge($data, ['image' => $objImage]);
-        trace_log($data);
+        //trace_log($data);
         return $data;
     }
 
