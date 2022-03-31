@@ -1,4 +1,4 @@
-<div class="{{ data.opt_env_colors | default('env-white') }} {{ data.opt_css_container }}">
+<div class="w-bloc-base {{ data.opt_env_colors | default('') }} {{ data.opt_css_container }} ">
     <div class="flex items-stretch gap-2 w-full 
     {% if data.opt_i_place == 'before' %}flex-row-reverse
     {% elseif data.opt_i_place == 'upper' %}flex-col-reverse

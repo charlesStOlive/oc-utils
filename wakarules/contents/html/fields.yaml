@@ -19,6 +19,7 @@ tabs:
         opt_env_colors:
             type: dropdown
             options:
+                null: inherit
                 env-white: "Txt noir | Bg : blanc"
                 env-primary: "Txt blanc | Bg : Couleur primaire"
                 env-secondary: "Txt blanc | Bg : Couleur secondaire"

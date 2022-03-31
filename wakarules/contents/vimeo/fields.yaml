@@ -23,9 +23,12 @@ tabs:
             tab: options
             type: dropdown
             options:
-                env-white: Blanc & textes noirs
-                env-primary: Couleurs primaires de fond
-                env-secondary: Couleurs secondaire de fond
+                null: inherit
+                env-white: "Txt noir | Bg : blanc"
+                env-primary: "Txt blanc | Bg : Couleur primaire"
+                env-secondary: "Txt blanc | Bg : Couleur secondaire"
+                env-trans: "Txt Noir | Bg : Trasparent"
+                env-trans-dark: "Txt blanc | Bg : Transparent"
         opt_is_container:
             label: Dans un container
             type: checkbox
