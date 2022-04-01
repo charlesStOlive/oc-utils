@@ -16,7 +16,7 @@ class CreateStateteablesTableU120 extends Migration
         //trace_log("asks-------------------------------------------");
         $this->transformData('waka_utils_rules_contents');
         //trace_log("fncs-------------------------------------------");
-        $this->transformData('waka_utils_rules_filters');
+        //$this->transformData('waka_utils_rules_filters');
         //trace_log("fncs-------------------------------------------");
         $this->transformData('waka_utils_rules_conditions');
 
@@ -33,10 +33,10 @@ class CreateStateteablesTableU120 extends Migration
             $table->dropColumn('mode');
             $table->boolean('is_share')->after('code')->nullable();
         });
-        Schema::table('waka_utils_rules_filters', function (Blueprint $table) {
-            $table->dropColumn('datas');
-            $table->boolean('is_share')->after('code')->nullable();
-        });
+        // Schema::table('waka_utils_rules_filters', function (Blueprint $table) {
+        //     $table->dropColumn('datas');
+        //     $table->boolean('is_share')->after('code')->nullable();
+        // });
         Schema::table('waka_utils_rules_conditions', function (Blueprint $table) {
             $table->dropColumn('datas');
             $table->boolean('is_share')->after('code')->nullable();

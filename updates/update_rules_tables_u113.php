@@ -20,10 +20,10 @@ class CreateStateteablesTableU113 extends Migration
             $table->integer('sort_order')->nullable();
             $table->json('datas')->nullable();
         });
-        Schema::table('waka_utils_rules_filters', function (Blueprint $table) {
-            $table->integer('sort_order')->nullable();
-            $table->json('datas')->nullable();
-        });
+        // Schema::table('waka_utils_rules_filters', function (Blueprint $table) {
+        //     $table->integer('sort_order')->nullable();
+        //     $table->json('datas')->nullable();
+        // });
         Schema::table('waka_utils_rules_conditions', function (Blueprint $table) {
             $table->integer('sort_order')->nullable();
             $table->json('datas')->nullable();
@@ -61,14 +61,14 @@ class CreateStateteablesTableU113 extends Migration
             $table->dropColumn('sort_order');
             $table->dropColumn('datas');
         });
-        Schema::table('waka_utils_rule_asks', function (Blueprint $table) {
+        Schema::table('waka_utils_rules_contents', function (Blueprint $table) {
             $table->dropColumn('sort_order');
             $table->dropColumn('datas');
         });
-        Schema::table('waka_utils_rules_filters', function (Blueprint $table) {
-            $table->dropColumn('sort_order');
-            $table->dropColumn('datas');
-        });
+        // Schema::table('waka_utils_rules_filters', function (Blueprint $table) {
+        //     $table->dropColumn('sort_order');
+        //     $table->dropColumn('datas');
+        // });
         Schema::table('waka_utils_rules_conditions', function (Blueprint $table) {
             $table->dropColumn('sort_order');
             $table->dropColumn('datas');

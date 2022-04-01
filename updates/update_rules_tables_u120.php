@@ -20,10 +20,10 @@ class CreateStateteablesTableU120 extends Migration
             $table->string('code')->after('id')->nullable();
             $table->json('config_data')->change();
         });
-        Schema::table('waka_utils_rules_filters', function (Blueprint $table) {
-            $table->string('code')->after('id')->nullable();
-            $table->json('config_data')->change();
-        });
+        // Schema::table('waka_utils_rules_filters', function (Blueprint $table) {
+        //     $table->string('code')->after('id')->nullable();
+        //     $table->json('config_data')->change();
+        // });
         Schema::table('waka_utils_rules_conditions', function (Blueprint $table) {
             $table->string('code')->after('id')->nullable();
             $table->json('config_data')->change();
@@ -37,8 +37,8 @@ class CreateStateteablesTableU120 extends Migration
         $this->getCode($conditions);
         $contents = \Waka\Utils\Models\RuleContent::get();
         $this->getCode($contents);
-        $filters = \Waka\Utils\Models\RuleFilter::get();
-        $this->getCode($filters);
+        // $filters = \Waka\Utils\Models\RuleFilter::get();
+        // $this->getCode($filters);
     }
 
     public function getCode($rules) {
@@ -66,12 +66,12 @@ class CreateStateteablesTableU120 extends Migration
         Schema::table('waka_utils_rule_fncs', function (Blueprint $table) {
             $table->dropColumn('code');
         });
-        Schema::table('waka_utils_rule_asks', function (Blueprint $table) {
+        Schema::table('waka_utils_rules_contents', function (Blueprint $table) {
             $table->dropColumn('code');
         });
-        Schema::table('waka_utils_rules_filters', function (Blueprint $table) {
-            $table->dropColumn('code');
-        });
+        // Schema::table('waka_utils_rules_filters', function (Blueprint $table) {
+        //     $table->dropColumn('code');
+        // });
         Schema::table('waka_utils_rules_conditions', function (Blueprint $table) {
             $table->dropColumn('code');
         });
