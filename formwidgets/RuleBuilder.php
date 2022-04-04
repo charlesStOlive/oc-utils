@@ -597,7 +597,6 @@ class RuleBuilder extends FormWidgetBase
      */
     protected function renderRules($type = null)
     {
-      ("renderRules type".$type);
         $this->prepareVars();
         $result = [];
         if($this->splitRules) {
@@ -609,15 +608,12 @@ class RuleBuilder extends FormWidgetBase
         if(!$type) {
             return $result;
         }
-      ('launch ruleBuilderExtendRefreshResults');
         if(method_exists($this->controller->asExtension('BabylerBehavior'), 'ruleBuilderExtendRefreshResults')) {
-          ('la methode existe');
             $eventResult = $this->controller->asExtension('BabylerBehavior')->ruleBuilderExtendRefreshResults($type, $this->formField->fieldName);
             if ($eventResult) {
                 $result = $eventResult + $result;
             }
         } else {
-          ('la methode existe pas');
         }
         return $result;
     }
