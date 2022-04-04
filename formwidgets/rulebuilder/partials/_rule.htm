@@ -9,18 +9,20 @@
         <a href="javascript:;" data-rules-settings>
             <div class="bloc-title">
                 <div class="child code">
-                        <div>
-                            <span>
-                                <b><?= e($this->getCacheRuleTitle($rule)) ?></b>
+                        <span>
+                            <?= e($this->getCacheRuleTitle($rule)) ?>
+                            
+                            <span class="subcode">
+                                <br>
                                 <?php if($share = $this->getCacheShareMode($rule)) : ?>
                                     | <i class="icon-share-alt"></i> <?=$share?> (<?= $this->countShareModel($rule) ?>)
+                                <?php else:
+                                $title = $this->getCacheRuleCode($rule) ?>
+                                <i class="icon-code" title="<?= $title ?>"></i> : <?= $title?>
                                 <?php endif ?>
                             </span>
+                        </span>
                         
-                        </div>
-                        <div class="subcode">
-                            <i class="icon-code"></i> : <?= $this->getCacheRuleCode($rule)?>
-                        </div>
                         <?php if($memo = $this->getCacheMemo($rule)) : ?>
                                 <div class="memo"><i class=" icon-question-circle-o"></i> <?=$memo?></div>
                         <?php endif ?>
