@@ -4,7 +4,7 @@ use Winter\Storm\Database\Schema\Blueprint;
 use Winter\Storm\Database\Updates\Migration;
 use Schema;
 
-class CreateStateteablesTableU120 extends Migration
+class CreateStateteablesTableU150 extends Migration
 {
     public function up()
     {

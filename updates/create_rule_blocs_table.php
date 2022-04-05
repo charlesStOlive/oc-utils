@@ -4,7 +4,7 @@ use Schema;
 use Winter\Storm\Database\Schema\Blueprint;
 use Winter\Storm\Database\Updates\Migration;
 
-class CreateRuleFncsTable extends Migration
+class CreateRuleBlocsTable extends Migration
 {
     public function up()
     {
