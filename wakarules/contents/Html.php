@@ -48,9 +48,9 @@ class Html extends RuleContentBase implements RuleContentInterface
      * IS true
      */
 
-    public function resolve() {
-        
-        
+    public function resolve($ds) {
+        trace_log("Resolve");
+        trace_log($ds);
         $staticImage = $this->getConfig('staticImage');
         $modePhoto;
         $objImage = null;
@@ -74,10 +74,23 @@ class Html extends RuleContentBase implements RuleContentInterface
                     'height' => $height ? $height  . 'px' : null,
                 ];
         }
+        elseif ($staticImage == 'url') {
+            $url = $this->getConfig('url');
+            //trace_log($path);
+            $url= \Twig::parse($url,$ds);
+            //$imageUrl = $image->resize($width, $height, [ 'mode' =>$crop ]);
+            $objImage = [
+                    'path' => $url,
+                    'width' => $width ? $width  . 'px' : null,
+                    'height' => $height ? $height  . 'px' : null,
+                ];
+        }
         $data = $this->getConfigs();
+        $data['html'] = \Twig::parse($data['html'], $ds);
         //on ajoute toutes les données du formulaire
         
         $data = array_merge($data, ['image' => $objImage]);
+        
         //trace_log($data);
         return $data;
     }

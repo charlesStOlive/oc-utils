@@ -37,6 +37,7 @@ tabs:
                 nothing: Aucune
                 linked: Image pour ce post
                 media: Image dans le répertoire média
+                url: Une Url {ds.disponible}
             default: nothing
         photo:
             type: fileupload

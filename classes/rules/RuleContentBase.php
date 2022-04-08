@@ -66,13 +66,13 @@ class RuleContentBase extends SubForm
         $views['partial'] = "Un partial du theme";
         return $views;
     }
-    public function makeView($view = null) {
+    public function makeView($view = null, $ds = []) {
         $view = $this->getConfig('view');
         //trace_log($view);
         if(!View::exists($view)) {
             \Log::error('la vue '.$view.' n \'exite pas');
         }
-        return \View::make($view)->withData($this->resolve());
+        return \View::make($view)->withData($this->resolve($ds));
     }
 
     

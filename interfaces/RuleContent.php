@@ -27,7 +27,7 @@ interface RuleContent
      * Resolve  rule.
      * @return string
      */
-    public function resolve();
+    public function resolve($ds);
 
     /**
      * Crée la vue à partir de la config view et de resolve

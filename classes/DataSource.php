@@ -106,7 +106,7 @@ class DataSource
         $this->modelName = $this->model;
         $this->wimages = new Wimages($this->model, $this->relations);
     }
-    public function getModel($modelId)
+    public function getModel($modelId) 
     {
         $this->instanciateModel($modelId);
         return $this->model;
@@ -296,7 +296,7 @@ class DataSource
      * RECUPERATION DES VALEURS DES MODELES ET DE LEURS LIAISON
      */
 
-    public function getModels($modelId = null)
+    public function getModelss($modelId = null)
     {
         $this->instanciateModel($modelId);
         $constructApi = $this->model;
@@ -311,6 +311,20 @@ class DataSource
         $constructApi = array_merge($constructApi, $relation);
         return $constructApi;
     }
+    public function getModelAndRelations($modelId = null)
+    {
+        $this->instanciateModel($modelId);
+        $constructApi = $this->model;
+        $attributeToAppend = $this->model->attributesToDs;
+        if ($attributeToAppend) {
+            foreach ($this->model->attributesToDs as $tempAppend) {
+                $constructApi->append($tempAppend);
+            }
+        }
+        $relation = $this->listRelation();
+        $constructApi->push($relation);
+        return $constructApi;
+    }
 
     public function listRelation()
     {
@@ -318,7 +332,6 @@ class DataSource
         $relations = new Collection($this->getKeyAndEmbed());
         if ($relations->count()) {
             foreach ($relations as $relation) {
-                //trace_log($relation);
                 $subModel = $this->getStringModelRelation($this->model, $relation);
                 if ($subModel) {
                     $subModelClassName = get_class($subModel);

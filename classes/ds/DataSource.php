@@ -319,6 +319,22 @@ class DataSource extends Extendable
         return $constructApi;
     }
 
+    public function getModelAndRelations($modelId = null)
+    {
+        $this->instanciateModel($modelId);
+        $constructApi = $this->model;
+        $attributeToAppend = $this->model->attributesToDs;
+        if ($attributeToAppend) {
+            foreach ($this->model->attributesToDs as $tempAppend) {
+                $constructApi->append($tempAppend);
+            }
+        }
+        $relation = $this->listRelation();
+        $constructApi->push($relation);
+        return $constructApi;
+    }
+
+
     public function listRelation()
     {
         $results = [];
