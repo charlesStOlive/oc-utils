@@ -18,7 +18,6 @@ tabs:
                 tab: options
                 label: Option globales
                 type: section
-                tab: options
         opt_env_colors:
             tab: options
             type: dropdown
@@ -29,27 +28,22 @@ tabs:
                 env-secondary: "Txt blanc | Bg : Couleur secondaire"
                 env-trans: "Txt Noir | Bg : Trasparent"
                 env-trans-dark: "Txt blanc | Bg : Transparent"
-        opt_is_container:
-            label: Dans un container
-            type: checkbox
-            tab: options
-        opt_css_container:
-            tab: options
-            label: Class
-            comment: aspect-w-16 aspect-h-10 h-screen-25 h-screen-50 h-screen-90  h-screen  
-
+        opt_style_container:
+            tab: options 
+            label: Styles du container
+            comment: Separer les styles avec ';'
+        # opt_is_container:
+        #     label: Ajouter la classe container
+        #     type: checkbox
+        #     tab: options
         s_video_options:
             label: Options vidéos
             tab: options
             type: section
-        opt_video_width:
-            label: Largeur (px ou  %)
+        opt_style_video:
             tab: options
-            span: auto
-        opt_video_height:
-            label: Largeur (px ou  %)
-            tab: options
-            span: auto
+            label: Styles de la vidéo
+            comment: Conseil, exploitez le css aspect-ratio pour avoir la taille adéquate. Separer les styles avec ';'
 
 
 

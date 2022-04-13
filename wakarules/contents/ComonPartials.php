@@ -13,7 +13,7 @@ class ComonPartials extends RuleContentBase implements RuleContentInterface
     public function subFormDetails()
     {
         return [
-            'name'        => 'Un partial ',
+            'name'        => 'Un partial',
             'description' => 'Un partial du thème actif',
             'icon'        => 'icon-notilac',
             'premission'  => 'wcli.utils.cond.edit.admin',
@@ -42,13 +42,15 @@ class ComonPartials extends RuleContentBase implements RuleContentInterface
      * IS true
      */
 
-    public function resolve() {
+    public function resolve($ds = []) {
         //ici on recupère les configs et le champs json datas...
         return [];
     }
+
+    
     
 
-    public function makeView($view = null) {
+    public function makeView($view = null, $ds = []) {
         return null;
     }
 }

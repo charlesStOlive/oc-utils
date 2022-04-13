@@ -1,7 +1,7 @@
 <?php namespace Waka\Utils\Classes\Rules;
 
 use System\Classes\PluginManager;
-use Winter\Storm\Extension\ExtensionBase;
+use Winter\Storm\Extension\Extendable;
 use Waka\Utils\Classes\DataSource;
 
 /**
@@ -10,10 +10,12 @@ use Waka\Utils\Classes\DataSource;
  * @package waka\utils
  * @author Charles Sainto
  */
-class SubForm extends ExtensionBase
+class SubForm extends Extendable
 {
     use \System\Traits\ConfigMaker;
     use \System\Traits\ViewMaker;
+    use \Winter\Storm\Extension\ExtensionTrait;
+    //use \Winter\Storm\Extension\ExtendableTrait;
 
     /**
      * @var Model host object

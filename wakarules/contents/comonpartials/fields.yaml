@@ -3,5 +3,10 @@
 # ===================================
 
 fields:
-    options:
+    opt_style_container:
+        label: Styles
+        comment: Separer les styles avec ';'
+    opt_container_vertical_align:
+            label: Centrer la div verticalement
+            type: checkbox
 

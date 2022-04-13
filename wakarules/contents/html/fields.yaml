@@ -17,6 +17,7 @@ tabs:
             label: Option globales
             type: section
         opt_env_colors:
+            label: Univer coloriel
             type: dropdown
             options:
                 null: inherit
@@ -25,12 +26,19 @@ tabs:
                 env-secondary: "Txt blanc | Bg : Couleur secondaire"
                 env-trans: "Txt Noir | Bg : Trasparent"
                 env-trans-dark: "Txt blanc | Bg : Transparent"
-        opt_css_container:
-            label: Class
-            comment: aspect-w-16 aspect-h-10 h-screen-25 h-screen-50 h-screen-90  h-screen p-2 p-4 p-8 p-16 m-2 m-4 m-8 m-16
+        opt_style_container:
+            label: Styles du container
+            comment: Separer les styles avec ';'
+        opt_centerBlocs:
+            label: Centrer le container ( ajoute mx-auto )
+            type: checkbox
+            default: true
+        opt_centerContent:
+            label: Centrer le contenu et l'image
+            type: checkbox
         staticImage:
             label: Mettre une image statique
-            tab: image
+            tab: image et options
             type: radio
             span: left
             options:
@@ -41,7 +49,7 @@ tabs:
             default: nothing
         photo:
             type: fileupload
-            tab: image
+            tab: image et options
             mode: image
             imageHeight: 100
             imageWidth: 260
@@ -51,7 +59,7 @@ tabs:
                 action: show
                 condition: value[linked]
         image:
-            tab: image
+            tab: image et options
             type: mediafinder
             mode: image
             imageHeight: 100
@@ -62,25 +70,17 @@ tabs:
                 action: show
                 condition: value[media]
         s_size: 
-            tab: image
-            label: Repartition du bloc image et texte
-            comment: le total doit faire 100    
+            tab: image et options
+            label: Repartition du bloc texte et  image (si actif) 
+            comment: le total doit être inférieur à 100%    
             type: section 
-            trigger:
-                field: staticImage
-                action: hide
-                condition: value[nothing]
         txt_size:
-            tab: image
+            tab: image et options
             label: Taille en % de l'espace textes
             default: 50%
             span: left
-            trigger:
-                field: staticImage
-                action: hide
-                condition: value[nothing]
         img_size:
-            tab: image
+            tab: image et options
             label: Taille en % de l'espace image
             default: 50%
             span: right
@@ -90,7 +90,7 @@ tabs:
                 condition: value[nothing]
         
         s_opti:
-            tab: image
+            tab: image et options
             label: Option pour l'image
             type: section
             trigger:
@@ -98,7 +98,7 @@ tabs:
                 action: hide
                 condition: value[nothing]
         opt_i_cover:
-            tab: image
+            tab: image et options
             type: checkbox
             label: object-cover ?
             defaultValue: 1
@@ -107,7 +107,7 @@ tabs:
                 action: hide
                 condition: value[nothing]
         opt_i_place:
-            tab: image
+            tab: image et options
             type: dropdown
             label: Placement de l'image
             options: 
@@ -121,7 +121,7 @@ tabs:
                 action: hide
                 condition: value[nothing]
         opt_i_crop:
-            tab: image
+            tab: image et options
             label: Méthode de reditionement
             span: auto
             type: dropdown
@@ -132,7 +132,7 @@ tabs:
                     action: hide
                     condition: value[nothing]
         opt_i_width:
-            tab: image
+            tab: image et options
             label: width
             span: left
             trigger:
@@ -140,7 +140,7 @@ tabs:
                 action: hide
                 condition: value[nothing]
         opt_i_height:
-            tab: image
+            tab: image et options
             label: height
             span: right
             trigger:

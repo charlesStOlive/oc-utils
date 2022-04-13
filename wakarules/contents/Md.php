@@ -6,7 +6,7 @@ use ApplicationException;
 use ToughDeveloper\ImageResizer\Classes\Image;
 use Waka\Utils\Interfaces\RuleContent as RuleContentInterface;
 
-class Md extends RuleContentBase implements RuleContentInterface
+class MdOLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD extends RuleContentBase implements RuleContentInterface
 {
     /**
      * Returns information about this event, including name and description.
@@ -46,7 +46,7 @@ class Md extends RuleContentBase implements RuleContentInterface
      * IS true
      */
 
-    public function resolve() {
+    public function resolve($ds = []) {
         $data = $this->getConfigs();
         return $data;
     } 

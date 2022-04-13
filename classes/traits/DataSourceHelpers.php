@@ -7,7 +7,7 @@ trait DataSourceHelpers
         return \DataSources::list();
     }
 
-    public function listDataSourceTarget()
+    public function listDataSourceTarget($limit = 100)
     {
         if(!$this->data_source) {
             return [];
@@ -15,6 +15,6 @@ trait DataSourceHelpers
         //trace_log($this->data_source);
         $ds = \DataSources::find($this->data_source);
         $class = new $ds->class;
-        return $class::orderBy('updated_at', 'desc')->limit(200)->get()->lists($ds->outputName, 'id');
+        return $class::orderBy('updated_at', 'desc')->limit($limit)->get()->lists($ds->outputName, 'id');
     }
 }

@@ -7,6 +7,7 @@ use Waka\Utils\Interfaces\RuleContent as RuleContentInterface;
 
 class Vimeo extends RuleContentBase implements RuleContentInterface
 {
+    
     /**
      * Returns information about this event, including name and description.
      */
@@ -37,7 +38,7 @@ class Vimeo extends RuleContentBase implements RuleContentInterface
      * IS true
      */
 
-    public function resolve() {
+    public function resolve($ds = []) {
         //trace_log($this->getConfigs());
         return $this->getConfigs();
     }

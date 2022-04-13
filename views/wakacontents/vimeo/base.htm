@@ -1,4 +1,4 @@
-<section class="w-bloc-base relative {{ data.opt_env_colors }} ">
+<div class="w-full mx-auto w-bloc-base relative {{ data.opt_env_colors }}" style="{{ data.opt_style_container }}">
     <div class="mx-auto {% if data.opt_is_container %}container{% endif %} {% if data.content %} grid grid-cols-1 md:grid-cols-2{% endif %}">
         <div>
             {% if data.content %}
@@ -8,11 +8,9 @@
             <h3 class="w-title">{{data.title}}</h3>
             {% endif %}
         </div>
-        <div class="mx-auto relative w-full">
-            <div class="aspect-w-16 aspect-h-9">
+        <div class="mx-auto" style="{{ data.opt_style_video }}">
                 <iframe src="https://player.vimeo.com/video/{{data.vimeo_code}}" width="{{opt_video_width | default('100%')}}" height="{{opt_video_height | default('100%')}}" allow="autoplay; fullscreen"
                         allowfullscreen></iframe>
-            </div>
         </div>
     </div>
-</section>
+</div>

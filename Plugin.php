@@ -183,7 +183,6 @@ class Plugin extends PluginBase
             ],
             'contents' => [
                 ['\Waka\Utils\WakaRules\Contents\Html'], 
-                ['\Waka\Utils\WakaRules\Contents\Md'], 
                 ['\Waka\Utils\WakaRules\Contents\Vimeo'], 
                 ['\Waka\Utils\WakaRules\Contents\ComonPartials'], 
             ]
