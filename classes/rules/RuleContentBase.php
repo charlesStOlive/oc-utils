@@ -25,6 +25,12 @@ class RuleContentBase extends SubForm
         }
         $this->boot($host);
     }
+    public function defaultExport() {
+        return [
+            'photo' => 'file',
+            'photos' => 'files',
+        ];
+    }
     
     public function transformClassToDotedView() {
         $class = get_class($this);

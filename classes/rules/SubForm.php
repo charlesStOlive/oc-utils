@@ -3,6 +3,8 @@
 use System\Classes\PluginManager;
 use Winter\Storm\Extension\Extendable;
 use Waka\Utils\Classes\DataSource;
+use \System\Classes\MediaLibrary;
+use System\Classes\ImageResizer;
 
 /**
  * Notification subform base class
@@ -94,6 +96,18 @@ class SubForm extends Extendable
     {
     }
 
+    public function defaultImportExportConfig() {
+        return [];
+    }
+    public function getimportExportConfig() {
+        $wakaExport = array_get($this->subFormDetails(), 'wakaExport');
+        if($wakaExport) {
+            return array_merge($this->defaultImportExportConfig(), $wakaExport);
+        } else {
+            return $this->defaultImportExportConfig();
+        }  
+    }
+
     public function getModel() {
         if(!$this->morphName) {
             throw new \SystemException('SubForm morhName nom definis dans le declarateur');
@@ -178,8 +192,10 @@ class SubForm extends Extendable
         if(in_array($key,$this->jsonable)) {
             if(!$data) {
                 return [];
-            } else {
+            } else if(!is_array($data)) {
                 return json_decode($data, true);
+            } else {
+                return $data;
             }
             
         } else {
@@ -195,8 +211,10 @@ class SubForm extends Extendable
             if(in_array($key,$this->jsonable)) {
                 if(!$data) {
                     $returnDatas[$key] = [];
-                } else {
+                } else if(!is_array($data)) {
                     $returnDatas[$key] = json_decode($data, true);
+                } else {
+                    $returnDatas[$key] = $data;
                 }
                 
             } else {
@@ -491,6 +509,11 @@ class SubForm extends Extendable
     public function filterFields($fields, $context = null) {
         return null;
     }
+
+    
+    // private function wakaExport($exporterObject, $subdirectory = null) {
+    //     return 
+    // }
 
 
 

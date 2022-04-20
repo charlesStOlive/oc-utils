@@ -29,46 +29,53 @@ tabs:
         opt_style_container:
             label: Styles du container
             comment: Separer les styles avec ';'
-        opt_centerBlocs:
+        opt_center_container:
             label: Centrer le container ( ajoute mx-auto )
             type: checkbox
             default: true
-        opt_centerContent:
-            label: Centrer le contenu et l'image
+        opt_center_content:
+            label: Centrer le contenu (Si éxiste)
             type: checkbox
-        staticImage:
-            label: Mettre une image statique
+        # BLOC IMAGE TOUT EST LIEE AU HELPER : RuleHelpers dans classes/traits/utils
+        imageMode:
+            label: Mettre une image
+            #Attention au tab lors d'un copier/coller
             tab: image et options
-            type: radio
+            type: dropdown
             span: left
-            options:
-                nothing: Aucune
-                linked: Image pour ce post
-                media: Image dans le répertoire média
-                url: Une Url {ds.disponible}
+            options: listImageMode
             default: nothing
         photo:
+            label: Upload Image
+            #Attention au tab lors d'un copier/coller
+            tab: image et options
+            span: left
             type: fileupload
-            tab: image et options
             mode: image
-            imageHeight: 100
-            imageWidth: 260
-            span: right
-            trigger:
-                field: staticImage
-                action: show
-                condition: value[linked]
-        image:
+            dependsOn: imageMode
+            imageHeight: 120
+            imageWidth: 120
+            thumbOptions:
+                mode: exact
+                quality: 90
+                sharpen: 0
+                interlace: false
+                extension: auto
+            useCaption: false
+        media:
+            label: waka.babyler::texture.media
+            #Attention au tab lors d'un copier/coller
             tab: image et options
+            span: left
             type: mediafinder
-            mode: image
-            imageHeight: 100
-            imageWidth: 260
-            span: right
-            trigger:
-                field: staticImage
-                action: show
-                condition: value[media]
+            dependsOn: imageMode
+        url:
+            label: waka.babyler::texture.url
+            #Attention au tab lors d'un copier/coller
+            tab: image et options
+            span: full
+            dependsOn: imageMode
+        # FIN DU BLOC DYNAMYQYE DE GESTION DES IMAGES
         s_size: 
             tab: image et options
             label: Repartition du bloc texte et  image (si actif) 
@@ -85,7 +92,7 @@ tabs:
             default: 50%
             span: right
             trigger:
-                field: staticImage
+                field: imageMode
                 action: hide
                 condition: value[nothing]
         
@@ -94,7 +101,7 @@ tabs:
             label: Option pour l'image
             type: section
             trigger:
-                field: staticImage
+                field: imageMode
                 action: hide
                 condition: value[nothing]
         opt_i_cover:
@@ -103,7 +110,15 @@ tabs:
             label: object-cover ?
             defaultValue: 1
             trigger:
-                field: staticImage
+                field: imageMode
+                action: hide
+                condition: value[nothing]
+        opt_center_image:
+            label: Centrer l'image
+            type: checkbox
+            tab: image et options
+            trigger:
+                field: imageMode
                 action: hide
                 condition: value[nothing]
         opt_i_place:
@@ -115,9 +130,8 @@ tabs:
                 after: En ligne Apès le contenu
                 upper: Au dessus du texte
                 bottom: En dessous du texte
-
             trigger:
-                field: staticImage
+                field: imageMode
                 action: hide
                 condition: value[nothing]
         opt_i_crop:
@@ -128,7 +142,7 @@ tabs:
             options: listCropMode
             default: fit
             trigger:
-                    field: staticImage
+                    field: imageMode
                     action: hide
                     condition: value[nothing]
         opt_i_width:
@@ -136,7 +150,7 @@ tabs:
             label: width
             span: left
             trigger:
-                field: staticImage
+                field: imageMode
                 action: hide
                 condition: value[nothing]
         opt_i_height:
@@ -144,7 +158,7 @@ tabs:
             label: height
             span: right
             trigger:
-                field: staticImage
+                field: imageMode
                 action: hide
                 condition: value[nothing]
         

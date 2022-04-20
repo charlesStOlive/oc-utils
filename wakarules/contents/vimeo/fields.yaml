@@ -32,6 +32,11 @@ tabs:
             tab: options 
             label: Styles du container
             comment: Separer les styles avec ';'
+        opt_center_container:
+            label: Centrer le container ( ajoute mx-auto )
+            type: checkbox
+            tab: options
+            default: true
         # opt_is_container:
         #     label: Ajouter la classe container
         #     type: checkbox
@@ -40,10 +45,29 @@ tabs:
             label: Options vidéos
             tab: options
             type: section
+        
+        opt_center_video:
+            label: Centrer la vidéo
+            type: checkbox
+            tab: options
         opt_style_video:
             tab: options
             label: Styles de la vidéo
+            laceholder: "color:#FF0000;background-color:#000000;aspect-ratio: 16 / 9..."
             comment: Conseil, exploitez le css aspect-ratio pour avoir la taille adéquate. Separer les styles avec ';'
+        s_text_options:
+            label: Options s_text_options
+            comment: Seulement si texte existe
+            tab: options
+            type: section
+        opt_style_text:
+            tab: options
+            label: Styles du text
+            placeholder: "color:#FF0000;background-color:#000000;..."
+        opt_center_content:
+            label: Centrer le contenu
+            type: checkbox
+            tab: options
 
 
 

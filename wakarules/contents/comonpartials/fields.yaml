@@ -5,8 +5,9 @@
 fields:
     opt_style_container:
         label: Styles
-        comment: Separer les styles avec ';'
+        comment: Separer les styles avec ';' ATTENTION PAS ENCORE ACTIF !
     opt_container_vertical_align:
             label: Centrer la div verticalement
             type: checkbox
+            comment: ATTENTION PAS ENCORE ACTIF !
 

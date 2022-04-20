@@ -12,9 +12,12 @@ trait DataSourceHelpers
         if(!$this->data_source) {
             return [];
         }
-        //trace_log($this->data_source);
         $ds = \DataSources::find($this->data_source);
+        if(!$limit) {
+            $limit = 100;
+        }
         $class = new $ds->class;
-        return $class::orderBy('updated_at', 'desc')->limit($limit)->get()->lists($ds->outputName, 'id');
+        $options = $class::orderBy('updated_at', 'desc')->limit($limit)->get()->lists($ds->outputName, 'id');
+        return $options;
     }
 }

@@ -28,6 +28,12 @@ class AskBase extends SubForm
         }
         $this->boot($host);
     }
+    public function defaultExport() {
+        return [
+            'photo' => 'file',
+            'photos' => 'files',
+        ];
+    }
 
     /**
      * Fonction unisque sur ASK

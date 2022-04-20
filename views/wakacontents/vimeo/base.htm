@@ -1,11 +1,11 @@
-<div class="w-full mx-auto w-bloc-base relative {{ data.opt_env_colors }}" style="{{ data.opt_style_container }}">
-    <div class="mx-auto {% if data.opt_is_container %}container{% endif %} {% if data.content %} grid grid-cols-1 md:grid-cols-2{% endif %}">
-        <div>
+<div class="w-full  w-bloc-base relative {{ data.opt_env_colors }} {% if data.opt_center_container %}mx-auto{% endif %} " style="{{ data.opt_style_container }} ">
+    <div class="{% if data.content %} grid grid-cols-1 md:grid-cols-2{% endif %}">
+        <div class="{% if data.opt_center_content %}mx-auto text-center{% endif %}" style="{{ data.opt_style_text }}">
+            {% if data.title %}
+            <h3 class="w-title">{{data.title}}</h3>
+            {% endif %}
             {% if data.content %}
-            <h3 class="w-title">{{data.title}}</h3>
             <div class="">{{data.content | raw }}</div>
-            {% else %}
-            <h3 class="w-title">{{data.title}}</h3>
             {% endif %}
         </div>
         <div class="mx-auto" style="{{ data.opt_style_video }}">

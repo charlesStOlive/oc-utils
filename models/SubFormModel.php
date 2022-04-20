@@ -62,6 +62,7 @@ class SubFormModel extends Model
 
     public function beforeSave()
     {
+        //trace_log($this->toArray());
         $this->setCustomData();
     }
 
@@ -130,8 +131,8 @@ class SubFormModel extends Model
         //Gestion des tabs si il y en a
         $fieldInConfigWithTabs = $this->getFieldsFromConfig($config);
         $fieldInConfig = array_diff(array_keys($fieldInConfigWithTabs), $realFields);
-        // trace_log("------------------------------fieldInConfig-------------------------------");
-        // trace_log($fieldInConfig);
+        //trace_log("------------------------------fieldInConfig-------------------------------");
+        //trace_log($fieldInConfig);
 
         $fieldAttributes = array_merge($staticAttributes, $fieldInConfig);
 
@@ -140,12 +141,12 @@ class SubFormModel extends Model
 
         $dynamicAttributes = array_only($this->getAttributes(), $fieldAttributes);
 
-        // $attributesWithoutOldAttributes = array_diff($this->getAttributes(), array_merge($fieldAttributes, $realFields, $staticAttributes, $dynamicAttributes));
-        // trace_log("------------------------------attributesWithoutOldAttributes-------------------------------");
-        // trace_log($attributesWithoutOldAttributes);
+        $attributesWithoutOldAttributes = array_diff($this->getAttributes(), array_merge($fieldAttributes, $realFields, $staticAttributes, $dynamicAttributes));
+        //trace_log("------------------------------attributesWithoutOldAttributes-------------------------------");
+        //trace_log($attributesWithoutOldAttributes);
 
-        // trace_log("------------------------------dynamicAttributes-------------------------------");
-        // trace_log($dynamicAttributes);
+        //trace_log("------------------------------dynamicAttributes-------------------------------");
+        //trace_log($dynamicAttributes);
 
         //trace_log($dynamicAttributes);
         //TRICKY ! Gestion du problème des json. les champs json sont déjà transformé en json et le champs config va l'être aussi. donc je le decrypt juste avant l'enregistrement
@@ -213,5 +214,136 @@ class SubFormModel extends Model
 
     public function filterFields($fields, $context = null) {
         return $this->getSubFormObject()->filterFields($fields, $context);
+    }
+
+    /**
+     * EXPORTER
+     */
+    public function prepareExport($path) {
+        $exportConfigs =  $this->importExportConfig;
+        $datas = $this->toArray();
+        unset($datas['id']);
+        if($datas['optioneable_id'] ?? false) {
+            unset($datas['optioneable_id']);
+            unset($datas['optioneable_type']);
+        }
+        if($datas['actioneable_id'] ?? false) {
+            unset($datas['actioneable_id']);
+            unset($datas['actioneable_type']);
+        }
+        if($datas['contenteable_id'] ?? false) {
+            unset($datas['contenteable_id']);
+            unset($datas['contenteable_type']);
+        }
+        $code = $this->getCode();
+        if(!$exportConfigs) {
+            return $datas;
+        }
+        //trace_log("prepareExport code : ".$code);
+        //trace_log($datas);
+        foreach($exportConfigs as $key=>$exportConfig) {
+            $valueToExport = null;
+            $value = $this->getConfig($key);
+            //trace_log($code." EXPORT CONFIG : ".$exportConfig." Value (next ligne) ");
+            //trace_log($value);
+            if($exportConfig == 'media' && $value) {
+                    $fileName = basename($value);
+                    $finalPath = $path.'/media'.'/'.$code;
+                    \Storage::makeDirectory($finalPath);
+                    $fileContent = \System\Classes\MediaLibrary::instance()->get($value);
+                    //trace_log($finalPath.'/'.$fileName);
+                    //Creation du fichier de sauvegarde
+                    \Storage::put($finalPath.'/'.$fileName, $fileContent);
+                    $valueToExport =  [
+                        'type' => 'media',
+                        'name' => $fileName,
+                        'savePath' =>  $finalPath,
+                        'value' => $value
+                    ];
+                    //trace_log($valueToExport);
+            }
+            else if($exportConfig == 'file' && $this->$key) {
+                    //trace_log('IL FAUT  EXPORTER UN FILE');
+                    $finalPath = $path.'/uploads'.'/'.$code;
+                    \Storage::makeDirectory($finalPath);
+                    $file = $this->$key;
+                    $fileName = $file->file_name;
+                    \Storage::put($finalPath.'/'.$fileName, $file->getContents());
+                    $valueToExport =  [
+                        'type' => 'file',
+                        'name' => $fileName,
+                        'savePath' =>  $finalPath,
+                        'value' => $this->$key
+                    ];
+            }
+            else if ($exportConfig == 'files' && $this->$key) {
+                    //trace_log('IL FAUT EXPORTER DES FILE');
+                    trace_log($this->$key);
+                    $finalPath = $path.'/uploads'.'/'.$code;
+                    \Storage::makeDirectory($finalPath);
+                    $files = $this->$key;
+                    $valueToExport = [];
+                    foreach($files as $file) {
+                        $fileName = $file->file_name;
+                        \Storage::put($finalPath.'/'.$fileName, $file->getContents());
+                        $file = [
+                            'type' => 'file',
+                            'name' => $fileName,
+                            'savePath' =>  $finalPath,
+                        ];
+                        array_push($valueToExport, $file);
+                    }
+            }
+            else if (method_exists($this, $exportConfig)) {
+                    //trace_log($valueToExport);
+                    
+            }
+               
+            $datas[$key] = $valueToExport;
+        }
+        //trace_log($datas);
+        return $datas;
+    }
+    public function prepareImport($path, $datas) {
+        $importConfigs =  $this->importExportConfig;
+        //trace_log('prepareImport------------');
+        //trace_log($importConfigs);
+        //trace_log($datas);
+        if(!$importConfigs) {
+            return $datas;
+        }
+        foreach($importConfigs as $key=>$importConfig) {
+            //trace_log("importConfig key : ".$key);;
+            //trace_log($importConfig);;
+            //trace_log($datas[$key]);;
+            
+            $valueFromData = $datas[$key] ?? null;
+            if($importConfig == 'media' && $valueFromData) {
+                $path = $valueFromData['savePath'].'/'.$valueFromData['name'];
+                $fileSaved = \Storage::get($path);
+                \System\Classes\MediaLibrary::instance()->put($valueFromData['value'], $fileSaved);
+                $datas[$key] = $valueFromData['value'];
+            }
+            else if($importConfig == 'file' && $valueFromData) {
+                $path = $valueFromData['savePath'].'/'.$valueFromData['name'];
+                $fileSaved = \Storage::get($path);
+                $file = (new \System\Models\File)->fromData($fileSaved, $valueFromData['name']);
+                $this->$key()->add($file);
+                $datas[$key] = $valueFromData['value'];
+                 
+            }
+            else if ($importConfig == 'files' && $valueFromData) {
+                $files = $valueFromData;
+                trace_log($valueFromData);
+                foreach($files as $fileData) {
+                    $path = $fileData['savePath'].'/'.$fileData['name'];
+                    $fileSaved = \Storage::get($path);
+                    $file = (new \System\Models\File)->fromData($fileSaved, $fileData['name']);
+                    $this->$key()->add($file);
+                }
+            }
+
+        }
+        return $datas;
     }
 }

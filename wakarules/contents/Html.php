@@ -3,11 +3,13 @@
 use Waka\Utils\Classes\Rules\RuleContentBase;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use ApplicationException;
-use ToughDeveloper\ImageResizer\Classes\Image;
 use Waka\Utils\Interfaces\RuleContent as RuleContentInterface;
 
 class Html extends RuleContentBase implements RuleContentInterface
 {
+    
+    use \Waka\Utils\Classes\Traits\RuleHelpers;
+    //RuleHepers contient les fonctions  dynamiseUrl, dynamiseMedia, dynamiseLinked, listsNested
     protected $tableDefinitions = [];
     public $extendMediaTypes = [];
 
@@ -24,6 +26,11 @@ class Html extends RuleContentBase implements RuleContentInterface
         ];
     }
 
+    public $importExportConfig = [
+        'photo' => 'file',
+        'media' => 'media',
+    ];
+
     public function getText()
     {
         //trace_log('getText HTMLASK---');
@@ -37,36 +44,29 @@ class Html extends RuleContentBase implements RuleContentInterface
 
     }
 
-    public function listMediaType() {
-        $baseType = [
-            'nothing'=> 'Aucune',
-            'linked' => 'Image pour ce post',
-            'media'=> 'Image dans le répertoire média',
-            'url'=>' Une Url {ds.disponible}',
-        ];
-        return array_merge($baseType, $this->extendMediaTypes);
-    }
-
-    public function listCropMode()
-    {
-        $config =  \Config::get('waka.utils::image.baseCrop');
-        return $config;
-    }
-
     /**
      * IS true
      */
 
     public function resolve($ds) {
-        $staticImage = $this->getConfig('staticImage');
-        $modePhoto;
+        //trace_log('resolve');
+        $imageMode = $this->getConfig('imageMode');
         $objImage = null;
+        $functionResolverName = 'dynamise'.studly_case($imageMode);
+        $options = [
+            'width' =>  $this->getConfig('opt_i_width'),
+            'height' => $this->getConfig('opt_i_height'),
+            'crop' => $this->getConfig('opt_i_crop'),
+        ];
+        //trace_log($imageMode);
+        //trace_log($functionResolverName);
+        
 
-        $functionResolverName = 'dynamise'.studly_case($staticImage);
         if($this->methodExists($functionResolverName)) {
-            $objImage = $this->$functionResolverName($ds);
+            $objImage = $this->$functionResolverName($ds, $options);
+        } else {
+            \Log::error($functionResolverName." n'existe pas");
         }
-
         //Création de la fonction dynamique en fonction de staticImage. Compliqué mais permet d'étendre les fonctions...
         $data = $this->getConfigs();
         $data['html'] = \Twig::parse($data['html'], $ds);
@@ -76,46 +76,5 @@ class Html extends RuleContentBase implements RuleContentInterface
         //trace_log($data);
         return $data;
     }
-
-    public function dynamiseUrl($ds) {
-        $width = $this->getConfig('opt_i_width');
-        $height = $this->getConfig('opt_i_height');
-        $url = $this->getConfig('url');
-            //trace_log($path);
-        $url= \Twig::parse($url,$ds);
-            //$imageUrl = $image->resize($width, $height, [ 'mode' =>$crop ]);
-        return [
-                'path' => $url,
-                'width' => $width ? $width  . 'px' : null,
-                'height' => $height ? $height  . 'px' : null,
-        ];
-    }
-
-    public function dynamiseMedia($ds) {
-        $crop = $this->getConfig('opt_i_crop');
-        $width = $this->getConfig('opt_i_width');
-        $height = $this->getConfig('opt_i_height');
-        $path = storage_path('app/media/' . $this->getConfig('image'));
-            //trace_log($path);
-        $image = new Image($path);
-        $imageUrl = $image->resize($width, $height, [ 'mode' =>$crop ]);
-        return [
-                'path' => $imageUrl,
-                'width' => $width ? $width  . 'px' : null,
-                'height' => $height ? $height  . 'px' : null,
-            ];
-    }
-
-    public function dynamiseLinked($ds) {
-        $crop = $this->getConfig('opt_i_crop');
-        $width = $this->getConfig('opt_i_width');
-        $height = $this->getConfig('opt_i_height');
-        return [
-            'path' => $this->host->photo->getThumb($width, $height, ['mode' => $crop]),
-            'width' => $width ? $width  . 'px' : null,
-            'height' => $height ? $height  . 'px' : null,
-        ];
-    }
-
     
 }

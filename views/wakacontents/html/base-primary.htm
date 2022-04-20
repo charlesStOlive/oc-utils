@@ -1,20 +1,20 @@
-<div class="w-full w-bloc-base {{ data.opt_env_colors | default('') }} {% if data.opt_centerBlocs %}mx-auto{% endif %}" style="{{ data.opt_style_container }}">
+<div class="w-full w-bloc-base {{ data.opt_env_colors | default('') }} {% if data.opt_center_container %}mx-auto{% endif %}" style="{{ data.opt_style_container }}">
     <div class="flex items-stretch gap-2 w-full 
     {% if data.opt_i_place == 'before' %}flex-row-reverse
     {% elseif data.opt_i_place == 'upper' %}flex-col-reverse
     {% elseif data.opt_i_place == 'bottom' %}flex-col{% endif %}">
-        <div class="{% if data.opt_centerContent %}mx-auto text-center{% endif %} " style="width:{{data.txt_size | default('100%')}}">
+        <div class="{% if data.opt_center_content %}mx-auto text-center{% endif %} " style="width:{{data.txt_size | default('100%')}}">
             <h3 class="w-title ">{{data.title}}</h3>
             <div class="prose text-inherit  max-w-none ">
                 {{data.html | raw}}
             </div>
         </div>
         {% if data.image.path %} 
-        <div style="width:{{data.img_size | default('50%')}}" class="{% if data.opt_centerContent %}mx-auto{% endif %}">
+        <div style="width:{{data.img_size | default('50%')}}" class="{% if data.opt_center_content %}mx-auto{% endif %}">
         <img class="
         {% if data.opt_i_cover %}object-cover{% else %} object-contain{% endif %}
         {% if data.shadow %}shadow-lg{% endif %}
-        
+        {% if data.opt_center_image %}mx-auto{% endif %}
         {%if not data.image.height%}h-full{% endif %}
         {%if not data.image.height%}w-full{% endif %}"
             src="{{ data.image.path }}"

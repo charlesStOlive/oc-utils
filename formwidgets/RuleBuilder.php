@@ -492,6 +492,7 @@ class RuleBuilder extends FormWidgetBase
     }
     public function makeCacheRuleData($rule)
     {
+        //trace_log($rule->config_data);
         $data = [
             'attributes' => $rule->config_data,
             'title' => $rule->getTitle(),
