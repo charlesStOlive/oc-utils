@@ -278,7 +278,7 @@ class SubFormModel extends Model
             }
             else if ($exportConfig == 'files' && $this->$key) {
                     //trace_log('IL FAUT EXPORTER DES FILE');
-                    trace_log($this->$key);
+                    //trace_log($this->$key);
                     $finalPath = $path.'/uploads'.'/'.$code;
                     \Storage::makeDirectory($finalPath);
                     $files = $this->$key;
@@ -334,7 +334,7 @@ class SubFormModel extends Model
             }
             else if ($importConfig == 'files' && $valueFromData) {
                 $files = $valueFromData;
-                trace_log($valueFromData);
+                //trace_log($valueFromData);
                 foreach($files as $fileData) {
                     $path = $fileData['savePath'].'/'.$fileData['name'];
                     $fileSaved = \Storage::get($path);

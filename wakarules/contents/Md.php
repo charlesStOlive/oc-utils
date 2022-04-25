@@ -6,7 +6,7 @@ use ApplicationException;
 use ToughDeveloper\ImageResizer\Classes\Image;
 use Waka\Utils\Interfaces\RuleContent as RuleContentInterface;
 
-class MdOLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD extends RuleContentBase implements RuleContentInterface
+class Md extends RuleContentBase implements RuleContentInterface
 {
     /**
      * Returns information about this event, including name and description.
