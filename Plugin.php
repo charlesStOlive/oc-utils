@@ -168,11 +168,13 @@ class Plugin extends PluginBase
     {
         return [
             'asks' => [
-                ['\Waka\Utils\WakaRules\Asks\LabelAsk' , 'excludeClass' => ['threed']], 
-                ['\Waka\Utils\WakaRules\Asks\HtmlAsk', 'excludeClass' => ['threed']], 
-                ['\Waka\Utils\WakaRules\Asks\ImageAsk', 'excludeClass' => ['threed']], 
-                ['\Waka\Utils\WakaRules\Asks\FileImgLinked', 'excludeClass' => ['threed']], 
-                ['\Waka\Utils\WakaRules\Asks\Content', 'excludeClass' => ['threed']], 
+                ['\Waka\Utils\WakaRules\Asks\LabelAsk'],
+                ['\Waka\Utils\WakaRules\Asks\HtmlAsk'],
+                ['\Waka\Utils\WakaRules\Asks\ImageAsk'],
+                ['\Waka\Utils\WakaRules\Asks\FileImgLinked'],
+                ['\Waka\Utils\WakaRules\Asks\Content'],
+                ['\Waka\Utils\WakaRules\Asks\Content'],
+                ['\Waka\Utils\WakaRules\Asks\FilesImgsLinkeds'],
             ],
             'fncs' => [
             ],

@@ -1,0 +1,54 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    title:
+        label: Titre
+    srcImage:
+        label: source de l'image
+        type: dropdown
+        span: left
+        options: listSelfParent
+        placeholder: --Choissez une valeur--
+        required: true
+    image:
+        label: Choisissez une image
+        type: dropdown
+        span: right
+        placeholder: --Choissez une valeur--
+        options: listLinkedImage
+        dependsOn: srcImage
+        required: true
+    imagesNames:
+        label: Entrez des noms d'images (fonctionne avec le titre de l'image)
+        type: taglist
+        span: full
+        options: []
+        mode: array
+        required: true
+    width:
+        label: width
+        span: auto
+    height:
+        label: height
+        span: auto
+    quality:
+        label: canvas width
+        span: auto
+        type: dropdown
+        options: 
+            '1': Normal
+            '0.5': Mauvaise
+            '0.75': basse
+            '1.5': fine
+            '2': très fine
+        comment: Une qualité fine ou très fine va enregistrer une image supérieur à sa taille de rendu
+    crop:
+        label: Méthode de reditionement
+        span: auto
+        type: dropdown
+        options: listCropMode
+
+
+    

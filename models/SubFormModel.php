@@ -203,6 +203,9 @@ class SubFormModel extends Model
     public function getSubFormObject()
     {
         $this->applySubFormClass();
+        if(!$this->getSubFormClass()) {
+            return;
+        }
 
         return $this->asExtension($this->getSubFormClass());
     }
@@ -213,6 +216,9 @@ class SubFormModel extends Model
     }
 
     public function filterFields($fields, $context = null) {
+        if(!$this->getSubFormObject()) {
+            return;
+        }
         return $this->getSubFormObject()->filterFields($fields, $context);
     }
 

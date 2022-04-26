@@ -465,7 +465,7 @@ class DataSource extends Extendable
         return $array; 
     }
 
-    public function getImagesFilesFrom($type, $code = null) {
+    public function getImagesFilesFrom($type, $code = null, $attachMany= false) {
         $code ? $code : $this->code;
         $staticModel = new $this->class;
         //trace_log("code = ".$code);
@@ -473,7 +473,13 @@ class DataSource extends Extendable
             $relation = \DataSources::find($code);
             $staticModel = new $relation->class;
         }
-        $files = $staticModel->attachOne; 
+        $files = [];
+        trace_log("AttachMany : ".$attachMany);
+        if($attachMany) {
+            $files = $staticModel->attachMany; 
+        } else {
+             $files = $staticModel->attachOne;
+        }
         $fiesFiltered =  array_filter($files, function($value) use ($type) {
             return $value == [$type];
         });

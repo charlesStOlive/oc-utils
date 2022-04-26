@@ -3,8 +3,9 @@
 use Waka\Utils\Classes\Rules\AskBase;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use ApplicationException;
-use ToughDeveloper\ImageResizer\Classes\Image;
 use Waka\Utils\Interfaces\Ask as AskInterface;
+use System\Classes\ImageResizer;
+use System\Classes\MediaLibrary;
 
 
 class ImageAsk extends AskBase implements AskInterface
@@ -51,17 +52,23 @@ class ImageAsk extends AskBase implements AskInterface
         if(!$this->getConfig('image')) {
             throw new ApplicationException('Image non trouvé verifiez le champs image'); 
         }
-        $path = storage_path('app/media/' . $this->getConfig('image'));
+        $path = MediaLibrary::url($this->getConfig('image'));
+        $width = $this->getConfig('width');
+        $height =  $this->getConfig('height');
+        $crop = $this->getConfig('crop');
+        if(!$crop) {
+            $crop = "exact";
+        }
         
-        $image = new Image($path);
-        $imageUrl = $image->resize($this->getConfig('width'), $this->getConfig('height'), [ 'mode' =>$this->getConfig('crop') ]);
-        $imageobj = [
-                        'path' => $imageUrl->getCachedImagePath(false),
-                        'width' => $this->getConfig('width') . 'px',
-                        'height' => $this->getConfig('height') . 'px',
-                        'title' => $this->getConfig('title'),
-                    ];
-        //trace_log($imageobj);
+        if($width && $height) {
+            $path = ImageResizer::filterGetUrl($path,$width, $height, ['mode' => $crop]);
+        }
+        $imageobj =  [
+                'path' => url($path),
+                'width' => $width ? $width  . 'px' : null,
+                'height' => $height ? $height  . 'px' : null,
+                'title' => $this->getConfig('title'),
+            ];
         return $imageobj;
     }
 }
