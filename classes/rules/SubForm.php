@@ -60,8 +60,8 @@ class SubForm extends Extendable
      * vars $fields adresse du fichier de config de base;
      */
     protected function init($baseFields) {
-      ($baseFields);
-        $this->viewPath = $this->configPath = $this->guessConfigPathFrom($this);
+        $this->viewPath = $this->configPath = array_get($this->subFormDetails(), 'forcedConfigPath');
+        if(!$this->viewPath) $this->viewPath = $this->configPath = $this->guessConfigPathFrom($this);
         /*
          * Parse the config, if available
          */
@@ -141,36 +141,28 @@ class SubForm extends Extendable
         $defaultValues = [];
         foreach($fields as $key=>$field) {
             // if($key = 'tabs') {
-            //   ('fields dans une tab');
-            //   ($field);
             //     $defaultValues = $this->getRecursiveDefaultValues($field);
             // }
             if($subField = $field['tabs'] ?? false) {
-              ("sub getRecursiveDefaultValues");
                 $defaultValues[$key] =  $this->getRecursiveDefaultValues($subField);
             } 
             else if($subField = $field['form']['fields'] ?? false) {
                 $fieldType = $field['type'] ?? null;
                 if($fieldType == 'repeater') {
                     //trace_log('c est  un repeater');
-                  ("sub getRecursiveDefaultValues repeater");
                     $defaultValues[$key] =  [$this->getRecursiveDefaultValues($subField)];
                 } else {
-                  ("sub getRecursiveDefaultValues pas repeater");
                     $defaultValues[$key] = $this->getRecursiveDefaultValues($subField);
                 }
                 
                 
             } else {
-              ('pas une tab');
                 $defaultValue = $field['default'] ?? null;
                 if($defaultValue) {
                     $defaultValues[$key] = $defaultValue;
                 }
             }
         }
-      ('terminé');
-      ($defaultValues);
         return $defaultValues;
 
     }

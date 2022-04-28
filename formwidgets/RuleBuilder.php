@@ -93,9 +93,6 @@ class RuleBuilder extends FormWidgetBase
      */
     public function prepareVars()
     {
-      ($this->getFieldName());
-      ($this->formField->fieldName);
-        
         $this->vars['label'] = $this->label;
         $this->vars['prompt'] = $this->prompt;
         $this->vars['prompt_share'] = $this->prompt_share;
