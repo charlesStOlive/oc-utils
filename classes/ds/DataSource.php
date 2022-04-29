@@ -474,7 +474,7 @@ class DataSource extends Extendable
             $staticModel = new $relation->class;
         }
         $files = [];
-        trace_log("AttachMany : ".$attachMany);
+        //trace_log("AttachMany : ".$attachMany);
         if($attachMany) {
             $files = $staticModel->attachMany; 
         } else {

@@ -95,18 +95,18 @@ class FilesImgsLinkeds extends AskBase implements AskInterface
         $crop = $configs['crop'] ?? 'exact';
         
         //creation de la donnés
-        trace_log($src);
-        trace_log($this->getDs()->code);
+        //trace_log($src);
+        //trace_log($this->getDs()->code);
         if($src != $this->getDs()->code) {
             $finalModel = $clientModel->{$src};
         } else {
             $finalModel = $clientModel;
         }
-        trace_log($finalModel->name);
+        //trace_log($finalModel->name);
         $finalResult = [];
         $finalResult['title'] = $this->getConfig('title');
         $finalResult['images'] = [];
-        trace_log($finalModel->{$keyImage}->toArray());
+        //trace_log($finalModel->{$keyImage}->toArray());
         foreach($imagesNames as $name) {
             
             $finalImage = $finalModel->{$keyImage}()->where('title', $name)->first();
@@ -122,7 +122,7 @@ class FilesImgsLinkeds extends AskBase implements AskInterface
                 
             }
         }
-        trace_log($finalResult);
+        //trace_log($finalResult);
         return $finalResult;
     }
 }
