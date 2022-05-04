@@ -48,7 +48,7 @@ class Html extends RuleContentBase implements RuleContentInterface
      * IS true
      */
 
-    public function resolve($ds) {
+    public function resolve($datas) {
         //trace_log('resolve');
         $imageMode = $this->getConfig('imageMode');
         $objImage = null;
@@ -63,13 +63,14 @@ class Html extends RuleContentBase implements RuleContentInterface
         
 
         if($this->methodExists($functionResolverName)) {
-            $objImage = $this->$functionResolverName($ds, $options);
+            $objImage = $this->$functionResolverName($datas, $options);
         } else {
             \Log::error($functionResolverName." n'existe pas");
         }
         //Création de la fonction dynamique en fonction de staticImage. Compliqué mais permet d'étendre les fonctions...
         $data = $this->getConfigs();
-        $data['html'] = \Twig::parse($data['html'], $ds);
+        //trace_log('resolve');
+        $data['html'] = \Twig::parse($data['html'], $datas);
         //on ajoute toutes les données du formulaire
         $data = array_merge($data, ['image' => $objImage]);
         
