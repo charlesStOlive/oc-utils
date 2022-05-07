@@ -36,9 +36,9 @@ class Html extends RuleContentBase implements RuleContentInterface
         //trace_log('getText HTMLASK---');
         $hostObj = $this->host;
         //trace_log($hostObj->config_data);
-        $text = $hostObj->config_data['title'] ?? null;
+        $text = $hostObj->config_data['html'] ?? null;
         if($text) {
-            return $text;
+            return strip_tags($text, '<p><br><b><strong><i><em>');
         }
         return parent::getText();
 

@@ -4,7 +4,6 @@
     {% elseif data.opt_i_place == 'upper' %}flex-col-reverse
     {% elseif data.opt_i_place == 'bottom' %}flex-col{% endif %}">
         <div class="{% if data.opt_center_content %}mx-auto text-center{% endif %} " style="width:{{data.txt_size | default('100%')}}">
-            <h3 class="w-title ">{{data.title}}</h3>
             <div class="prose text-inherit  max-w-none ">
                 {{data.html | raw}}
             </div>

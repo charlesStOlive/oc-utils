@@ -12,7 +12,7 @@ tabs:
             label: Text HTML
             type: richeditor
             size: huge
-            toolbarButtons: bold|italic|underline|align|formatOL|formatUL|inlineStyle|paragraphStyle|insertLink|redo|clearFormatting|fullscreen|html
+            toolbarButtons: fullscreen|bold|italic|underline|strikeThrough|fontFamily|color|inlineStyle|paragraphStyle|paragraphFormat|align|formatOL|formatUL|outdent|indent|quote|insertHR|insertLink|undo|redo|clearFormatting|selectAll|html
         s_opt_t:
             label: Option globales
             type: section
