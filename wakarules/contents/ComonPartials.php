@@ -43,8 +43,10 @@ class ComonPartials extends RuleContentBase implements RuleContentInterface
      */
 
     public function resolve($ds = []) {
+        //trace_log('resolve ???');
+        return array_merge($this->getConfigs(), $ds );
         //ici on recupère les configs et le champs json datas...
-        return [];
+        //return $ds;
     }
 
     
