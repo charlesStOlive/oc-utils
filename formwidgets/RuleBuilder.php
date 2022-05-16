@@ -114,18 +114,18 @@ class RuleBuilder extends FormWidgetBase
      */
     public function getSaveValue($value)
     {
-        $this->model->bindEvent('model.afterSave', function() {
-            $this->processSave();
-        });
+        // $this->model->bindEvent('model.afterSave', function() {
+        //     $this->processSave();
+        // });
 
         return FormField::NO_SAVE_DATA;
     }
 
-    public function autoSAve() {
-        if($this->autoSave) {
-            $this->processSave();
-        }
-    }
+    // public function autoSAve() {
+    //     if($this->autoSave) {
+    //         $this->processSave();
+    //     }
+    // }
 
     public function isRestrictedMode() {
         $user = \BackendAuth::getUser();
@@ -137,21 +137,21 @@ class RuleBuilder extends FormWidgetBase
 
     }
 
-    protected function processSave()
-    {
-        $cache = $this->getCacheRuleDataPayload();
-        foreach ($cache as $id => $data) {
-            $rule = $this->findRuleObj($id);
-            $attributes = $this->getCacheRuleAttributes($rule);
-            if ($attributes) {
-                $rule->fill($attributes);
-            }
-            $rule->save(null, $this->sessionKey);
-            if($rule->is_share) {
-                $this->saveSharedModel($rule, $attributes);
-            }
-        }
-    }
+    // protected function processSave()
+    // {
+    //     $cache = $this->getCacheRuleDataPayload();
+    //     foreach ($cache as $id => $data) {
+    //         $rule = $this->findRuleObj($id);
+    //         $attributes = $this->getCacheRuleAttributes($rule);
+    //         if ($attributes) {
+    //             $rule->fill($attributes);
+    //         }
+    //         $rule->save(null, $this->sessionKey);
+    //         if($rule->is_share) {
+    //             $this->saveSharedModel($rule, $attributes);
+    //         }
+    //     }
+    // }
     public function saveSharedModel($rule, $attributes) {
         
         //trace_log($attributes);
@@ -255,9 +255,10 @@ class RuleBuilder extends FormWidgetBase
 
     public function onSaveRule()
     {
-        $this->restoreCacheRuleDataPayload();
+        trace_log('on save rule');
+        //$this->restoreCacheRuleDataPayload();
         $rule = $this->findRuleObj();
-        $oldData = $this->restoreRestrictedField($rule);
+        //$oldData = $this->restoreRestrictedField($rule);
         $data = post('Rule', []);
         //
         $jsonableField = $rule->jsonable;
@@ -268,16 +269,18 @@ class RuleBuilder extends FormWidgetBase
                 $data[$json] = [];
             }
         }
-        $data = array_merge($data, $oldData);
+        //$data = array_merge($data, $oldData);
         //
         $rule->fill($data);
         $rule->validate();
 
-        $rule->rule_text = $rule->getSubFormObject()->getText();
-        $rule->applyCustomData();
+        //$rule->rule_text = $rule->getSubFormObject()->getText();
+        //$rule->applyCustomData();
+        trace_log($rule->toArray());
+        $rule->save();
         //
-        $this->setCacheRuleData($rule);
-        $this->autoSAve();
+        //$this->setCacheRuleData($rule);
+        //$this->autoSAve();
         return $this->renderRules($rule->getType());
     }
 
@@ -285,7 +288,7 @@ class RuleBuilder extends FormWidgetBase
     {
         try {
             $rule = $this->findRuleObj();
-            $data = json_encode($this->getCacheRuleAttributes($rule));
+            $data = json_encode($rule);
             $this->ruleFormWidget->setFormValues($data);
             $this->prepareVars();
             $this->vars['rule'] = $rule;
@@ -445,65 +448,78 @@ class RuleBuilder extends FormWidgetBase
         }
     }
 
-    public function getCacheRuleAttributes($rule)
-    {
-        $attributes = array_get($this->getCacheRuleData($rule), 'attributes');
-        $code = array_get($this->getCacheRuleData($rule), 'code');
-        $is_share = array_get($this->getCacheRuleData($rule), 'is_share');
-        $photos = array_get($this->getCacheRuleData($rule), 'photos');
-        $photo = array_get($this->getCacheRuleData($rule), 'photo');
-        //trace_log(array_merge($attributes, ["code" => $code], ["is_share" => $is_share]));
-        return array_merge($attributes, ["code" => $code], ["is_share" => $is_share]);
-    }
+    // public function getCacheRuleAttributes($rule)
+    // {
+    //     trace_log("getCacheRuleAttributes");
+    //     return [];
+    //     // $attributes = array_get($this->getCacheRuleData($rule), 'attributes');
+    //     // $code = array_get($this->getCacheRuleData($rule), 'code');
+    //     // $is_share = array_get($this->getCacheRuleData($rule), 'is_share');
+    //     // $photos = array_get($this->getCacheRuleData($rule), 'photos');
+    //     // $photo = array_get($this->getCacheRuleData($rule), 'photo');
+    //     // //trace_log(array_merge($attributes, ["code" => $code], ["is_share" => $is_share]));
+    //     // return array_merge($attributes, ["code" => $code], ["is_share" => $is_share]);
+    // }
 
-    public function getCacheRuleTitle($rule)
-    {
-        return array_get($this->getCacheRuleData($rule), 'title');
-    }
+    // public function getCacheRuleTitle($rule)
+    // {
+    //     trace_log("getCacheRuleTitle");
+    //     return null;
+    //     return array_get($this->getCacheRuleData($rule), 'title');
+    // }
 
-    public function getCacheShareMode($rule)
-    {
-        return array_get($this->getCacheRuleData($rule), 'share_mode');
-    }
-    public function getCacheMemo($rule)
-    {
-        //trace_log('memo : '.array_get($this->getCacheRuleData($rule), 'memo'));
-        //trace_log($this->getCacheRuleData($rule));
-        return array_get($this->getCacheRuleData($rule), 'memo');
-    }
-    public function getCacheRuleText($rule)
-    {
-        $ruleText =  array_get($this->getCacheRuleData($rule), 'text');
-        return $ruleText;
-    }
-    public function getCacheRuleData($rule, $default = null)
-    {
-        $cache = post($this->getId().'rule_data', []);
-        if (is_array($cache) && array_key_exists($rule->id, $cache)) {
-            return json_decode($cache[$rule->id], true);
-        }
-        if ($default === false) {
-            return null;
-        }
-        return $this->makeCacheRuleData($rule);
-    }
-    public function makeCacheRuleData($rule)
-    {
-        //trace_log($rule->config_data);
-        $data = [
-            'attributes' => $rule->config_data,
-            'title' => $rule->getTitle(),
-            'memo' => $rule->getMemo(),
-            'text' => $rule->getText(),
-            'sort_order' => $rule->sort_order,
-            'photo' => $rule->photo,
-            'photos' => $rule->photos,
-            'code' =>  $rule->code,
-            'is_share' => $rule->is_share,
-            'share_mode' =>  $rule->getShareMode(),
-        ];
-        return $data;
-    }
+    // public function getCacheShareMode($rule)
+    // {
+    //     trace_log("getCacheShareMode");
+    //     return null;
+    //     return array_get($this->getCacheRuleData($rule), 'share_mode');
+    // }
+    // public function getCacheMemo($rule)
+    // {
+    //     trace_log("getCacheMemo");
+    //     return null;
+    //     //trace_log('memo : '.array_get($this->getCacheRuleData($rule), 'memo'));
+    //     //trace_log($this->getCacheRuleData($rule));
+    //     return array_get($this->getCacheRuleData($rule), 'memo');
+    // }
+    // public function getCacheRuleText($rule)
+    // {
+    //     trace_log("getCacheRuleText");
+    //     return null;
+    //     $ruleText =  array_get($this->getCacheRuleData($rule), 'text');
+    //     return $ruleText;
+    // }
+    // public function getCacheRuleData($rule, $default = null)
+    // {
+    //     trace_log("getCacheRuleData");
+    //     return null;
+    //     $cache = post($this->getId().'rule_data', []);
+    //     if (is_array($cache) && array_key_exists($rule->id, $cache)) {
+    //         return json_decode($cache[$rule->id], true);
+    //     }
+    //     if ($default === false) {
+    //         return null;
+    //     }
+    //     return $this->makeCacheRuleData($rule);
+    // }
+    // public function makeCacheRuleData($rule)
+    // {
+    //     trace_log("makeCacheRuleData");
+    //     //trace_log($rule->config_data);
+    //     $data = [
+    //         'attributes' => $rule->config_data,
+    //         'title' => $rule->getTitle(),
+    //         'memo' => $rule->getMemo(),
+    //         'text' => $rule->getText(),
+    //         'sort_order' => $rule->sort_order,
+    //         'photo' => $rule->photo,
+    //         'photos' => $rule->photos,
+    //         'code' =>  $rule->code,
+    //         'is_share' => $rule->is_share,
+    //         'share_mode' =>  $rule->getShareMode(),
+    //     ];
+    //     return $data;
+    // }
 
     public function setCacheCopyRuleData($rule)
     {
@@ -532,7 +548,9 @@ class RuleBuilder extends FormWidgetBase
 
     public function getCacheRuleDataPayload()
     {
-        return post($this->getId().'rule_data', []);
+        trace_log("getCacheRuleDataPayload");
+        return [];
+        //return post($this->getId().'rule_data', []);
     }
 
     //

@@ -14,7 +14,6 @@
 <?php if (!$this->fatalError): ?>
 
 <input type="hidden" name="current_rule_id" value="<?= $rule->id ?>" />
-<input type="hidden" name="current_rule_data" value="<?= e(json_encode($this->getCacheRuleDataPayload())) ?>" />
 
 <div class="modal-body">
     <?php if($isRestrictedMode && $rule->getMemo()) : ?>

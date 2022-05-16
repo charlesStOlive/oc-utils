@@ -78,6 +78,19 @@ class Plugin extends PluginBase
                     $content = $twig->getResursiveContent($code);
                     return  $content[$column] ?? null;
                 },
+                'getFileByTitleFromMany' => function ($twig, $code, $with, $height) {
+                    trace_log('getFileFromMany');
+                    $image = $twig->filter(function ($item, $key) use ($code) {
+                        trace_log($item->toArray());
+                        return $item->title == $code;
+                    });
+                    if($image) {
+                        return $image->first()->getThumb($with, $height);
+                    } else {
+                        return null;
+                    }
+                }
+                
                 
             ],
             'functions' => [
@@ -115,6 +128,7 @@ class Plugin extends PluginBase
                     $content = \Twig::parse($templateContent, $allData);
                     return $content;
                 },
+                
             ],
            
            
@@ -170,6 +184,7 @@ class Plugin extends PluginBase
             'asks' => [
                 ['\Waka\Utils\WakaRules\Asks\LabelAsk'],
                 ['\Waka\Utils\WakaRules\Asks\HtmlAsk'],
+                ['\Waka\Utils\WakaRules\Asks\codeHtml'], 
                 ['\Waka\Utils\WakaRules\Asks\ImageAsk'],
                 ['\Waka\Utils\WakaRules\Asks\FileImgLinked'],
                 ['\Waka\Utils\WakaRules\Asks\Content'],
@@ -177,6 +192,9 @@ class Plugin extends PluginBase
                 ['\Waka\Utils\WakaRules\Asks\FilesImgsLinkeds'],
             ],
             'fncs' => [
+            ],
+            'blocs' => [
+                
             ],
             'conditions' => [
                 ['\Waka\Utils\WakaRules\Conditions\BackUser'], 

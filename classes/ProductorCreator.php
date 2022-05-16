@@ -138,7 +138,7 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
     {
         $values = [];
         if($this->getDs()) {
-            $values = $this->getDs()->getValues($this->modelId);
+            $values = $this->getDs()->getModelAndRelations($this->modelId);
         } 
         $model = [
             'ds' => $values,

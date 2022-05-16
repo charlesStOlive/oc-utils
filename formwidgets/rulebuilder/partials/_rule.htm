@@ -10,20 +10,20 @@
             <div class="bloc-title">
                 <div class="child code">
                         <span>
-                            <?= e($this->getCacheRuleTitle($rule)) ?>
+                            <?= e($rule->getTitle()) ?>
                             
                             <span class="subcode">
                                 <br>
-                                <?php if($share = $this->getCacheShareMode($rule)) : ?>
+                                <?php if($share = $rule->getShareMode()) : ?>
                                     | <i class="icon-share-alt"></i> <?=$share?> (<?= $this->countShareModel($rule) ?>)
                                 <?php else:
-                                $title = $this->getCacheRuleCode($rule) ?>
-                                <i class="icon-code" title="<?= $title ?>"></i> : <?= $title?>
+                                $code = $rule->getCode() ?>
+                                <i class="icon-code" code="<?= $code ?>"></i> : <?= $code?>
                                 <?php endif ?>
                             </span>
                         </span>
                         
-                        <?php if($memo = $this->getCacheMemo($rule)) : ?>
+                        <?php if($memo = $rule->getMemo()) : ?>
                                 <div class="memo"><i class=" icon-question-circle-o"></i> <?=$memo?></div>
                         <?php endif ?>
                 </div>
@@ -31,7 +31,7 @@
                     <?php if($partialComment = $this->getPartialComment($rule)) : ?>
                         <?= $partialComment ?>
                     <?php else: ?>
-                        <?= $this->getCacheRuleText($rule) ?>
+                        <?= $rule->getText() ?>
                     <?php endif ?>
                 </div>
             </div> 
@@ -61,9 +61,4 @@
         </ul>
         <?php endif ?>
     </div>
-
-    <input
-           type="hidden"
-           name="<?=$this->getId()?>rule_data[<?= $rule->id ?>]"
-           value="<?= e(json_encode($this->getCacheRuleData($rule))) ?>" />
 </li>

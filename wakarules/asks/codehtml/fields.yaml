@@ -1,0 +1,12 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    html:
+        label: Code HTML
+        type: codeeditor
+        language: html
+
+        
+      
