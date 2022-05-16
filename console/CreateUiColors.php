@@ -34,6 +34,7 @@ class CreateUiColors extends GeneratorCommand
      */
     protected $stubs = [
         'ui_less/vars.stub' => '/assets/css/vars.less',
+        'ui_less/global.variables.stub' => '/../../../../modules/system/assets/ui/less/global.variables.less',
     ];
 
     /**
@@ -138,45 +139,20 @@ class CreateUiColors extends GeneratorCommand
 
         $replaceColors = [];
 
-        $oldColors = \Config::get('wcli.wconfig::brand_data.oldColors');
-        if($oldColors) {
-            $old_primaryColor = new Color($oldColors['primaryColor']);
-            $old_secondaryColor = new Color($oldColors['secondaryColor']);
-            $old_accentColor = new Color($oldColors['accentColor']);
+       
+        $replaceColors = [
+            '#34495e' => '@brand-primary',
+            '#0181b9' => '@color-accent',
+            '#1681BA' => '@brand-primary',
+            '#1F99DC' => '@color-accent',
+            '#3498db' => '@color-accent',
+            '#4da7e8' => 'lighten(@color-accent, 12%)',
+            '#405261' => '@brand-secondary',
+            '#e67e22' => 'darken(@brand-accent,15%)',
+            '#2A3E51' => 'darken(@brand-primary, 12%)',
+            '#1F99DC' => 'lighten(@color-accent, 12%)',
+        ];
 
-            $old_primary  = '#'.$old_primaryColor->getHex();
-            $old_primary_dark =  '#'.$old_primaryColor->darken(10);
-            $old_primary_light = '#'.$old_primaryColor->lighten(10);
-            $old_primary_light2 = '#'.$old_primaryColor->lighten(20);
-            $old_secondary = '#'.$old_secondaryColor->getHex();
-            $old_accent = '#'.$old_accentColor->getHex();
-            $old_accent_light = '#'.$old_accentColor->lighten(10);
-
-            $replaceColors = [
-               $old_primary_dark => $primary_dark,
-               $old_primary => $primary,
-               $old_primary_light => $primary_light,
-               $old_accent_light => $accent_light,
-               $old_primary_light2 => $primary_light2,
-               $old_accent => $accent,
-               $old_secondary => $secondary,
-               $old_secondary => $secondary,
-            ];
-
-        } else {
-             $replaceColors = [
-               '#34495e' => $primary_dark,
-               '#0181b9' => $primary,
-               '#1681BA' => $primary,
-               '#1F99DC' => $primary_light,
-               '#3498db' => $accent_light,
-               '#4da7e8' => $primary_light2,
-               '#da5700' => $accent,
-               '#405261' => $secondary,
-               '#e67e22' => $accent_light,
-            ];
-
-        }
 
         //BrandPrimary 34495e
 
@@ -196,14 +172,6 @@ class CreateUiColors extends GeneratorCommand
             'primary_light' => $primary_light,
             'primary_light2' => $primary_light2,
             'replace' => $replaceColors,
-        ];
-
-        
-        
-
-        return [
-            'primary' => $primary,
-            'secondary' => $secondary,
         ];
     }
 

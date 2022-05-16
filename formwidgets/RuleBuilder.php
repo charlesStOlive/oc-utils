@@ -67,7 +67,7 @@ class RuleBuilder extends FormWidgetBase
     protected function loadAssets()
     {
         $this->addJs('js/rules.js');
-        $this->addCss('../../../../../wcli/wconfig/assets/css/formwidgets/rules.css');
+        $this->addCss('css/rules.css');
     }
 
     /**
@@ -624,6 +624,7 @@ class RuleBuilder extends FormWidgetBase
         if(!$type) {
             return $result;
         }
+        //TODO TROUVER UN MOYEN DE LE FAIRE DORECTME DANS BABYLOER
         if(method_exists($this->controller->asExtension('BabylerBehavior'), 'ruleBuilderExtendRefreshResults')) {
             $eventResult = $this->controller->asExtension('BabylerBehavior')->ruleBuilderExtendRefreshResults($type, $this->formField->fieldName);
             if ($eventResult) {
