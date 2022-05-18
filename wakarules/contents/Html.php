@@ -65,7 +65,7 @@ class Html extends RuleContentBase implements RuleContentInterface
         if($this->methodExists($functionResolverName)) {
             $objImage = $this->$functionResolverName($datas, $options);
         } else {
-            \Log::error($functionResolverName." n'existe pas");
+            //\Log::error($functionResolverName." n'existe pas");
         }
         //Création de la fonction dynamique en fonction de staticImage. Compliqué mais permet d'étendre les fonctions...
         $data = $this->getConfigs();

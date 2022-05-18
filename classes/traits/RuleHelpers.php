@@ -83,7 +83,7 @@ trait RuleHelpers
         if($this->methodExists($functionResolverName)) {
             $objImage = $this->$functionResolverName([], $options);
         } else {
-            \Log::error($functionResolverName." n'existe pas");
+            //\Log::error($functionResolverName." n'existe pas");
         }
         return $objImage['path'] ?? null;
     }

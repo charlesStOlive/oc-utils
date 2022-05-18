@@ -157,43 +157,6 @@ class CreateRelations
         
         $relation = array_merge($relation, $relationItem);
 
-        //trace_log($relation);
-        
-        // [var] => ressources
-        // [type] => many
-        // [class] => Wcli\Tarificateur\Models\Ressource
-        // [options] => delete=true
-        // [columns] => $/wcli/tarificateur/models/ressource/columns_for_appsrc.yaml
-        // [fields] => $/wcli/tarificateur/models/ressource/fields_for_appsrc.yaml
-        // [yamls] => 1
-        // [yamls_read] => 
-        // [toolbar] => 
-        // [search] => 
-        // [record_url] => false
-        // [show_search] => 
-        // [sort_column] => 
-        // [sort_mode] => 
-        // [filters] => 
-        // [path] => $/wcli/tarificateur/models/ressource
-        // [detail] => Array
-        //     (
-        //         [author] => wcli
-        //         [plugin] => tarificateur
-        //         [model] => ressources
-        //     )
-
-        // [relationarray] => [
-        //         'Wcli\Tarificateur\Models\Ressource',
-        //         'delete' => 'true'
-        //     ]
-        // [userRelation] => 
-        // [createYamls] => 1
-        // [name] => ressources
-        // [singular_name] => ressource
-        // [view_list] => 1
-        // [manage_form] => 1
-        // [manage_list] => 1
-        //trace_log($relation);
         return $relation;
 
     }
@@ -263,7 +226,7 @@ class CreateRelations
         }
         if ($type == 'morphOne') {
             return [
-                'name' => $this->getRelationKeyVar($type, $var),
+                'name' => $var,
                 'singular_name' => str_singular(camel_case($var)),
                 'view_list' => false,
                 'view_form' => !$item['yamls_read'],
