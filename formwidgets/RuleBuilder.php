@@ -255,7 +255,7 @@ class RuleBuilder extends FormWidgetBase
 
     public function onSaveRule()
     {
-        trace_log('on save rule');
+        //trace_log('on save rule');
         //$this->restoreCacheRuleDataPayload();
         $rule = $this->findRuleObj();
         //$oldData = $this->restoreRestrictedField($rule);
@@ -276,7 +276,7 @@ class RuleBuilder extends FormWidgetBase
 
         //$rule->rule_text = $rule->getSubFormObject()->getText();
         //$rule->applyCustomData();
-        trace_log($rule->toArray());
+        //trace_log($rule->toArray());
         $rule->save();
         //
         //$this->setCacheRuleData($rule);
@@ -450,7 +450,7 @@ class RuleBuilder extends FormWidgetBase
 
     // public function getCacheRuleAttributes($rule)
     // {
-    //     trace_log("getCacheRuleAttributes");
+    //     //trace_log("getCacheRuleAttributes");
     //     return [];
     //     // $attributes = array_get($this->getCacheRuleData($rule), 'attributes');
     //     // $code = array_get($this->getCacheRuleData($rule), 'code');
@@ -463,20 +463,20 @@ class RuleBuilder extends FormWidgetBase
 
     // public function getCacheRuleTitle($rule)
     // {
-    //     trace_log("getCacheRuleTitle");
+    //     //trace_log("getCacheRuleTitle");
     //     return null;
     //     return array_get($this->getCacheRuleData($rule), 'title');
     // }
 
     // public function getCacheShareMode($rule)
     // {
-    //     trace_log("getCacheShareMode");
+    //     //trace_log("getCacheShareMode");
     //     return null;
     //     return array_get($this->getCacheRuleData($rule), 'share_mode');
     // }
     // public function getCacheMemo($rule)
     // {
-    //     trace_log("getCacheMemo");
+    //     //trace_log("getCacheMemo");
     //     return null;
     //     //trace_log('memo : '.array_get($this->getCacheRuleData($rule), 'memo'));
     //     //trace_log($this->getCacheRuleData($rule));
@@ -484,14 +484,14 @@ class RuleBuilder extends FormWidgetBase
     // }
     // public function getCacheRuleText($rule)
     // {
-    //     trace_log("getCacheRuleText");
+    //     //trace_log("getCacheRuleText");
     //     return null;
     //     $ruleText =  array_get($this->getCacheRuleData($rule), 'text');
     //     return $ruleText;
     // }
     // public function getCacheRuleData($rule, $default = null)
     // {
-    //     trace_log("getCacheRuleData");
+    //     //trace_log("getCacheRuleData");
     //     return null;
     //     $cache = post($this->getId().'rule_data', []);
     //     if (is_array($cache) && array_key_exists($rule->id, $cache)) {
@@ -504,7 +504,7 @@ class RuleBuilder extends FormWidgetBase
     // }
     // public function makeCacheRuleData($rule)
     // {
-    //     trace_log("makeCacheRuleData");
+    //     //trace_log("makeCacheRuleData");
     //     //trace_log($rule->config_data);
     //     $data = [
     //         'attributes' => $rule->config_data,
@@ -548,7 +548,7 @@ class RuleBuilder extends FormWidgetBase
 
     public function getCacheRuleDataPayload()
     {
-        trace_log("getCacheRuleDataPayload");
+        //trace_log("getCacheRuleDataPayload");
         return [];
         //return post($this->getId().'rule_data', []);
     }

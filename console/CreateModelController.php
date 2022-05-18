@@ -524,7 +524,7 @@ class CreateModelController extends GeneratorCommand
             if ($this->config['has_side_bar_info']) {
                 $this->stubs['model/fields_for_side_bar.stub'] = 'models/{{lower_name}}/fields_for_side_bar.yaml';
             }
-            if ($this->config['use_tab']) {
+            if ($this->config['use_tab'] ?? false) {
                 unset($this->stubs['model/fields.stub']);
                 $this->stubs['model/fields_tab.stub'] = 'models/{{lower_name}}/fields.yaml';
             }

@@ -48,7 +48,7 @@ class Html extends RuleContentBase implements RuleContentInterface
      * IS true
      */
 
-    public function resolve($datas) {
+    public function resolve($datas = []) {
         //trace_log('resolve');
         $imageMode = $this->getConfig('imageMode');
         $objImage = null;

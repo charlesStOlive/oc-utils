@@ -79,9 +79,9 @@ class Plugin extends PluginBase
                     return  $content[$column] ?? null;
                 },
                 'getFileByTitleFromMany' => function ($twig, $code, $with, $height) {
-                    trace_log('getFileFromMany');
+                    //trace_log('getFileFromMany');
                     $image = $twig->filter(function ($item, $key) use ($code) {
-                        trace_log($item->toArray());
+                        //trace_log($item->toArray());
                         return $item->title == $code;
                     });
                     if($image) {

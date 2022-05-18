@@ -128,45 +128,53 @@ class SubFormModel extends Model
         $staticAttributes = $this->staticAttributes;
         $realFields = $this->realFields;
 
+        
+
         //Gestion des tabs si il y en a
         $fieldInConfigWithTabs = $this->getFieldsFromConfig($config);
         $fieldInConfig = array_diff(array_keys($fieldInConfigWithTabs), $realFields);
-        trace_log("------------------------------fieldInConfig-------------------------------");
-        trace_log($fieldInConfig);
+        //trace_log("------------------------------fieldInConfig-------------------------------");
+        //trace_log($fieldInConfig);
 
         $fieldAttributes = array_merge($staticAttributes, $fieldInConfig);
 
-        trace_log("------------------------------fieldAttributes-------------------------------");
-        trace_log($fieldAttributes);
+        //trace_log("------------------------------fieldAttributes-------------------------------");
+        //trace_log($fieldAttributes);
 
         $dynamicAttributes = array_only($this->getAttributes(), $fieldAttributes);
 
-        $attributesWithoutOldAttributes = array_diff($this->getAttributes(), array_merge($fieldAttributes, $realFields, $staticAttributes, $dynamicAttributes));
-        trace_log("------------------------------attributesWithoutOldAttributes-------------------------------");
-        trace_log($attributesWithoutOldAttributes);
-
-        trace_log("------------------------------dynamicAttributes-------------------------------");
-        trace_log($dynamicAttributes);
-
+        //trace_log("------------------------------dynamicAttributes-------------------------------");
         //trace_log($dynamicAttributes);
-        //TRICKY ! Gestion du problème des json. les champs json sont déjà transformé en json et le champs config va l'être aussi. donc je le decrypt juste avant l'enregistrement
+        //
         $dynamicAttributes = $this->decryptConfigJsonData($dynamicAttributes);
-
+        //
         $this->config_data = $dynamicAttributes;
 
-        trace_log("------------------------------fieldAttributes-------------------------------");
-        trace_log($fieldAttributes);
+        // trace_log("------------------------------fieldAttributes-------------------------------");
+        // trace_log($fieldAttributes);
 
-        trace_log("------------------------------fieldAttributes-------------------------------");
-        trace_log($dynamicAttributes);
+        // trace_log("------------------------------fieldAttributes-------------------------------");
+        // trace_log($dynamicAttributes);
 
-        $this->setRawAttributes(array_except($this->getAttributes(), $fieldAttributes));
+        //trace_log("------------------------------getAllRealFields-------------------------------");
+        //trace_log($this->getAllRealFields());
 
-        trace_log("------------------------------fieldAttributes-------------------------------");
-        trace_log(array_except($this->getAttributes(), $fieldAttributes));
+        $this->setRawAttributes(array_only($this->getAttributes(), $this->getAllRealFields()));
 
-        trace_log($this->getAttributes());
+        // trace_log("------------------------------fieldAttributes-------------------------------");
+        // trace_log(array_except($this->getAttributes(), $fieldAttributes));
+
+        // trace_log($this->getAttributes());
         
+    }
+
+    public function getAllRealFields() {
+        $modelRealFields = $this->realFields;
+        $modeleAble = [$this->morhName.'_id', $this->morhName.'_type'];
+        $dates = ['created_at', 'updated_at'];
+        $allRealFields = array_merge($this->realFields, $modeleAble, $dates, ['config_data'] );
+        //trace_log($allRealFields);
+        return $allRealFields;
     }
 
     public function getFieldsFromConfig($config) {
