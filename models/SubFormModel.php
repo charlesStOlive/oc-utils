@@ -62,7 +62,7 @@ class SubFormModel extends Model
 
     public function beforeSave()
     {
-        //trace_log($this->toArray());
+
         $this->setCustomData();
     }
 
@@ -138,13 +138,13 @@ class SubFormModel extends Model
 
         $fieldAttributes = array_merge($staticAttributes, $fieldInConfig);
 
-        //trace_log("------------------------------fieldAttributes-------------------------------");
-        //trace_log($fieldAttributes);
+        // trace_log("------------------------------fieldAttributes-------------------------------");
+        // trace_log($fieldAttributes);
 
         $dynamicAttributes = array_only($this->getAttributes(), $fieldAttributes);
 
-        //trace_log("------------------------------dynamicAttributes-------------------------------");
-        //trace_log($dynamicAttributes);
+        // trace_log("------------------------------dynamicAttributes-------------------------------");
+        // trace_log($dynamicAttributes);
         //
         $dynamicAttributes = $this->decryptConfigJsonData($dynamicAttributes);
         //
@@ -156,8 +156,8 @@ class SubFormModel extends Model
         // trace_log("------------------------------fieldAttributes-------------------------------");
         // trace_log($dynamicAttributes);
 
-        //trace_log("------------------------------getAllRealFields-------------------------------");
-        //trace_log($this->getAllRealFields());
+        // trace_log("------------------------------getAllRealFields-------------------------------");
+        // trace_log($dynamicAttributes);
 
         $this->setRawAttributes(array_only($this->getAttributes(), $this->getAllRealFields()));
 
@@ -170,9 +170,25 @@ class SubFormModel extends Model
 
     public function getAllRealFields() {
         $modelRealFields = $this->realFields;
-        $modeleAble = [$this->morhName.'_id', $this->morhName.'_type'];
+        //TODO je n'arrive pas as acceder à $this->morphName
+        //$modeleAble = [$this->morphName.'_id', $this->morphName.'_type'];
+        $modeleAble = [
+            'actioneable_id',
+            'actioneable_type',
+            'askeable_id',
+            'askeable_type',
+            'fnceable_id',
+            'fnceable_type',
+            'ruleeable_id',
+            'ruleeable_type',
+            'contenteable_id',
+            'contenteable_type',
+            ''
+
+        ];
+        $base = ['id', 'data_source'];
         $dates = ['created_at', 'updated_at'];
-        $allRealFields = array_merge($this->realFields, $modeleAble, $dates, ['config_data'] );
+        $allRealFields = array_merge($this->realFields, $base, $modeleAble, $dates, ['config_data', 'class_name'] );
         //trace_log($allRealFields);
         return $allRealFields;
     }

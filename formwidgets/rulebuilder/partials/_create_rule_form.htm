@@ -1,6 +1,6 @@
 <?= Form::open(['id' => $this->getId().'addRuleRuleForm']) ?>
 
-<input type="hidden" name="<?=$this->getId()?>current_rule_data" value="<?= e(json_encode($this->getCacheRuleDataPayload())) ?>" />
+<input type="hidden" name="<?=$this->getId()?>current_rule_data" />
 
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="popup">&times;</button>
