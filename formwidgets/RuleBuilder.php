@@ -270,9 +270,12 @@ class RuleBuilder extends FormWidgetBase
             }
         }
         //$data = array_merge($data, $oldData);
+        //trace_log($data);
+        $rule->setCustomData();
+        //trace_log($rule->toArray());
         //
         $rule->fill($data);
-        $rule->validate();
+        //$rule->validate();
 
         //$rule->rule_text = $rule->getSubFormObject()->getText();
         //$rule->applyCustomData();
@@ -356,7 +359,7 @@ class RuleBuilder extends FormWidgetBase
         $newRule->{$this->ruleMode.'eable_id'} = $this->model->id;
         $newRule->getSubFormObject();
         $newRule->applyCustomData();
-        $this->setCacheRuleData($newRule);
+        //$this->setCacheRuleData($newRule);
         $newRule->save();
         $this->vars['newRuleId'] = $newRule->id;
         return $this->renderRules();
@@ -386,6 +389,7 @@ class RuleBuilder extends FormWidgetBase
     {
         $rule = $this->findRuleObj();
         $this->getNewOrderValue($rule, true);
+        
         return $this->renderRules();
     }
     public function onReorderDownRule()
@@ -397,17 +401,29 @@ class RuleBuilder extends FormWidgetBase
 
     public function getNewOrderValue($rule, $up = true) {
         $collection = $this->getRuleRelation()->get();
+        //trace_log($collection->toArray());
         if($up) {
             $collection = $collection->reverse();
         }
+        //trace_log('getNewOrderValue : '.$rule->code);
         $nextRule = false;
         foreach($collection as $testedRule) {
             if($nextRule) {
                 $previousOrder = $rule->sort_order;
+                //trace_log("--".$testedRule->code." : ".$testedRule->sort_order);
                 $rule->sort_order = $testedRule->sort_order;
-                $this->getRuleRelation()->save($rule, post('_session_key'));
+                //$this->getRuleRelation()->save($rule, post('_session_key'));
+                //$rule->setCustomData();
+                // $rule->getSubFormObject();
+                // $rule->applyCustomData();$rule->getSubFormObject();
+                // $rule->applyCustomData();
+                $rule->save();
                 $testedRule->sort_order = $previousOrder;
-                $this->getRuleRelation()->save($testedRule, post('_session_key'));
+                //$this->getRuleRelation()->save($testedRule, post('_session_key'));
+                //$testedRule->setCustomData();
+                // $testedRule->getSubFormObject();
+                // $testedRule->applyCustomData();
+                $testedRule->save();
                 return;
             }
             if($testedRule->id == $rule->id) {

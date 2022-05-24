@@ -62,7 +62,8 @@ class SubFormModel extends Model
 
     public function beforeSave()
     {
-
+        //trace_log("beforeSavelog : ".$this->code);
+        //trace_log($this->toArray());
         $this->setCustomData();
     }
 
@@ -107,8 +108,9 @@ class SubFormModel extends Model
 
     }
 
-    protected function setCustomData()
+    public function setCustomData()
     {
+        //trace_log('setCustomData');
         if (!$subFormObj = $this->getSubFormObject()) {
             throw new SystemException(sprintf('Unable to find subForm object [%s]', $this->getSubFormClass()));
         }   
@@ -133,8 +135,8 @@ class SubFormModel extends Model
         //Gestion des tabs si il y en a
         $fieldInConfigWithTabs = $this->getFieldsFromConfig($config);
         $fieldInConfig = array_diff(array_keys($fieldInConfigWithTabs), $realFields);
-        //trace_log("------------------------------fieldInConfig-------------------------------");
-        //trace_log($fieldInConfig);
+        // trace_log("------------------------------fieldInConfig-------------------------------");
+        // trace_log($fieldInConfig);
 
         $fieldAttributes = array_merge($staticAttributes, $fieldInConfig);
 
@@ -164,7 +166,7 @@ class SubFormModel extends Model
         // trace_log("------------------------------fieldAttributes-------------------------------");
         // trace_log(array_except($this->getAttributes(), $fieldAttributes));
 
-        // trace_log($this->getAttributes());
+        //trace_log($this->getAttributes());
         
     }
 
@@ -183,10 +185,9 @@ class SubFormModel extends Model
             'ruleeable_type',
             'contenteable_id',
             'contenteable_type',
-            ''
 
         ];
-        $base = ['id', 'data_source'];
+        $base = ['id', 'data_source', 'sort_order'];
         $dates = ['created_at', 'updated_at'];
         $allRealFields = array_merge($this->realFields, $base, $modeleAble, $dates, ['config_data', 'class_name'] );
         //trace_log($allRealFields);
@@ -292,6 +293,23 @@ class SubFormModel extends Model
                     ];
                     //trace_log($valueToExport);
             }
+            if($exportConfig == 'mediaFolder' && $value) {
+                    $folderName = basename($value);
+                    $finalPath = $path.'/media'.'/'.$code.'/'.$folderName;
+                    \Storage::makeDirectory($finalPath);
+                    $files = \System\Classes\MediaLibrary::instance()->listFolderContents($value);
+                    foreach($files as $file) {
+                        $fileName = basename($file->path);
+                        $content = \File::get(storage_path('../'.$file->publicUrl));
+                        \Storage::put($finalPath.'/'.$fileName, $content);
+                    }
+                    $valueToExport =  [
+                        'type' => 'mediaFolder',
+                        'savePath' =>  $finalPath,
+                        'folderName' => $folderName,
+                        'value' => $value
+                    ];
+            }
             else if($exportConfig == 'file' && $this->$key) {
                     //trace_log('IL FAUT  EXPORTER UN FILE');
                     $finalPath = $path.'/uploads'.'/'.$code;
@@ -352,6 +370,20 @@ class SubFormModel extends Model
                 $path = $valueFromData['savePath'].'/'.$valueFromData['name'];
                 $fileSaved = \Storage::get($path);
                 \System\Classes\MediaLibrary::instance()->put($valueFromData['value'], $fileSaved);
+                $datas[$key] = $valueFromData['value'];
+            }
+            if($importConfig == 'mediaFolder' && $valueFromData) {
+                //$folderName = $valueFromData['folderName'];
+                $path = $valueFromData['savePath'];
+                $files = \Storage::listContents($path);
+                
+                foreach($files as $file) {
+                    //$fileToSave = \Storage::get($file->path);
+                    $content = \File::get(storage_path('app/'.$file['path']));
+                    $path = $valueFromData['value'].'/'.$file['basename'];
+                    \System\Classes\MediaLibrary::instance()->put($path, $content);
+                }
+                
                 $datas[$key] = $valueFromData['value'];
             }
             else if($importConfig == 'file' && $valueFromData) {

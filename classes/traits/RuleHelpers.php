@@ -55,6 +55,9 @@ trait RuleHelpers
             ];
     }
 
+
+
+
     protected function dynamisePhoto($ds, $options = []) {
         //trace_log("dynamisePhoto : ".$this->getCode());
         $crop = $options['crop'] ?? 'exact';
