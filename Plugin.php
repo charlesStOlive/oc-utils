@@ -253,6 +253,7 @@ class Plugin extends PluginBase
             'Waka\Utils\FormWidgets\ComonBlocs' => 'comonblocs',
             'Waka\Utils\FormWidgets\Lists' => 'lists',
             'Waka\Utils\FormWidgets\Range' => 'range',
+            'Waka\Utils\FormWidgets\Treejs' => 'treejs',
         ];
     }
 
