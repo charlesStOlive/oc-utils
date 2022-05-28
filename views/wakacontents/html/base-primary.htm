@@ -10,6 +10,7 @@
         </div>
         {% if data.image.path %} 
         <div style="width:{{data.img_size | default('50%')}}" class="{% if data.opt_center_content %}mx-auto{% endif %}">
+        {% if data.img_link %}<a href="{{ data.img_link }}" target="{% if data.img_link_blank %}_blank{% endif%}">{% endif %}
         <img class="
         {% if data.opt_i_cover %}object-cover{% else %} object-contain{% endif %}
         {% if data.shadow %}shadow-lg{% endif %}
@@ -21,6 +22,7 @@
             height="{{data.image.height}}"
             alt="Illustration"/>
         </div>
+        {% if data.img_link %}</a>{% endif %}
         {% endif %}
     </div>
 </div>

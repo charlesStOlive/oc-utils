@@ -65,6 +65,7 @@ class SubFormModel extends Model
         //trace_log("beforeSavelog : ".$this->code);
         //trace_log($this->toArray());
         $this->setCustomData();
+        //trace_log($this->toArray());
     }
 
     public function applyCustomData()

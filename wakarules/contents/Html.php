@@ -71,6 +71,9 @@ class Html extends RuleContentBase implements RuleContentInterface
         $data = $this->getConfigs();
         //trace_log('resolve');
         $data['html'] = \Twig::parse($data['html'], $datas);
+        if($data['img_link'] ?? false) {
+            $data['img_link'] = \Twig::parse($data['img_link'], $datas);
+        }
         //on ajoute toutes les données du formulaire
         $data = array_merge($data, ['image' => $objImage]);
         

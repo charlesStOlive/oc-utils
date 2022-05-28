@@ -2,165 +2,197 @@
 #  Field Definitions
 # ===================================
 
-tabs:
-    defaultTab: Configuration
-    fields:
-        title:
-            label: Titre
-            default: Titre du bloc
-        html:
-            label: Text HTML
-            type: richeditor
-            size: huge
-            toolbarButtons: fullscreen|bold|italic|underline|strikeThrough|fontFamily|color|inlineStyle|paragraphStyle|paragraphFormat|align|formatOL|formatUL|outdent|indent|quote|insertHR|insertLink|undo|redo|clearFormatting|selectAll|html
-        s_opt_t:
-            label: Option globales
-            type: section
-        opt_env_colors:
-            label: Univer coloriel
-            type: dropdown
-            options:
-                null: inherit
-                env-white: "Txt noir | Bg : blanc"
-                env-primary: "Txt blanc | Bg : Couleur primaire"
-                env-secondary: "Txt blanc | Bg : Couleur secondaire"
-                env-trans: "Txt Noir | Bg : Trasparent"
-                env-trans-dark: "Txt blanc | Bg : Transparent"
-        opt_style_container:
-            label: Styles du container
-            comment: Separer les styles avec ';'
-        opt_center_container:
-            label: Centrer le container ( ajoute mx-auto )
-            type: checkbox
-            default: true
-        opt_center_content:
-            label: Centrer le contenu (Si éxiste)
-            type: checkbox
-        # BLOC IMAGE TOUT EST LIEE AU HELPER : RuleHelpers dans classes/traits/utils
-        imageMode:
-            label: Mettre une image
-            #Attention au tab lors d'un copier/coller
-            tab: image et options
-            type: dropdown
-            span: left
-            options: listImageMode
-            default: nothing
-        photo:
-            label: Upload Image
-            #Attention au tab lors d'un copier/coller
-            tab: image et options
-            span: left
-            type: fileupload
-            mode: image
-            dependsOn: imageMode
-            imageHeight: 120
-            imageWidth: 120
-            thumbOptions:
-                mode: exact
-                quality: 90
-                sharpen: 0
-                interlace: false
-                extension: auto
-            useCaption: false
-        media:
-            label: waka.babyler::texture.media
-            #Attention au tab lors d'un copier/coller
-            tab: image et options
-            span: left
-            type: mediafinder
-            dependsOn: imageMode
-        url:
-            label: waka.babyler::texture.url
-            #Attention au tab lors d'un copier/coller
-            tab: image et options
-            span: full
-            dependsOn: imageMode
-        # FIN DU BLOC DYNAMYQYE DE GESTION DES IMAGES
-        s_size: 
-            tab: image et options
-            label: Repartition du bloc texte et  image (si actif) 
-            comment: le total doit être inférieur à 100%    
-            type: section 
-        txt_size:
-            tab: image et options
-            label: Taille en % de l'espace textes
-            default: 50%
-            span: left
-        img_size:
-            tab: image et options
-            label: Taille en % de l'espace image
-            default: 50%
-            span: right
-            trigger:
+fields:
+    # title:
+    #     label: Titre
+    #     default: Titre du bloc
+    html:
+        label: Text HTML
+        type: richeditor
+        size: huge
+        toolbarButtons: fullscreen|bold|italic|underline|strikeThrough|fontFamily|color|inlineStyle|paragraphStyle|paragraphFormat|align|formatOL|formatUL|outdent|indent|quote|insertHR|insertLink|undo|redo|clearFormatting|selectAll|html
+    s_opt_t:
+        label: Option globales
+        type: section
+    opt_env_colors:
+        label: Univer coloriel
+        type: dropdown
+        span: left
+        options:
+            null: inherit
+            env-white: "Txt noir | Bg : blanc"
+            env-primary: "Txt blanc | Bg : Couleur primaire"
+            env-secondary: "Txt blanc | Bg : Couleur secondaire"
+            env-trans: "Txt Noir | Bg : Trasparent"
+            env-trans-dark: "Txt blanc | Bg : Transparent"
+    opt_center_container:
+        label: Centrer le container ( ajoute mx-auto )
+        type: checkbox
+        span: storm
+        cssClass: col-xs-3 m-t
+        default: true
+    opt_center_content:
+        label: Centrer le contenu (Si éxiste)
+        type: checkbox
+        span: storm
+        cssClass: col-xs-3 m-t
+    opt_style_container:
+        label: Styles du container
+        comment: Separer les styles avec ';'
+   
+    # BLOC IMAGE TOUT EST LIEE AU HELPER : RuleHelpers dans classes/traits/utils
+    s_img:
+        label: Option image
+        type: section
+    imageMode:
+        label: Mettre une image
+        #Attention au tab lors d'un copier/coller
+        tab: image et options
+        type: dropdown
+        span: left
+        options: listImageMode
+        default: nothing
+    photo:
+        label: Upload Image
+        #Attention au tab lors d'un copier/coller
+        tab: image et options
+        span: right
+        type: fileupload
+        mode: image
+        dependsOn: imageMode
+        attachOnUpload: true
+        imageHeight: 120
+        imageWidth: 120
+        thumbOptions:
+            mode: exact
+            quality: 90
+            sharpen: 0
+            interlace: false
+            extension: auto
+        useCaption: false
+    media:
+        label: waka.babyler::texture.media
+        #Attention au tab lors d'un copier/coller
+        tab: image et options
+        span: right
+        type: mediafinder
+        dependsOn: imageMode
+    url:
+        label: waka.babyler::texture.url
+        #Attention au tab lors d'un copier/coller
+        tab: image et options
+        span: right
+        dependsOn: imageMode
+    img_link:   
+        label: lien de l'image
+        placeholder: "{{ url('lp/...') }}"
+        dependsOn: imageMode
+        span: left
+        trigger:
+            field: imageMode
+            action: hide
+            condition: value[nothing]
+    img_link_blank:
+        label: Ouverture dans une nouvelle fenêtre
+        type: checkbox
+        dependsOn: imageMode
+        span: left
+        trigger:
+            field: imageMode
+            action: hide
+            condition: value[nothing]
+    opt_i_place:
+        tab: image et options
+        type: dropdown
+        label: Placement de l'image
+        span: full
+        options: 
+            before: En ligne préscedent le contenu
+            after: En ligne Apès le contenu
+            upper: Au dessus du texte
+            bottom: En dessous du texte
+        trigger:
+            field: imageMode
+            action: hide
+            condition: value[nothing]
+    # FIN DU BLOC DYNAMYQYE DE GESTION DES IMAGES
+    s_size: 
+        tab: image et options
+        label: Repartition du bloc texte et  image (si actif) 
+        comment: le total doit être inférieur à 100%    
+        type: section 
+    txt_size:
+        tab: image et options
+        label: Taille en % de l'espace textes
+        default: 100%
+        span: left
+    img_size:
+        tab: image et options
+        label: Taille en % de l'espace image
+        default: 50%
+        span: right
+        trigger:
+            field: imageMode
+            action: hide
+            condition: value[nothing]
+    
+    s_opti:
+        tab: image et options
+        label: Option pour l'image
+        type: section
+        trigger:
+            field: imageMode
+            action: hide
+            condition: value[nothing]
+    opt_i_cover:
+        type: checkbox
+        label: object-cover ?
+        tab: image et options
+        span: left
+        defaultValue: 1
+        trigger:
+            field: imageMode
+            action: hide
+            condition: value[nothing]
+    opt_center_image:
+        label: Centrer l'image
+        type: checkbox
+        span: right
+        tab: image et options
+        trigger:
+            field: imageMode
+            action: hide
+            condition: value[nothing]
+    opt_i_crop:
+        tab: image et options
+        label: Méthode de reditionement
+        type: dropdown
+        options: listCropMode
+        default: fit
+        span: storm
+        cssClass: col-xs-4
+        trigger:
                 field: imageMode
                 action: hide
                 condition: value[nothing]
-        
-        s_opti:
-            tab: image et options
-            label: Option pour l'image
-            type: section
-            trigger:
-                field: imageMode
-                action: hide
-                condition: value[nothing]
-        opt_i_cover:
-            tab: image et options
-            type: checkbox
-            label: object-cover ?
-            defaultValue: 1
-            trigger:
-                field: imageMode
-                action: hide
-                condition: value[nothing]
-        opt_center_image:
-            label: Centrer l'image
-            type: checkbox
-            tab: image et options
-            trigger:
-                field: imageMode
-                action: hide
-                condition: value[nothing]
-        opt_i_place:
-            tab: image et options
-            type: dropdown
-            label: Placement de l'image
-            options: 
-                before: En ligne préscedent le contenu
-                after: En ligne Apès le contenu
-                upper: Au dessus du texte
-                bottom: En dessous du texte
-            trigger:
-                field: imageMode
-                action: hide
-                condition: value[nothing]
-        opt_i_crop:
-            tab: image et options
-            label: Méthode de reditionement
-            span: auto
-            type: dropdown
-            options: listCropMode
-            default: fit
-            trigger:
-                    field: imageMode
-                    action: hide
-                    condition: value[nothing]
-        opt_i_width:
-            tab: image et options
-            label: width
-            span: left
-            trigger:
-                field: imageMode
-                action: hide
-                condition: value[nothing]
-        opt_i_height:
-            tab: image et options
-            label: height
-            span: right
-            trigger:
-                field: imageMode
-                action: hide
-                condition: value[nothing]
+    opt_i_width:
+        tab: image et options
+        label: width
+        span: storm
+        cssClass: col-xs-4
+        trigger:
+            field: imageMode
+            action: hide
+            condition: value[nothing]
+    opt_i_height:
+        tab: image et options
+        label: height
+        span: storm
+        cssClass: col-xs-4
+        trigger:
+            field: imageMode
+            action: hide
+            condition: value[nothing]
         
         
 
