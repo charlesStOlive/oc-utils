@@ -68,7 +68,7 @@
     mode: date
     ignoreTimezone: true
 {% endif %}
-{% if specific.required %}
+{% if 'required' in specific.required %}
     required: true
 {% endif %}
 {% for foption in specific.field_opt %}

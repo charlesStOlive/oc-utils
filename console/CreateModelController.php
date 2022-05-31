@@ -418,7 +418,18 @@ class CreateModelController extends GeneratorCommand
         $dates1 = $rows->where('type', '==', 'date');
         $dates2 = $rows->where('type', '==', 'timestamp');
         $dates = $dates1->merge($dates2)->pluck('name', 'var')->toArray();
-        $requireds = $rows->where('required', '<>', null)->pluck('required', 'var')->toArray();
+        //
+        $startRequireds = $rows->where('required', '<>', null)->pluck('required', 'var')->toArray();
+        $requireds = [];
+        foreach($startRequireds as $key=>$value) {
+            $multiple = starts_with($value,'*:' );
+            if($multiple) {
+                $requireds[$key.'.*'] = str_replace('*:', "", $value);
+            } else {
+                $requireds[$key] = $value;
+            }
+        }
+        trace_log($requireds);
         $jsons = $rows->where('json', '<>', null)->pluck('json', 'var')->toArray();
         $getters = $rows->where('getter', '<>', null)->pluck('json', 'var')->toArray();
         $purgeables = $rows->where('purgeable', '<>', null)->pluck('purgeable', 'var')->toArray();
