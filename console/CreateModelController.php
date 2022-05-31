@@ -429,7 +429,7 @@ class CreateModelController extends GeneratorCommand
                 $requireds[$key] = $value;
             }
         }
-        trace_log($requireds);
+        //trace_log($requireds);
         $jsons = $rows->where('json', '<>', null)->pluck('json', 'var')->toArray();
         $getters = $rows->where('getter', '<>', null)->pluck('json', 'var')->toArray();
         $purgeables = $rows->where('purgeable', '<>', null)->pluck('purgeable', 'var')->toArray();

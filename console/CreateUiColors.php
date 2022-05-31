@@ -33,8 +33,9 @@ class CreateUiColors extends GeneratorCommand
      * @var array
      */
     protected $stubs = [
+        'ui_less/global.variables.stub' => '/../../../modules/system/assets/ui/less/global.variables.less',
         'ui_less/vars.stub' => '/assets/css/vars.less',
-        'ui_less/global.variables.stub' => '/../../../../modules/system/assets/ui/less/global.variables.less',
+        
     ];
 
     /**
@@ -146,10 +147,11 @@ class CreateUiColors extends GeneratorCommand
             '#1681BA' => '@brand-primary',
             '#1F99DC' => '@color-accent',
             '#3498db' => '@color-accent',
-            '#4da7e8' => 'lighten(@color-accent, 12%)',
+            '#4da7e8' => 'darken(@color-primary, 12%)',
+            '#385487' => 'darken(@color-primary, 25%)',
             '#405261' => '@brand-secondary',
             '#e67e22' => 'darken(@brand-accent,15%)',
-            '#2A3E51' => 'darken(@brand-primary, 12%)',
+            '#2A3E51' => 'darken(@brand-primary, 40%)',
             '#1F99DC' => 'lighten(@color-accent, 12%)',
         ];
 

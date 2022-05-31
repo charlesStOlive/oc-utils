@@ -186,6 +186,8 @@ class SubFormModel extends Model
             'ruleeable_type',
             'contenteable_id',
             'contenteable_type',
+            'conditioneable_id',
+            'conditioneable_type',
 
         ];
         $base = ['id', 'data_source', 'sort_order'];

@@ -102,6 +102,7 @@ class WorkflowDump extends Command
 
     public function createDotCommand($path, $workflowSlug, $type, $format)
     {
+        //trace_log("dot -T$format -o " . $path.'/' . $workflowSlug . '_' . $type . '.' . $format);
         return "dot -T$format -o " . $path.'/' . $workflowSlug . '_' . $type . '.' . $format;
     }
 

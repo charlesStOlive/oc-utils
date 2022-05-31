@@ -156,6 +156,7 @@ trait WakaWorkflowTrait
 
             
             $model->bindEvent('model.afterSave', function () use ($model) {
+                //trace_log('model after save as runned');
                 $changeState = $model->change_state ? $model->change_state  : $model->getOriginalPurgeValue('change_state');
                 $model->storeStatelog($changeState);
                 $model->executeWorkflowFunctionAfterSave($changeState);
