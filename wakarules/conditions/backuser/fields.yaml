@@ -3,7 +3,7 @@
 # ===================================
 
 fields:
-    mode:
+    checkMode:
         label: Mode
         type: dropdown
         placeholder: --Choisissez une valeur--

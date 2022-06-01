@@ -27,7 +27,7 @@ class ModelExist extends RuleConditionBase implements RuleInterface
         $hostObj = $this->host;
         $field = $this->getConfig('field');
         $relation = $this->getConfig('relation');
-        $mode = $this->getConfig('mode');
+        $mode = $this->getConfig('checkMode');
         $field = $field ? $field : '*';
         //trace_log($hostObj->config_data);
         $text = "Verification existance valeur : Relat=".$relation.' | Modl='.$mode.' | Field='.$field;
@@ -46,8 +46,10 @@ class ModelExist extends RuleConditionBase implements RuleInterface
         //trace_log('check model value');
         $field = $this->getConfig('field');
         $relation = $this->getConfig('relation');
-        $mode = $this->getConfig('mode');
+        $mode = $this->getConfig('checkMode');
         $model = $modelSrc;
+
+        //trace_log($mode);
 
 
         if($mode == 'childs') {

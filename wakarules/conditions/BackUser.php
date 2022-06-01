@@ -24,8 +24,8 @@ class BackUser extends RuleConditionBase  implements RuleInterface
     {
         //trace_log('getText HTMLASK---');
         $hostObj = $this->host;
-        $mode = $this->getConfig('mode');
-        $text = "Verification user en mode : ".$this->getConfig('mode');
+        $mode = $this->getConfig('checkMode');
+        $text = "Verification user en mode : ".$mode;
         if($text) {
             return $text;
         }
@@ -44,7 +44,7 @@ class BackUser extends RuleConditionBase  implements RuleInterface
         }
 
         $user = \BackendAuth::getUser();
-        $mode = $this->getConfig('mode');
+        $mode = $this->getConfig('checkMode');
         $operator = $this->getConfig('operator');
         $value = $this->getConfig('value');
         if($mode == "permissions") {

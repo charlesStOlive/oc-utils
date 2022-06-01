@@ -3,7 +3,7 @@
 # ===================================
 
 fields:
-    mode:
+    checkMode:
         label: Mode
         type: dropdown
         options:
@@ -16,7 +16,7 @@ fields:
         trigger:
             action: hide
             condition: value[self]
-            field: mode
+            field: checkMode
     field:
         label: Nom du champs ou attribut
         trigger:

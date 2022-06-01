@@ -44,7 +44,7 @@ class ModelValue extends RuleConditionBase implements RuleInterface
 
     private function check($modelSrc, $context = 'twig', $dataForTwig = []) {
        //trace_log('check model value');
-        $mode = $this->getConfig('mode');
+        $mode = $this->getConfig('checkMode');
         
         $relation = $this->getConfig('relation');
         $model = $modelSrc;
