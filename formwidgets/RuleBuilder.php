@@ -334,9 +334,6 @@ class RuleBuilder extends FormWidgetBase
         $newRule->forceSave();
 
         $this->vars['newRuleId'] = $newRule->id;
-
-        //$this->autoSAve();
-
         return $this->renderRules();
     }
 
@@ -443,10 +440,6 @@ class RuleBuilder extends FormWidgetBase
     //
     // Postback deferring
     //
-    public function getCacheRuleCode($rule)
-    {
-        return array_get($this->getCacheRuleData($rule), 'code') ?? 'ERROR';
-    }
 
     public function getPartialBtn($rule) {
         if($pathBtn = $rule->getPartialPathBtns()) {
@@ -463,79 +456,6 @@ class RuleBuilder extends FormWidgetBase
             return null;
         }
     }
-
-    // public function getCacheRuleAttributes($rule)
-    // {
-    //     //trace_log("getCacheRuleAttributes");
-    //     return [];
-    //     // $attributes = array_get($this->getCacheRuleData($rule), 'attributes');
-    //     // $code = array_get($this->getCacheRuleData($rule), 'code');
-    //     // $is_share = array_get($this->getCacheRuleData($rule), 'is_share');
-    //     // $photos = array_get($this->getCacheRuleData($rule), 'photos');
-    //     // $photo = array_get($this->getCacheRuleData($rule), 'photo');
-    //     // //trace_log(array_merge($attributes, ["code" => $code], ["is_share" => $is_share]));
-    //     // return array_merge($attributes, ["code" => $code], ["is_share" => $is_share]);
-    // }
-
-    // public function getCacheRuleTitle($rule)
-    // {
-    //     //trace_log("getCacheRuleTitle");
-    //     return null;
-    //     return array_get($this->getCacheRuleData($rule), 'title');
-    // }
-
-    // public function getCacheShareMode($rule)
-    // {
-    //     //trace_log("getCacheShareMode");
-    //     return null;
-    //     return array_get($this->getCacheRuleData($rule), 'share_mode');
-    // }
-    // public function getCacheMemo($rule)
-    // {
-    //     //trace_log("getCacheMemo");
-    //     return null;
-    //     //trace_log('memo : '.array_get($this->getCacheRuleData($rule), 'memo'));
-    //     //trace_log($this->getCacheRuleData($rule));
-    //     return array_get($this->getCacheRuleData($rule), 'memo');
-    // }
-    // public function getCacheRuleText($rule)
-    // {
-    //     //trace_log("getCacheRuleText");
-    //     return null;
-    //     $ruleText =  array_get($this->getCacheRuleData($rule), 'text');
-    //     return $ruleText;
-    // }
-    // public function getCacheRuleData($rule, $default = null)
-    // {
-    //     //trace_log("getCacheRuleData");
-    //     return null;
-    //     $cache = post($this->getId().'rule_data', []);
-    //     if (is_array($cache) && array_key_exists($rule->id, $cache)) {
-    //         return json_decode($cache[$rule->id], true);
-    //     }
-    //     if ($default === false) {
-    //         return null;
-    //     }
-    //     return $this->makeCacheRuleData($rule);
-    // }
-    // public function makeCacheRuleData($rule)
-    // {
-    //     //trace_log("makeCacheRuleData");
-    //     //trace_log($rule->config_data);
-    //     $data = [
-    //         'attributes' => $rule->config_data,
-    //         'title' => $rule->getTitle(),
-    //         'memo' => $rule->getMemo(),
-    //         'text' => $rule->getText(),
-    //         'sort_order' => $rule->sort_order,
-    //         'photo' => $rule->photo,
-    //         'photos' => $rule->photos,
-    //         'code' =>  $rule->code,
-    //         'is_share' => $rule->is_share,
-    //         'share_mode' =>  $rule->getShareMode(),
-    //     ];
-    //     return $data;
-    // }
 
     public function setCacheCopyRuleData($rule)
     {
@@ -631,11 +551,8 @@ class RuleBuilder extends FormWidgetBase
     {
         $this->prepareVars();
         $result = [];
-        if($this->splitRules) {
-            $result = ['#'.$this->getId() => $this->makePartial('rules_splited')];
-        } else {
-            $result = ['#'.$this->getId() => $this->makePartial('rules')];
-        }
+        
+        $result = ['#'.$this->getId() => $this->makePartial('rules')];
         
         if(!$type) {
             return $result;

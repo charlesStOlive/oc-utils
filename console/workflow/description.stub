@@ -8,7 +8,7 @@
 
 ## Liste des états
 {% for place in places %}
-* **{{place.lang}}**
+* **{{place.lang}}** : **{{place.name}}**
 {% if place.rules %}
     * Rôle n'ayant pas accès à cet état : [{{place.rules}}]
 {% endif %}

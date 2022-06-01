@@ -16,7 +16,7 @@ class RuleContent extends SubFormModel
     public $table = 'waka_utils_rules_contents';
 
     public $staticAttributes = ['rule_text'];
-    public $realFields = ['photo', 'photos', 'code' , 'is_share'];
+    public $realFields = ['photo', 'photos', 'code' , 'is_share', 'contenteable_id', 'contenteable_type'];
     public $morphTo = [
         'contenteable' => [],
     ];

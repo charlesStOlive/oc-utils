@@ -40,7 +40,7 @@
 .rule-set ol>li>div span.comment{display:block;font-weight:400;color:#95a5a6;font-size:13px;margin-top:2px;overflow:hidden;text-overflow:ellipsis}
 .rule-set ol>li>div>.subpanel{right:0;top:0;height:100%;position:absolute;z-index:200;padding:0 20px}
 .rule-set ol>li>div>ul.submenu{position:absolute;right:0;top:0;padding:0;list-style:none;z-index:200;height:100%;display:none;margin:0;font-size:0}
-.rule-set ol>li>div>ul.submenu li{font-size:12px;height:100%;display:inline-block;background:#619436;border-right:1px solid #328ec8}
+.rule-set ol>li>div>ul.submenu li{font-size:12px;height:100%;display:inline-block;background:#507a2d;border-right:1px solid #328ec8}
 .rule-set ol>li>div>ul.submenu li div{display:table;height:100%;padding:0;margin:0}
 .rule-set ol>li>div>ul.submenu li div a{display:table-cell;vertical-align:middle;height:100%;padding:0 10px;font-size:13px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;color:#fff;text-decoration:none}
 .rule-set ol>li>div>ul.submenu li div a:hover{color:#eac421}

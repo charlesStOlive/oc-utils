@@ -16,7 +16,7 @@ class RuleCondition extends SubFormModel
     public $table = 'waka_utils_rules_conditions';
 
     public $staticAttributes = ['rule_text'];
-    public $realFields = ['code' , 'is_share'];
+    public $realFields = ['code' , 'is_share', 'conditioneable_id', 'conditioneable_type'];
 
     public $morphTo = [
         'conditioneable' => [],

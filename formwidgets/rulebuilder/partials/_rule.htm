@@ -14,10 +14,10 @@
                             
                             <span class="subcode">
                                 <br>
+                                <?php $code = $rule->getCode() ?>
                                 <?php if($share = $rule->getShareMode()) : ?>
-                                    | <i class="icon-share-alt"></i> <?=$share?> (<?= $this->countShareModel($rule) ?>)
-                                <?php else:
-                                $code = $rule->getCode() ?>
+                                    <i class="icon-code" code="<?= $code ?>"></i> : <?= $code?> | <i class="icon-share-alt"></i> <?=$share?> (<?= $this->countShareModel($rule) ?>)
+                                <?php else: ?>
                                 <i class="icon-code" code="<?= $code ?>"></i> : <?= $code?>
                                 <?php endif ?>
                             </span>

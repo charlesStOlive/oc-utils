@@ -175,24 +175,13 @@ class SubFormModel extends Model
         $modelRealFields = $this->realFields;
         //TODO je n'arrive pas as acceder à $this->morphName
         //$modeleAble = [$this->morphName.'_id', $this->morphName.'_type'];
-        $modeleAble = [
-            'actioneable_id',
-            'actioneable_type',
-            'askeable_id',
-            'askeable_type',
-            'fnceable_id',
-            'fnceable_type',
-            'ruleeable_id',
-            'ruleeable_type',
-            'contenteable_id',
-            'contenteable_type',
-            'conditioneable_id',
-            'conditioneable_type',
-
-        ];
-        $base = ['id', 'data_source', 'sort_order'];
-        $dates = ['created_at', 'updated_at'];
-        $allRealFields = array_merge($this->realFields, $base, $modeleAble, $dates, ['config_data', 'class_name'] );
+        // $modeleAble = [
+        //     'ruleeable_id',
+        //     'ruleeable_type',  
+        // ];
+        //Puis injecté dans allFields
+        $base = ['id', 'data_source', 'sort_order', 'config_data', 'class_name','created_at', 'updated_at'];
+        $allRealFields = array_merge($this->realFields, $base);
         //trace_log($allRealFields);
         return $allRealFields;
     }

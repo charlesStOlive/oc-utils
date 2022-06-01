@@ -14,7 +14,7 @@ class RuleAsk extends SubFormModel
      */
     public $table = 'waka_utils_rule_asks';
     public $staticAttributes = ['ask_text'];
-    public $realFields = ['photo', 'photos', 'code', 'is_share'];
+    public $realFields = ['photo', 'photos', 'code', 'is_share', 'askeable_id', 'askeable_type'];
 
     /**
      * @var array Relations

@@ -16,7 +16,7 @@ class RuleBloc extends SubFormModel
     public $table = 'waka_utils_rule_blocs';
 
     public $staticAttributes = ['rule_text'];
-    public $realFields = ['code' , 'is_share'];
+    public $realFields = ['code' , 'is_share','bloceable_id','bloceable_type'];
     public $morphTo = [
         'bloceable' => [],
     ];
