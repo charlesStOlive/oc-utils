@@ -28,9 +28,8 @@ class ModelValue extends RuleConditionBase implements RuleInterface
         $field = $this->getConfig('field');
         $operator = $this->getConfig('operator');
         $value = $this->getConfig('value');
-        $relation = $this->getConfig('relation');
         //trace_log($hostObj->config_data);
-        $text = "Verification existance valeur : R=".$relation.' | F='.$field.' | O='.$operator.' | V='.$value;
+        $text = 'Verification existance valeur : F='.$field.' | O='.$operator.' | V='.$value;
         if($text) {
             return $text;
         }
@@ -43,26 +42,10 @@ class ModelValue extends RuleConditionBase implements RuleInterface
      */
 
     private function check($modelSrc, $context = 'twig', $dataForTwig = []) {
-       //trace_log('check model value');
-        $mode = $this->getConfig('checkMode');
-        
-        $relation = $this->getConfig('relation');
-        $model = $modelSrc;
-        if($mode == 'parent') {
-            $model = $this->getStringModelRelation($model, $relation);
-        } 
         $field = $this->getConfig('field');
         $operator = $this->getConfig('operator');
         $value = $this->getConfig('value');
-
-        $fieldValue = $model->{$field};
-
-       //trace_log($fieldValue);
-       //trace_log($operator);
-       //trace_log($value);
-       //trace_log("result : ".$this->compareValue($fieldValue, $operator, $value));
-        
-
+        $fieldValue = array_get($modelSrc, $field);
         return $this->compareValue($fieldValue, $operator, $value);
         
     }
@@ -76,7 +59,17 @@ class ModelValue extends RuleConditionBase implements RuleInterface
     }
 
     public function compareValue($fieldValue, $operator, $valueSearched) {
+        trace_log($fieldValue);
         switch ($operator) {
+            case 'existe' :
+                return !empty($fieldValue);
+            case 'count' :
+                $return = false;
+                $isArray = is_array($fieldValue);
+                if($isArray) {
+                    return count($isArray);
+                } 
+                return $return;
             case 'where' :
                 return $fieldValue == $valueSearched;
             case 'whereNot' :

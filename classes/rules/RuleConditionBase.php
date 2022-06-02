@@ -37,6 +37,8 @@ class RuleConditionBase extends SubForm
     }
     public function listOperators() {
         return [
+            'count' => 'Compter',
+            'existe' => 'Existe',
             'where' => "Est égale à ",
             'whereNot' => "Est différent de",
             'wherein' => "Est dans ces valeurs",

@@ -9,15 +9,15 @@ fields:
         options:
             self: Sur le modèle
             parent: Sur une relation parente
-    relation:
-        label: Relation
-        comment: Utiliser des points pour des multiples relations
-        trigger:
-            action: hide
-            condition: value[self]
-            field: checkMode
+    # relation:
+    #     label: Relation
+    #     comment: Utiliser des points pour des multiples relations
+    #     trigger:
+    #         action: hide
+    #         condition: value[self]
+    #         field: checkMode
     field:
-        label: Nom du champs ou attribut
+        label: Nom du champs ou attribut | utiliser parent.child pour les valeurs des relations.
     operator:
         label: Opérateur
         type: dropdown

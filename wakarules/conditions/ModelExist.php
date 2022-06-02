@@ -45,25 +45,29 @@ class ModelExist extends RuleConditionBase implements RuleInterface
     private function check($modelSrc, $context = 'twig', $dataForTwig = []) {
         //trace_log('check model value');
         $field = $this->getConfig('field');
-        $relation = $this->getConfig('relation');
-        $mode = $this->getConfig('checkMode');
-        $model = $modelSrc;
+        // $relation = $this->getConfig('relation');
+        //$mode = $this->getConfig('checkMode');
+        $mode  = 'existe';
+        // $model = $modelSrc;
 
         //trace_log($mode);
+        $values = array_get($modelSrc, $field);
 
-
-        if($mode == 'childs') {
-            return $this->getStringRequestRelation($model, $relation)->count();
-        } elseif($mode == 'parent') {
-            $model = $this->getStringModelRelation($model, $relation);
-        }  
-        if(!$field) {
-            return $model ? true : false;
-        } else {
-            $check =  $model[$field] ?? false;
-            return $check ? true : false;
+        if($mode ==  "existe") {
+            if($values) {
+                return true;
+            } else {
+                return false;
+            }
         }
-        
+
+        if($mode ==  "countChild") {
+            if($values->count()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
