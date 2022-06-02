@@ -18,6 +18,7 @@ class ModelValue extends RuleConditionBase implements RuleInterface
             'name'        => 'Valeur du modèle',
             'description' => 'Condition lié à une valeur du modèle ou d\'une relation',
             'icon'        => 'icon-value',
+            'share_mode' => 'choose',
         ];
     }
 
@@ -28,8 +29,17 @@ class ModelValue extends RuleConditionBase implements RuleInterface
         $field = $this->getConfig('field');
         $operator = $this->getConfig('operator');
         $value = $this->getConfig('value');
+        if($operator == 'existe') {
+            $text = 'Le champs  <b>"'.$field.'"</b> doit exister';
+        }
+        else if($operator == 'existepas') {
+            $text = 'Le champs  : <b>"'.$field.'"</b> NE doit PAS exister';
+        } else {
+             $text = 'Verification : F='.$field.' | O='.$operator.' | V='.$value;
+        }
+        
         //trace_log($hostObj->config_data);
-        $text = 'Verification existance valeur : F='.$field.' | O='.$operator.' | V='.$value;
+       
         if($text) {
             return $text;
         }

@@ -3,19 +3,6 @@
 # ===================================
 
 fields:
-    checkMode:
-        label: Mode
-        type: dropdown
-        options:
-            self: Sur le modèle
-            parent: Sur une relation parente
-    # relation:
-    #     label: Relation
-    #     comment: Utiliser des points pour des multiples relations
-    #     trigger:
-    #         action: hide
-    #         condition: value[self]
-    #         field: checkMode
     field:
         label: Nom du champs ou attribut | utiliser parent.child pour les valeurs des relations.
     operator:
@@ -25,4 +12,8 @@ fields:
     value:
         label: Valeur
         comment: Si vous cherchez sur plusieurs valeurs separés les pat une , sans espaces. 
+        trigger:
+            field: operator
+            action: hide
+            condition: value[existe] || value[existepas]
 

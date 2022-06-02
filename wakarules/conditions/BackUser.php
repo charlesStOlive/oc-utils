@@ -17,6 +17,7 @@ class BackUser extends RuleConditionBase  implements RuleInterface
             'description' => 'Condition lié à l\'administrateur connecté ( rôle, groupe )',
             'icon'        => 'icon-user',
             'premission'  => 'wcli.utils.cond.edit.admin',
+            'share_mode' => 'choose',
         ];
     }
 

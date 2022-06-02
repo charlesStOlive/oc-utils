@@ -19,7 +19,7 @@ class RuleConditionBase extends SubForm
      */
     public function __construct($host = null)
     {
-        $this->morphName = 'ruleeable';
+        $this->morphName = 'conditioneable';
         $this->init('/waka/utils/models/rules/fields_condition.yaml');
         if (!$this->host = $host) {
             return;
@@ -28,7 +28,7 @@ class RuleConditionBase extends SubForm
     }
 
     public function setError($error = null) {
-        $errorName = $error ? $error : $this->getText()." non compatible";
+        $errorName = $error ? $error : $this->getText();
         $this->error = $errorName;
     }
 

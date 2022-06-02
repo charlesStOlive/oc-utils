@@ -18,7 +18,7 @@ class RuleContentBase extends SubForm
 
     public function __construct($host = null)
     {
-        $this->morphName = 'ruleeable';
+        $this->morphName = 'contenteable';
         $this->init('/waka/utils/models/rules/fields_content.yaml');
         if (!$this->host = $host) {
             return;
