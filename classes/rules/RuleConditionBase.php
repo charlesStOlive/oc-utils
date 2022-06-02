@@ -39,6 +39,7 @@ class RuleConditionBase extends SubForm
         return [
             'count' => 'Compter',
             'existe' => 'Existe',
+            'existePas' => 'N\'Existe pas',
             'where' => "Est égale à ",
             'whereNot' => "Est différent de",
             'wherein' => "Est dans ces valeurs",

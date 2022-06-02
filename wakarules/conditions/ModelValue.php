@@ -73,6 +73,8 @@ class ModelValue extends RuleConditionBase implements RuleInterface
         switch ($operator) {
             case 'existe' :
                 return !empty($fieldValue);
+             case 'existePas' :
+                return empty($fieldValue);
             case 'count' :
                 $return = false;
                 $isArray = is_array($fieldValue);
