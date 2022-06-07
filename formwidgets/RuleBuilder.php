@@ -281,6 +281,10 @@ class RuleBuilder extends FormWidgetBase
         //$rule->applyCustomData();
         //trace_log($rule->toArray());
         $rule->save();
+
+        if($rule->is_share) {
+            $this->saveSharedModel($rule, $data);
+        }
         //
         //$this->setCacheRuleData($rule);
         //$this->autoSAve();
