@@ -181,7 +181,8 @@ class SubFormModel extends Model
         // ];
         //Puis injecté dans allFields
         $base = ['id', 'data_source', 'sort_order', 'config_data', 'class_name','created_at', 'updated_at'];
-        $allRealFields = array_merge($this->realFields, $base);
+        //Poblème des actioneable lors d'une création automatique...
+        $allRealFields = array_merge($this->realFields, $base, ['actioneable_id', 'actioneable_type']);
         //trace_log($allRealFields);
         return $allRealFields;
     }
