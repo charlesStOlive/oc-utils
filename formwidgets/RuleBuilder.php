@@ -327,7 +327,7 @@ class RuleBuilder extends FormWidgetBase
         $newRule->{$this->ruleMode.'eable_type'} = get_class($this->model);
         $newRule->{$this->ruleMode.'eable_id'} = $this->model->id;
         $newRule->class_name = $className;
-        $newRule->save();
+        $newRule->forceSave();
 
         $this->getRuleRelation()->add($newRule, post('_session_key'));
 
@@ -335,7 +335,7 @@ class RuleBuilder extends FormWidgetBase
         $defaultValues = $newRule->getDefaultValues();
         $newRule->fill($defaultValues);
         //Je suis obligé de sauver 2 fois...sinon pas instancié et data est inconnu
-        $newRule->save();
+        $newRule->forceSave();
 
         $this->vars['newRuleId'] = $newRule->id;
         return $this->renderRules();

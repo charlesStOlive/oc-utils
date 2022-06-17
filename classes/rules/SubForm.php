@@ -112,7 +112,7 @@ class SubForm extends Extendable
         if(!$this->morphName) {
             throw new \SystemException('SubForm morhName nom definis dans le declarateur');
         }
-        trace_log('morphname : '.$this->morphName);
+        //trace_log('morphname : '.$this->morphName);
         return $this->host->{$this->morphName};
     }
 

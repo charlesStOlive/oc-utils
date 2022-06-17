@@ -69,7 +69,7 @@ class ModelValue extends RuleConditionBase implements RuleInterface
     }
 
     public function compareValue($fieldValue, $operator, $valueSearched) {
-        trace_log($fieldValue);
+        //trace_log($fieldValue);
         switch ($operator) {
             case 'existe' :
                 return !empty($fieldValue);

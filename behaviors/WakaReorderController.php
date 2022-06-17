@@ -133,7 +133,7 @@ class WakaReorderController extends ControllerBehavior
 
     public function onReorder()
     {
-        trace_log(post());
+        //trace_log(post());
         $this->relationConfig = post('relationConfig');
         $model = $this->validateModel();
         
@@ -184,13 +184,13 @@ class WakaReorderController extends ControllerBehavior
 
      public function onCloseReorder()
         {
-            trace_log(post());
+            //trace_log(post());
             $modelId = post('manageId');
             $relationConfig = post('relationConfig');
-            trace_log($relationConfig);
+            //trace_log($relationConfig);
             $modelClass = $this->getConfig('modelClass');
             $model = $modelClass::find($modelId);
-            trace_log($model->name);
+            //trace_log($model->name);
             $this->controller->initForm($model);
             $this->controller->initRelation($model, $relationConfig);
             return $this->controller->relationRefresh($relationConfig);
@@ -221,7 +221,7 @@ class WakaReorderController extends ControllerBehavior
     public function reorderGetModel()
     {
         if ($this->model !== null) {
-            trace_log("model existe déjà reorderGetModel");
+            //trace_log("model existe déjà reorderGetModel");
             return $this->model;
         }
 
@@ -256,7 +256,7 @@ class WakaReorderController extends ControllerBehavior
     protected function validateModel($relationmodel = null)
     {
         $model = $this->controller->reorderGetModel();
-        trace_log(get_class($model));
+        //trace_log(get_class($model));
         $modelTraits = class_uses($model);
 
         if (
