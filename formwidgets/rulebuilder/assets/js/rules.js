@@ -2,9 +2,7 @@
  * Global helpers
  */
 function showRuleSettings(id) {
-    console.log("showRuleSettings")
     var $control = $('[data-rule-id=' + id + ']').closest('[data-control="rulerules"]')
-    console.log($control)
     $control.ruleRules('onShowNewRuleSettings', id)
 }
 
