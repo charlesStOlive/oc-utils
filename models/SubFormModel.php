@@ -68,6 +68,15 @@ class SubFormModel extends Model
         //trace_log($this->toArray());
     }
 
+    //hack tout pourris qui corrige le problème de champs caché dans un rulebuilder
+    public function manualSave() {
+        foreach($this->jsonable as $jsonable) {
+            if($this->{$jsonable} == []) $this->{$jsonable} = null;
+        }
+        $this->save();
+        
+    }
+
     public function applyCustomData()
     {
         $this->setCustomData();
