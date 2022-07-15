@@ -29,13 +29,13 @@ fields:
         label: Centrer le container ( ajoute mx-auto )
         type: checkbox
         span: storm
-        cssClass: col-xs-3 m-t
+        cssClass: col-xs-3 m-t-md
         default: true
     opt_center_content:
         label: Centrer le contenu (Si éxiste)
         type: checkbox
         span: storm
-        cssClass: col-xs-3 m-t
+        cssClass: col-xs-3 m-t-md
     opt_style_container:
         label: Styles du container
         comment: Separer les styles avec ';'
@@ -87,7 +87,17 @@ fields:
         label: lien de l'image
         placeholder: "{{ url('lp/...') }}"
         dependsOn: imageMode
-        span: left
+        span: storm
+        cssClass: col-xs-4
+        trigger:
+            field: imageMode
+            action: hide
+            condition: value[nothing]
+    img_link_data_opt:   
+        label: Ajouter d'autres attributs
+        placeholder: data-wtoogle="xxx"
+        span: storm
+        cssClass: col-xs-4
         trigger:
             field: imageMode
             action: hide
@@ -96,7 +106,8 @@ fields:
         label: Ouverture dans une nouvelle fenêtre
         type: checkbox
         dependsOn: imageMode
-        span: left
+        span: storm
+        cssClass: col-xs-4 m-t-md
         trigger:
             field: imageMode
             action: hide
