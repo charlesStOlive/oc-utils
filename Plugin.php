@@ -174,6 +174,7 @@ class Plugin extends PluginBase
         $this->registerConsoleCommand('waka.ruleFnc', 'Waka\Utils\Console\CreateRuleFnc');
         $this->registerConsoleCommand('waka:cleanModels', 'Waka\Utils\Console\CleanModels');
         $this->registerConsoleCommand('waka:cleanFiles', 'Waka\Utils\Console\CleanFiles');
+        $this->registerConsoleCommand('waka:ReduceImages', 'Waka\Utils\Console\ReduceImages');
 
         CombineAssets::registerCallback(function ($combiner) {
             $combiner->registerBundle('$/waka/utils/formwidgets/rulebuilder/assets/css/rules.less');
