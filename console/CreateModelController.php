@@ -47,7 +47,7 @@ class CreateModelController extends GeneratorCommand
      *
      * return @array
      */
-    protected function prepareVars()
+    protected function prepareVars():array
     {
         //trace_log("start");
         $pluginCode = $this->argument('plugin');
@@ -788,7 +788,7 @@ class CreateModelController extends GeneratorCommand
 
     
 
-    protected function processVars($vars)
+    protected function processVars($vars):array
     {
 
         $cases = ['upper', 'lower', 'snake', 'studly', 'camel', 'title'];

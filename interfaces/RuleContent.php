@@ -33,7 +33,7 @@ interface RuleContent
      * Crée la vue à partir de la config view et de resolve
      * @return string
      */
-    public function makeView($view = null);
+    public function makeView($view = null): string;
 
     /**
      * Triggers this rule.

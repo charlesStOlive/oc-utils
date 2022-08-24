@@ -76,7 +76,7 @@ class CreateUiColors extends GeneratorCommand
 
     }
 
-    protected function getSourcePath()
+    protected function getSourcePath(): string
     {
         $className = get_class($this);
         $class = new \ReflectionClass($className);
@@ -123,7 +123,7 @@ class CreateUiColors extends GeneratorCommand
      *
      * return @array
      */
-    protected function prepareVars()
+    protected function prepareVars():array
     {
 
         $primaryColor = new Color(\Config::get('wcli.wconfig::brand_data.primaryColor'));

@@ -69,7 +69,7 @@ class PluginTrad extends GeneratorCommand
      *
      * return @array
      */
-    protected function prepareVars()
+    protected function prepareVars():array
     {
         $this->p_pluginCode = $pluginCode = $this->argument('plugin');
         $parts = explode('.', $pluginCode);

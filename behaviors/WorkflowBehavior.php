@@ -73,7 +73,8 @@ class WorkflowBehavior extends ControllerBehavior
 
     public function formBeforeSave($model)
     {
-        //trace_log("formBeforeSave");
+        trace_log("formBeforeSave");
+        trace_log(post());
         if (post('change_state') != '') {
             $model->change_state = post('change_state');
         }

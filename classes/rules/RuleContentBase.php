@@ -73,13 +73,13 @@ class RuleContentBase extends SubForm
         $views['partial'] = "Un partial du theme";
         return $views;
     }
-    public function makeView($view = null, $ds = []) {
+    public function makeView($view = null, $ds = []): string {
         $view = $this->getConfig('view');
         //trace_log($view);
         if(!View::exists($view)) {
             \Log::error('la vue '.$view.' n \'exite pas');
         }
-        return \View::make($view)->withData($this->resolve($ds));
+        return \View::make($view)->withData($this->resolve($ds))->render();
     }
     //objectAskingRendering est un composant ou un controller.
     public function resolveForHtml($objectAskingRendering, $ds = [], $htmlEmplacement = null) {
@@ -102,7 +102,7 @@ class RuleContentBase extends SubForm
                 
             } else if($this->host->view != 'code') {
                 //Le comportement classique le ruleContent genère la vue
-                return  $this->makeView($ds)->render();
+                return  $this->makeView($ds);
             }
         //ici on recupère les configs et le champs json datas...
         return null;

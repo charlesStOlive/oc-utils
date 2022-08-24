@@ -41,6 +41,17 @@ class Plugin extends PluginBase
                 'reTwig' => function ($twig, $drowDta, $rowDs) {
                     return \Twig::parse($twig, ['row' => $drowDta, 'ds' => $rowDs]);
                 },
+                'mailto' => function ($twig) {
+                    $text = '';
+                    if(preg_match_all('/[\p{L}0-9_.-]+@[0-9\p{L}.-]+\.[a-z.]{2,6}\b/u',$twig,$mails)){
+                        foreach($mails[0]as $mail ){
+                            $text = str_replace($mail,'<a href="mailto:'.$mail.'">'.$mail.'</a>',$text);
+                        }
+                        return $text;
+                    } else {
+                        return '';
+                    }
+                },
                 'localeDate' => [new \Waka\Utils\Classes\WakaDate, 'localeDate'],
                 'toJson' => function ($twig) {
                     return json_encode($twig);
@@ -270,16 +281,6 @@ class Plugin extends PluginBase
 
         
 
-        \Storage::extend('utils_gd_backup', function ($app, $config) {
-            $client = new \Google_Client();
-            $client->setClientId($config['clientId']);
-            $client->setClientSecret($config['clientSecret']);
-            $client->refreshToken($config['refreshToken']);
-            $service = new \Google_Service_Drive($client);
-            $adapter = new \Hypweb\Flysystem\GoogleDrive\GoogleDriveAdapter($service, $config['folderId']);
-
-            return new \League\Flysystem\Filesystem($adapter);
-        });
         
 
         

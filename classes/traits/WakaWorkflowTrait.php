@@ -31,45 +31,12 @@ trait WakaWorkflowTrait
             $model->bindEvent('model.beforeDelete', function () use ($model) {
                 $model->state_logs()->delete();
             });
-            // $model->bindEvent('model.beforeSave', function () use ($model) {
-            //    $tryToChangeStates = post('try');
-            //    $sessionKey = post('session_key');
-            //    if(!$tryToChangeStates) {
-            //        return;
-            //    } else {
-            //         $wfMetadataStore = $model->workflow_get()->getMetadataStore();
-            //         $tryToChangeStates = explode(',',$tryToChangeStates);
-            //         $transitionChosen = null;
-            //         foreach($tryToChangeStates as $try) {
-            //             //trace_log($try.'---------------------------');
-            //             $transition = $model::getWfTransition($try, $model);
-            //             $transitionMetaData = $wfMetadataStore->getTransitionMetadata($transition);
-            //             $rulesSet = $transitionMetaData['rulesSet'] ?? null;
-            //             $rules = $model->getWfRules($rulesSet);
-            //             $error = 0;
-            //             foreach($rules['fields'] as $key=>$rule) {
-            //                 //trace_log("test on key : ".$key);
-            //                 if(!$modelData[$key]) {
-            //                     //trace_log('error on'.$key);
-            //                     $error++;
-            //                 }
-            //             }
-            //             if(!$error) {
-            //                 //trace_log('ok pour : '.$try);
-            //                 // $model->workflow_get()->apply($model, $try);
-            //                 // \Session::put('wf_redirect', $transitionMetaData['redirect']);
-            //                 break;
-            //             }
-            //         }
-            //    }
-            // });
-
-
+            
             $model->bindEvent('model.beforeValidate', function () use ($model) {
-                //trace_log('beforeValidate');
-                //trace_log($model->name);
+                trace_log('beforeValidate');
+                trace_log($model->name);
                 $changeState = $model->change_state;
-                //trace_log('beforeValidate : ' .$model->change_state);
+                trace_log('beforeValidate : ' .$model->change_state);
                 $wf_try = strpos($changeState, ',');
                 if ($wf_try && $changeState) {
                     //trace_log("On test un changement de transition");
@@ -120,9 +87,10 @@ trait WakaWorkflowTrait
 
                     }
                 } else if (!$wf_try && $changeState) {
-                    //trace_log("On a un changement de transition");
+                    trace_log("On a un changement de transition");
                     //la transition et déjà choisi nous allons verifier. 
                     $transition = self::getWfTransition($changeState, $model);
+                    trace_log($transition);
                     $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
                     $rules = $model->getWfRules($rulesSet);
                     if ($rules['fields'] ?? false) {
@@ -130,7 +98,7 @@ trait WakaWorkflowTrait
                             $model->rules[$key] = $rule;
                         }
                     }
-                    //trace_log($model->toArray());
+                    trace_log($model->toArray());
                     //$model->workflow_get()->apply($model, $changeState);
                 } else if ($model->wfMustTrans) {
                     //throw new \ValidationException(['memo' => \Lang::get('waka.utils::lang.workflow.must_trans')]);
@@ -141,7 +109,7 @@ trait WakaWorkflowTrait
                 if(!$changeState) {
                     return;
                 }
-                //trace_log("beforeSave change State: ".$changeState);
+                trace_log("beforeSave change State: ".$changeState);
                 $transition = self::getWfTransition($changeState, $model);
                 $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
                 $rules = $model->getWfRules($rulesSet);

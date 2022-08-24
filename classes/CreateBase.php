@@ -28,7 +28,7 @@ class CreateBase
         return Str::$type($string);
     }
 
-    protected function processVars($vars)
+    protected function processVars($vars):array
     {
 
         $cases = ['upper', 'lower', 'snake', 'studly', 'camel', 'title'];

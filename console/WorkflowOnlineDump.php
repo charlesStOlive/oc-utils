@@ -52,7 +52,7 @@ class WorkflowOnlineDump extends WorkflowCreate
         'workflow/infos.stub' => 'transitions.txt',
     ];
 
-    public function makeStubs()
+    public function makeAndGetStubs():array
     {
         $workflow = [];
         $stubs = array_keys($this->stubs);
@@ -120,7 +120,7 @@ class WorkflowOnlineDump extends WorkflowCreate
 
         $prepareExcel = new \Waka\Utils\Classes\CreateWorkflowDataFromExcel();
         $this->vars = $prepareExcel->prepareVars($data);
-        $this->workflowData = $this->makeStubs();
+        $this->workflowData = $this->makeAndGetStubs();
 
         $class = '\Waka\Utils\Models\TestWf';
 

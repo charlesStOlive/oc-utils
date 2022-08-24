@@ -27,7 +27,7 @@ class WorkflowList
             return [];
         }
         $workflowsArray = [];
-        $workflows = call_user_func_array('array_merge',$bundles);
+        $workflows = call_user_func_array('array_merge',array_values($bundles));
         //trace_log($workflows);
         foreach ($workflows as $workflow) {
             $wk = Yaml::parseFile(plugins_path() . $workflow);

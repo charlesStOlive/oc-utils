@@ -52,7 +52,7 @@ class ComonPartials extends RuleContentBase implements RuleContentInterface
     
     
 
-    public function makeView($view = null, $ds = []) {
-        return null;
+    public function makeView($view = null, $ds = []): string {
+        return '';
     }
 }

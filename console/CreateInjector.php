@@ -45,7 +45,7 @@ class CreateInjector extends GeneratorCommand
      *
      * return @array
      */
-    protected function prepareVars()
+    protected function prepareVars():array
     {
         $pluginCode = $this->argument('plugin');
 

@@ -63,7 +63,7 @@ class CreateSeedsFiles extends GeneratorCommand
      *
      * return @array
      */
-    protected function prepareVars()
+    protected function prepareVars():array
     {
         $this->pluginCode = $this->argument('plugin');
 
@@ -94,14 +94,13 @@ class CreateSeedsFiles extends GeneratorCommand
      */
     
 
-    public function makeStubs()
+    public function makeStubs(): void
     {
 
         foreach ($this->classes as $classIndex) {
             $class = $this->getModelsConfig()[$classIndex];
             $this->createSeedFile($classIndex, $class);
         }
-        return null;
     }
 
     public function createSeedFile($classIndex,$class) {
@@ -262,7 +261,7 @@ class CreateSeedsFiles extends GeneratorCommand
      *
      * @return string
      */
-    protected function getDestinationPath()
+    protected function getDestinationPath(): string
     {
         $plugin = $this->getPluginInput();
 
@@ -288,7 +287,7 @@ class CreateSeedsFiles extends GeneratorCommand
      *
      * @return string
      */
-    protected function getSourcePath()
+    protected function getSourcePath(): string
     {
         $className = get_class($this);
         $class = new \ReflectionClass($className);
@@ -403,7 +402,7 @@ class CreateSeedsFiles extends GeneratorCommand
         
     }
 
-    protected function processVars($vars)
+    protected function processVars($vars):array
     {
 
         $cases = ['upper', 'lower', 'snake', 'studly', 'camel', 'title'];

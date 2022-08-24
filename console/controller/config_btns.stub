@@ -2,8 +2,7 @@
 #  Btn  Behavior Config
 # ===================================
 
-Description: >
-    //startKeep/
+
 modelClass: {{studly_author}}\{{studly_plugin}}\Models\{{studly_name}}
 
 workflow: {% if configs.behav_workflow %}true{% else %}false{% endif %} 
@@ -132,8 +131,7 @@ action_bar:
     # partials: #Attention seul les variables modelId et modelClass (class du controller) sont disponible sans les partials.  
     #     name:
     #         url: $/{{lower_author}}/{{lower_plugin}}/controllers/{{lower_ctname}}/_test_update.htm
-Description: >
-    //endKeep/
+
 
 
 #     ##### SAUVEGARDE PURE ########

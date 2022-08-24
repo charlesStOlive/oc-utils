@@ -77,7 +77,7 @@ class WorkflowCreate extends GeneratorCommand
      *
      * return @array
      */
-    protected function prepareVars($putTrans = false)
+    protected function prepareVars($putTrans = false):array
     {
         $this->wk_name = $name = $this->argument('name');
 

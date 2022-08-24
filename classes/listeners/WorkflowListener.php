@@ -109,8 +109,9 @@ class WorkflowListener
     {
         $eventTransition = $event->getTransition();
         $fncs = new \Winter\Storm\Support\Collection($event->getMetadata('fncs', $eventTransition));
+        
         $fncs = $fncs->where('type', 'gard');
-        if (!$fncs) {
+        if (!$fncs->count()) {
             return false;
         }
         foreach ($fncs->toArray() as $fnc => $attributes) {
