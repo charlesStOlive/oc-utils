@@ -1,0 +1,26 @@
+<div class="w-full w-bloc-base {{ data.opt_env_colors | default('') }} {% if data.opt_center_container %}mx-auto{% endif %}" style="{{ data.opt_style_container }}">
+    <div class="flex flex-wrap -m-4">
+        {% for image in data.images %}
+        {% if image.path %} 
+            <div  class="{% if data.opt_center_content %}mx-auto{% endif %} p-4
+            {%if data.flex_size == '1-2'%}w-1/2{%endif%}
+            {%if data.flex_size == '1-3'%}w-1/3{%endif%}
+            {%if data.flex_size == '1-4'%}w-1/4{%endif%}
+            {%if data.flex_size == '1-5'%}w-1/5{%endif%}
+            {%if data.flex_size == '1-6'%}w-1/6{%endif%}">
+        {% if image.link %}
+            <a href="{{ data.img_link }}" target="{% if data.img_link_blank %}_blank{% endif%}" {% if data.img_link_data_opt %}{{data.img_link_data_opt | raw  }}{% endif %}>{% endif %}
+        <img class="
+                object-contain
+                {% if data.is_image_shadow %}shadow-lg{% endif %}"
+            src="{{ image.path }}"
+            with="100%"
+            alt="image.name"
+            />
+        </div>
+        {% if data.img_link %}</a>{% endif %}
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+

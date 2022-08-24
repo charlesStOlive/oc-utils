@@ -1,0 +1,71 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    # title:
+    #     label: Titre
+    #     default: Titre du bloc
+    s_opt_t:
+        label: Option globales
+        type: section
+    opt_env_colors:
+        label: Univer coloriel
+        type: dropdown
+        span: left
+        options:
+            null: inherit
+            env-white: "Txt noir | Bg : blanc"
+            env-primary: "Txt blanc | Bg : Couleur primaire"
+            env-secondary: "Txt blanc | Bg : Couleur secondaire"
+            env-trans: "Txt Noir | Bg : Trasparent"
+            env-trans-dark: "Txt blanc | Bg : Transparent"
+    opt_center_container:
+        label: Centrer le container ( ajoute mx-auto )
+        type: checkbox
+        span: storm
+        cssClass: col-xs-3 m-t-md
+        default: true
+    opt_style_container:
+        label: Styles du container
+        comment: Separer les styles avec ';'
+    is_image_shadow:
+        label: Mettre une ombre sur les images
+        type: checkbox
+    # BLOC IMAGE TOUT EST LIEE AU HELPER : RuleHelpers dans classes/traits/utils
+    media:
+        label: waka.babyler::texture.media
+        commentAbove: vous devez choisir un reperotire 
+        #Attention au tab lors d'un copier/coller
+        span: left
+        type: mediafinder
+        dependsOn: imageMode
+    flex_size:
+        label: Taille des cellules
+        type: dropdown 
+        span: right
+        options:    
+            1-2: 1/2 
+            1-3: 1/3 
+            1-4: 1/4
+            1-5: 1/5
+            1-6: 1/6
+    # is_media_advanced:
+    #     label: Piloter chaque image ? 
+    #     type: checkbox 
+    #     span: left 
+    # media_advanced: 
+    #     label : Pilotages des images 
+    #     commentAbove: Pour rafraichir la liste cliquer sur le bouton ci dessous
+    #     type: repeater 
+    #     forms:
+    #         fields: 
+    #             label: Nomm du média
+
+
+        
+        
+
+
+
+
