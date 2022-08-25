@@ -95,7 +95,7 @@ class Plugin extends PluginBase
                         //trace_log($item->toArray());
                         return $item->title == $code;
                     });
-                    if($image) {
+                    if($image->first() ?? false) {
                         return $image->first()->getThumb($with, $height);
                     } else {
                         return null;
