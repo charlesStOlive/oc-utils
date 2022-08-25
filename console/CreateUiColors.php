@@ -33,8 +33,8 @@ class CreateUiColors extends GeneratorCommand
      * @var array
      */
     protected $stubs = [
-        'ui_less/global.variables.stub' => '/../../../modules/system/assets/ui/less/global.variables.less',
-        'ui_less/vars.stub' => '/assets/css/vars.less',
+        'ui_less/global.variables.stub' => '/modules/system/assets/ui/less/global.variables.less',
+        'ui_less/vars.stub' => '/plugins/wcli/wconfig/assets/css/vars.less',
         
     ];
 
@@ -106,16 +106,17 @@ class CreateUiColors extends GeneratorCommand
         /*
          * Make sure this file does not already exist
          */
-        if ($this->files->exists($destinationFile)) {
-            $create = $this->ask('Recréer le fichier var.less', true);
-            if(!$create) {
-                return;
-            }
-        }
+        // if ($this->files->exists($destinationFile)) {
+        //     $this->files->put($destinationFile, $destinationContent);
+        // } else {
+
+        // }
+        trace_log($destinationFile);
+        $this->files->put($destinationFile, $destinationContent);
         //trace_log($destinationFile);
         //trace_log($destinationContent);
 
-        $this->files->put($destinationFile, $destinationContent);
+        // $this->files->put($destinationFile, $destinationContent);
     }
 
     /**

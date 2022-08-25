@@ -1,5 +1,5 @@
 //
-// Reset
+// Reset  test
 // --------------------------------------------------
 
 // Dupe
@@ -100,7 +100,7 @@
 //
 // Colors
 // --------------------------------------------------
-@brand-primary:          {{primary}};
+@brand-primary:          @color-primary;
 @brand-secondary:        {{secondary}};
 @brand-accent:           @color-accent;
 @brand-success:          #31ac5f;
