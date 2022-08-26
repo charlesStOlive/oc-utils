@@ -128,6 +128,7 @@ class ModelInfo extends FormWidgetBase
             $link = null;
             $bkRacine = $field['bkRacine'] ?? null;
             $exRacine = $field['exRacine'] ?? null;
+            $racine = $field['racine'] ?? null;
             $linkValue = $field['linkValue'] ?? null;
             if($linkValue) {
                 $linkValue = array_get($modelvalues, $linkValue);
@@ -140,6 +141,9 @@ class ModelInfo extends FormWidgetBase
             } 
             elseif ($exRacine && $linkValue) {
                 $link = $exRacine . $linkValue;
+            }
+            elseif ($racine && $linkValue) {
+                $link = url($racine .$linkValue);
             }
             elseif ($linkValue) {
                 $link = $value;

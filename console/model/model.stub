@@ -210,7 +210,7 @@ class {{studly_name}} extends Model
     ];
     public $belongsToMany = [
 {% for relation in modelRelations.belongsMany %}
-        '{{relation.name}}' => [{{ relation.relationarray | raw}}],
+        '{{relation.name}}' => {{ relation.relationarray | raw}},
 {% endfor %}
     ];        
     public $morphTo = [

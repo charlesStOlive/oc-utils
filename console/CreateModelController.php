@@ -1,6 +1,6 @@
 <?php namespace Waka\Utils\Console;
 
-use Winter\Storm\Scaffold\GeneratorCommand;
+use System\Console\BaseScaffoldCommand;
 use Winter\Storm\Support\Collection;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -9,14 +9,26 @@ use Yaml;
 use Brick\VarExporter\VarExporter;
 
 
-class CreateModelController extends GeneratorCommand
+class CreateModelController extends BaseScaffoldCommand
 {
     /**
      * The console command name.
      *
      * @var string
      */
-    protected $name = 'waka:mc';
+    protected static $defaultName = 'waka:mc';
+
+    /**
+     * @var string The name and signature of this command.
+     */
+    protected $signature = 'waka:mc
+        {plugin : The name of the plugin. <info>(eg: Winter.Blog)</info>}
+        {model : The name of the command to generate. <info>(eg: ImportPosts)</info>}
+        {src : nom de la source excel. <info>(eg: start_wcms.xlsx)</info>}
+        {--o|option : Afficher Les opptions}
+        {--f|force : Overwrite existing files  with generated files.}
+        {--k|noKeep : Ne pas garder le code prescedent.}
+        {--t|noTake : Ne pas prendre le code prescedent.}';
 
     /**
      * The console command description.
@@ -24,6 +36,8 @@ class CreateModelController extends GeneratorCommand
      * @var string
      */
     protected $description = 'Creates a new model and controller.';
+
+    
 
     /**
      * The type of class being generated.
@@ -985,31 +999,31 @@ class CreateModelController extends GeneratorCommand
         $this->files->put($destinationFile, $destinationContent);
     }
 
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return [
-            ['plugin', InputArgument::REQUIRED, 'The name of the plugin. Eg: RainLab.Blog'],
-            ['model', InputArgument::REQUIRED, 'The name of the model. Eg: Post'],
-            ['src', InputArgument::OPTIONAL, 'The name of the model. Eg: Post'],
-        ];
-    }
+    // /**
+    //  * Get the console command arguments.
+    //  *
+    //  * @return array
+    //  */
+    // protected function getArguments()
+    // {
+    //     return [
+    //         ['plugin', InputArgument::REQUIRED, 'The name of the plugin. Eg: RainLab.Blog'],
+    //         ['model', InputArgument::REQUIRED, 'The name of the model. Eg: Post'],
+    //         ['src', InputArgument::OPTIONAL, 'The name of the model. Eg: Post'],
+    //     ];
+    // }
 
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [
-            ['noKeep', null, InputOption::VALUE_NONE, 'keep value from older files'],
-            ['noTake', null, InputOption::VALUE_NONE, 'take value from parent'],
-            ['option', null, InputOption::VALUE_NONE, 'Options avancés'],
-        ];
-    }
+    // /**
+    //  * Get the console command options.
+    //  *
+    //  * @return array
+    //  */
+    // protected function getOptions()
+    // {
+    //     return [
+    //         ['noKeep', null, InputOption::VALUE_NONE, 'keep value from older files'],
+    //         ['noTake', null, InputOption::VALUE_NONE, 'take value from parent'],
+    //         ['option', null, InputOption::VALUE_NONE, 'Options avancés'],
+    //     ];
+    // }
 }
