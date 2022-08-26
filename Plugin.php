@@ -53,6 +53,18 @@ class Plugin extends PluginBase
                     }
                 },
                 'localeDate' => [new \Waka\Utils\Classes\WakaDate, 'localeDate'],
+                'uppercase' => function ($string) {
+                    return mb_convert_case($string, MB_CASE_UPPER, "UTF-8");
+                },
+                'lowercase' => function ($string) {
+                    return mb_convert_case($string, MB_CASE_LOWER, "UTF-8");
+                },
+                'ucfirst' => function ($string) {
+                    return ucfirst($string);
+                },
+                'lcfirst' => function ($string) {
+                    return lcfirst($string);
+                },
                 'toJson' => function ($twig) {
                     return json_encode($twig);
                 },
