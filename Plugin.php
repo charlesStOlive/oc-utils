@@ -151,6 +151,13 @@ class Plugin extends PluginBase
                     $content = \Twig::parse($templateContent, $allData);
                     return $content;
                 },
+                'var_dump' => function ($expression) {
+                    ob_start();
+                    var_dump($expression);
+                    $result = ob_get_clean();
+
+                    return $result;
+                },
                 
             ],
            

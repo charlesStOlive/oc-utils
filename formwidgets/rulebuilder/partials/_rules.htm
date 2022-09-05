@@ -1,7 +1,15 @@
 <?php if($isRestrictedMode && !$rules->count()) : ?>
 <div class="title " style="color:grey"><i>Non disponible</i></div>
 <?php else : ?>
+<div class="row">
+    <div class="col-md-12 toolbar">
+        <?php if (isset($toolbar)): ?>
+        <?= $toolbar->render() ?>
+        <?php endif ?>
+    </div>
+</div>
 <div class="rule-set">
+
     <ol>
         <?php foreach ($rules as $rule): ?>
         <?= $this->makePartial('rule', ['rule' => $rule]) ?>
@@ -10,19 +18,19 @@
     <?php if(!$isRestrictedMode) : ?>
     <div class="menu-div">
         <a style="width:70%"
-            href="javascript:;"
-            data-control="popup"
-            data-handler="<?= $this->getEventHandler('onLoadCreateRuleForm') ?>"
-            class="menu-control">
-                <p><i class="icon-plus"></i> <?= e(trans($prompt))?></p>
+           href="javascript:;"
+           data-control="popup"
+           data-handler="<?= $this->getEventHandler('onLoadCreateRuleForm') ?>"
+           class="menu-control">
+            <p><i class="icon-plus"></i> <?= e(trans($prompt))?></p>
         </a>
         <a style="width:30%"
-            href="javascript:;"
-            data-control="popup"
-            data-handler="<?= $this->getEventHandler('onLoadShareComponent') ?>"
-            class="menu-control">
-                <p><i class="icon-share-alt"></i> <?= e(trans($prompt_share))?></p>
-            </a>
+           href="javascript:;"
+           data-control="popup"
+           data-handler="<?= $this->getEventHandler('onLoadShareComponent') ?>"
+           class="menu-control">
+            <p><i class="icon-share-alt"></i> <?= e(trans($prompt_share))?></p>
+        </a>
     </div>
     <?php endif ?>
 </div>

@@ -111,7 +111,7 @@ class CreateUiColors extends GeneratorCommand
         // } else {
 
         // }
-        trace_log($destinationFile);
+        //trace_log($destinationFile);
         $this->files->put($destinationFile, $destinationContent);
         //trace_log($destinationFile);
         //trace_log($destinationContent);

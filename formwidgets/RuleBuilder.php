@@ -13,6 +13,7 @@ use Request;
 class RuleBuilder extends FormWidgetBase
 {
     use \Backend\Traits\FormModelWidget;
+    use \Backend\Traits\SearchableWidget;
 
     //
     // Configurable properties
@@ -38,6 +39,17 @@ class RuleBuilder extends FormWidgetBase
      */
     protected $ruleFormWidget;
 
+
+
+    /**
+     * @var string Use a custom scope method for performing searches.
+     */
+    protected $searchScope;
+    /**
+     * @var Backend\Widgets\Toolbar The toolbar widget for performing actions on the related notes
+     */
+    protected $toolbarWidget;
+
     
 
     /**
@@ -59,6 +71,7 @@ class RuleBuilder extends FormWidgetBase
         if ($widget = $this->makeRuleFormWidget()) {
             $widget->bindToController();
         }
+        $this->getToolbarWidget();
     }
 
     /**
@@ -68,6 +81,71 @@ class RuleBuilder extends FormWidgetBase
     {
         $this->addJs('js/rules.js');
         $this->addCss('css/rules.css');
+    }
+
+
+    protected function getToolbarWidget()
+    {
+        if ($this->toolbarWidget) {
+            return $this->toolbarWidget;
+        }
+
+        // Configure the Toolbar widget
+        $config = $this->makeConfig([
+            'buttons' => '$/waka/utils/formwidgets/rulebuilder/partials/_rules_toolbar.htm',
+            'search' => [
+                'prompt' => 'backend::lang.list.search_prompt',
+            ],
+        ]);
+        $config->alias = $this->alias . 'Toolbar';
+
+        // Initialize the Toolbar widget
+        $this->toolbarWidget = $this->makeWidget('Backend\Widgets\Toolbar', $config);
+        $this->toolbarWidget->bindToController();
+        $this->toolbarWidget->controller->addViewPath($this->viewPath);
+        $this->toolbarWidget->cssClasses[] = 'list-header';
+        $this->toolbarWidget->previewMode = $this->previewMode;
+
+        /*
+         * Link the Search Widget to the Notes Widget
+         */
+        if ($searchWidget = $this->toolbarWidget->getSearchWidget()) {
+            $searchWidget->bindEvent('search.submit', function () use ($searchWidget) {
+                $this->setSearchTerm($searchWidget->getActiveTerm());
+                return $this->renderSearchingResult();
+            });
+
+            $this->setSearchOptions([
+                'mode' => $searchWidget->mode,
+                'scope' => $searchWidget->scope,
+            ]);
+
+            // Find predefined search term
+            $this->setSearchTerm($searchWidget->getActiveTerm());
+        }
+
+        return $this->toolbarWidget;
+    }
+
+    /**
+     * Applies search options to the notes search.
+     * @param array $options
+     */
+    public function setSearchOptions($options = [])
+    {
+        extract(array_merge([
+            'mode' => null,
+            'scope' => null
+        ], $options));
+
+        $this->searchMode = $mode;
+        $this->searchScope = $scope;
+    }
+
+    public function renderSearchingResult()
+    {
+        $key = $this->searchTerm;
+        return $this->renderRules();
     }
 
     /**
@@ -107,6 +185,7 @@ class RuleBuilder extends FormWidgetBase
         $this->vars['isRestrictedMode'] = $this->isRestrictedMode();
         //
         $this->vars['attributesArray'] = $this->getAvailableTags();
+        $this->vars['toolbar'] = $this->getToolbarWidget();
     }
 
     /**
@@ -599,7 +678,15 @@ class RuleBuilder extends FormWidgetBase
             return $this->rulesCache;
         }
         $relationObject = $this->getRelationObject();
-        $rules = $relationObject->withDeferred($this->sessionKey)->get()->sortby('sort_order');
+        trace_log("this->searchTerm : ".$this->searchTerm);
+        if($key = $this->searchTerm) {
+            $rules = $relationObject->withDeferred($this->sessionKey)->where('code', 'LIKE', '%'.$key.'%')->get()->sortby('sort_order');
+            trace_log($rules->pluck('code', 'code')->toArray());
+        } else {
+            $rules = $relationObject->withDeferred($this->sessionKey)->get()->sortby('sort_order');
+            trace_log($rules->pluck('code', 'code')->toArray());
+        }
+        
 
         return $this->rulesCache = $rules ?: null;
     }

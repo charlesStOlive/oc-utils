@@ -356,16 +356,16 @@ class SubFormModel extends Model
     }
     public function prepareImport($path, $datas) {
         $importConfigs =  $this->importExportConfig;
-        //trace_log('prepareImport------------');
-        //trace_log($importConfigs);
-        //trace_log($datas);
+        // trace_log('prepareImport------------');
+        // trace_log($importConfigs);
+        // trace_log($datas);
         if(!$importConfigs) {
             return $datas;
         }
         foreach($importConfigs as $key=>$importConfig) {
-            //trace_log("importConfig key : ".$key);;
-            //trace_log($importConfig);;
-            //trace_log($datas[$key]);;
+            // trace_log("importConfig key : ".$key);;
+            // trace_log($importConfig);;
+            // trace_log($datas[$key]);
             
             $valueFromData = $datas[$key] ?? null;
             if($importConfig == 'media' && $valueFromData) {
@@ -377,12 +377,14 @@ class SubFormModel extends Model
             if($importConfig == 'mediaFolder' && $valueFromData) {
                 //$folderName = $valueFromData['folderName'];
                 $path = $valueFromData['savePath'];
-                $files = \Storage::listContents($path);
+                //trace_log($path);
+                $files = \Storage::files($path);
+                //trace_log($files);
                 
                 foreach($files as $file) {
-                    //$fileToSave = \Storage::get($file->path);
-                    $content = \File::get(storage_path('app/'.$file['path']));
-                    $path = $valueFromData['value'].'/'.$file['basename'];
+                    $fileInfo  = pathinfo($file);
+                    $content = \File::get(storage_path('app/'.$file));
+                    $path = $valueFromData['value'].'/'.$fileInfo['basename'];
                     \System\Classes\MediaLibrary::instance()->put($path, $content);
                 }
                 
@@ -406,8 +408,10 @@ class SubFormModel extends Model
                     $this->$key()->add($file);
                 }
             }
+            //trace_log("FIN DE importConfig key : ".$key);;
 
         }
+        //trace_log($datas);
         return $datas;
     }
 }

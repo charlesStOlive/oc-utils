@@ -27,10 +27,14 @@ function showRuleSettings(id) {
     RuleRules.prototype.constructor = RuleRules
 
     RuleRules.prototype.init = function () {
+        
         this.$el.on('click', '[data-rules-settings]', this.proxy(this.onShowSettings))
         this.$el.on('click', '[data-rules-delete]', this.proxy(this.onDeleteRule))
         this.$el.on('click', '[data-rules-reorderup]', this.proxy(this.onReorderUpRule))
         this.$el.on('click', '[data-rules-reorderdown]', this.proxy(this.onReorderDownRule))
+        this.$el.on('focus', '> .row > .toolbar .loading-indicator-container [data-track-input]', this.proxy(this.onSearchInputFocus));
+        this.$el.on('ajaxDone', '> .row > .toolbar  .loading-indicator-container [data-track-input]', this.proxy(this.onSearchResultsRefreshForm));
+        this.$el.on('focus', '> .row > .toolbar .loading-indicator-container .clear-input-text', this.proxy(this.onSearchInputClearButtonFocus));
         this.$el.one('dispose-control', this.proxy(this.dispose))
     }
 
@@ -39,6 +43,9 @@ function showRuleSettings(id) {
         this.$el.off('click', '[data-rules-delete]', this.proxy(this.onDeleteRule))
         this.$el.off('click', '[data-rules-reorderup]', this.proxy(this.onReorderUpRule))
         this.$el.off('click', '[data-rules-reorderdown]', this.proxy(this.onReorderDownRule))
+        this.$el.off('focus', '> .row > .toolbar .loading-indicator-container [data-track-input]', this.proxy(this.onSearchInputFocus));
+        this.$el.off('ajaxDone', '> .row > .toolbar  .loading-indicator-container [data-track-input]', this.proxy(this.onSearchResultsRefreshForm));
+        this.$el.off('focus', '> .row > .toolbar .loading-indicator-container .clear-input-text', this.proxy(this.onSearchInputClearButtonFocus));
         this.$el.off('dispose-control', this.proxy(this.dispose))
         this.$el.removeData('oc.ruleRules')
 
@@ -49,6 +56,20 @@ function showRuleSettings(id) {
         this.options = null
 
         BaseProto.dispose.call(this)
+    }
+
+    RuleRules.prototype.onSearchInputFocus = function(ev) {
+        console.log('onSearchInputFocus')
+        
+        return false;
+    }
+    RuleRules.prototype.onSearchInputClearButtonFocus = function(ev){
+        console.log('onSearchInputClearButtonFocus')
+        
+        return false;
+    }
+    RuleRules.prototype.onSearchResultsRefreshForm = function() {
+       console.log('onSearchResultsRefreshForm')
     }
 
     RuleRules.prototype.onDeleteRule = function (event) {
@@ -75,6 +96,16 @@ function showRuleSettings(id) {
             data: { current_rule_id: ruleId },
         })
     }
+
+    RuleRules.prototype.onApplyFilter = function (event) {
+        var $el = $(event.target)
+        console.log('filtre asked')
+        $el.request(this.options.filterHandler, {
+            data: { foo: 'bar' },
+        })
+    }
+
+    
 
     RuleRules.prototype.onShowNewRuleSettings = function (ruleId) {
         var $el = $('[data-rule-id=' + ruleId + ']')
@@ -136,7 +167,8 @@ function showRuleSettings(id) {
         reorderupHandler: null,
         reorderdownHandler: null,
         cancelHandler: null,
-        createHandler: null
+        createHandler: null,
+        filterHandler: null
     }
 
     // PLUGIN DEFINITION
