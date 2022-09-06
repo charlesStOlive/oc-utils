@@ -678,13 +678,13 @@ class RuleBuilder extends FormWidgetBase
             return $this->rulesCache;
         }
         $relationObject = $this->getRelationObject();
-        trace_log("this->searchTerm : ".$this->searchTerm);
+        // trace_log("this->searchTerm : ".$this->searchTerm);
         if($key = $this->searchTerm) {
             $rules = $relationObject->withDeferred($this->sessionKey)->where('code', 'LIKE', '%'.$key.'%')->get()->sortby('sort_order');
-            trace_log($rules->pluck('code', 'code')->toArray());
+            // trace_log($rules->pluck('code', 'code')->toArray());
         } else {
             $rules = $relationObject->withDeferred($this->sessionKey)->get()->sortby('sort_order');
-            trace_log($rules->pluck('code', 'code')->toArray());
+            // trace_log($rules->pluck('code', 'code')->toArray());
         }
         
 
