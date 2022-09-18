@@ -1,4 +1,4 @@
-<div class="w-full w-bloc-base {{ data.opt_env_colors | default('') }} {% if data.opt_center_container %}mx-auto{% endif %}" style="{{ data.opt_style_container }}">
+<div class="w-full  {{ data.opt_env_colors | default('') }} {% if data.opt_center_container %}mx-auto{% endif %}" style="{{ data.opt_style_container }}">
     <div class="flex flex-wrap -m-4">
         {% for image in data.images %}
         {% if image.path %} 
