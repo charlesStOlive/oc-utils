@@ -3,8 +3,8 @@
     {% if data.opt_i_place == 'before' %}flex-row-reverse
     {% elseif data.opt_i_place == 'upper' %}flex-col-reverse
     {% elseif data.opt_i_place == 'bottom' %}flex-col{% endif %}">
-        <div class="{% if data.opt_center_content %}mx-auto text-center{% endif %} " style="width:{{data.txt_size | default('100%')}}">
-            <div class="prose text-inherit max-w-none prose-h2:text-accent">
+        <div class="prose {% if data.opt_center_content %}mx-auto text-center{% endif %} " style="width:{{data.txt_size | default('100%')}}">
+            <div>
                 {{data.html | raw}}
             </div>
         </div>

@@ -1,16 +1,17 @@
-<div class="w-full   relative {{ data.opt_env_colors }} {% if data.opt_center_container %}mx-auto{% endif %} " style="{{ data.opt_style_container }} ">
-    <div class="{% if data.content %} grid grid-cols-1 md:grid-cols-2{% endif %}">
-        <div class="{% if data.opt_center_content %}mx-auto text-center{% endif %} prose" style="{{ data.opt_style_text }}">
+<div class="w-full {{ data.opt_env_colors }} {% if data.opt_center_container %}mx-auto{% endif %} " style="{{ data.opt_style_container }} ">
+    <div class="{% if data.content %} grid grid-cols-1 md:grid-cols-2 place-items-center{% endif %}">
+        
+        <div class="mx-auto h-full w-full" style="{{ data.opt_style_video }} ">
+                <iframe src="https://player.vimeo.com/video/{{data.vimeo_code}}" width="{{opt_video_width | default('100%')}}" height="{{opt_video_height | default('100%')}}" allow="autoplay; fullscreen"
+                        allowfullscreen></iframe>
+        </div>
+        <div class="{% if data.opt_center_content %}mx-auto text-center{% endif %}" style="{{ data.opt_style_text }}">
             {% if data.title %}
-            <h3>{{data.title}}</h3>
+            <div class="not-prose"><h3 >{{data.title}}</h3>
             {% endif %}
             {% if data.content %}
             <div class="">{{data.content | raw }}</div>
             {% endif %}
-        </div>
-        <div class="mx-auto" style="{{ data.opt_style_video }}">
-                <iframe src="https://player.vimeo.com/video/{{data.vimeo_code}}" width="{{opt_video_width | default('100%')}}" height="{{opt_video_height | default('100%')}}" allow="autoplay; fullscreen"
-                        allowfullscreen></iframe>
         </div>
     </div>
 </div>

@@ -59,17 +59,17 @@ function showRuleSettings(id) {
     }
 
     RuleRules.prototype.onSearchInputFocus = function(ev) {
-        console.log('onSearchInputFocus')
+        //console.log.log('onSearchInputFocus')
         
         return false;
     }
     RuleRules.prototype.onSearchInputClearButtonFocus = function(ev){
-        console.log('onSearchInputClearButtonFocus')
+        //console.log.log('onSearchInputClearButtonFocus')
         
         return false;
     }
     RuleRules.prototype.onSearchResultsRefreshForm = function() {
-       console.log('onSearchResultsRefreshForm')
+       //console.log.log('onSearchResultsRefreshForm')
     }
 
     RuleRules.prototype.onDeleteRule = function (event) {
@@ -99,7 +99,7 @@ function showRuleSettings(id) {
 
     RuleRules.prototype.onApplyFilter = function (event) {
         var $el = $(event.target)
-        console.log('filtre asked')
+        //console.log.log('filtre asked')
         $el.request(this.options.filterHandler, {
             data: { foo: 'bar' },
         })
