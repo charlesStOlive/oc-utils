@@ -429,6 +429,7 @@ class CreateModelController extends BaseScaffoldCommand
 
         $titles = $rows->where('title', '<>', null)->pluck('name', 'var')->toArray();
         $appends = $rows->where('append', '<>', null)->pluck('name', 'var')->toArray();
+        $hashable = $rows->where('hashable', '<>', null)->pluck('name', 'var')->toArray();
         $dates1 = $rows->where('type', '==', 'date');
         $dates2 = $rows->where('type', '==', 'timestamp');
         $dates = $dates1->merge($dates2)->pluck('name', 'var')->toArray();
@@ -447,6 +448,8 @@ class CreateModelController extends BaseScaffoldCommand
         $jsons = $rows->where('json', '<>', null)->pluck('json', 'var')->toArray();
         $getters = $rows->where('getter', '<>', null)->pluck('json', 'var')->toArray();
         $purgeables = $rows->where('purgeable', '<>', null)->pluck('purgeable', 'var')->toArray();
+        $importExport = $rows->where('impexp', '<>', null)->pluck('impexp', 'var')->toArray();
+        //trace_log($importExport);
 
         //trace_log($errors);
 
@@ -473,11 +476,14 @@ class CreateModelController extends BaseScaffoldCommand
             'attributes' => $attributes,
             'titles' => $titles,
             'appends' => $appends,
+            'hashable' => $hashable,
             'dates' => $dates,
             'requireds' => $requireds,
             'jsons' => $jsons,
             'getters' => $getters,
             'purgeables' => $purgeables,
+            //
+            'importExport' => $importExport,
             //
             'tabs' => $tabs,
             //Ancien trad a supprimer

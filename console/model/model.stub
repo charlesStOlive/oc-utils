@@ -51,6 +51,9 @@ class {{studly_name}} extends Model
 {% if configs.trait_babyler_client %}
     use \Waka\Babyler\Classes\Traits\BabylerClient;
 {% endif %}
+{% if configs.trait_wakaSession %}
+    use \Waka\Session\Classes\Traits\WakaSessionTrait;
+{% endif %}
 {% if anonymizables %}
     use \Waka\Utils\Classes\Traits\WakAnonymize;
 {% endif %}
@@ -179,6 +182,15 @@ class {{studly_name}} extends Model
         '{{key}}',
 {% endfor %}
     ];
+
+/**
+    * @var array Spécifié le type d'export à utiliser pour chaque champs
+    */
+    public $importExportConfig = [
+{% for key,value in importExport %}
+        '{{key}}' => '{{ value }}',
+{% endfor %}
+    ]; 
 
     /**
      * @var array Relations

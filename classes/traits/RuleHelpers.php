@@ -1,16 +1,21 @@
-<?php namespace Waka\Utils\Classes\Traits;
+<?php
+
+namespace Waka\Utils\Classes\Traits;
+
 use System\Classes\ImageResizer;
 use System\Classes\MediaLibrary;
+
 trait RuleHelpers
 {
-    
-    
-    public function listImageMode() {
+
+
+    public function listImageMode()
+    {
         $baseType = [
-            'nothing'=> 'Aucune',
+            'nothing' => 'Aucune',
             'photo' => 'Image pour ce post',
-            'media'=> 'Image dans le répertoire média',
-            'url'=>' Une Url {ds.disponible}',
+            'media' => 'Image dans le répertoire média',
+            'url' => ' Une Url {ds.disponible}',
         ];
         //return array_merge($baseType, $this->extendMediaTypes); TODO donner la possibilite d'etentdre cette fonction
         return $baseType;
@@ -21,44 +26,52 @@ trait RuleHelpers
         $config =  \Config::get('waka.utils::image.baseCrop');
         return $config;
     }
-    
 
-    protected function dynamiseUrl($ds, $options = []) {
+
+    protected function dynamiseUrl($ds, $options = [])
+    {
         $width = $options['width'] ?? null;
         $height = $options['height'] ?? null;
         $url = $this->getConfig('url');
-        //trace_log($ds);
-        $url= \Twig::parse($url,$ds);
-            //$imageUrl = $image->resize($width, $height, [ 'mode' =>$crop ]);
+        try {
+            $url = \Twig::parse($url, $ds);
+        } catch (\Exception $ex) {
+            /**/
+            //trace_log('error parse url ' . $this->host->code);
+        }
+
+        //$imageUrl = $image->resize($width, $height, [ 'mode' =>$crop ]);
         return [
-                'path' => $url,
-                'width' => $width ? $width  . 'px' : null,
-                'height' => $height ? $height  . 'px' : null,
+            'path' => $url,
+            'width' => $width ? $width  . 'px' : null,
+            'height' => $height ? $height  . 'px' : null,
         ];
     }
 
-    protected function dynamiseMedia($ds, $options = []) {
+    protected function dynamiseMedia($ds, $options = [])
+    {
         $crop = $options['crop'] ?? 'exact';
         $width = $options['width'] ?? null;
         $height = $options['height'] ?? null;
         $path = MediaLibrary::url($this->getConfig('media'));
-        
-        
-        if($width && $height) {
-            $path = ImageResizer::filterGetUrl($path,$width, $height, ['mode' => $crop]);
-        } 
+
+
+        if ($width && $height) {
+            $path = ImageResizer::filterGetUrl($path, $width, $height, ['mode' => $crop]);
+        }
         //$path = $image
         return [
-                'path' => $path,
-                'width' => $width ? $width  . 'px' : null,
-                'height' => $height ? $height  . 'px' : null,
-            ];
+            'path' => $path,
+            'width' => $width ? $width  . 'px' : null,
+            'height' => $height ? $height  . 'px' : null,
+        ];
     }
 
 
 
 
-    protected function dynamisePhoto($ds, $options = []) {
+    protected function dynamisePhoto($ds, $options = [])
+    {
         //trace_log("dynamisePhoto : ".$this->getCode());
         $crop = $options['crop'] ?? 'exact';
         $width = $options['width'] ?? null;
@@ -71,19 +84,20 @@ trait RuleHelpers
         //trace_log($objetImage);
         return $objetImage;
     }
-        
 
-    public function getMignatureAttribute() {
+
+    public function getMignatureAttribute()
+    {
         $imageMode = $this->getConfig('imageMode');
         //trace_log($imageMode);
         $objImage = null;
-        $functionResolverName = 'dynamise'.studly_case($imageMode);
+        $functionResolverName = 'dynamise' . studly_case($imageMode);
         $options = [
             'width' => 40,
             'height' => 40,
             'crop' => 'exact',
         ];
-        if($this->methodExists($functionResolverName)) {
+        if ($this->methodExists($functionResolverName)) {
             $objImage = $this->$functionResolverName([], $options);
         } else {
             //\Log::error($functionResolverName." n'existe pas");
@@ -101,11 +115,10 @@ trait RuleHelpers
 
             $indentString = str_repeat($indent, $depth);
             foreach ($items as $item) {
-               
+
                 if ($key !== null) {
                     $result[$item[$key]] = $indentString . $item[$value];
-                }
-                else {
+                } else {
                     $result[] = $indentString . $item[$value];
                 }
 
@@ -136,19 +149,17 @@ trait RuleHelpers
         }
         $fields->photo->hidden = true;
         $fields->media->hidden = true;
-        $fields->url->hidden = true; 
-        if($fields->imageMode->value == 'photo') {
+        $fields->url->hidden = true;
+        if ($fields->imageMode->value == 'photo') {
             $fields->media->value = '';
             $fields->photo->hidden = false;
         }
-        if($fields->imageMode->value == 'url') {
+        if ($fields->imageMode->value == 'url') {
             $fields->media->value = '';
-            $fields->url->hidden = false; 
+            $fields->url->hidden = false;
         }
-         if($fields->imageMode->value == 'media') {
+        if ($fields->imageMode->value == 'media') {
             $fields->media->hidden = false;
         }
     }
-
-
 }
