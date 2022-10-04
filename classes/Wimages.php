@@ -4,8 +4,6 @@ use Winter\Storm\Support\Collection;
 
 class Wimages
 {
-    use \Waka\Utils\Classes\Traits\StringRelation;
-
     private $model;
     protected $relations;
 
@@ -113,7 +111,7 @@ class Wimages
             $relationWithImages = $relationWithImages->where('images', true)->keys();
             foreach ($relationWithImages as $relation) {
                 //trace_log($relation);
-                $subModel = $this->getStringModelRelation($this->model, $relation);
+                $subModel = array_get($this->model, $relation);
                 $files = $this->listFile($subModel, $relation);
                 //trace_log($subModel->name);
                 $relationImages = $relationImages->merge($files);
@@ -139,10 +137,10 @@ class Wimages
     }
     public function getOnePictureUrl($image) {
             $modelImage = $this->model;
-            $img;
+            $img = '';
 
             if ($image['relation'] != 'self') {
-                $modelImage = $this->getStringModelRelation($this->model, $image['relation']);
+                $modelImage = array_get($this->model, $image['relation']);
             }
             //trace_log("nom du model " . $modelImage->name);
 

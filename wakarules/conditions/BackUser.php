@@ -38,7 +38,7 @@ class BackUser extends RuleConditionBase  implements RuleInterface
      * IS true
      */
 
-    private function check($modelSrc, $context = 'twig', $dataForTwig = []) {
+    private function check($modelSrc) {
        //trace_log("check user");
         if(\App::runningInConsole()) {
             return true;

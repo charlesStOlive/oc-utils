@@ -43,7 +43,7 @@ class ImageWidget extends FormWidgetBase
         $noImage = true;
         $ds = new DataSource($this->model->data_source);
         //trace_log($ds->name);
-        $ds->instanciateModel($this->model->test_id); // instancie l'exemple
+        $ds->instanciateQuery($this->model->test_id); // instancie l'exemple
         $options = $ds->wimages->getAllPicturesKey();
         if ($options) {
             $noImage = false;
@@ -91,7 +91,7 @@ class ImageWidget extends FormWidgetBase
         $codeImage = trim($formFieldValue['selector']);
         //trace_log($codeImage);
         $ds = new DataSource($this->model->data_source);
-        $ds->instanciateModel($this->model->test_id); // instancie l'exemple
+        $ds->instanciateQuery($this->model->test_id); // instancie l'exemple
         $pictureData = $ds->wimages->getOnePictureKey($codeImage);
         $imageType = $pictureData['type'] ?? null;
         $this->vars['id'] = $this->getId();

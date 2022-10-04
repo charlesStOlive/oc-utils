@@ -46,7 +46,7 @@ class ImagesList extends FormWidgetBase
         //trace_log($ds->name);
         $imagesList = [];
         if($this->model->test_id) {
-            $ds->instanciateModel($this->model->test_id); // instancie l'exemple
+            $ds->instanciateQuery($this->model->test_id); // instancie l'exemple
             $imagesList = $ds->wimages->getAllPicturesKey();
             $noImage = false;
         } 
@@ -74,7 +74,7 @@ class ImagesList extends FormWidgetBase
     public function onShowImages()
     {
         $ds = new DataSource($this->model->data_source);
-        $ds->instanciateModel();
+        $ds->instanciateQuery();
 
         //liste des images de la classe depuis le datasource
         $this->imageWidget->getField('source')->options = $ds->wimages->getAllPicturesKey();
@@ -85,13 +85,13 @@ class ImagesList extends FormWidgetBase
     public function onSelectImages()
     {
         $ds = new DataSource($this->model->data_source);
-        $ds->instanciateModel();
+        $ds->instanciateQuery();
     }
 
     public function onCreateImageValidation()
     {
         $ds = new DataSource($this->model->data_source);
-        $ds->instanciateModel();
+        $ds->instanciateQuery();
         //mis d'en une collection des données existantes
         $data = [];
         $modelImagesValues = $this->getLoadValue();
@@ -123,7 +123,7 @@ class ImagesList extends FormWidgetBase
     public function onUpdateImage()
     {
         $ds = new DataSource($this->model->data_source);
-        $ds->instanciateModel();
+        $ds->instanciateQuery();
 
         $code = post('code');
         $source = post('source');
@@ -176,7 +176,7 @@ class ImagesList extends FormWidgetBase
     public function onUpdateImageValidation()
     {
         $ds = new DataSource($this->model->data_source);
-        $ds->instanciateModel();
+        $ds->instanciateQuery();
         //On range collection code hidden das oldCollectionCode au cas ou le user change le collectionCode qui est notre clé
         $oldCode = post('oldCode');
         //mis d'en une collection des données existantes

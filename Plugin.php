@@ -97,11 +97,19 @@ class Plugin extends PluginBase
                     $content = $twig->getContent($code);
                     return  $content[$column] ?? null;
                 },
-                'getRecursiveContent' => function ($twig, $code,$column) {
-                    $content = $twig->getResursiveContent($code);
-                    return  $content[$column] ?? null;
+                'getRecursiveContent' => function ($twig, $code) {
+                    //trace_log("twig getRecursiveContent");
+                    //trace_log($code);
+                    $content = $twig->getThisParentValue($code);
+                    //trace_log('content');
+                    //trace_log($content);
+                    return  $content;
                 },
                 'getFileByTitleFromMany' => function ($twig, $code, $with, $height) {
+                    if(!$twig) {
+                        \Log::error(sprintf('le code twig %s renvoie une valeur null dans getFileByTitleFromMany', $code));
+                        return null;
+                    }
                     //trace_log('getFileFromMany');
                     $image = $twig->filter(function ($item, $key) use ($code) {
                         //trace_log($item->toArray());

@@ -1,6 +1,6 @@
 <?php namespace Waka\Utils\Classes\Traits;
 
-trait StringRelation
+trait StringRelationOLD
 {
     public function getStringRelation($model, String $relation)
     {

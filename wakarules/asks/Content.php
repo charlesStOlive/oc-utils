@@ -7,9 +7,6 @@ use Waka\Utils\Interfaces\Ask as AskInterface;
 
 class Content extends AskBase  implements AskInterface
 {
-    use \Waka\Utils\Classes\Traits\StringRelation;
-
-
     protected $tableDefinitions = [];
 
     /**
@@ -54,7 +51,7 @@ class Content extends AskBase  implements AskInterface
         $contentCode = $this->getConfig('contentCode');
         $isRecursif = $this->getConfig('is_recursif');
         if($relation) {
-            $modelSrc =  $this->getStringModelRelation($modelSrc, $relation);
+            $modelSrc =  array_get($modelSrc, $relation);
         }
         if(!$modelSrc) {
             \Log::error("Erreur dans resolve content sur src ".$modelSrcClassNameForLog ." et ID : ".$modelSrcIdForLog);

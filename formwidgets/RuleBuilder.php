@@ -249,6 +249,8 @@ class RuleBuilder extends FormWidgetBase
     }
 
     public function getSharedModel($rule = null) {
+        //trace_log("getSharedModel");
+        //trace_log($rule);
         //Si rule null la requete viens du dom on va chercher le rule avec postid.rule_class SINON ça vient de l'enregistrement on connait déjà la rule.
         if(!$rule) {
             $rule = $this->findRuleObj();
@@ -272,7 +274,9 @@ class RuleBuilder extends FormWidgetBase
         $modelsSharing = $class::where($eable_type, $eable_type_value)->where('class_name', $className)->where('code', $rule->code)->where('is_share','<>', null);
         if($shareMode == 'ressource' && $dsCode) {
             $modelsSharing = $modelsSharing->whereHasMorph($eable, $eable_type_value,  function ($query) use($dsCode) {
-                $query->where('data_source', $dsCode);
+                $query->whereHas('waka_session', function ($q) use ($dsCode) {
+                    $q->where('data_source', $dsCode);
+                });
             });
         }
         if($shareMode == 'ressource' && !$dsCode) {
@@ -293,20 +297,20 @@ class RuleBuilder extends FormWidgetBase
      */
     public function onLoadCreateRuleForm()
     {
-        try {
-            $rules = $this->getRuleClass()::findRules($this->ruleMode, $this->targetProductor, $this->model->data_source);
-            $this->vars['rules'] = $rules;
-        }
-        catch (Exception $ex) {
-            $this->handleError($ex);
-        }
+        $ruleMode = $this->ruleMode;
+        $targetProductor = $this->targetProductor;
+        $modelDataSource = $this->model->data_source;
+        $cacheName = $ruleMode.'.'.$targetProductor.'.'.$modelDataSource;
+        
+        $rules = $this->getRuleClass()::findRules($ruleMode, $targetProductor, $modelDataSource);
+        $this->vars['rules'] = $rules;
         return $this->makePartial('create_rule_form');
     }
 
     public function onLoadShareComponent()
     {
         try {
-            $shares = $this->getRuleClass()::findShares($this->ruleMode, $this->model, $this->model->data_source);
+            $shares = $this->getRuleClass()::findShares($this->ruleMode, $this->model, $this->model->waka_session?->data_source);
             $this->vars['shares'] = $shares;
         }
         catch (Exception $ex) {
@@ -613,7 +617,7 @@ class RuleBuilder extends FormWidgetBase
         
 
         $attributesObj = new \Waka\utils\Classes\Wattributes($this->model, $this->ruleMode.'s');
-        $attributes = $attributesObj->getAttributes();
+        $attributes = $attributesObj->getWAttributes();
 
         //Cas des rules avec appel de fonctions
         $isFnc = $rule->getConfig('is_fnc');

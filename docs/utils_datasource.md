@@ -56,7 +56,7 @@ DataSources::getLabel($code)
 ### Les méthodes DataSource
 ```php
 //instancie un modèle du dataSource via son ID
-Datasource->getModel($modelId = null) : 
+Datasource->getQuery($modelId = null) : 
 
 /**
  * Liste les modèles d'un producteur disponible. 
@@ -71,7 +71,7 @@ Datasource->getLotProductorOptions($productorModel, $modelId = null)
 Datasource->getPartialIndexOptions($productorModel, $modelId = null)
 Datasource->getScopesLists()
 Datasource->getScopeOptions()
-Datasource->getModels($modelId = null) 
+Datasource->getFullQuery($modelId = null) 
 Datasource->listRelation()
 Datasource->getValues($modelId = null, $withInde = true)
 Datasource->getWorkflowState()

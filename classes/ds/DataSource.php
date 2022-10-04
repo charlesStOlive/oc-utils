@@ -14,7 +14,6 @@ use Yaml;
 class DataSource extends Extendable
 {
     /**Clean */
-    use \Waka\Utils\Classes\Traits\StringRelation;
     //
     public $config;
     public $code;
@@ -33,7 +32,7 @@ class DataSource extends Extendable
     public $outputName;
     //Après instanciation
     public $modelId;
-    public $model;
+    public $query;
     //
     public $modelPath;
     
@@ -74,7 +73,7 @@ class DataSource extends Extendable
         $this->attributes = $attributes ? $attributes : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower(camel_case($this->code)).'/attributes.yaml';
          //
         $modelPath = $config['modelPath'] ?? null;
-        $this->modelPath = $modelPath ? $modelPath : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower(camel_case($this->code)).'/';
+        $this->queryPath = $modelPath ? $modelPath : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower(camel_case($this->code)).'/';
         //
         $this->emails = $config['emails'] ?? [];
         //
@@ -85,42 +84,47 @@ class DataSource extends Extendable
         
     }
 
-    public function instanciateModel($id = null)
+    private function instanciateQuery(int $id = null)
     {
-        
-        if ($this->model) {
+        //trace_log('instanciateQuery');
+        //trace_log($id);
+        if ($this->query) {
             return;
         }
         if ($id) {
-            $this->model = $this->class::find($id);
+            $this->query = $this->class::find($id);
         } 
-        if (!$this->model) {
-            $this->model = $this->class::first();
-            \Flash::error("ATTENTION : instanciateModel impossible premier id trouvé instancié");
-            //throw new \SystemException("ID non trouvé ou Il n'y a pas de modele disponible pour : " . $this->class." Veuillez créer au moins une valuer dans cette ressource");
+        if (!$this->query) {
+            //trace_log('je cherche le premier');
+            \Flash::error("ATTENTION : instanciateQuery impossible premier id trouvé instancié");
+            //trace_log($this->class::first()->toArray());
+            $this->query = $this->class::first();
+        }
+        if (!$this->query) {
+            \Flash::error("ATTENTION : instanciateQuery impossible premier id trouvé instancié");
+            throw new \SystemException("ID non trouvé ou Il n'y a pas de modele disponible pour : " . $this->class." Veuillez créer au moins une valuer dans cette ressource");
         }
     }
 
 
-    public function getModel($modelId = null)
+    public function getQuery(int $modelId = null)
     {
-        $this->instanciateModel($modelId);
-        return $this->model;
+        $this->instanciateQuery($modelId);
+        return $this->query;
     }
 
     public function getProductorOptions($productorModel, $modelId = null)
     {
        //trace_log('getProductorOptions');
-        $productors = $productorModel::where('data_source', $this->code)->active();
-        if($modelId) {
-            $this->instanciateModel($modelId);
-        }
+        $productors = $productorModel::whereHas('waka_session', function($q) {
+            $q->where('data_source', $this->code);
+        })->active();
         
 
         $optionsList = [];
 
         foreach ($productors->get() as $productor) {
-            $conditions = new \Waka\Utils\Classes\Conditions($productor, $this->model);
+            $conditions = new \Waka\Utils\Classes\Conditions($productor, $this->getQuery($modelId));
             //trace_log($productor->name);
 
             if ($conditions->hasConditions()) {
@@ -148,40 +152,35 @@ class DataSource extends Extendable
     }
     public function getPartialIndexOptions($productorModel, $relation = false)
     {
-        $productors = $productorModel::where('data_source', $this->code)->get();
+        $productors = null;
+        try {
+            $productors = $productorModel::whereHas('waka_session', function ($q) {
+                $q->where('data_source', $this->code);
+             })->get();
+        } catch(\Exception $e) {
+            \Log::error('pas de session pour le getPartialIndexOption > bascule sur le dataSource');
+            $productors = $productorModel::where('data_source', $this->code);
+        }
+        
 
         if ($relation) {
             $productors = $productors->where('relation', '<>', null);
         } else {
             $productors = $productors->where('relation', '=', null);
         }
-
-        // $optionsList = [];
-
-        // foreach ($productors as $productor) {
-        //     $condtions = new \Waka\Utils\Classes\Conditions($productor, $this->model);
-        //     if ($condtions->hasConditions()) {
-        //         if ($condtions->checkConditions()) {
-        //             $optionsList[$productor->id] = $productor->name;
-        //         }
-        //     } else {
-        //         $optionsList[$productor->id] = $productor->name;
-        //     }
-        // }
         return $productors->lists('name', 'id');
     }
 
     /**NETOYAGE ? */
     public function dynamyseText($content,$modelId =null) {
         if($modelId) {
-            $this->instanciateModel($modelId);
+            $this->instanciateQuery($modelId);
         }
-        if(!$this->model) {
+        if(!$this->query) {
             throw new \SystemException('dynamyseText impossible le modèle est pas instancié ! ');
         }
-        return \Twig::parse($content, ['ds' => $this->model]);
+        return \Twig::parse($content, ['ds' => $this->query]);
     }
-
     /**NETOYAGE ? */
     public function getProductorAsks($productorClass, $productorId, $modelId)
     {
@@ -192,13 +191,13 @@ class DataSource extends Extendable
         if(!$productor->rule_asks()->count()) {
             return [];
         }
-        $this->instanciateModel($modelId);
+        $this->instanciateQuery($modelId);
         $asksList = [];
-        $asks = $productor->rule_asks()->get();
+        $asks = $productor->rule_asks;
         foreach ($asks as $ask) {
             if($ask->isEditable()) {
                 $askCode = $ask->getCode();
-                $askContent = $ask->resolve($this->model, 'twig', ['ds' =>$this->getValues()]);
+                $askContent = $ask->resolve($this->query);
                 $askType = $ask->getEditableOption();
                 $asksList['_ask_'.$askCode] = [
                     'label' => "Pré remplissage de  : ".$askCode,
@@ -240,11 +239,12 @@ class DataSource extends Extendable
         }
         return $askArray;
     }
-
+    
     /**
      * PARTIE PERMETTANT DE GERER LES SCOPES CAMPAGNES ??--------------
      */
     public function getScopesLists() {
+        //trace_log("getScopesLists");
         $scopes = $this->config['scopes'] ?? [];
         $array = [];
         foreach($scopes as $key=>$scope) {
@@ -256,22 +256,14 @@ class DataSource extends Extendable
 
     }
      public function getScopeOptions($key) {
+        //trace_log("getScopeOptions");
          //trace_log($key);
         $scope = $this->config['scopes'][$key];
         //trace_log($scope);
         if($fromModel = $scope['options']['fromModel'] ?? false) {
             $nameFrom = $scope['nameFrom'] ?? 'name'; 
             return $fromModel::lists($nameFrom, 'id');
-        }
-        //NE MARCHE PAS
-        //  elseif ($fromClassFnc = $scope['options']['fromClassFnc'] ?? false) {
-        //     //trace_log($fromClassFnc);
-        //     //trace_log($this->config['class']);
-        //     $model = new $this->config['class'];
-        //     //trace_log($model::$fromClassFnc);
-        //     return $model->{$fromClassFnc};
-        // }
-         elseif ($fromSetting = $scope['options']['fromSetting'] ?? false) {
+        } elseif ($fromSetting = $scope['options']['fromSetting'] ?? false) {
             return \Settings::get($fromSetting );
        } elseif ($fromSetting = $scope['options']['fromConfig'] ?? false) {
             return \Config::get($fromSetting );
@@ -303,13 +295,13 @@ class DataSource extends Extendable
         return $array;
     }
     
-    public function getModels($modelId = null)
+    public function getFullQuery($modelId = null)
     {
-        $this->instanciateModel($modelId);
-        $constructApi = $this->model;
-        $attributeToAppend = $this->model->attributesToDs;
+        $this->instanciateQuery($modelId);
+        $constructApi = $this->query;
+        $attributeToAppend = $this->query->attributesToDs;
         if ($attributeToAppend) {
-            foreach ($this->model->attributesToDs as $tempAppend) {
+            foreach ($this->query->attributesToDs as $tempAppend) {
                 $constructApi->append($tempAppend);
             }
         }
@@ -319,13 +311,13 @@ class DataSource extends Extendable
         return $constructApi;
     }
 
-    public function getModelAndRelations($modelId = null)
+    public function getModelDataAndRelations($modelId = null)
     {
-        $this->instanciateModel($modelId);
-        $constructApi = $this->model;
-        $attributeToAppend = $this->model->attributesToDs;
+        $this->instanciateQuery($modelId);
+        $constructApi = $this->query;
+        $attributeToAppend = $this->query->attributesToDs;
         if ($attributeToAppend) {
-            foreach ($this->model->attributesToDs as $tempAppend) {
+            foreach ($this->query->attributesToDs as $tempAppend) {
                 $constructApi->append($tempAppend);
             }
         }
@@ -334,19 +326,18 @@ class DataSource extends Extendable
         return $constructApi;
     }
 
-
     public function listRelation()
     {
+        //trace_log('**listRelation**');
+        //trace_log($this->query->client);
+        //trace_log();
+
         $results = [];
         $relations = new Collection($this->getKeyAndEmbed());
         if ($relations->count()) {
             foreach ($relations as $relation) {
-                //trace_log($relation);
-                /**Clean */
-                $subModel = $this->getStringModelRelation($this->model, $relation);
+                $subModel = array_get($this->query, $relation);
                 if ($subModel) {
-                    $subModelClassName = get_class($subModel);
-                    $subShortName = (new \ReflectionClass($subModelClassName))->getShortName();
                     $relations = new Collection();
                     if ($subModel->attributesToDs) {
                         foreach ($subModel->attributesToDs as $tempAppend) {
@@ -354,19 +345,12 @@ class DataSource extends Extendable
                             $subModel->append($tempAppend);
                         }
                     }
-                    $subRelation = explode('.', $relation);
-                    if (count($subRelation) == 1) {
-                        $results[$relation] = $subModel->toArray();
-                    }
-                    if (count($subRelation) == 2) {
-                        $results[$subRelation[0]][$subRelation[1]] = $subModel->toArray();
-                    }
-                    if (count($subRelation) == 3) {
-                        $results[$subRelation[0]][$subRelation[1]][$subRelation[2]] = $subModel->toArray();
-                    }
+                    $results[$relation] = $subModel->toArray();
                 }
+                
             }
             return $results;
+            
         } else {
             return [];
         }
@@ -374,7 +358,7 @@ class DataSource extends Extendable
 
     public function getValues($modelId = null, $withInde = true)
     {
-        $dsApi = array_merge($this->getModels($modelId));
+        $dsApi = array_merge($this->getFullQuery($modelId));
         return $dsApi;
     }
 
@@ -383,17 +367,17 @@ class DataSource extends Extendable
      */
     public function getWorkflowState()
     {
-        if (!$this->model) {
+        if (!$this->query) {
             throw new ApplicationException('model pas instancié pour la fonction getWorkflowState');
         }
-        return $this->model->wfPlaceLabel();
+        return $this->query->wfPlaceLabel();
     }
 
     public function getStateLogsValues($modelId = null)
     {
         //trace_log('getStateLogsValues');
-        $this->instanciateModel($modelId);
-        $results = $this->model->state_logs()->orderBy('created_at')->get()->toArray();
+        $this->instanciateQuery($modelId);
+        $results = $this->query->state_logs()->orderBy('created_at')->get()->toArray();
         return $results;
     }
 
@@ -404,18 +388,18 @@ class DataSource extends Extendable
      */
     public function getContact($type, $modelId = null)
     {
-        $this->instanciateModel($modelId);
+        $this->instanciateQuery($modelId);
         $emailData = $this->emails[$type] ?? null;
 
         if (!$emailData) {
             return [];
         }
         $relation = $emailData['relation'] ?? null;
-        $contacts;
+        $contacts = null;
         if ($relation) {
-            $contacts = $this->getStringRelation($this->model, $relation);
+            $contacts = array_get($this->query, $relation);
         } else {
-            $contacts = $this->model;
+            $contacts = $this->query;
         }
 
         $results = [];
@@ -525,4 +509,6 @@ class DataSource extends Extendable
         }
         return $attributesConfig['fields'] ?? [];
     }
+
+    
 }

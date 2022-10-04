@@ -109,6 +109,7 @@ class SubForm extends Extendable
     }
 
     public function getModel() {
+        //trace_log($this->morphName);
         if(!$this->morphName) {
             throw new \SystemException('SubForm morhName nom definis dans le declarateur');
         }
@@ -118,8 +119,10 @@ class SubForm extends Extendable
 
     public function getDs() {
         $model = $this->getModel();
-        if($model->data_source) {
-            return \DataSources::find($model->data_source);
+        //trace_log('model pporteur');
+        //trace_log(get_class($model));
+        if($model->waka_session?->data_source) {
+            return \DataSources::find($model->waka_session->data_source);
         } else {
             return null;
         }  
@@ -327,7 +330,7 @@ class SubForm extends Extendable
     {
         return array_get($this->subFormDetails(), 'outputs.word_type');
     }
-    public function getOutputTypes($mode = null)
+    public function getOutputTypes($mode = '')
     {
         $outputs  = array_get($this->subFormDetails(), 'outputs');
         if($this->getConfig('is_fnc')) {
@@ -339,7 +342,7 @@ class SubForm extends Extendable
 
         } 
         if(!is_iterable($outputs) && $mode) {
-            return $outputs[$model] ?? null;
+            return $outputs[$mode] ?? null;
         }  else {
             return null;
         }
@@ -475,6 +478,8 @@ class SubForm extends Extendable
      */
     public static function findShares($mode, $model, $dataSource)
     {
+        //trace_log('dataSource');
+        //trace_log($dataSource);
         //trace_log('----ressource = '.$dataSource);
         $modelClass = get_class($model);
         $ruleModel = $model->{'rule_'.$mode.'s'}()->getRelated();
@@ -483,14 +488,17 @@ class SubForm extends Extendable
         //Impossible de bosser avec each ou reject de Collection. je ne sais pas pourquoi...je crée donc une autre collection et je push les bons résultats.
         //je bosse en collection pour garder des valeurs unique dimplement à la fin. 
         $finalRules = new \Winter\Storm\Support\Collection();
+
         foreach($components as $component) {
+            //trace_log($component->toArray());
             //trace_log($component->code);
             //trace_log($component->getShareModeConfig());
             if($component->getShareMode() == 'full') {
                 //trace_log($component->code);
                 $finalRules->push($component);
             } else if ($component->getShareMode() == 'ressource') {
-                if($dataSource == $component->getDs()->code) {
+                //trace_log("resosurce ".$component->getDs()?->code);
+                if($dataSource == $component->getDs()?->code) {
                     $finalRules->push($component);
                 }
             }

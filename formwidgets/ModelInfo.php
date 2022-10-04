@@ -1,7 +1,6 @@
 <?php namespace Waka\Utils\FormWidgets;
 
 use Backend\Classes\FormWidgetBase;
-use Waka\Utils\Classes\DataSource;
 use Waka\Utils\Classes\WakaDate;
 use System\Helpers\DateTime as DateTimeHelper;
 use Lang;
@@ -64,7 +63,7 @@ class ModelInfo extends FormWidgetBase
         $modelId = $this->model->id;
         $modelClass = get_class($this->model);
         //trace_log($modelClass);
-        //trace_log(get_class($this->getController()));
+        //trace_log($this->model->id);
         $this->ds = \DataSources::findByClass($modelClass);
         if(!$this->ds) {
             throw new \SystemException('DS info pas trouvé');
@@ -113,7 +112,7 @@ class ModelInfo extends FormWidgetBase
             $value = null;
             if($modelValue = $field['modelValue'] ?? false) {
                 //Si il y a une valeur modèle valeur on va chercher la valeur dans le modèle et non dans le dotedArray
-                $value = $this->ds->getModel()->{$modelValue};
+                $value = $this->ds->getQuery()->{$modelValue};
             } else {
                 $fieldValue = $field['value'] ?? $key;
                 if ($fieldValue) {

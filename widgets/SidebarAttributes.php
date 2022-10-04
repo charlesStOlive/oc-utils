@@ -6,7 +6,6 @@ use Yaml;
 
 class SidebarAttributes extends WidgetBase
 {
-    use \Waka\Utils\Classes\Traits\StringRelation;
     /**
      * @var string A unique alias to identify this widget.
      */
@@ -94,7 +93,7 @@ class SidebarAttributes extends WidgetBase
             $label = $attribute['label'] ?? null;
 
             //Gestion du keyName
-            $KeyName;
+            $KeyName = '';
             if ($relationOrName == "modelImage") {
                 $KeyName = $key;
             } elseif ($row && $name) {

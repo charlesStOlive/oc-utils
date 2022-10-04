@@ -6,29 +6,24 @@ class Wattributes
 {
 
     public $dataSource;
+    public $ds;
     public $model;
     public $mode;
     public $btnsConfig;
     private $typeTransformers;
     public function __construct($model, $mode)
     {
+        $this->dataSource = null;
         $this->model = $model;
         $this->mode = $mode;
-        if($this->model->data_source) {
-            $this->dataSource = \DataSources::find($this->model->data_source);
-        }
-        $this->getBtnOutputs();
+        if($this->model->waka_session?->data_source) {
+            $this->dataSource = \DataSources::find($this->model->waka_session->data_source);
+        } 
         $this->typeTransformers = \Config::get('waka.utils::transformers');
         $this->btnsConfig = \Config::get('waka.utils::transformers.add.'.$this->mode);
         
     }
-
-    public function getBtnOutputs() {
-        
-        //trace_log($this->btnsConfig);
-    }
-
-    public function getAttributes()
+    public function getWAttributes()
     {
         if(!$this->dataSource) {
             return [];
@@ -41,6 +36,7 @@ class Wattributes
         $attributeArray[$this->dataSource->code]['values'] = $maped;
         $attributeArray[$this->dataSource->code]['icon'] = $attributesConfig['icon'];;
         if ($this->dataSource->relations) {
+            //trace_log($this->dataSource->relations);
             foreach ($this->dataSource->relations as $key => $relation) {
                 //trace_log("key ".$key);
                 $ex = explode('.', $key);
@@ -59,6 +55,8 @@ class Wattributes
         return $attributeArray;
     }
 
+    
+
     private function remapAttributes(array $attributes, $relationOrName, $name = null, $row = false)
     {
         $transformers = \Config::get('waka.utils::transformers');
@@ -75,7 +73,7 @@ class Wattributes
             $label = $attribute['label'] ?? null;
 
             //Gestion du keyName
-            $KeyName;
+            $KeyName = '';
             if ($relationOrName == "modelImage") {
                 $KeyName = $key;
             } elseif ($row && $name) {

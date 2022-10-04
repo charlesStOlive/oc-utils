@@ -401,7 +401,7 @@ class AskBuilder extends FormWidgetBase
         }
         $attributes = new \Waka\utils\Classes\Wattributes($this->model, $this->type);
         //trace_log($attributes->getAttributes());
-        return  $attributes->getAttributes();
+        return  $attributes->getWAttributes();
     }
 
     /**

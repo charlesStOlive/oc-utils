@@ -37,14 +37,12 @@ class Attributs extends FormWidgetBase
      */
     public function render()
     {
-        if($this->model->no_ds) {
-            return $this->makePartial('empty');
-        }
-        $this->dataSource = \DataSources::find($this->model->data_source);
         $attributes = new \Waka\utils\Classes\Wattributes($this->model, $this->mode);
 
         $this->vars['text_info'] = $this->text_info;
-        $this->vars['attributesArray'] = $attributes->getAttributes();
+        //trace_log('attributes->getWAttributes()');
+        //trace_log($attributes->getWAttributes());
+        $this->vars['attributesArray'] = $attributes->getWAttributes();
         $fncArray = $attributes->getFncsOutputs($this->model->rule_fncs);
         $askArray = $attributes->getAsks($this->model->rule_asks);
         $this->vars['FNCSArray'] = $fncArray;

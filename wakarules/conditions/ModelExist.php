@@ -7,8 +7,6 @@ use Waka\Utils\Interfaces\Rule as RuleInterface;
 
 class ModelExist extends RuleConditionBase implements RuleInterface
 {
-    use \Waka\Utils\Classes\Traits\StringRelation;
-    
     /**
      * Returns information about this event, including name and description.
      */
@@ -42,16 +40,20 @@ class ModelExist extends RuleConditionBase implements RuleInterface
      * IS true
      */
 
-    private function check($modelSrc, $context = 'twig', $dataForTwig = []) {
+    private function check($modelSrc) {
         //trace_log('check model value');
         $field = $this->getConfig('field');
-        // $relation = $this->getConfig('relation');
+        $relation = $this->getConfig('relation');
+        if($relation)  $field = $relation.'.'.$field;
         //$mode = $this->getConfig('checkMode');
         $mode  = 'existe';
         // $model = $modelSrc;
 
         //trace_log($mode);
         $values = array_get($modelSrc, $field);
+        //trace_log($modelSrc);
+        //trace_log($field);
+        //trace_log($values);
 
         if($mode ==  "existe") {
             if($values) {

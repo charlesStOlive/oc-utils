@@ -7,8 +7,6 @@ use Waka\Utils\Interfaces\Rule as RuleInterface;
 
 class ModelValue extends RuleConditionBase implements RuleInterface
 {
-    use \Waka\Utils\Classes\Traits\StringRelation;
-    
     /**
      * Returns information about this event, including name and description.
      */
@@ -51,7 +49,7 @@ class ModelValue extends RuleConditionBase implements RuleInterface
      * IS true
      */
 
-    private function check($modelSrc, $context = 'twig', $dataForTwig = []) {
+    private function check($modelSrc) {
         $field = $this->getConfig('field');
         $operator = $this->getConfig('operator');
         $value = $this->getConfig('value');
@@ -69,6 +67,7 @@ class ModelValue extends RuleConditionBase implements RuleInterface
     }
 
     public function compareValue($fieldValue, $operator, $valueSearched) {
+        //trace_log('compareValue');
         //trace_log($fieldValue);
         switch ($operator) {
             case 'existe' :
@@ -79,7 +78,7 @@ class ModelValue extends RuleConditionBase implements RuleInterface
                 $return = false;
                 $isArray = is_array($fieldValue);
                 if($isArray) {
-                    return count($isArray);
+                    return (bool) count($fieldValue);
                 } 
                 return $return;
             case 'where' :

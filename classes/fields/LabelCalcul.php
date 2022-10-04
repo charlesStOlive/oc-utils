@@ -13,8 +13,8 @@ class LabelCalcul extends BaseField
 
     public function getValue()
     {
-        $val1 = $this->getStringRelation($this->model, $this->config['row_var1']);
-        $val2 = $this->getStringRelation($this->model, $this->config['row_var2']);
+        $val1 = array_get($this->model, $this->config['row_var1']);
+        $val2 = array_get($this->model, $this->config['row_var2']);
 
         $operator = $this->config['operator'];
 

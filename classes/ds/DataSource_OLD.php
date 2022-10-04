@@ -1,4 +1,4 @@
-<?php namespace Waka\Utils\Classes;
+<?php namespace Waka\Utils\Classes\Ds;
 
 // use Lang;
 // use MathPHP\Algebra;
@@ -6,86 +6,82 @@
 use ApplicationException;
 use Config;
 use Winter\Storm\Support\Collection;
+use Winter\Storm\Extension\Extendable;
+use Ds;
 use Yaml;
 
-class DataSource
-{
-    use \Waka\Utils\Classes\Traits\StringRelation;
-    //use \Waka\Cloudis\Classes\Traits\CloudisKey;
 
+class OLD_DataSource extends Extendable
+{
+    /**Clean */
+    //
+    public $config;
+    public $code;
+    public $class;
+    //
     public $label;
     public $name;
     public $author;
     public $plugin;
-    public $code;
-    public $class;
-    private $config;
+    //
     public $relations;
-    public $otherRelations;
     public $emails;
-    public $editFunctions;
-    public $aggFunctions;
+    public $controller;
+    public $publications;
+    public $attributes;
+    public $outputName;
+    //Après instanciation
     public $modelId;
     public $model;
-    public $testId;
-    public $modelName;
-    public $controller;
-    public $aggs;
-    public $wimages;
-    public $attributesConfig;
-    public $outputName;
-    public $publications;
+    //
+    public $modelPath;
+    
 
-    public function __construct($id = null, $type_id = "code")
-    {
-        $globalConfig = new Collection($this->getSrConfig());
-        $config = $globalConfig->where($type_id, $id)->first();
-        if(!$config) {
-            throw new ApplicationException("La configuration datasource n' a pas été trouvé pour la valeur :  ".$id." recherché sur la cléf ".$type_id);
-        }
+    public function __construct($config, $key) {
         //
+        
         $this->config = $config;
-        //
-        $this->author = $config['author'] ?? null;
-        $this->name = $config['name'] ?? null;
-        $this->plugin = $config['plugin'] ?? null;
+        $this->code = $key;
         $this->class = $config['class'] ?? null;
-
-        $this->lowerName = strtolower($this->name);
-
-        $this->code = $config['code'] ?? $this->lowerName;
         if (!$this->class) {
             throw new ApplicationException('Erreur data source model class non défini');
         }
-        //$this->id = $config['id'];
-        $this->code = $config['code'];
         //
-        $label = $config['label'] ?? null;
-        $this->label = $label ? $label : $this->name;
+        $explodedClass = explode('\\', $this->class);
+
+        $this->name = $config['name'] ?? Ucfirst($config['label']);
+        $firstExploded = array_shift($explodedClass);
+        if($firstExploded) {
+            $this->author = $firstExploded;
+            //permet de gerer si la classe commence avec \
+        } else {
+            $this->author = array_shift($explodedClass);
+        }
+        $this->plugin = array_shift($explodedClass);
+
+        $this->label = $config['label'] ?? null;
+        if (!$this->label) {
+            throw new ApplicationException('Il manque le label dans la config DataSource');
+        }
         //
         $controller = $config['controller'] ?? null;
-        $this->controller = $controller ? $controller : strtolower($this->author) . '/' . strtolower($this->plugin) . '/' . str_plural($this->name);
+        $this->controller = $controller ? $controller : strtolower($this->author) . '/' . strtolower($this->plugin) . '/' . strtolower(camel_case($this->code)).'s';
         //
-        $this->attributesConfig = $config['attributes'] ?? null;
+        $this->relations = $config['relations'] ?? [];
         //
-        $this->relations = $config['relations'] ?? null;
-        $this->otherRelations = $config['otherRelations'] ?? null;
+        $attributes = $config['attributes'] ?? null;
+        $this->attributes = $attributes ? $attributes : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower(camel_case($this->code)).'/attributes.yaml';
+         //
+        $modelPath = $config['modelPath'] ?? null;
+        $this->modelPath = $modelPath ? $modelPath : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower(camel_case($this->code)).'/';
         //
-        $this->emails = $config['emails'] ?? null;
+        $this->emails = $config['emails'] ?? [];
         //
-        $this->testId = $config['test_id'] ?? null;
-        //
-        $this->aggConfig = $config['aggs'] ?? null;
-        //
-        $this->editFunctions = $config['editFunctions'] ?? null;
-        $this->aggFunctions = $config['aggFunctions'] ?? false;
-
-        $this->outputName = $config['outputName'] ?? 'name';
-
         $this->publications = $config['publications'] ?? [];
-
-        $config = null;
-        //
+        /**Kill ? utilisé dans le datasource helper */
+        $this->outputName = $config['outputName'] ?? 'name';
+        parent::__construct();
+        
     }
 
     public function instanciateModel($id = null)
@@ -98,56 +94,51 @@ class DataSource
             $this->model = $this->class::find($id);
         } 
         if (!$this->model) {
-            /**/trace_log('ATTENTION : instanciateModel impossible');
             $this->model = $this->class::first();
             \Flash::error("ATTENTION : instanciateModel impossible premier id trouvé instancié");
             //throw new \SystemException("ID non trouvé ou Il n'y a pas de modele disponible pour : " . $this->class." Veuillez créer au moins une valuer dans cette ressource");
         }
-        $this->modelName = $this->model;
-        $this->wimages = new Wimages($this->model, $this->relations);
     }
-    public function getModel($modelId) 
+
+
+    public function getModel($modelId = null)
     {
         $this->instanciateModel($modelId);
         return $this->model;
     }
 
-    /**
-     * TRAVAIL SUR LES PRODUCTOR
-     */
-
     public function getProductorOptions($productorModel, $modelId = null)
     {
-
-        $documents = $productorModel::where('data_source', $this->code);
-        $this->instanciateModel($modelId);
+       //trace_log('getProductorOptions');
+        $productors = $productorModel::where('data_source', $this->code)->active();
+        if($modelId) {
+            $this->instanciateModel($modelId);
+        }
+        
 
         $optionsList = [];
 
-        foreach ($documents->get() as $document) {
-            if ($document->is_scope) {
-                //Si il y a des limites
-                $scope = new \Waka\Utils\Classes\Scopes($document, $this->model);
-                if ($scope->checkScopes()) {
-                    $optionsList[$document->id] = $document->name;
+        foreach ($productors->get() as $productor) {
+            $conditions = new \Waka\Utils\Classes\Conditions($productor, $this->model);
+            //trace_log($productor->name);
+
+            if ($conditions->hasConditions()) {
+                if ($conditions->checkConditions()) {
+                    $optionsList[$productor->id] = $productor->name;
+                } else {
+                    \Event::fire('waka.utils::conditions.error', $conditions->getLogs());
                 }
             } else {
-                $optionsList[$document->id] = $document->name;
+                $optionsList[$productor->id] = $productor->name;
             }
         }
         return $optionsList;
     }
     public function getLotProductorOptions($productorModel)
     {
-        //trace_log("getLotProductorOptions");
         $documents = $productorModel::where('data_source', $this->code)->get();
-        //trace_log($documents->toArray());
-
         $optionsList = [];
-
         foreach ($documents as $document) {
-            //trace_log($document->name);
-            //trace_log($document->is_lot);
             if ($document->is_lot) {
                 $optionsList[$document->id] = $document->name;
             }
@@ -156,58 +147,53 @@ class DataSource
     }
     public function getPartialIndexOptions($productorModel, $relation = false)
     {
-        $documents = $productorModel::where('data_source', $this->code)->get();
+        $productors = $productorModel::where('data_source', $this->code)->get();
 
         if ($relation) {
-            $documents = $documents->where('relation', '<>', null);
+            $productors = $productors->where('relation', '<>', null);
         } else {
-            $documents = $documents->where('relation', '=', null);
+            $productors = $productors->where('relation', '=', null);
         }
 
-        $optionsList = [];
+        // $optionsList = [];
 
-        foreach ($documents as $document) {
-            if ($document->is_scope) {
-                //Si il y a des limites
-                $scope = new \Waka\Utils\Classes\Scopes($document);
-                if ($scope->checkIndexScopes()) {
-                    $optionsList[$document->id] = $document->name;
-                }
-            } else {
-                $optionsList[$document->id] = $document->name;
-            }
-        }
-        return $optionsList;
+        // foreach ($productors as $productor) {
+        //     $condtions = new \Waka\Utils\Classes\Conditions($productor, $this->model);
+        //     if ($condtions->hasConditions()) {
+        //         if ($condtions->checkConditions()) {
+        //             $optionsList[$productor->id] = $productor->name;
+        //         }
+        //     } else {
+        //         $optionsList[$productor->id] = $productor->name;
+        //     }
+        // }
+        return $productors->lists('name', 'id');
     }
 
+    /**NETOYAGE ? */
     public function dynamyseText($content,$modelId =null) {
         if($modelId) {
             $this->instanciateModel($modelId);
         }
+        if(!$this->model) {
+            throw new \SystemException('dynamyseText impossible le modèle est pas instancié ! ');
+        }
         return \Twig::parse($content, ['ds' => $this->model]);
     }
 
+    /**NETOYAGE ? */
     public function getProductorAsks($productorClass, $productorId, $modelId)
     {
         if(!$productorId) {
              throw new \SystemException('le productorId est null ! ');
         }
-
-        //trace_log($productorClass);
-
-
         $productor = $productorClass::find($productorId);
         if(!$productor->rule_asks()->count()) {
-            //trace_log('pas de asks');
             return [];
         }
-        //trace_log('il y a  asks');
         $this->instanciateModel($modelId);
-
         $asksList = [];
-
         $asks = $productor->rule_asks()->get();
-
         foreach ($asks as $ask) {
             if($ask->isEditable()) {
                 $askCode = $ask->getCode();
@@ -223,25 +209,10 @@ class DataSource
 
             }
         }
-        // foreach ($productor->asks as $ask) {
-        //     if($ask['is_asked'] ?? false) {
-        //         $askCode = $ask['code'];
-        //         $askContent = \Twig::parse($ask['content'], ['ds' => $this->getValues()]);
-        //         $askType = str_replace('_', '', $ask['_group']);
-        //         if($askType == 'label') {
-        //             $askType = null;
-        //         }
-        //         $asksList['_ask_'.$askCode] = [
-        //             'label' => $ask['code'],
-        //             'default' => $askContent,
-        //             'type' => $askType,
-        //             'size'=> $askType  == 'textarea' ? 'tiny' : 'small',
-        //             'toolbarButtons' => $askType  == 'richeditor' ? 'bold|italic' : null,
-        //         ];
-        //     }
-        // }
         return $asksList;
     }
+
+    
     public function getAsksFromData($datas = [], $modelAsks = []) {
         $askArray = [];
         if($datas) {
@@ -260,22 +231,60 @@ class DataSource
                 if($keyExiste) {
                     //model déjà instancié on ne le traite pas. 
                     continue;
-                }
-                if($type == 'image') {
-                    $obj = $row['content'];
-                    $pictureUrl = $this->wimages->getUrlFromOptions($row['content']);
-                    //trace_log($pictureUrl);
-                    $askArray[$finalKey] = $pictureUrl;
                 } else {
                     $content = \Twig::parse($row['content'], ['ds' => $this->getValues()]);
                     $askArray[$finalKey] = $content;
                 }
             }
         }
-        //trace_log($askArray);
         return $askArray;
     }
 
+    /**
+     * PARTIE PERMETTANT DE GERER LES SCOPES CAMPAGNES ??--------------
+     */
+    public function getScopesLists() {
+        $scopes = $this->config['scopes'] ?? [];
+        $array = [];
+        foreach($scopes as $key=>$scope) {
+            $array[$key] = $scope['label'];
+
+        }
+        //trace_log($array);
+        return $array;
+
+    }
+     public function getScopeOptions($key) {
+         //trace_log($key);
+        $scope = $this->config['scopes'][$key];
+        //trace_log($scope);
+        if($fromModel = $scope['options']['fromModel'] ?? false) {
+            $nameFrom = $scope['nameFrom'] ?? 'name'; 
+            return $fromModel::lists($nameFrom, 'id');
+        }
+        //NE MARCHE PAS
+        //  elseif ($fromClassFnc = $scope['options']['fromClassFnc'] ?? false) {
+        //     //trace_log($fromClassFnc);
+        //     //trace_log($this->config['class']);
+        //     $model = new $this->config['class'];
+        //     //trace_log($model::$fromClassFnc);
+        //     return $model->{$fromClassFnc};
+        // }
+         elseif ($fromSetting = $scope['options']['fromSetting'] ?? false) {
+            return \Settings::get($fromSetting );
+       } elseif ($fromSetting = $scope['options']['fromConfig'] ?? false) {
+            return \Config::get($fromSetting );
+       } elseif ($noOptions = $scope['noOptions'] ?? false) {
+           return['no' => "Selection Inutile"];
+       } else {
+           throw new \ApplicationException('Probleme de configuration des scopes');
+       }
+
+    }
+
+    /**
+     * PARTIE PERMETTANT DE FUSIONNER LES DONNES -----------------
+     */
     public function getKeyAndEmbed()
     {
         if (!$this->relations) {
@@ -292,11 +301,8 @@ class DataSource
         }
         return $array;
     }
-    /**
-     * RECUPERATION DES VALEURS DES MODELES ET DE LEURS LIAISON
-     */
-
-    public function getModelss($modelId = null)
+    
+    public function getModels($modelId = null)
     {
         $this->instanciateModel($modelId);
         $constructApi = $this->model;
@@ -311,6 +317,7 @@ class DataSource
         $constructApi = array_merge($constructApi, $relation);
         return $constructApi;
     }
+
     public function getModelAndRelations($modelId = null)
     {
         $this->instanciateModel($modelId);
@@ -325,6 +332,21 @@ class DataSource
         $constructApi->push($relation);
         return $constructApi;
     }
+    public function cacheQuery($modelId = null)
+    {
+        $this->instanciateModel($modelId);
+        $constructApi = $this->model;
+        $attributeToAppend = $this->model->attributesToDs;
+        if ($attributeToAppend) {
+            foreach ($this->model->attributesToDs as $tempAppend) {
+                $constructApi->append($tempAppend);
+            }
+        }
+        $relation = $this->listRelation();
+        $constructApi->push($relation);
+        return $constructApi;
+    }
+
 
     public function listRelation()
     {
@@ -332,7 +354,9 @@ class DataSource
         $relations = new Collection($this->getKeyAndEmbed());
         if ($relations->count()) {
             foreach ($relations as $relation) {
-                $subModel = $this->getStringModelRelation($this->model, $relation);
+                //trace_log($relation);
+                /**Clean */
+                $subModel = array_get($this->model, $relation);
                 if ($subModel) {
                     $subModelClassName = get_class($subModel);
                     $subShortName = (new \ReflectionClass($subModelClassName))->getShortName();
@@ -366,12 +390,9 @@ class DataSource
         $dsApi = array_merge($this->getModels($modelId));
         return $dsApi;
     }
-    /**
-     *
-     */
 
     /**
-     * Prend la valeur du workflow
+     * PARTIE SUR LES WORKFLOW ----------
      */
     public function getWorkflowState()
     {
@@ -433,83 +454,15 @@ class DataSource
     }
 
     /**
-     * UTILS FOR FUNCTIONS ------------------------------------------------------------
+     * RETROUVER LES BLOCS DE CONTENUS
      */
+    
 
-    /**
-     * retourne la liste des fonctions dans la classe de fonction liée à se data source.
-     * Utiise par le formwifget functionlist et les wakamail, datasource, aggregator
-     */
-    public function getFunctionsList()
-    {
-        if (!$this->editFunctions) {
-            throw new \ApplicationException("Il manque le chemin de la classe fonction dans DataSource pour ce model");
-        }
-        $fn = new $this->editFunctions;
-        return $fn->getFunctionsList();
-    }
-    public function getFunctionsOutput($fnc)
-    {
-        if (!$this->editFunctions) {
-            throw new \ApplicationException("Il manque le chemin de la classe fonction dans DataSource pour ce model");
-        }
-        $fn = new $this->editFunctions;
-        return $fn->getFunctionsOutput($fnc);
-    }
-    /**
-     * retourn simplement le function class. mis en fonction pour ajouter l'application exeption sans nuire à la lisibitilé de la fonction getFunctionsCollections
-     */
-    public function getFunctionClass()
-    {
-        if (!$this->editFunctions) {
-            return null;
-        }
-        return new $this->editFunctions;
-    }
-    /**
-     * Retourne les valeurs d'une fonction du model de se datasource.
-     * templatemodel = wakamail ou document ou aggregator
-     * id est l'id du model de datasource
-     */
-
-    public function getFunctionsCollections($modelId, $model_functions)
-    {
-        if (!$model_functions) {
-            return;
-        }
-        $this->instanciateModel($modelId);
-
-        $collection = [];
-        $fnc = $this->getFunctionClass();
-        $fnc->setModel($this->model);
-
-        foreach ($model_functions as $item) {
-            $itemFnc = $item['functionCode'];
-            if(method_exists($fnc,$itemFnc)) {
-                $collection[$item['collectionCode']] = $fnc->{$itemFnc}($item) ?? "error";
-            } else {
-                $collection[$item['collectionCode']] = [];
-                /**/trace_log("ERREUR DATASOURCE 467 la methode n'existe pas  fnc : ".get_class($fnc)." ".$itemFnc);
-            }   
-        }
-        return $collection;
-    }
-    /**
-     * Agg
-     * retourne un object AggConfig;
-     */
-    public function getAggConfig()
-    {
-        if (class_exists('\Waka\Agg\Classes\AggConfig')) {
-            return new \Waka\Agg\Classes\AggConfig($this->aggConfig, $this->class);
-        } else {
-            throw new \ApplicationException("Il manque le systhème Agg");
-        }
-    }
 
     /**
      * NOUVEAU PRINCIPE POUR LES IMAGES
      */
+
 
     public function getSrcImage() {
         $array = [];
@@ -523,19 +476,23 @@ class DataSource
              $array = array_merge($array, $relationArray);
         }
         return $array; 
-       
-
     }
 
-    public function getImagesFilesFrom($type, $code = null) {
+    public function getImagesFilesFrom($type, $code = null, $attachMany= false) {
         $code ? $code : $this->code;
         $staticModel = new $this->class;
         //trace_log("code = ".$code);
         if($code != $this->code) {
-            $relation = new DataSource($code);
+            $relation = \DataSources::find($code);
             $staticModel = new $relation->class;
         }
-        $files = $staticModel->attachOne; 
+        $files = [];
+        //trace_log("AttachMany : ".$attachMany);
+        if($attachMany) {
+            $files = $staticModel->attachMany; 
+        } else {
+             $files = $staticModel->attachOne;
+        }
         $fiesFiltered =  array_filter($files, function($value) use ($type) {
             return $value == [$type];
         });
@@ -547,32 +504,8 @@ class DataSource
     }
 
     /**
-     * GLOBAL
+     * PARTIE SUR LES PUBLICATIONS ----
      */
-
-    public function getSrConfig()
-    {
-        $dataSource = Config::get('wcli.wconfig::data_source.src');
-        //trace_log($dataSource);
-        if ($dataSource) {
-            return Yaml::parseFile(plugins_path() . $dataSource);
-        } else {
-            return Yaml::parseFile(plugins_path() . '/wcli/wconfig/config/datasources.yaml');
-        }
-    }
-
-    public function getControllerUrlAttribute()
-    {
-        return strtolower($this->getConfigValue('author') . '\\'
-            . $this->getConfigValue('plugin') . '\\'
-            . $this->getConfigValue('controller'));
-    }
-
-    public function getConfigValue($key)
-    {
-        return $this->config[$key];
-    }
-
     public function getPublicationsType()
     {
         $publications = $this->publications['types'] ?? false;
@@ -596,5 +529,13 @@ class DataSource
         } else {
             return null;
         }
+    }
+
+    public function getAttributesConfig() {
+        $attributesConfig = null;
+        if($this->attributes) {
+            return \Yaml::parseFile(plugins_path('/'.$this->attributes));
+        }
+        return $attributesConfig['fields'] ?? [];
     }
 }

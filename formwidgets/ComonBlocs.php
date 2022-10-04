@@ -30,10 +30,6 @@ class ComonBlocs extends FormWidgetBase
 
     public function render()
     {
-        if(!$this->model->no_ds) {
-            /**Clean ? nse semble pas utilse ici */
-            $this->dataSource = \DataSources::find($this->model->data_source);
-        }
         $blocs = $this->getBlocs();
         $this->vars['blocs'] = $blocs;
         return $this->makePartial('comonblocs');

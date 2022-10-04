@@ -10,7 +10,10 @@ use Event;
 class ProductorCreator extends \Winter\Storm\Extension\Extendable
 {
     public static $productor;
-    public static $ds;
+    public $productorDs;
+    public $productorDsData;
+    public $productorDsQuery;
+    public $userKey;
     public $modelId;
     public $modelValues;
     public $askResponse;
@@ -31,23 +34,24 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
     {
         return get_class(self::$productor);
     }
-    public function getDs()
-    {
-        return self::$ds;
-    }
-    public function getDsName()
-    {
-        return $this->getDs()->code;
-    }
     /**
      *  setModelId permet d'instancier le modèle. 
      */
     public function setModelId($modelId)
     {
         $this->modelId = $modelId;
-        $dataSourceCode = $this->getProductor()->data_source;
-        self::$ds = \DataSources::find($dataSourceCode);
-        self::$ds->instanciateModel($modelId);
+        $ws = $this->getProductor()->waka_session;
+        $dataSourceCode = $ws?->data_source;
+        if($dataSourceCode) {
+            $this->userKey = \Waka\Session\Classes\ManageKey::createKey($ws, [], $modelId);
+            $this->productorDs = \DataSources::find($dataSourceCode);
+            $this->productorDsQuery = $this->productorDs->getQuery($modelId);
+        } else {
+            $this->userKey = null;
+            $this->productorDs = null;
+            $this->productorDsQuery = null;
+        }
+        
         return $this;
     }
 
@@ -56,13 +60,18 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
      */
     public function setModelTest()
     {
-        $this->modelId = $this->getProductor()->test_id;
+        $this->modelId = $dataSourceCode = $this->getProductor()->waka_session?->ds_id_test;
         if(!$this->modelId) {
              throw new \ValidationException(['test_id' => \Lang::get('waka.pdfer::wakapdf.e.test_id')]);
         }
-        $dataSourceCode = $this->getProductor()->data_source;
-        self::$ds = \DataSources::find($dataSourceCode);
-        self::$ds->instanciateModel($this->modelId);
+        $dataSourceCode = $this->getProductor()->waka_session?->data_source;
+        if($dataSourceCode) {
+            $this->productorDs = \DataSources::find($dataSourceCode);
+            $this->productorDsQuery = $this->productorDs->getQuery($this->modelId);
+        } else {
+            $this->productorDs = null;
+            $this->productorDsQuery = null;
+        }
         return $this;
     }
     /**
@@ -70,13 +79,71 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
      */
     public function checkConditions()//Ancienement checkScopes
     {
-        $conditions = new \Waka\Utils\Classes\Conditions($this->getProductor(), self::$ds->model);
+        $conditions = new \Waka\Utils\Classes\Conditions($this->getProductor(), $this->productorDsQuery);
         return $conditions->checkConditions();
     }
 
     /**
      * 
      */
+    public function getProductorAsks($productorClass, $productorId, $modelId)
+    {
+        if(!$productorId) {
+             throw new \SystemException('le productorId est null ! ');
+        }
+        $productor = $productorClass::find($productorId);
+        if(!$productor->rule_asks()->count()) {
+            return [];
+        }
+        $this->instanciateQuery($modelId);
+        $asksList = [];
+        $asks = $productor->rule_asks()->get();
+        foreach ($asks as $ask) {
+            if($ask->isEditable()) {
+                $askCode = $ask->getCode();
+                $askContent = $ask->resolve($this->model, 'twig', ['ds' =>$this->getValues()]);
+                $askType = $ask->getEditableOption();
+                $asksList['_ask_'.$askCode] = [
+                    'label' => "Pré remplissage de  : ".$askCode,
+                    'default' => $askContent,
+                    'type' => $askType,
+                    'size'=> $askType  == 'textarea' ? 'tiny' : 'small',
+                    'toolbarButtons' => $askType  == 'richeditor' ? 'bold|italic' : null,
+                ];
+
+            }
+        }
+        return $asksList;
+    }
+
+    
+    public function getAsksFromData($datas = [], $modelAsks = []) {
+        $askArray = [];
+        if($datas) {
+            foreach($datas as $key=>$data) {
+                if(starts_with($key, '_ask_')) {
+                    $finalKey = str_replace('_ask_', '', $key);
+                    $askArray[$finalKey] = $data;
+                }
+            }
+        } 
+        if($modelAsks) {
+            foreach($modelAsks as $row) {
+                $type = $row['_group'];
+                $finalKey = $row['code'];
+                $keyExiste = $askArray[$finalKey] ?? false;
+                if($keyExiste) {
+                    //model déjà instancié on ne le traite pas. 
+                    continue;
+                } else {
+                    $content = \Twig::parse($row['content'], ['ds' => $this->getValues()]);
+                    $askArray[$finalKey] = $content;
+                }
+            }
+        }
+        return $askArray;
+    }
+
     
 
     /**
@@ -93,15 +160,12 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
     public function setRuleAsksResponse($datas = [])
     {
         $askArray = [];
-        $srcmodel = null;
-        if($this->getDs()) {
-            $srcmodel = $this->getDs()->getModel($this->modelId);
-        } 
+        if(!$this->productorDs) return $askArray;
         $asks = $this->getProductor()->rule_asks()->get();
         foreach($asks as $ask) {
             $key = $ask->getCode();
             //trace_log($key);
-            $askResolved = $ask->resolve($srcmodel, $this->resolveContext, $datas);
+            $askResolved = $ask->resolve($this->productorDsQuery, $this->resolveContext, $datas);
             $askArray[$key] = $askResolved;
         }
         //trace_log($askArray); // les $this->askResponse sont prioritaire
@@ -112,19 +176,19 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
     //BEBAVIOR AJOUTE LES REPOSES ??
     public function setAsksResponse($datas = [])
     {
-        $this->askResponse = $this->getDs()->getAsksFromData($datas, $this->getProductor()->asks);
+        $this->askResponse = $this->getAsksFromData($datas, $this->getProductor()->asks);
         return $this;
     }
 
     public function setRuleFncsResponse()
     {
         $fncArray = [];
-        $srcmodel = $this->getDs()->getModel($this->modelId);
+        if(!$this->productorDs) return $fncArray;
         $fncs = $this->getProductor()->rule_fncs()->get();
         foreach($fncs as $fnc) {
             $key = $fnc->getCode();
             //trace_log('key of the function');
-            $fncResolved = $fnc->resolve($srcmodel,$this->getDs()->code);
+            $fncResolved = $fnc->resolve($this->productorDsQuery,$this->productorDs->code);
             $fncArray[$key] = $fncResolved;
         }
         //trace_log($fncArray);
@@ -137,12 +201,13 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
     public function getProductorVars()
     {
         $values = [];
-        if($this->getDs()) {
-            $values = $this->getDs()->getModelAndRelations($this->modelId);
-        } 
+        
         $model = [
-            'ds' => $values,
+            'ds' => $this->productorDsQuery,
+            'userKey' => $this->userKey->toArray()
         ];
+        //trace_log("getProductorVars");
+        //trace_log($model['userKey']);
         //
         //Recupère des variables par des evenements exemple LP log dans la finction boot
         $dataModelFromEvent = Event::fire('waka.productor.subscribeData', [$this]);
@@ -176,7 +241,7 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
             return str_slug($this->getProductor()->name);
         }
         $vars = [
-            'ds' => $this->getDs()->getValues(),
+            'ds' => $this->productorDsQuery,
         ];
         //trace_log($this->getProductor()->{$varName});
         $nameConstruction = \Twig::parse($this->getProductor()->{$varName}, $vars);

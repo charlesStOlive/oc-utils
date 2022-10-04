@@ -2,8 +2,6 @@
 
 class Scopes
 {
-    use \Waka\Utils\Classes\Traits\StringRelation;
-
     public $scopes;
     public $target;
     public $mode;
@@ -35,7 +33,7 @@ class Scopes
             $model = $this->model;
             $scopeSelf = $scope['self'] ?? true;
             if (!$scopeSelf) {
-                $model = $this->getStringModelRelation($model, $scope['target']);
+                $model = array_get($model, $scope['target']);
             }
             //trace_log($scope['scopeKey']);
             switch ($scope['scopeKey']) {

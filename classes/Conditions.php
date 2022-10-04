@@ -7,20 +7,21 @@ class Conditions
     public $productoreName;
     public $checked;
     public $checkedOk;
+    public $query;
     private $logs;
 
 
-    public function __construct($productor, $model = null)
+    public function __construct($productor, $query = null)
     {
         $this->conditions = $productor->rule_conditions;
         $this->productoreName = $productor->name ?? "Producteur Inconnu";
-        $this->model = $model;
+        $this->query = $query;
         $this->mode = $productor->is_scope;
         $this->logs = [];
     }
     public function checkConditions()
     {
-        if (!$this->model) {
+        if (!$this->query) {
             throw new \ApplicationException("Il manque le modèle cible pour l'analyse des conditions");
         }
         
@@ -34,7 +35,7 @@ class Conditions
         $this->checkedOk = 0;
         foreach ($this->conditions as $condition) {
             //trace_log($condition->toArray());
-            if($condition->resolve($this->model)) {
+            if($condition->resolve($this->query)) {
                 $this->checkedOk++;
                 //trace_log('ok');
             } else {
