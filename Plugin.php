@@ -127,9 +127,11 @@ class Plugin extends PluginBase
             'functions' => [
                 // Using an inline closure
                 'getColor' => function ($color, $mode = "rgba", $transform = null, $factor = 0.1) {
-                    //trace_log($color);
                     $color = new Color($color);
                     switch ($transform) {
+                        case 'makeGradient':
+                            $colors = $color->makeGradient();
+                            return  $colors;
                         case 'complementary':
                             $color = $color->complementary();
                             break;

@@ -60,19 +60,12 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
      */
     public function setModelTest()
     {
-        $this->modelId = $dataSourceCode = $this->getProductor()->waka_session?->ds_id_test;
-        if(!$this->modelId) {
+        $modelId = $dataSourceCode = $this->getProductor()->waka_session?->ds_id_test;
+        if(!$modelId) {
              throw new \ValidationException(['test_id' => \Lang::get('waka.pdfer::wakapdf.e.test_id')]);
         }
-        $dataSourceCode = $this->getProductor()->waka_session?->data_source;
-        if($dataSourceCode) {
-            $this->productorDs = \DataSources::find($dataSourceCode);
-            $this->productorDsQuery = $this->productorDs->getQuery($this->modelId);
-        } else {
-            $this->productorDs = null;
-            $this->productorDsQuery = null;
-        }
-        return $this;
+        
+        return $this->setModelId($modelId);
     }
     /**
      * Permet de vierifer si les conditions sont réunis voir ruleCondition. 
