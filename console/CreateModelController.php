@@ -393,7 +393,7 @@ class CreateModelController extends BaseScaffoldCommand
         $this->config['has_side_bar_info'] = $rows->where('tabType', '==', 'secondary')->count();
         //trace_log($this->fields_create);
         //trace_log($fields);
-        $attributes = $rows->where('attribute', '<>', null)->toArray();
+        $attributes = $rows->where('attribute', '<>', null)->sortBy('attribute')->toArray();
 
         //Recherche des tables dans la config
         $tabs = [];
