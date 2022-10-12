@@ -98,6 +98,9 @@ class Plugin extends PluginBase
                     return  $content[$column] ?? null;
                 },
                 'getRecursiveContent' => function ($twig, $code) {
+                    if(!$twig) {
+                        return null;
+                    } 
                     //trace_log("twig getRecursiveContent");
                     //trace_log($code);
                     $content = $twig->getThisParentValue($code);
@@ -127,6 +130,10 @@ class Plugin extends PluginBase
             'functions' => [
                 // Using an inline closure
                 'getColor' => function ($color, $mode = "rgba", $transform = null, $factor = 0.1) {
+                    if(!$color) {
+                        $color =  "#ff0000";
+                        
+                    }
                     $color = new Color($color);
                     switch ($transform) {
                         case 'makeGradient':
