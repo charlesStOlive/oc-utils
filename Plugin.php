@@ -137,7 +137,8 @@ class Plugin extends PluginBase
                     $color = new Color($color);
                     switch ($transform) {
                         case 'makeGradient':
-                            $colors = $color->makeGradient(30);
+                            $factor = $factor * 10;
+                            $colors = $color->makeGradient($factor);
                             return  $colors;
                         case 'complementary':
                             $color = $color->complementary();
