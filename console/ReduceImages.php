@@ -72,7 +72,7 @@ class ReduceImages extends Command
                 $maxSize = $configMaxSize * 1024;
                 $configPxSize = $opt['largestPx'] ?? 1920;
                 $allImages = \System\Models\File::where('attachment_type', $className)->where('field', $field)->where('file_size' ,'>', $maxSize-100)->get();
-                trace_log(sprintf('Image trouvé pour la classe %s et le champs %s : %s',$className, $field,  $allImages->count()));
+                //trace_log(sprintf('Image trouvé pour la classe %s et le champs %s : %s',$className, $field,  $allImages->count()));
                 if($allImages->count()) {
                     foreach($allImages as $image) {
                         $this->reduceImage($image, $configPxSize);
@@ -102,9 +102,9 @@ class ReduceImages extends Command
             }
             $max = $configPxSize;
             $ratioReduction = $max / $largest;
-            trace_log(sprintf('Id : %s ration de reduction : %s, ancienne taille : %s , nouvelle taille %s', $image->id, $ratioReduction, $image->file_size, $image->file_size*$ratioReduction));
+            //trace_log(sprintf('Id : %s ration de reduction : %s, ancienne taille : %s , nouvelle taille %s', $image->id, $ratioReduction, $image->file_size, $image->file_size*$ratioReduction));
             if($this->executeReduction) {
-                trace_log('execution');
+                //trace_log('execution');
                 //TODO je n'arrive pas a recuperer la taille de la nouvelle image si je garde le même non
                 // Sans doute un problème de cache
                 // je crée une image (_n)), je calcul la taille puis je remplace sopn nom par l'original.

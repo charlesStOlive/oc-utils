@@ -51,7 +51,7 @@ class ListeImages extends RuleContentBase implements RuleContentInterface
      */
 
     public function resolve($datas = []) {
-        trace_log('resolve');
+        //trace_log('resolve');
         //Création de la fonction dynamique en fonction de staticImage. Compliqué mais permet d'étendre les fonctions...
         $data = $this->getConfigs();
         $listeImages = MediaLibrary::instance()->listFolderContents($data['media'], 'title', null, false);
@@ -62,7 +62,7 @@ class ListeImages extends RuleContentBase implements RuleContentInterface
             array_push($finalImages, ['path'=> $image->publicUrl, 'name'=>  $basename]);
         }
         $data = array_merge($data, ['images' => $finalImages]);
-        trace_log($data);
+        //trace_log($data);
         return $data;
     }
     
