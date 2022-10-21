@@ -166,6 +166,33 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
         
     }
 
+    public function getSessionModelData() {
+        return $this->productorDs->getFullQuery();
+    }
+
+    public function getSessionModelQuery() {
+        return $this->productorDsQuery;
+    }
+
+    public function getAsksAndFncs() {
+        $values = [];
+        $model = [
+            'ds' => $this->productorDsQuery,
+            'userKey' => $this->userKey->toArray()
+        ];
+        if($this->getProductor()->rule_fncs()->count()) {
+            $fncs = $this->setRuleFncsResponse($model);
+            $model = array_merge($model, [ 'fncs' => $fncs]);
+            $values = array_merge($values, [ 'fncs' => $fncs]);
+        }
+        //Nouveau bloc pour nouveaux asks
+        if($this->getProductor()->rule_asks()->count()) {
+           $this->askResponse = $this->getAskResponse($model);
+           $values = array_merge($values, [ 'asks' => $this->askResponse]);
+        }
+        return $values;
+    }
+
     
 
     public function getProductorVars()
