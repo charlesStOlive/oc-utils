@@ -20,7 +20,7 @@ class LabelAsk extends AskBase implements AskInterface
             'icon'        => 'wicon-pencil2',
             'share_mode'  => 'full',
             'premission'  => 'wcli.utils.ask.edit.admin',
-            'subform_emit'    => 'text',
+            'subform_emit_field'    => 'txt',
             'show_attributes' => true,
             'outputs' => [
                 'word_type' => null,
@@ -48,7 +48,7 @@ class LabelAsk extends AskBase implements AskInterface
      */
 
     public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
-        $text = $this->host->config_data['txt'] ?? null;
+        $text = $this->getConfig('txt');
         if(!$text) {
             throw new ApplicationException('le texte html du ask : '.$this->getCode().' n\'a pas été trouvé'); 
         }

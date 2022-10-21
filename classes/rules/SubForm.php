@@ -32,10 +32,12 @@ class SubForm extends Extendable
     public $parentClass = null;
 
     public $jsonable = [];
+    public $modifiers = [];
 
 
     // A spécifier dans la règle de base.                   
-    protected $morphName;                              
+    protected $morphName;    
+    protected $modifedField;                          
 
     /**
      * Boot method called when the condition class is first loaded
@@ -67,7 +69,7 @@ class SubForm extends Extendable
          */
         if ($formFields = $this->defineFormFields()) {
             $baseConfig = \Yaml::parseFile(plugins_path($baseFields));
-            if(!$this->getEditableOption()) {
+            if(!$this->getEditableField()) {
                 unset($baseConfig['fields']['subform_emit']);
             }
             if($mode = $this->getShareModeConfig()) {
@@ -94,6 +96,17 @@ class SubForm extends Extendable
 
     public function triggerSubForm($params)
     {
+    }
+
+
+    /**
+     * PERMET de prendre en compte une modifcation ( ask par ex) 
+     * la valeur est ensuite exploité dans getConfig et getConfigs
+     */
+
+    public function setModifier($newValue) {
+        $field = $this->getEditableField();
+        return $this->modifiers[$field] = $newValue;
     }
 
     public function defaultImportExportConfig() {
@@ -183,7 +196,9 @@ class SubForm extends Extendable
 
     public function getConfig($key)
     {
-        $data = $this->host->config_data[$key] ?? null;
+        $datas = $data = array_merge($this->host->config_data, $this->modifiers);
+        $data = $datas[$key] ?? null;
+        
         if(in_array($key,$this->jsonable)) {
             if(!$data) {
                 return [];
@@ -200,7 +215,7 @@ class SubForm extends Extendable
 
     public function getConfigs()
     {
-        $datas = $this->host->config_data ?? null;
+        $datas = $data = array_merge($this->host->config_data, $this->modifiers);
         $returnDatas = [];
         foreach($datas as $key=>$data) {
             if(in_array($key,$this->jsonable)) {
@@ -241,10 +256,22 @@ class SubForm extends Extendable
         //trace_log('getText dans subform base');
         return $this->host->config_data['subform_emit'] ?? false;
     }
-    public function getEditableOption()
+    public function getEditableField()
+    {
+        return  array_get($this->subFormDetails(), 'subform_emit_field') ;
+    }
+    public function getEditableConfig()
     {
         //trace_log(array_get($this->subFormDetails(), 'subform_emit'));
-        return array_get($this->subFormDetails(), 'subform_emit');
+        $field = $this->getEditableField() ?? null;
+        if($field) {
+            $fieldConfig = $this->fieldConfig->fields[$field] ?? [];
+            $fieldConfig['span'] = 'full';
+            $fieldConfig['size'] = 'small';
+            return $fieldConfig;
+        } else {
+            return null;
+        }
     }
     public function getMemo()
     {

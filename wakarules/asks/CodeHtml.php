@@ -37,7 +37,7 @@ class CodeHtml extends AskBase  implements AskInterface
     }
 
     public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
-        $text = $this->host->config_data['html'] ?? null;
+        $text = $this->getConfig('html');
         
         if(!$text) {
             throw new ApplicationException('le texte html du ask : '.$this->getCode().' n\'a pas été trouvé'); 

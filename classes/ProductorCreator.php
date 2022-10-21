@@ -17,13 +17,13 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
     public $modelId;
     public $modelValues;
     public $askResponse;
+    public $askModifiers;
     public $fncs;
     public $resolveContext = 'twig';
 
 
     public function getProductor()
     {
-        //trace_log("class : ".get_class(self::$productor));
         return self::$productor;
     }
     public function setProductorss($productor)
@@ -76,88 +76,56 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
         return $conditions->checkConditions();
     }
 
+
+
+    public function dynamyseText($content,$modelId =null) {
+        if($modelId) {
+            $this->instanciateQuery($modelId);
+        }
+        if(!$this->query) {
+            throw new \SystemException('dynamyseText impossible le modèle est pas instancié ! ');
+        }
+        return \Twig::parse($content, ['ds' => $this->query]);
+    }
+
     /**
      * 
      */
-    public function getProductorAsks($productorClass, $productorId, $modelId)
+    public function getProductorAsks()
     {
-        if(!$productorId) {
-             throw new \SystemException('le productorId est null ! ');
-        }
-        $productor = $productorClass::find($productorId);
+        $productor = $this->getProductor();
         if(!$productor->rule_asks()->count()) {
             return [];
         }
-        $this->instanciateQuery($modelId);
         $asksList = [];
-        $asks = $productor->rule_asks()->get();
+        $asks = $productor->rule_asks;
         foreach ($asks as $ask) {
             if($ask->isEditable()) {
                 $askCode = $ask->getCode();
-                $askContent = $ask->resolve($this->model, 'twig', ['ds' =>$this->getValues()]);
-                $askType = $ask->getEditableOption();
-                $asksList['_ask_'.$askCode] = [
-                    'label' => "Pré remplissage de  : ".$askCode,
-                    'default' => $askContent,
-                    'type' => $askType,
-                    'size'=> $askType  == 'textarea' ? 'tiny' : 'small',
-                    'toolbarButtons' => $askType  == 'richeditor' ? 'bold|italic' : null,
-                ];
-
+                $askField = $ask->getEditableField();
+                $asksList['_ask_'.$askCode] = $ask->getEditableConfig();
+                $asksList['_ask_'.$askCode]['default'] = $ask->getConfig($askField);
             }
         }
         return $asksList;
     }
-
-    
-    public function getAsksFromData($datas = [], $modelAsks = []) {
-        $askArray = [];
-        if($datas) {
-            foreach($datas as $key=>$data) {
-                if(starts_with($key, '_ask_')) {
-                    $finalKey = str_replace('_ask_', '', $key);
-                    $askArray[$finalKey] = $data;
-                }
-            }
-        } 
-        if($modelAsks) {
-            foreach($modelAsks as $row) {
-                $type = $row['_group'];
-                $finalKey = $row['code'];
-                $keyExiste = $askArray[$finalKey] ?? false;
-                if($keyExiste) {
-                    //model déjà instancié on ne le traite pas. 
-                    continue;
-                } else {
-                    $content = \Twig::parse($row['content'], ['ds' => $this->getValues()]);
-                    $askArray[$finalKey] = $content;
-                }
-            }
-        }
-        return $askArray;
-    }
-
-    
-
     /**
      * 
      * 
      * 
      */
 
-    public function getAsksByCode() {
-        return $this->getProductor()->rule_asks->keyBy('code');
-
-    }
-
-    public function setRuleAsksResponse($datas = [])
+    public function getAskResponse($datas = [])
     {
+        //trace_log("getAskResponse--");
         $askArray = [];
         if(!$this->productorDs) return $askArray;
         $asks = $this->getProductor()->rule_asks()->get();
+        //trace_log($this->askModifiers);
         foreach($asks as $ask) {
             $key = $ask->getCode();
-            //trace_log($key);
+            $modifier = $this->askModifiers[$key] ?? null;
+            if($modifier) $ask->setModifier($modifier);
             $askResolved = $ask->resolve($this->productorDsQuery, $this->resolveContext, $datas);
             $askArray[$key] = $askResolved;
         }
@@ -169,7 +137,16 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
     //BEBAVIOR AJOUTE LES REPOSES ??
     public function setAsksResponse($datas = [])
     {
-        $this->askResponse = $this->getAsksFromData($datas, $this->getProductor()->asks);
+        $askArray = [];
+        if($datas) {
+            foreach($datas as $key=>$data) {
+                if(starts_with($key, '_ask_')) {
+                    $finalKey = str_replace('_ask_', '', $key);
+                    $askArray[$finalKey] = $data;
+                }
+            }
+        } 
+        $this->askModifiers = $askArray;
         return $this;
     }
 
@@ -199,17 +176,6 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
             'ds' => $this->productorDsQuery,
             'userKey' => $this->userKey->toArray()
         ];
-        //trace_log("getProductorVars");
-        //trace_log($model['userKey']);
-        //
-        //Recupère des variables par des evenements exemple LP log dans la finction boot
-        $dataModelFromEvent = Event::fire('waka.productor.subscribeData', [$this]);
-        if ($dataModelFromEvent[0] ?? false) {
-            foreach ($dataModelFromEvent as $dataEvent) {
-                $model[key($dataEvent)] = $dataEvent[key($dataEvent)];
-            }
-        }
-
         //Nouveau bloc pour les new Fncs
         if($this->getProductor()->rule_fncs()->count()) {
             $fncs = $this->setRuleFncsResponse($model);
@@ -217,13 +183,8 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
         }
         //Nouveau bloc pour nouveaux asks
         if($this->getProductor()->rule_asks()->count()) {
-           $this->askResponse = $this->setRuleAsksResponse($model);
-        } else {
-            //Injection des asks s'ils existent dans le model;
-            if(!$this->askResponse) {
-                $this->setAsksResponse($model);
-            }
-        }
+           $this->askResponse = $this->getAskResponse($model);
+        } 
         $model = array_merge($model, [ 'asks' => $this->askResponse]);
         return $model;
     }

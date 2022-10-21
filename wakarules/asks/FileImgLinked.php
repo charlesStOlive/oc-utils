@@ -79,7 +79,7 @@ class FileImgLinked extends AskBase implements AskInterface
         //$clientModel = $this->getClientModel($clientId);
         $finalModel = null;
         //get configuration
-        $configs = $this->host->config_data;
+        $configs = $this->getConfigs();
         $keyImage = $configs['image'] ?? null;
         $src = $configs['srcImage'] ?? null;
         $width = $configs['width'] ?? null;

@@ -21,7 +21,7 @@ class HtmlAsk extends AskBase implements AskInterface
             'icon'        => 'icon-html5',
             'premission'  => 'wcli.utils.ask.edit.admin',
             'share_mode' => 'full',
-            'subform_emit'    => 'richeditor',
+            'subform_emit_field'    => 'html',
             'show_attributes' => true,
             'outputs' => 'htm',
         ];
@@ -47,7 +47,7 @@ class HtmlAsk extends AskBase implements AskInterface
      */
 
     public function resolve($modelSrc, $context = 'twig', $dataForTwig = []) {
-        $text = $this->host->config_data['html'] ?? null;
+        $text = $this->getConfig('html');
         
         if(!$text) {
             throw new ApplicationException('le texte html du ask : '.$this->getCode().' n\'a pas été trouvé'); 

@@ -141,11 +141,13 @@ class DataSource extends Extendable
     }
     public function getLotProductorOptions($productorModel)
     {
-        $documents = $productorModel::where('data_source', $this->code)->get();
         $optionsList = [];
-        foreach ($documents as $document) {
-            if ($document->is_lot) {
-                $optionsList[$document->id] = $document->name;
+        $productors = $productorModel::whereHas('waka_session', function($q) {
+            $q->where('data_source', $this->code);
+        })->active()->get();
+        foreach ($productors as $productor) {
+            if ($productor->is_lot) {
+                $optionsList[$productor->id] = $productor->name;
             }
         }
         return $optionsList;
@@ -171,75 +173,7 @@ class DataSource extends Extendable
         return $productors->lists('name', 'id');
     }
 
-    /**NETOYAGE ? */
-    public function dynamyseText($content,$modelId =null) {
-        if($modelId) {
-            $this->instanciateQuery($modelId);
-        }
-        if(!$this->query) {
-            throw new \SystemException('dynamyseText impossible le modèle est pas instancié ! ');
-        }
-        return \Twig::parse($content, ['ds' => $this->query]);
-    }
-    /**NETOYAGE ? */
-    public function getProductorAsks($productorClass, $productorId, $modelId)
-    {
-        if(!$productorId) {
-             throw new \SystemException('le productorId est null ! ');
-        }
-        $productor = $productorClass::find($productorId);
-        if(!$productor->rule_asks()->count()) {
-            return [];
-        }
-        $this->instanciateQuery($modelId);
-        $asksList = [];
-        $asks = $productor->rule_asks;
-        foreach ($asks as $ask) {
-            if($ask->isEditable()) {
-                $askCode = $ask->getCode();
-                $askContent = $ask->resolve($this->query);
-                $askType = $ask->getEditableOption();
-                $asksList['_ask_'.$askCode] = [
-                    'label' => "Pré remplissage de  : ".$askCode,
-                    'default' => $askContent,
-                    'type' => $askType,
-                    'size'=> $askType  == 'textarea' ? 'tiny' : 'small',
-                    'toolbarButtons' => $askType  == 'richeditor' ? 'bold|italic' : null,
-                ];
-
-            }
-        }
-        return $asksList;
-    }
-
-    
-    public function getAsksFromData($datas = [], $modelAsks = []) {
-        $askArray = [];
-        if($datas) {
-            foreach($datas as $key=>$data) {
-                if(starts_with($key, '_ask_')) {
-                    $finalKey = str_replace('_ask_', '', $key);
-                    $askArray[$finalKey] = $data;
-                }
-            }
-        } 
-        if($modelAsks) {
-            foreach($modelAsks as $row) {
-                $type = $row['_group'];
-                $finalKey = $row['code'];
-                $keyExiste = $askArray[$finalKey] ?? false;
-                if($keyExiste) {
-                    //model déjà instancié on ne le traite pas. 
-                    continue;
-                } else {
-                    $content = \Twig::parse($row['content'], ['ds' => $this->getValues()]);
-                    $askArray[$finalKey] = $content;
-                }
-            }
-        }
-        return $askArray;
-    }
-    
+   
     /**
      * PARTIE PERMETTANT DE GERER LES SCOPES CAMPAGNES ??--------------
      */
