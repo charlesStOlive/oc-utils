@@ -70,10 +70,10 @@ class DataSource extends Extendable
         $this->relations = $config['relations'] ?? [];
         //
         $attributes = $config['attributes'] ?? null;
-        $this->attributes = $attributes ? $attributes : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower(camel_case($this->code)).'/attributes.yaml';
+        $this->attributes = $attributes ? $attributes : strtolower($this->author) . '/' . strtolower($this->plugin) . '/models/' . strtolower(camel_case($this->code)).'/attributes.yaml';
          //
         $modelPath = $config['modelPath'] ?? null;
-        $this->queryPath = $modelPath ? $modelPath : strtolower($this->author) . '/' . strtolower($this->plugin) . '//models/' . strtolower(camel_case($this->code)).'/';
+        $this->modelPath = $modelPath ? $modelPath : strtolower($this->author) . '/' . strtolower($this->plugin) . '/models/' . strtolower(camel_case($this->code)).'/';
         //
         $this->emails = $config['emails'] ?? [];
         //
@@ -318,7 +318,6 @@ class DataSource extends Extendable
     /**
      * Utils for EMAIL ---------------------------------------------------
      * Fonctions d'identifications des contacts, utilises dans les popup de wakamail
-     * getstringrelation est dans le trait StringRelation
      */
     public function getContact($type, $modelId = null)
     {
