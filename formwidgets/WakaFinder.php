@@ -164,10 +164,10 @@ class WakaFinder extends FormWidgetBase
         }
 
         if($this->ds) {
-            trace_log('init');
-            trace_log($this->getParentForm()->getField('data_source')->value);
+            //trace_log('init');
+            //trace_log($this->getParentForm()->getField('data_source')->value);
             $dsCode = $this->model->{$this->ds};
-            trace_log( $dsCode);
+            //trace_log( $dsCode);
             if(!$dsCode) {
                 $this->ds_instanciation = false;
             } else {
@@ -369,8 +369,8 @@ class WakaFinder extends FormWidgetBase
 
     protected function makeListWidget()
     {
-        trace_log($this->getConfig('list'));
-        trace_log($this->columnsConfig);
+        //trace_log($this->getConfig('list'));
+        //trace_log($this->columnsConfig);
         $config = $this->makeConfig($this->columnsConfig);
 
         $config->model = $this->getRecordModel();
