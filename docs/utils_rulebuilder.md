@@ -24,7 +24,7 @@ Ils sont tous polymorphiques, ils ont tous la même racine même si les usages d
 |bloc|rule_blocs|Waka\Utils\Models\RuleBloc | - | Permets d'ajouter d'autres blocs de contenu. Utilisé notamment dans wakamail pour fusionner des blocs de contenus avec Bracket. 
 |content|rule_contents|Waka\Utils\Models\RuleContent | - |Permets de déclarer du contenu pour des pages web.
 
-
+![](../assets/docs_images/2022-11-25-13-55-09.png)
 Exemple de déclaration dans un modèle
 
 ```php
