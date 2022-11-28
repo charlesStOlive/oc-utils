@@ -117,16 +117,21 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
 
     public function getAskResponse($datas = [])
     {
-        //trace_log("getAskResponse--");
         $askArray = [];
-        if(!$this->productorDs) return $askArray;
+        // if(!$this->productorDs) return $askArray;
         $asks = $this->getProductor()->rule_asks()->get();
         //trace_log($this->askModifiers);
         foreach($asks as $ask) {
             $key = $ask->getCode();
             $modifier = $this->askModifiers[$key] ?? null;
             if($modifier) $ask->setModifier($modifier);
-            $askResolved = $ask->resolve($this->productorDsQuery, $this->resolveContext, $datas);
+            $askResolved = [];
+            if($this->productorDs) {
+                $askResolved = $ask->resolve($this->productorDsQuery, $this->resolveContext, $datas);
+            } else {
+                $askResolved = $ask->resolve([], $this->resolveContext, $datas);
+            }
+            
             $askArray[$key] = $askResolved;
         }
         //trace_log($askArray); // les $this->askResponse sont prioritaire
@@ -198,11 +203,14 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
     public function getProductorVars()
     {
         $values = [];
+        $userKey = $this->userKey ? $this->userKey->toArray() : [];
         
         $model = [
             'ds' => $this->productorDsQuery,
-            'userKey' => $this->userKey->toArray()
+            'userKey' => $userKey
         ];
+
+        trace_log($model);
         //Nouveau bloc pour les new Fncs
         if($this->getProductor()->rule_fncs()->count()) {
             $fncs = $this->setRuleFncsResponse($model);
@@ -213,6 +221,7 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
            $this->askResponse = $this->getAskResponse($model);
         } 
         $model = array_merge($model, [ 'asks' => $this->askResponse]);
+        trace_log($model);
         return $model;
     }
 
