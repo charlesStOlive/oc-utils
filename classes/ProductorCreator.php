@@ -210,7 +210,7 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
             'userKey' => $userKey
         ];
 
-        trace_log($model);
+        //trace_log($model);
         //Nouveau bloc pour les new Fncs
         if($this->getProductor()->rule_fncs()->count()) {
             $fncs = $this->setRuleFncsResponse($model);
@@ -221,7 +221,7 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
            $this->askResponse = $this->getAskResponse($model);
         } 
         $model = array_merge($model, [ 'asks' => $this->askResponse]);
-        trace_log($model);
+        //trace_log($model);
         return $model;
     }
 
