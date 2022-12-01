@@ -299,7 +299,7 @@ class RuleBuilder extends FormWidgetBase
     {
         $ruleMode = $this->ruleMode;
         $targetProductor = $this->targetProductor;
-        $modelDataSource = $this->model?->waka_session->data_source;
+        $modelDataSource = $this->model?->waka_session?->data_source;
         $cacheName = $ruleMode.'.'.$targetProductor.'.'.$modelDataSource;
         
         $rules = $this->getRuleClass()::findRules($ruleMode, $targetProductor, $modelDataSource);
