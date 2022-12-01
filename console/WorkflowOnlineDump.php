@@ -174,7 +174,7 @@ class WorkflowOnlineDump extends WorkflowCreate
 
     public function createDotCommand($workflowSlug, $type, $format)
     {
-        return "dot -T$format -o " . storage_path('temp/' . $workflowSlug . '_' . $type . '.' . $format);
+        return ["dot -T$format -o " . storage_path('temp/' . $workflowSlug . '_' . $type . '.' . $format)];
     }
 
     public function tryCopyImage($srcModel, $type, $format, $attemp)

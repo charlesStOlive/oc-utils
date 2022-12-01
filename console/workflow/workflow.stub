@@ -18,7 +18,7 @@
 {% endif %}
     marking_store:
         type: single_state
-        arguments: [{{configs.arguments.value}}]
+        property: {{configs.arguments.value}}
     supports:
         - \{{studly_author}}\{{studly_plugin}}\Models\{{studly_model}}
     places:

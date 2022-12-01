@@ -8,13 +8,13 @@
 
 ## Liste des états
 {% for place in places %}
-* **{{place.lang}}** : **{{place.name}}**
+* **{{place.lang}}** | code : {{place.name}}
 {% if place.rules %}
     * Rôle n'ayant pas accès à cet état : [{{place.rules}}]
 {% endif %}
 {% endfor %}
 
-## Liste des transitions:
+## Liste des transitions
 {% for transition in trans %}
 * **{{transition.lang}}** | code : {{transition.name}}
 {% if transition.rules %}
@@ -28,7 +28,7 @@
 {% endif %}
 {% endfor %}
 
-## Les jeux de permissions des champs : 
+## Les jeux de permissions des champs
 {% for key, rulesSet in rulesSets %}
 * {{key}}: {{rulesSet.message}}
 {% endfor %}

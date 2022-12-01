@@ -1,12 +1,10 @@
 <?php namespace Waka\Utils\Console;
 
-use Winter\Storm\Scaffold\GeneratorCommand;
+use System\Console\BaseScaffoldCommand;
 use Winter\Storm\Support\Collection;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Twig;
 
-class WorkflowCreate extends GeneratorCommand
+class WorkflowCreate extends BaseScaffoldCommand
 {
     public $wk_pluginCode;
     public $Wk_name;
@@ -15,12 +13,18 @@ class WorkflowCreate extends GeneratorCommand
     public $wk_model;
     public $remover;
 
+    protected static $defaultName = 'waka:workflow';
+
     /**
-     * The console command name.
-     *
-     * @var string
+     * @var string The name and signature of this command.
      */
-    protected $name = 'waka:workflow';
+    protected $signature = 'waka:workflow
+        {name : The name of the workflow. <info>(eg: Winter.Blog)</info>}
+        {plugin : The name of the plugin. <info>(eg: Winter.Blog)</info>}
+        {model : The name of the command to generate. <info>(eg: ImportPosts)</info>}
+        {src : nom de la source excel. <info>(eg: start_wcms.xlsx)</info>}
+        {--o|option : Afficher Les opptions}
+        {--f|force : Overwrite existing files  with generated files.}';
 
     /**
      * The console command description.
@@ -57,20 +61,51 @@ class WorkflowCreate extends GeneratorCommand
      */
     public function handle()
     {
+        //trace_log('je commence worrkflow create');
         $this->vars = $this->prepareVars(true);
 
         //trace_log("handle");
 
         $this->makeStubs();
+        //trace_log('je fait les stubs');
 
         $this->info($this->type . 'created successfully.');
-
+        //trace_log('je calll workflowDump');
         $this->call('waka:workflowDump', [
             'workflowName' => $this->wk_name,
             'plugin' => $this->wk_pluginCode,
             'model' => $this->wk_model,
         ]);
     }
+
+    public function makeStub($stubName)
+    {
+        if (!isset($this->stubs[$stubName])) {
+            return;
+        }
+
+        $sourceFile = $this->getSourcePath() . '/' . $stubName;
+        $destinationFile = $this->getDestinationPath() . '/' . $this->stubs[$stubName];
+        $destinationContent = $this->files->get($sourceFile);
+
+        /*
+         * Parse each variable in to the destination content and path
+         */
+        $destinationContent = Twig::parse($destinationContent, $this->vars);
+        $destinationFile = Twig::parse($destinationFile, $this->vars);
+
+        $this->makeDirectory($destinationFile);
+
+        /*
+         * Make sure this file does not already exist
+         */
+        // if ($this->files->exists($destinationFile) && !$this->option('force')) {
+        //     throw new Exception('Stop everything!!! This file already exists: ' . $destinationFile);
+        // }
+
+        $this->files->put($destinationFile, $destinationContent);
+    }
+
 
     /**
      * Prepare variables for stubs.
@@ -127,6 +162,7 @@ class WorkflowCreate extends GeneratorCommand
         }
 
         $importExcel = new \Waka\Utils\Classes\Imports\ImportWorkflow($name);
+        //trace_log($filePath);
         \Excel::import($importExcel, $filePath);
         $places = new Collection($importExcel->places->data);
         $trans = new Collection($importExcel->trans->data);
@@ -179,31 +215,5 @@ class WorkflowCreate extends GeneratorCommand
         $this->files->put($destinationFile, $destinationContent);
     }
 
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return [
-            ['name', InputArgument::REQUIRED, 'The name of the workflow'],
-            ['plugin', InputArgument::REQUIRED, 'The name of the plugin. Eg: RainLab.Blog'],
-            ['model', InputArgument::REQUIRED, 'The name of the model. Eg: Post'],
-            ['src', InputArgument::REQUIRED, 'The name of the model. Eg: Post'],
-        ];
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [
-            ['force', null, InputOption::VALUE_NONE, 'Overwrite existing files with generated ones.'],
-            ['option', null, InputOption::VALUE_NONE, 'Crée uniquement le model'],
-        ];
-    }
+    
 }

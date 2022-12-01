@@ -43,7 +43,7 @@ class GraphvizDumper implements DumperInterface
      *  * node: The default options for nodes (places + transitions)
      *  * edge: The default options for edges
      */
-    public function dump(Definition $definition, Marking $marking = null, array $options = [])
+    public function dump(Definition $definition, Marking $marking = null, array $options = []): string
     {
         //trace_log($options);
         $this->wordWrap = $options['graph']['rankdir'] == 'TB' ? 40 : 15;

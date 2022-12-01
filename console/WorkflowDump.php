@@ -2,24 +2,31 @@
 
 use Config;
 use Exception;
-use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
+use System\Console\BaseScaffoldCommand;
 use Symfony\Component\Process\Process;
 use Waka\Utils\Classes\GraphvizDumper;
+//use Symfony\Component\Workflow\Dumper\GraphvizDumper;
 use Workflow;
 
 /**
  * @author Boris Koumondji <brexis@yahoo.fr>
  */
-class WorkflowDump extends Command
+class WorkflowDump extends BaseScaffoldCommand
 {
+    
+
+    protected static $defaultName = 'waka:workflowDump';
+
     /**
-     * The console command name.
-     *
-     * @var string
+     * @var string The name and signature of this command.
      */
-    protected $name = 'waka:workflowDump';
+    protected $signature =  'waka:workflowDump
+        {workflowName : The name of the workflow. <info>(eg: Winter.Blog)</info>}
+        {plugin : The name of the plugin. <info>(eg: Winter.Blog)</info>}
+        {model : The name of the model. <info>(eg: ImportPosts)</info>}';
+
+       
+        
 
     /**
      * The console command description.
@@ -88,47 +95,39 @@ class WorkflowDump extends Command
         //Verification si le dossier image existe pour la doc. 
         $path = plugins_path(strtolower($author).'/'.strtolower($plugin).'/assets/docs_images');
         \File::isDirectory($path) or \File::makeDirectory($path, 0777, true, true);
+        
+
+        
 
 
 
-        $dotCommand = $this->createDotCommand($path, $workflowName, 'tb', 'jpeg');
+        $dotCommand = $this->createDotCommand($workflowName, 'tb', 'jpeg');
         //trace_log($dotCommand);
         $tdOptions = ["graph" => ['rankdir' => 'TB']];
         $process = new Process($dotCommand);
+        $process->setWorkingDirectory($path);
         $process->setInput($dumper->dump($definition, null, $tdOptions));
         //trace_log($dumper->dump($definition, null, $tdOptions));
         $process->mustRun();
+
+        // $dumper = new GraphvizDumper();
+
+        // $path = plugins_path(strtolower($author).'/'.strtolower($plugin).'/assets/docs_images');
+
+        // $dotCommand = $this->createDotCommand($workflowName, 'tb', 'jpeg');
+
+        // $process = new Process($dotCommand);
+        // $process->setWorkingDirectory($path);
+        // $process->setInput($dumper->dump($definition));
+        // $process->mustRun();
     }
 
-    public function createDotCommand($path, $workflowSlug, $type, $format)
+    public function createDotCommand($workflowSlug, $type, $format)
     {
         //trace_log("dot -T$format -o " . $path.'/' . $workflowSlug . '_' . $type . '.' . $format);
-        return "dot -T$format -o " . $path.'/' . $workflowSlug . '_' . $type . '.' . $format;
+        return ['dot', "-T${format}", '-o', "${workflowSlug}_${type}.${format}"];
+        // return ["dot -T$format -o " . $path.'/' . $workflowSlug . '_' . $type . '.' . $format];
     }
 
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return [
-            ['workflowName', InputArgument::REQUIRED, 'The name of the workflow'],
-            ['plugin', InputArgument::REQUIRED, 'The doted class'],
-            ['model', InputArgument::REQUIRED, 'The doted class'],
-        ];
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [
-            ['class', null, InputOption::VALUE_NONE, 'Overwrite existing files with generated ones.'],
-        ];
-    }
+    
 }
