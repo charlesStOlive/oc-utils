@@ -147,7 +147,7 @@ class WorkflowCreate extends BaseScaffoldCommand
                 'workflow/wf_errors.stub' => true,
                 'workflow/listener.stub' => true,
             ];
-            $types = $this->choice('Stub à creer', ['workflow/workflow.stub', 'workflow/temp_lang.stub', 'workflow/wf_errors.stub', 'workflow/listener.stub'], 0, null, true);
+            $types = (array) $this->choice('Stub à creer', ['workflow/workflow.stub', 'workflow/temp_lang.stub', 'workflow/wf_errors.stub', 'workflow/listener.stub'], 0, null, true);
             //trace_log($types);
             foreach ($types as $type) {
                 $this->remover[$type] = false;
