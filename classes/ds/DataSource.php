@@ -116,9 +116,17 @@ class DataSource extends Extendable
     public function getProductorOptions($productorModel, $modelId = null)
     {
        //trace_log('getProductorOptions');
-        $productors = $productorModel::whereHas('waka_session', function($q) {
-            $q->where('data_source', $this->code);
-        })->active();
+       //trace_log($this->code);
+        
+        $productors;
+        try {
+            $productors = $productorModel::whereHas('waka_session', function($q) {
+                $q->where('data_source', $this->code);
+            })->active();
+        } catch(\Exception $e) {
+            \Log::error('pas de session pour le getProductorOptions > bascule sur le dataSource');
+            $productors = $productorModel::where('data_source', $this->code);
+        }
         
 
         $optionsList = [];
@@ -155,6 +163,8 @@ class DataSource extends Extendable
     public function getPartialIndexOptions($productorModel, $relation = false)
     {
         $productors = null;
+        //trace_log("getPartialIndexOptions");
+        //trace_log($this->code);
         try {
             $productors = $productorModel::whereHas('waka_session', function ($q) {
                 $q->where('data_source', $this->code);
@@ -163,13 +173,15 @@ class DataSource extends Extendable
             \Log::error('pas de session pour le getPartialIndexOption > bascule sur le dataSource');
             $productors = $productorModel::where('data_source', $this->code);
         }
+        //trace_log($productors->get()->toArray());
         
 
         if ($relation) {
-            $productors = $productors->where('relation', '<>', null);
+            $productors = $productors->where('relation', '=', 1);
         } else {
-            $productors = $productors->where('relation', '=', null);
+            $productors = $productors->where('relation', '<>', 1);
         }
+        //trace_log($productors->lists('name', 'id'));
         return $productors->lists('name', 'id');
     }
 
