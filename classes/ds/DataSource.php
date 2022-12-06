@@ -84,7 +84,7 @@ class DataSource extends Extendable
         
     }
 
-    private function instanciateQuery(int $id = null)
+    private function instanciateQuery($id = null)
     {
         //trace_log('instanciateQuery');
         //trace_log($id);
@@ -107,7 +107,7 @@ class DataSource extends Extendable
     }
 
 
-    public function getQuery(int $modelId = null)
+    public function getQuery($modelId = null)
     {
         $this->instanciateQuery($modelId);
         return $this->query;
