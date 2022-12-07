@@ -39,5 +39,9 @@ tabs:
                   label: waka.utils::lang.settings.activate_media_btn
                   type: switch
                   tab: button
+            _launch_test:
+                  type: partial
+                  tab: tests
+                  path: $/waka/utils/partials/_wconfig_tests.htm
             
             

@@ -1,4 +1,6 @@
-<?php namespace Waka\Utils;
+<?php
+
+namespace Waka\Utils;
 
 use Backend;
 use Event;
@@ -33,7 +35,7 @@ class Plugin extends PluginBase
             'icon' => 'icon-leaf',
         ];
     }
-    
+
     public function registerMarkupTags()
     {
         return [
@@ -43,9 +45,9 @@ class Plugin extends PluginBase
                 },
                 'mailto' => function ($twig) {
                     $text = '';
-                    if(preg_match_all('/[\p{L}0-9_.-]+@[0-9\p{L}.-]+\.[a-z.]{2,6}\b/u',$twig,$mails)){
-                        foreach($mails[0]as $mail ){
-                            $text = str_replace($mail,'<a href="mailto:'.$mail.'">'.$mail.'</a>',$text);
+                    if (preg_match_all('/[\p{L}0-9_.-]+@[0-9\p{L}.-]+\.[a-z.]{2,6}\b/u', $twig, $mails)) {
+                        foreach ($mails[0] as $mail) {
+                            $text = str_replace($mail, '<a href="mailto:' . $mail . '">' . $mail . '</a>', $text);
                         }
                         return $text;
                     } else {
@@ -87,7 +89,7 @@ class Plugin extends PluginBase
                     $colorArray = [];
                     return $colorArray;
                 },
-                 // TODO A SUPPRIMER ? 
+                // TODO A SUPPRIMER ? 
                 'ident' => function ($string, $number) {
                     $number = $number * 4;
                     $spaces = str_repeat(' ', $number);
@@ -98,9 +100,9 @@ class Plugin extends PluginBase
                     return  $content[$column] ?? null;
                 },
                 'getRecursiveContent' => function ($twig, $code) {
-                    if(!$twig) {
+                    if (!$twig) {
                         return null;
-                    } 
+                    }
                     //trace_log("twig getRecursiveContent");
                     //trace_log($code);
                     $content = $twig->getThisParentValue($code);
@@ -109,7 +111,7 @@ class Plugin extends PluginBase
                     return  $content;
                 },
                 'getFileByTitleFromMany' => function ($twig, $code, $with, $height) {
-                    if(!$twig) {
+                    if (!$twig) {
                         \Log::error(sprintf('le code twig %s renvoie une valeur null dans getFileByTitleFromMany', $code));
                         return null;
                     }
@@ -118,21 +120,20 @@ class Plugin extends PluginBase
                         //trace_log($item->toArray());
                         return $item->title == $code;
                     });
-                    if($image->first() ?? false) {
+                    if ($image->first() ?? false) {
                         return $image->first()->getThumb($with, $height);
                     } else {
                         return null;
                     }
                 }
-                
-                
+
+
             ],
             'functions' => [
                 // Using an inline closure
                 'getColor' => function ($color, $mode = "rgba", $transform = null, $factor = 0.1) {
-                    if(!$color) {
+                    if (!$color) {
                         $color =  "#ff0000";
-                        
                     }
                     $color = new Color($color);
                     switch ($transform) {
@@ -164,7 +165,7 @@ class Plugin extends PluginBase
                 'stubCreator' => function ($template, $allData, $secificData, $dataName = null) {
                     $allData['specific'] = $secificData;
                     $allData['dataName'] = $dataName;
-                    $templatePath = plugins_path('waka/utils/console/'.$template);
+                    $templatePath = plugins_path('waka/utils/console/' . $template);
                     $templateContent = \File::get($templatePath);
                     $content = \Twig::parse($templateContent, $allData);
                     return $content;
@@ -176,10 +177,10 @@ class Plugin extends PluginBase
 
                     return $result;
                 },
-                
+
             ],
-           
-           
+
+
         ];
     }
 
@@ -193,20 +194,18 @@ class Plugin extends PluginBase
         $alias = AliasLoader::getInstance();
         $alias->alias('DataSources', 'Waka\Utils\Facades\DataSources');
 
-        \App::singleton('datasources', function() {
+        \App::singleton('datasources', function () {
             return new \Waka\Utils\Classes\Ds\DataSources;
         });
 
-        \Event::listen('backend.page.beforeDisplay', function($controller, $action, $params) {
+        \Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
             $controller->addJs('/plugins/waka/utils/assets/js/froala.js');
             $controller->addJs('/plugins/waka/utils/assets/js/clipboard.min.js');
             $controller->addCss('/plugins/wcli/wconfig/assets/css/waka.css');
-            
         });
 
         //Foralaedotor
-        \Backend\Classes\Controller::extend(function($controller) {
-            
+        \Backend\Classes\Controller::extend(function ($controller) {
         });
 
         $this->registerConsoleCommand('waka.injector', 'Waka\Utils\Console\CreateInjector');
@@ -227,8 +226,6 @@ class Plugin extends PluginBase
         CombineAssets::registerCallback(function ($combiner) {
             $combiner->registerBundle('$/waka/utils/formwidgets/rulebuilder/assets/css/rules.less');
         });
-        
-        
     }
     public function registerWakaRules()
     {
@@ -236,28 +233,25 @@ class Plugin extends PluginBase
             'asks' => [
                 ['\Waka\Utils\WakaRules\Asks\LabelAsk'],
                 ['\Waka\Utils\WakaRules\Asks\HtmlAsk'],
-                ['\Waka\Utils\WakaRules\Asks\codeHtml'], 
+                ['\Waka\Utils\WakaRules\Asks\codeHtml'],
                 ['\Waka\Utils\WakaRules\Asks\ImageAsk'],
                 ['\Waka\Utils\WakaRules\Asks\FileImgLinked'],
                 ['\Waka\Utils\WakaRules\Asks\Content'],
                 ['\Waka\Utils\WakaRules\Asks\Content'],
                 ['\Waka\Utils\WakaRules\Asks\FilesImgsLinkeds'],
             ],
-            'fncs' => [
-            ],
-            'blocs' => [
-                
-            ],
+            'fncs' => [],
+            'blocs' => [],
             'conditions' => [
-                ['\Waka\Utils\WakaRules\Conditions\BackUser'], 
-                ['\Waka\Utils\WakaRules\Conditions\ModelValue'], 
-                ['\Waka\Utils\WakaRules\Conditions\ModelExist'], 
+                ['\Waka\Utils\WakaRules\Conditions\BackUser'],
+                ['\Waka\Utils\WakaRules\Conditions\ModelValue'],
+                ['\Waka\Utils\WakaRules\Conditions\ModelExist'],
             ],
             'contents' => [
-                ['\Waka\Utils\WakaRules\Contents\Html'], 
-                ['\Waka\Utils\WakaRules\Contents\ListeImages'], 
-                ['\Waka\Utils\WakaRules\Contents\Vimeo'], 
-                ['\Waka\Utils\WakaRules\Contents\ComonPartials'], 
+                ['\Waka\Utils\WakaRules\Contents\Html'],
+                ['\Waka\Utils\WakaRules\Contents\ListeImages'],
+                ['\Waka\Utils\WakaRules\Contents\Vimeo'],
+                ['\Waka\Utils\WakaRules\Contents\ComonPartials'],
             ]
         ];
     }
@@ -317,11 +311,11 @@ class Plugin extends PluginBase
         // $alias = AliasLoader::getInstance();
         // $alias->alias('Excel', '\\Maatwebsite\\Excel\\Facades\\Excel');
 
-        
 
-        
 
-        
+
+
+
 
         \Event::listen('backend.menu.extendItems', function ($navigationManager) {
             //trace_log($navigationManager->getActiveMainMenuItem());
@@ -351,7 +345,7 @@ class Plugin extends PluginBase
                 return View::make('waka.utils::rapidLinks')->withLinks($model->rapidLinks);
             }
         });
-        
+
         /**
          * POUR LE WORKFLOW COLUMN
          */
@@ -367,23 +361,44 @@ class Plugin extends PluginBase
         });
 
         \System\Controllers\Settings::extend(function ($controller) {
-            $controller->addDynamicMethod('onWconfigImport', function () use ($controller) {
+            if (url()->current() === Backend\Facades\Backend::url('system/settings')) {
+                return;
+            }
+            if ($controller->formGetWidget()->model instanceof \Waka\Utils\Models\Settings) {
                 $user = \BackendAuth::getUser();
                 if (!$user->isSuperUser()) {
                     return;
                 }
-                $startFile = \Waka\Utils\Models\Settings::get('start_file');
-                if ($startFile) {
-                    \Excel::import(new \Waka\ImportExport\Classes\Imports\SheetsImport, storage_path('app/media/' . $startFile));
-                } else {
-                    throw new \ApplicationException('Le fichier n a pas été trouvé');
+                $controller->addDynamicMethod('onWconfigImport', function () use ($controller) {
+                    $startFile = \Waka\Utils\Models\Settings::get('start_file');
+                    if ($startFile) {
+                        \Excel::import(new \Waka\ImportExport\Classes\Imports\SheetsImport, storage_path('app/media/' . $startFile));
+                    } else {
+                        throw new \ApplicationException('Le fichier n a pas été trouvé');
+                    }
+                    return \Redirect::refresh();
+                });
+                trace_log('classe existe ? '.class_exists('\Wcli\Wconfig\Classes\Tests'));
+                if (class_exists('\Wcli\Wconfig\Classes\Tests')) {
+                    trace_log('classe existe');
+                    $controller->addDynamicMethod('onWconfigTest1', function () use ($controller) {
+                        $test = \Wcli\Wconfig\Classes\Tests::test1();
+                    });
+                    $controller->addDynamicMethod('onWconfigTest2', function () use ($controller) {
+                        $test = \Wcli\Wconfig\Classes\Tests::test2();
+                    });
+                    $controller->addDynamicMethod('onWconfigTest3', function () use ($controller) {
+                        $test = \Wcli\Wconfig\Classes\Tests::test3();
+                    });
+                    $controller->addDynamicMethod('onWconfigTest4', function () use ($controller) {
+                        $test = \Wcli\Wconfig\Classes\Tests::test4();
+                    });
+                    $controller->addDynamicMethod('onWconfigTest4', function () use ($controller) {
+                        $test = \Wcli\Wconfig\Classes\Tests::test5();
+                    });
                 }
-                return \Redirect::refresh();
-            });
+            }
         });
-
-
-        
     }
 
     /**
@@ -393,9 +408,7 @@ class Plugin extends PluginBase
      */
     public function registerComponents()
     {
-        return [
-            
-        ];
+        return [];
     }
 
     /**

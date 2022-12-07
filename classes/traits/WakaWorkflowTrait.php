@@ -132,6 +132,10 @@ trait WakaWorkflowTrait
             });
         });
     }
+
+    public function currentState() {
+        return $this->morphOne(\Waka\Utils\Models\StateLog::class, 'state_logeable')->latestOfMany();
+    }
     
 
     public function executeWorkflowFunctionAfterSave($changeState) {
