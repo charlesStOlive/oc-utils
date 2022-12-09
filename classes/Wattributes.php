@@ -43,12 +43,17 @@ class Wattributes
                 $relationcode = array_pop($ex);
                 //trace_log("Relation name : ".$relationName);
                 //trace_log(\DataSources::list());
-                $relationAttributesConfig = \DataSources::find($relationcode)->getAttributesConfig();
-                //trace_log($relationcode);
-                //trace_log($relationAttributesConfig);
-                $maped = $this->remapAttributes($relationAttributesConfig['attributes'], $key, 'ds');
-                $attributeArray[$relationcode]['values'] = $maped;
-                $attributeArray[$relationcode]['icon'] = $relationAttributesConfig['icon'];
+                try {
+                    $relationAttributesConfig = \DataSources::find($relationcode)->getAttributesConfig();
+                    //trace_log($relationcode);
+                    //trace_log($relationAttributesConfig);
+                    $maped = $this->remapAttributes($relationAttributesConfig['attributes'], $key, 'ds');
+                    $attributeArray[$relationcode]['values'] = $maped;
+                    $attributeArray[$relationcode]['icon'] = $relationAttributesConfig['icon'];
+                } catch(\Exception $ex) {
+                    /***/trace_log('Problème de try dans wattribute à verifier');
+                }
+                
             }
             //trace_log($attributeArray);
         }
