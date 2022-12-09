@@ -91,6 +91,7 @@ class TransImport implements ToCollection, WithHeadingRow, WithCalculatedFormula
         $this->data = [];
         foreach ($rows as $row) {
             $obj = [
+                'froms' => $row['froms'] ?? null,
                 'from' => $row['from'] ?? null,
                 'to' => $row['to'] ?? null,
                 'name' => $row['final_name'] ?? null,

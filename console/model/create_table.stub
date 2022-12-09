@@ -28,12 +28,16 @@ class Create{{studly_plural_name}}Table extends Migration
             $table->{{db.type}}('{{db.var|snakeCase}}'){% if not db.not_null %}->nullable(){%endif%}{% if db.default %}->default({% if db.type =='boolean' %}{{ db.default}}{% else %}'{{db.default}}'{% endif %}){% endif %};
 {% endif %}
 {% endfor %}
-{% if configs.trait_nested %}
+{% if configs.trait_nested or configs.trait_nestedtree  %}
             //nested
             $table->integer('parent_id')->unsigned()->nullable();
             $table->integer('nest_left')->unsigned()->nullable();
             $table->integer('nest_right')->unsigned()->nullable();
             $table->integer('nest_depth')->unsigned()->nullable();
+{% endif %}
+{% if configs.trait_simpletree %}
+            //simpletree
+            $table->integer('parent_id')->unsigned()->nullable();
 {% endif %}
 {% if configs.trait_reorder %}
             //reorder

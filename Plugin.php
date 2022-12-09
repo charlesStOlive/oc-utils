@@ -378,9 +378,9 @@ class Plugin extends PluginBase
                     }
                     return \Redirect::refresh();
                 });
-                trace_log('classe existe ? '.class_exists('\Wcli\Wconfig\Classes\Tests'));
+                //trace_log('classe existe ? '.class_exists('\Wcli\Wconfig\Classes\Tests'));
                 if (class_exists('\Wcli\Wconfig\Classes\Tests')) {
-                    trace_log('classe existe');
+                    //trace_log('classe existe');
                     $controller->addDynamicMethod('onWconfigTest1', function () use ($controller) {
                         $test = \Wcli\Wconfig\Classes\Tests::test1();
                     });

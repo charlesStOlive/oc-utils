@@ -86,6 +86,13 @@
                             {{key}}: {{arg}}
 {% endfor %}{% endif %}
 {% endfor %}{% endif %}
+{% if transition.from %}
             from: {{transition.from}}
+{% else %}
+            from: 
+{% for subfrom in transition.froms %}
+                - {{ subfrom }}
+{% endfor %}
+{% endif %}
             to: {{transition.to}}
 {% endfor %}

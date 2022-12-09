@@ -12,8 +12,11 @@ use {{ use_classe }};
 class {{studly_name}} extends Model
 {
     use \Winter\Storm\Database\Traits\Validation;
-{% if configs.trait_nested %}
+{% if configs.trait_nested or configs.trait_nestedtree %}
     use \Winter\Storm\Database\Traits\NestedTree;
+{% endif %}
+{% if configs.trait_simpletree %}
+    use \Winter\Storm\Database\Traits\SimpleTree;
 {% endif %}
 {% if configs.trait_soft_delete %}
     use \Winter\Storm\Database\Traits\SoftDelete;

@@ -35,8 +35,10 @@ trait WakaWorkflowTrait
             $model->bindEvent('model.beforeValidate', function () use ($model) {
                 //trace_log('beforeValidate');
                 //trace_log($model->name);
+                //Recuperation de l'information change_state
                 $changeState = $model->change_state;
                 //trace_log('beforeValidate : ' .$model->change_state);
+                //on verifie s'il y a plusieurs transition possible
                 $wf_try = strpos($changeState, ',');
                 if ($wf_try && $changeState) {
                     //trace_log("On test un changement de transition");

@@ -54,6 +54,7 @@ class WorkflowListener
      */
     public function onEnter($event)
     {
+        $this->launchFunction($event, 'trait_onEnter');
     }
 
     /**
@@ -61,7 +62,7 @@ class WorkflowListener
      */
     public function onEntered($event)
     {
-        $this->launchFunction($event, 'trait');
+        $this->launchFunction($event, 'trait_onEntered');
     }
 
     /**
@@ -97,7 +98,7 @@ class WorkflowListener
             return;
         }
         foreach ($fncs->toArray() as $fnc => $attributes) {
-            if (method_exists($this, $fnc)) {
+            if (method_exists($this, (string) $fnc)) {
                 $this->{$fnc}($event, $attributes['args'] ?? null);
             } else {
                 throw new \SystemException("la fonction : " . $fnc . " n'existe pas dans l'ecouteur d'evenement du workflow");
@@ -115,7 +116,7 @@ class WorkflowListener
             return false;
         }
         foreach ($fncs->toArray() as $fnc => $attributes) {
-            if (method_exists($this, $fnc)) {
+            if (method_exists($this, (string) $fnc)) {
                 return $this->{$fnc}($event, $attributes['args'] ?? null);
             } else {
                 throw new \SystemException("la fonction : " . $fnc . " n'existe pas dans l'ecouteur d'evenement du workflow");

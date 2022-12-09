@@ -43,8 +43,8 @@ class CreateWorkflowDataFromExcel extends CreateBase
         //
         //
         $trans = $trans->reject(function ($item, $key) {
-            $from = $item['from'] ?? null;
-            if(!$from or $from == '' ) {
+            $checkField = $item['name'] ?? null;
+            if(!$checkField) {
                 return true;
             } else {
                 return false;
@@ -52,8 +52,9 @@ class CreateWorkflowDataFromExcel extends CreateBase
         });
         $trans = $trans->map(function ($item, $key) use ($config) {
             $item['functions'] = [];
-
-            $fncProd = $item['fnc_prod'] ?? false;
+            $fncProd = $item['fnc_prod'] ?? [];
+            $froms = $item['froms'] ?? null;
+            $item['froms'] = explode(',',$item['froms']);
             //trace_log("fncProd : " . $fncProd);
             if (!empty($fncProd)) {
                 //trace_log("Travail sur les fonctions de production");
@@ -86,6 +87,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
                 $fncName = $item['fnc_trait'];
                 $args = $this->getArgs($fncName, $config);
                 $label = $this->getFncLabel($fncName, $config);
+                $traitType = $this->getTraitType($fncName, $config);
                 $vals = $item['fnc_trait_val'] ?? false;
                 if ($vals) {
                     $vals = explode(',', $vals);
@@ -99,7 +101,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
 
                 $obj = [
                     'fnc' => $fncName,
-                    'type' => 'trait',
+                    'type' => $traitType,
                     'arguments' => $argval,
                     'label' => $label,
                 ];
@@ -135,6 +137,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
             }
             return $item;
         });
+        //trace_log($trans->toArray());
 
         $fncs = $config->where('type', '==', 'fnc')->lists('label', 'key');
 
@@ -187,6 +190,14 @@ class CreateWorkflowDataFromExcel extends CreateBase
             return $args;
         }
         return null;
+    }
+
+    public function getTraitType($fncName, $config)
+    {
+        $traitType = $config->where('key', $fncName)->first();
+        $traitType = $traitType['value'] ?? 'trait_onEntered';
+        //Les arguments sont un string séparé par une , dans la colonne data
+        return $traitType;
     }
 
     public function getFncLabel($fncName, $config)
