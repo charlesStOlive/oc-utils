@@ -121,6 +121,7 @@ trait WakaWorkflowTrait
                     }
                 }
                     //trace_log($model->toArray());
+                //TODO ICI PROBLEME DE MODIFICATION DE LETTRE CHANGE STATE IMPOSSIBLE
                 $model->workflow_get()->apply($model, $changeState); 
             });
 
