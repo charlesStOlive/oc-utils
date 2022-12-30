@@ -141,7 +141,16 @@ class {{studly_name}} extends Model
 {% endfor %}
     ];
 {% endif %}
-
+{%if configs.touches %}
+    /**
+     * All of the relationships to be touched.
+     */
+    protected $touches = [
+{% for touch in configs.touches|split(',') %}
+        '{{touch}}',
+{% endfor %}
+    ];
+{% endif %}
     /**
      * @var array Attributes to be cast to native types
      */
