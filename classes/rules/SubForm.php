@@ -4,7 +4,6 @@ use System\Classes\PluginManager;
 use Winter\Storm\Extension\Extendable;
 use Waka\Utils\Classes\DataSource;
 use \System\Classes\MediaLibrary;
-use System\Classes\ImageResizer;
 
 /**
  * Notification subform base class

@@ -83,7 +83,14 @@ class ModelInfo extends FormWidgetBase
 
     public function setValues($modelId, $fields)
     {
-        $modelvalues = $this->ds->getValues($modelId);
+        try {
+            $modelvalues = $this->ds->getValues($modelId);
+        } catch (\Exception $ex) {
+            trace_log($ex->getMessage());
+            return [];
+
+        }
+        
         $parsedFields = [];
         foreach ($fields as $key=>$field) {
             $showIf =  $field['showIf'] ?? null;

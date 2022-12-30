@@ -18,9 +18,9 @@ breadcrump:
 tool_bar:
     base:
         create: 
-            show: true
+            show: {% if configs.create_permission == 'nobody' %}false{% else %}true 
             permissions: [{{configs.create_permission}}]
-            url: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/create
+            url: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/create {% endif %} 
         reorder: 
             show: {% if configs.behav_reorder %}true{% else%}false{% endif %}
 {% if configs.behav_reorder %} 
@@ -28,8 +28,8 @@ tool_bar:
             url: {{lower_author}}/{{lower_plugin}}/{{lower_ctname}}/reorder
 {% endif %} 
         delete: 
-            show: true
-            permissions: [{{configs.delete_permission}}]
+            show: {% if configs.delete_permission == 'nobody' %}false{% else %}true
+            permissions: [{{configs.delete_permission}}] {% endif %} 
     config_btns:
             format: all
             btns:

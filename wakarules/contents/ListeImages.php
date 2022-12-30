@@ -4,7 +4,6 @@ use Waka\Utils\Classes\Rules\RuleContentBase;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use ApplicationException;
 use Waka\Utils\Interfaces\RuleContent as RuleContentInterface;
-use System\Classes\ImageResizer;
 use System\Classes\MediaLibrary;
 
 class ListeImages extends RuleContentBase implements RuleContentInterface

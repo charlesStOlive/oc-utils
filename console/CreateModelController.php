@@ -512,9 +512,13 @@ class CreateModelController extends BaseScaffoldCommand
      */
     public function handle()
     {
-        $noController = $this->config['no_controller'] ?? false;
+        
 
         $this->vars = $this->processVars($this->prepareVars());
+        //
+        //trace_log($this->config);
+        $noController = $this->config['no_controller'] ?? false;
+        //trace_log("noController : ".$noController);
         //Création du modele
         if ($this->maker['model']) {
             /**/trace_log('on fait le modele');

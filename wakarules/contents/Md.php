@@ -3,7 +3,6 @@
 use Waka\Utils\Classes\Rules\RuleContentBase;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use ApplicationException;
-use ToughDeveloper\ImageResizer\Classes\Image;
 use Waka\Utils\Interfaces\RuleContent as RuleContentInterface;
 
 class Md extends RuleContentBase implements RuleContentInterface

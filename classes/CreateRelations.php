@@ -46,6 +46,7 @@ class CreateRelations
 
     public function createRelation($item)
     {
+
         $relation = $item['var'] ?? null;
         if (!$relation) {
             return $item;
@@ -119,6 +120,9 @@ class CreateRelations
                 if(str_contains($option, ',')) {
                     $option = explode(',', $option);
                 }
+                else if($key == 'pivot') {
+                    $option = array($option);
+                }
                 $relationarray[$key] = $option;
             }
         }
@@ -157,6 +161,8 @@ class CreateRelations
         
         $relation = array_merge($relation, $relationItem);
 
+        trace_log($relation);
+
         return $relation;
 
     }
@@ -168,110 +174,108 @@ class CreateRelations
             throw new \ApplicationException('verifier la colone type de relation ');
         }
 
+        $config = [
+            'name' => $var,
+            'singular_name' => false,
+            'view_list' => false,
+            'view_form' => false,
+            'view_form_read' => false,
+            'manage_form' => false,
+            'manage_list' => false,
+            'show_check' => false,
+        ];
+
         if ($type == 'belong') {
-            return [
-                'name' => $var,
+            return array_merge($config, [
                 'singular_name' => str_singular(camel_case($var)),
-                'view_list' => false,
                 'view_form' => !$item['yamls_read'],
                 'view_form_read' => $item['yamls_read'],
                 'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
                 'manage_list' => str_contains($item['toolbar'], 'link'),
                 'show_check' => str_contains($item['toolbar'], 'delete') or str_contains($item['toolbar'], 'unlink'),
-            ];
+            ]);
         }
-        if ($type == 'hasOne') {
-            return [
-                'name' => $var,
+        else if ($type == 'hasOne') {
+            return array_merge($config, [
                 'singular_name' => str_singular(camel_case($var)),
-                'view_list' => false,
                 'view_form' => !$item['yamls_read'],
                 'view_form_read' => $item['yamls_read'],
                 'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
                 'manage_list' => str_contains($item['toolbar'], 'link'),
-            ];
+            ]);
         }
-        if ($type == 'oneThrough') {
-            return [
-                'name' => $var,
+        else if ($type == 'oneThrough') {
+            return array_merge($config, [
                 'singular_name' => str_singular(camel_case($var)),
-                'view_list' => false,
                 'view_form' => !$item['yamls_read'],
                 'view_form_read' => $item['yamls_read'],
                 'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
                 'manage_list' => str_contains($item['toolbar'], 'link'),
-            ];
+            ]);
         }
-        if ($type == 'belongsMany') {
-            return [
-                'name' => $var,
+         else if ($type == 'belongsMany') {
+            return array_merge($config, [
                 'singular_name' => str_singular(camel_case($var)),
                 'view_list' => true,
-                'view_form' => false,
                 'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
                 'manage_list' => str_contains($item['toolbar'], 'add') or str_contains($item['toolbar'], 'link'),
                 'show_check' => str_contains($item['toolbar'], 'delete') or str_contains($item['toolbar'], 'unlink'),
-            ];
+            ]);
         }
-        if ($type == 'morphMany') {
-            return [
-                'name' => $var,
+        else if ($type == 'morphMany') {
+            return array_merge($config, [
                 'singular_name' => str_singular(camel_case($var)),
                 'view_list' => true,
-                'view_form' => false,
                 'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
                 'manage_list' => str_contains($item['toolbar'], 'add') or str_contains($item['toolbar'], 'link'),
                 'show_check' => str_contains($item['toolbar'], 'delete') or str_contains($item['toolbar'], 'unlink'),
-            ];
+            ]);
         }
-        if ($type == 'morphOne') {
-            return [
-                'name' => $var,
+     else if ($type == 'morphOne') {
+            return array_merge($config, [
                 'singular_name' => str_singular(camel_case($var)),
-                'view_list' => false,
                 'view_form' => !$item['yamls_read'],
                 'view_form_read' => $item['yamls_read'],
                 'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
                 'manage_list' => str_contains($item['toolbar'], 'link'),
-            ];
+            ]);
         }
-        if ($type == 'many') {
-            return [
-                'name' => $var,
+        else if ($type == 'many') {
+            return array_merge($config, [
                 'singular_name' => str_singular(camel_case($var)),
                 'view_list' => true,
-                'view_form' => false,
                 'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
                 'manage_list' => str_contains($item['toolbar'], 'add') or str_contains($item['toolbar'], 'link'),
                 'show_check' => str_contains($item['toolbar'], 'delete') or str_contains($item['toolbar'], 'unlink'),
-            ];
+            ]);
         }
-        if ($type == 'manyThrough') {
-            return [
-                'name' => $var,
+        else if ($type == 'manyThrough') {
+            return array_merge($config, [
                 'singular_name' => str_singular(camel_case($var)),
-                'view_list' => true,
-                'view_form' => false,
                 'manage_form' => !($item['record_url'] && !str_contains($item['toolbar'], 'create')),
                 'manage_list' => str_contains($item['toolbar'], 'add') or str_contains($item['toolbar'], 'link'),
                 'show_check' => str_contains($item['toolbar'], 'delete') or str_contains($item['toolbar'], 'unlink'),
-            ];
+            ]);
         }
-        if ($type == 'attachMany') {
-            return [
-                'name' => $var,
-            ];
+        else {
+            return $config;
+
         }
-        if ($type == 'attachOne') {
-            return [
-                'name' => $var,
-            ];
-        }
-        if ($type == 'morphTo') {
-            return [
-                'name' => $var,
-            ];
-        }
+        // if ($type == 'attachMany') {
+        //     return [
+        //         'name' => $var,
+        //     ];
+        // }
+        // if ($type == 'attachOne') {
+        //     return [
+        //         'name' => $var,
+        //     ];
+        // }
+        // if ($type == 'morphTo') {
+        //     return [
+        //         'name' => $var,
+        //     ];
+        // }
 
 
     }

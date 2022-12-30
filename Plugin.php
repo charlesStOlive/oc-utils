@@ -393,7 +393,7 @@ class Plugin extends PluginBase
                     $controller->addDynamicMethod('onWconfigTest4', function () use ($controller) {
                         $test = \Wcli\Wconfig\Classes\Tests::test4();
                     });
-                    $controller->addDynamicMethod('onWconfigTest4', function () use ($controller) {
+                    $controller->addDynamicMethod('onWconfigTest5', function () use ($controller) {
                         $test = \Wcli\Wconfig\Classes\Tests::test5();
                     });
                 }
