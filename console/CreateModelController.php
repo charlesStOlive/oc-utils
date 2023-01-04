@@ -409,6 +409,12 @@ class CreateModelController extends BaseScaffoldCommand
             $this->config['use_classes_in_model'] = null;
         }
 
+        if($this->config['behavs'] ?? false) {
+            $this->config['behavs'] = explode('|' ,  $this->config['behavs'] );
+        } else {
+            $this->config['behavs'] = null;
+        }
+
         
 
         $excels = $rows->where('excel', '<>', null)->toArray();

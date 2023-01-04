@@ -16,7 +16,7 @@
         this.initSorting = function (mode) {
             this.sortMode = mode
 
-            if (mode == 'simple') {
+            if (mode == 'simple' || mode == 'simple_pivot') {
                 this.initSortingSimple()
             }
 
@@ -27,7 +27,7 @@
         this.processReorder = function(ev, sortData){
             var postData
 
-            if (this.sortMode == 'simple') {
+            if (this.sortMode == 'simple' || this.sortMode == 'simple_pivot') {
                 postData = { sort_orders: this.simpleSortOrders }
             }
             else if (this.sortMode == 'nested') {

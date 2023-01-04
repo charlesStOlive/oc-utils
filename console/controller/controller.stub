@@ -43,7 +43,7 @@ class {{studly_ctname}} extends Controller
         'Waka.ImportExport.Behaviors.ExcelExport',
 {% endif %}
 {% if configs.behav_reorder %}
-        'Backend.Behaviors.ReorderController',
+        'Waka.Utils.Behaviors.WakaReorderController',
 {% endif %}
 {% if configs.behav_cloudis %}
         'Waka.Cloudis.Behaviors.MontageBehavior',
@@ -81,6 +81,9 @@ class {{studly_ctname}} extends Controller
 {% if configs.behav_babyler %}
         'Waka\Babyler\Behaviors\BabylerBehavior',
 {% endif %}
+{% for behav in configs.behavs %}
+        '{{behav}}',
+{% endfor %}
     ];
     public $formConfig = 'config_form.yaml';
     public $listConfig = 'config_list.yaml';

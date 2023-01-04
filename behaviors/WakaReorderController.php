@@ -69,6 +69,11 @@ class WakaReorderController extends ControllerBehavior
     protected $sortMode;
 
     /**
+     * @var boolean in pivot ??:
+     */
+    protected $usePivot;
+
+    /**
      * @var Backend\Classes\WidgetBase Reference to the widget used for the toolbar.
      */
     protected $toolbarWidget;
@@ -133,15 +138,32 @@ class WakaReorderController extends ControllerBehavior
 
     public function onReorder()
     {
-        //trace_log(post());
         $this->relationConfig = post('relationConfig');
         $model = $this->validateModel();
-        
-
         /*
          * Simple
          */
-        if ($this->sortMode == 'simple') {
+        if ($this->sortMode == 'simple_pivot') {
+            if (
+                (!$ids = post('record_ids')) ||
+                (!$orders = post('sort_orders'))
+            ) {
+                return;
+            }
+            $modelId = post('manageId');
+            $relationConfig = post('relationConfig');
+            //trace_log($relationConfig);
+            $config = $this->getConfig('relationConfig')[$this->relationConfig];
+            $modelClass = $this->getConfig('modelClass');
+            $childClass = $config['childName'];
+            $models = $modelClass::find($modelId)->{$childClass};
+            foreach($models as $model) {
+                $keyIndex = array_search($model->getKey(), $ids);
+                $sortorder = $orders[$keyIndex];
+                $model->pivot->sort_order = $sortorder;
+                $model->pivot->save();
+            }
+        }else if ($this->sortMode == 'simple') {
             if (
                 (!$ids = post('record_ids')) ||
                 (!$orders = post('sort_orders'))
@@ -224,12 +246,16 @@ class WakaReorderController extends ControllerBehavior
             //trace_log("model existe déjà reorderGetModel");
             return $this->model;
         }
-
+        
         if($this->relationConfig) {
             $config = $this->getConfig('relationConfig')[$this->relationConfig];
             $modelClass = $this->getConfig('modelClass');
-            $childClass = $config['childName'];;
+            $childClass = $config['childName'];
+            $this->nameFrom = $config['nameFrom'];
+            $this->usePivot = $config['usePivot'] ?? false;
             return $this->model = $modelClass::{$childClass}()->getRelated();
+           
+           
         } else {
             $modelClass = $this->getConfig('modelClass');
             if (!$modelClass) {
@@ -256,9 +282,8 @@ class WakaReorderController extends ControllerBehavior
     protected function validateModel($relationmodel = null)
     {
         $model = $this->controller->reorderGetModel();
-        //trace_log(get_class($model));
+        trace_log(get_class($model));
         $modelTraits = class_uses($model);
-
         if (
             isset($modelTraits[\Winter\Storm\Database\Traits\Sortable::class]) ||
             $model->isClassExtendedWith(\Winter\Storm\Database\Behaviors\Sortable::class) ||
@@ -274,7 +299,9 @@ class WakaReorderController extends ControllerBehavior
             $this->sortMode = 'nested';
             $this->showTree = true;
         }
-        else {
+        else if($this->usePivot) {
+            $this->sortMode = 'simple_pivot';
+        } else {
             throw new ApplicationException('The model must implement the Sortable trait/behavior or the NestedTree trait.');
         }
 
@@ -304,8 +331,12 @@ class WakaReorderController extends ControllerBehavior
             $query = $model->newQuery();
             $this->controller->reorderExtendQuery($query);
         }
-
-        if ($this->sortMode == 'simple') {
+        if ($this->sortMode == 'simple_pivot') {
+            $records = $query
+                ->orderByPivot('sort_order','asc')
+                ->get();
+        }
+        elseif ($this->sortMode == 'simple') {
             $records = $query
                 ->orderBy($model->getSortOrderColumn())
                 ->get()
@@ -314,6 +345,7 @@ class WakaReorderController extends ControllerBehavior
         elseif ($this->sortMode == 'nested') {
             $records = $query->getNested();
         }
+
 
         return $records;
     }
