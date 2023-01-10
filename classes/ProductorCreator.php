@@ -10,9 +10,25 @@ use Event;
 class ProductorCreator extends \Winter\Storm\Extension\Extendable
 {
     public static $productor;
+
+    /**
+     * 
+     */
     public $productorDs;
+
+    /**
+     * 
+     */
     public $productorDsData;
+
+    /**
+     * 
+     */
     public $productorDsQuery;
+
+    /**
+     * 
+     */
     public $userKey;
     public $modelId;
     public $modelValues;
@@ -173,10 +189,6 @@ class ProductorCreator extends \Winter\Storm\Extension\Extendable
 
     public function getSessionModelData() {
         return $this->productorDs->getFullQuery();
-    }
-
-    public function getSessionModelQuery() {
-        return $this->productorDsQuery;
     }
 
     public function getAsksAndFncs() {
