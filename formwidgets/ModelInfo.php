@@ -86,7 +86,7 @@ class ModelInfo extends FormWidgetBase
         try {
             $modelvalues = $this->ds->getValues($modelId);
         } catch (\Exception $ex) {
-            trace_log($ex->getMessage());
+            //trace_log($ex->getMessage());
             return [];
 
         }

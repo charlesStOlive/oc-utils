@@ -161,7 +161,7 @@ class CreateRelations
         
         $relation = array_merge($relation, $relationItem);
 
-        trace_log($relation);
+        //trace_log($relation);
 
         return $relation;
 

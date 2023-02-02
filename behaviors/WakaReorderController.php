@@ -282,7 +282,7 @@ class WakaReorderController extends ControllerBehavior
     protected function validateModel($relationmodel = null)
     {
         $model = $this->controller->reorderGetModel();
-        trace_log(get_class($model));
+        //trace_log(get_class($model));
         $modelTraits = class_uses($model);
         if (
             isset($modelTraits[\Winter\Storm\Database\Traits\Sortable::class]) ||
