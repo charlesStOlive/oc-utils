@@ -47,11 +47,11 @@ class WorkflowCreate extends BaseScaffoldCommand
      */
 
     protected $stubs = [
-        'workflow/workflow.stub' => 'config/{{lower_name}}_w.yaml',
-        'workflow/temp_lang.stub' => 'lang/fr/{{lower_name}}_w.php',
-        'workflow/wf_errors.stub' => 'lang/fr/{{lower_name}}_wf_errors.php',
-        'workflow/listener.stub' => 'listeners/Workflow{{lower_name}}Listener.php',
-        'workflow/description.stub' => 'docs/wf_{{lower_name}}.md',
+        'workflow/workflow.stub' => 'config/{{name}}.yaml',
+        'workflow/temp_lang.stub' => 'lang/fr/{{name}}.php',
+        'workflow/wf_errors.stub' => 'lang/fr/{{name}}_errors.php',
+        'workflow/listener.stub' => 'listeners/Workflow{{name}}Listener.php',
+        'workflow/description.stub' => 'docs/wf_{{name}}.md',
     ];
 
     /**
@@ -180,8 +180,12 @@ class WorkflowCreate extends BaseScaffoldCommand
             'name' => $this->wk_name,
         ];
 
+       
+
 
         $prepareExcel = new \Waka\Utils\Classes\CreateWorkflowDataFromExcel();
+
+        trace_log($prepareExcel->prepareVars($data));
         return $prepareExcel->prepareVars($data);
     }
 

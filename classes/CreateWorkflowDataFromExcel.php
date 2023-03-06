@@ -6,6 +6,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
     public function prepareVars($data)
     {
         $plugin = $data['plugin'];
+        $workflowName =  $data['name'];
         $model = $data['model'];
         $author = $data['author'];
         $config = $data['config'];
@@ -158,7 +159,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
         //trace_log($trans);
 
         $all = [
-            'name' => $model,
+            'name' => $workflowName,
             'model' => $model,
             'author' => $author,
             'plugin' => $plugin,

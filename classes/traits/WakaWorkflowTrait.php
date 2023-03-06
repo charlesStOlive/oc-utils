@@ -1,4 +1,6 @@
-<?php namespace Waka\Utils\Classes\Traits;
+<?php
+
+namespace Waka\Utils\Classes\Traits;
 
 use Lang;
 use \Waka\Informer\Models\Inform;
@@ -31,7 +33,7 @@ trait WakaWorkflowTrait
             $model->bindEvent('model.beforeDelete', function () use ($model) {
                 $model->state_logs()->delete();
             });
-            
+
             $model->bindEvent('model.beforeValidate', function () use ($model) {
                 //trace_log('beforeValidate');
                 //trace_log($model->name);
@@ -43,16 +45,15 @@ trait WakaWorkflowTrait
                 if ($wf_try && $changeState) {
                     //trace_log("On test un changement de transition");
                     //Si on test un changement de transition
-                    $tryToChangeStates = explode(',',$changeState);
+                    $tryToChangeStates = explode(',', $changeState);
                     //trace_log($tryToChangeStates);
-                    $wfMetadataStore = $model->workflow_get()->getMetadataStore();
+                    $wfMetadataStore = $model->getWakaWorkflow()->getMetadataStore();
                     $trySuccess = null;
-                    foreach($tryToChangeStates as $try) {
+                    foreach ($tryToChangeStates as $try) {
                         //trace_log("-----try : ".$try." sur état : ".$model->state);
                         //trace_log("Etats possible : ") ;
-                        //trace_log($model->workflow_transitions());
 
-                        if(!$model->workflow_can($try)) {
+                        if (!$model->wakaWorkflowCan($try)) {
                             //Si la transition n'est pas compatible au saute cette boucle.
                             //trace_log("Transition incompatible : ".$try);
                             continue;
@@ -63,113 +64,141 @@ trait WakaWorkflowTrait
                         $rules = $model->getWfRules($rulesSet);
                         $error = 0;
                         //trace_log($rules['fields'] ?? 'Pas de rules');
-                        if(!$rules['fields'] ?? false) {
+                        if (!$rules['fields'] ?? false) {
                             //trace_log("il n' y a pas de rules");
                             $trySuccess = $model->change_state = $try;
-                            $model->workflow_get()->apply($model, $model->change_state);
+                            $model->getWakaWorkflow()->apply($model, $model->change_state);
                             return;
                         }
-                        foreach($rules['fields'] as $key=>$rule) {
-                            if(!$model[$key]) {
+                        foreach ($rules['fields'] as $key => $rule) {
+                            if (!$model[$key]) {
                                 //trace_log('error on'.$key);
                                 $error++;
                             }
                         }
-                        if(!$error) {
+                        if (!$error) {
                             //trace_log("try ok : ".$try);
                             $model->change_state = $try;
                             break;
                         }
                     }
-                    if(!$trySuccess) {
-                        if($model->wfMustTrans) {
+                    if (!$trySuccess) {
+                        if ($model->wfMustTrans) {
                             //throw new \ValidationException(['memo' => \Lang::get('waka.utils::lang.workflow.must_trans')]);
                         }
                         $model->change_state = null;
-
                     }
                 } else if (!$wf_try && $changeState) {
                     //trace_log("On a un changement de transition");
                     //la transition et déjà choisi nous allons verifier. 
                     $transition = self::getWfTransition($changeState, $model);
                     //trace_log($transition);
-                    $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
+                    $rulesSet = $model->getWakaWorkflow()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
                     $rules = $model->getWfRules($rulesSet);
                     if ($rules['fields'] ?? false) {
-                        foreach($rules['fields'] as $key=>$rule) {
+                        foreach ($rules['fields'] as $key => $rule) {
                             $model->rules[$key] = $rule;
                         }
                     }
                     //trace_log($model->toArray());
-                    //$model->workflow_get()->apply($model, $changeState);
+                    //$model->getWakaWorkflow()->apply($model, $changeState);
                 } else if ($model->wfMustTrans) {
                     //throw new \ValidationException(['memo' => \Lang::get('waka.utils::lang.workflow.must_trans')]);
                 }
             });
             $model->bindEvent('model.beforeSave', function () use ($model) {
                 $changeState = $model->change_state ? $model->change_state  : $model->getOriginalPurgeValue('change_state');
-                if(!$changeState) {
+                if (!$changeState) {
                     return;
                 }
                 //trace_log("beforeSave change State: ".$changeState);
                 $transition = self::getWfTransition($changeState, $model);
-                $rulesSet = $model->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
+                $rulesSet = $model->getWakaWorkflow()->getMetadataStore()->getTransitionMetadata($transition)['rulesSet'] ?? null;
                 $rules = $model->getWfRules($rulesSet);
                 if ($rules['fields'] ?? false) {
-                    foreach($rules['fields'] as $key=>$rule) {
+                    foreach ($rules['fields'] as $key => $rule) {
                         $model->rules[$key] = $rule;
                     }
                 }
-                    //trace_log($model->toArray());
+                //trace_log($model->toArray());
                 //TODO ICI PROBLEME DE MODIFICATION DE LETTRE CHANGE STATE IMPOSSIBLE
-                $model->workflow_get()->apply($model, $changeState); 
+                $model->getWakaWorkflow()->apply($model, $changeState);
             });
 
-            
+
             $model->bindEvent('model.afterSave', function () use ($model) {
                 //trace_log('model after save as runned');
                 $changeState = $model->change_state ? $model->change_state  : $model->getOriginalPurgeValue('change_state');
                 $model->storeStatelog($changeState);
                 $model->executeWorkflowFunctionAfterSave($changeState);
-                
             });
         });
     }
 
-    public function currentState() {
+    public function getWorkflowName($workflowName = null)
+    {
+        if (!$workflowName) {
+            if ($this->actualWorkflow) {
+                return $this->defaultWorkflowName = $this->actualWorkflow;
+            } else {
+                return $this->defaultWorkflowName;
+            }
+        } 
+        return $this->defaultWorkflowName =  $workflowName;
+    }
+
+    public function getWakaWorkflow($workflowName = null)
+    {
+        $workflowName = $this->getWorkflowName($workflowName);
+        return $this->workflow_get($workflowName);
+    }
+
+    public function wakaWorkflowCan($transition, $workflowName = null)
+    {
+        $workflowName = $this->getWorkflowName($workflowName);
+        return $this->workflow_can($transition, $workflowName);
+    }
+
+    public function wakaWorkflowTransitions($workflowName = null) {
+        $workflowName = $this->getWorkflowName($workflowName);
+        return $this->workflow_transitions($workflowName);
+    }
+
+    public function currentState()
+    {
         return $this->morphOne(\Waka\Utils\Models\StateLog::class, 'state_logeable')->latestOfMany();
     }
-    
 
-    public function executeWorkflowFunctionAfterSave($changeState) {
-        if(!$changeState) {
+
+    public function executeWorkflowFunctionAfterSave($changeState)
+    {
+        if (!$changeState) {
             return;
         }
-        $workflowName = $this->workflow_get()->getName();
+        $workflowName =  $this->defaultWorkflowName;
         //
         $transition = self::getWfTransition($changeState, $this);
-        $afterSaveFunction = $this->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['fncs'] ?? null;
+        $afterSaveFunction = $this->getWakaWorkflow()->getMetadataStore()->getTransitionMetadata($transition)['fncs'] ?? null;
         if ($afterSaveFunction) {
-                $afterSaveFunction = new \Winter\Storm\Support\Collection($afterSaveFunction);
-                $fnc = $afterSaveFunction->where('type', 'prod')->toArray();
-                \Event::fire('workflow.' . $workflowName . '.afterModelSaved', [$this, $fnc]);
+            $afterSaveFunction = new \Winter\Storm\Support\Collection($afterSaveFunction);
+            $fnc = $afterSaveFunction->where('type', 'prod')->toArray();
+            \Event::fire('workflow.' . $workflowName . '.afterModelSaved', [$this, $fnc]);
         }
-
     }
 
-    public function storeStatelog($changeState) {
-        
+    public function storeStatelog($changeState)
+    {
         if (!$changeState) {
             return;
         }
         //Preparation de l'evenement
         $transition = self::getWfTransition($changeState, $this);
-        
-        
+
+
         //fin de la sauvegarde evenement
         if (!$this->noStateSave) {
             $user = \BackendAuth::getUser();
-            if($user) {
+            if ($user) {
                 $user = $user->fullName;
             } else {
                 $user = 'App';
@@ -178,19 +207,21 @@ trait WakaWorkflowTrait
                 'name' => $changeState,
                 'state' => $transition->getTos()[0],
                 'user' => $user,
-                ]);
+            ]);
             $this->state_logs()->add($state);
         }
     }
 
-    public function getWfPlaces() {
-        $workflow = $this->workflow_get();
+    public function getWfPlaces()
+    {
+        $workflow = $this->getWakaWorkflow();
         return $workflow->getDefinition()->getPlaces();
     }
 
-    public function getStateAttribute($value) {
-        if(!$value) {
-            $workflow = $this->workflow_get();
+    public function getStateAttribute($value)
+    {
+        if (!$value) {
+            $workflow = $this->getWakaWorkflow();
             $places = $workflow->getDefinition()->getPlaces();
             $value = array_key_first($places);
         }
@@ -199,7 +230,7 @@ trait WakaWorkflowTrait
 
     public static function getWfTransition($changeState, $model)
     {
-        $transitions = $model->workflow_get()->getDefinition()->getTransitions();
+        $transitions = $model->getWakaWorkflow()->getDefinition()->getTransitions();
         foreach ($transitions as $transition) {
             if ($transition->getName() == $changeState) {
                 return $transition;
@@ -211,13 +242,13 @@ trait WakaWorkflowTrait
     public function getWfTransitionRedirection($label_transition = null)
     {
         $transition = self::getWfTransition($label_transition, $this);
-        $redirection  = $this->workflow_get()->getMetadataStore()->getTransitionMetadata($transition)['redirect'] ?? null;
+        $redirection  = $this->getWakaWorkflow()->getMetadataStore()->getTransitionMetadata($transition)['redirect'] ?? null;
         return $redirection; // string place name
     }
 
     // public static function getManualTransitionobject($changeState, $model)
     // {
-    //     $transitions = $model->workflow_get()->getDefinition()->getTransitions();
+    //     $transitions = $model->getWakaWorkflow()->getDefinition()->getTransitions();
     //     foreach ($transitions as $transition) {
     //         if ($transition->getName() == $changeState) {
     //             return $transition;
@@ -228,7 +259,7 @@ trait WakaWorkflowTrait
 
     public function listAllWorklowstate()
     {
-        $workflow = $this->workflow_get();
+        $workflow = $this->getWakaWorkflow();
         $places = $workflow->getDefinition()->getPlaces();
         $results = [];
         foreach ($places as $place) {
@@ -238,18 +269,18 @@ trait WakaWorkflowTrait
         //trace_log($results);
         return $results;
     }
-    
+
 
     public function listWfPlaceFormAuto()
     {
-        $workflow = $this->workflow_get();
+        $workflow = $this->getWakaWorkflow();
         $place = $this->state;
         $form_auto = $workflow->getMetadataStore()->getPlaceMetadata($place)['form_auto'] ?? [];
         return $form_auto;
     }
     public function listWfPlaceCronAuto()
     {
-        $workflow = $this->workflow_get();
+        $workflow = $this->getWakaWorkflow();
         $place = $this->state;
         $form_auto = $workflow->getMetadataStore()->getPlaceMetadata($place)['cron_auto'] ?? [];
         return $form_auto;
@@ -257,7 +288,7 @@ trait WakaWorkflowTrait
 
     public function listWfWorklowstateWithAutomatisation()
     {
-        $workflow = $this->workflow_get();
+        $workflow = $this->getWakaWorkflow();
         $places = $workflow->getDefinition()->getPlaces();
         $results = [];
         foreach ($places as $place) {
@@ -271,7 +302,7 @@ trait WakaWorkflowTrait
 
     public function getWfRules($rulesSet)
     {
-        $rulesSets = $this->workflow_get()->getMetadataStore()->getWorkflowMetadata()['rulesSets'] ?? null;
+        $rulesSets = $this->getWakaWorkflow()->getMetadataStore()->getWorkflowMetadata()['rulesSets'] ?? null;
         if (!$rulesSets) {
             return null;
         }
@@ -282,28 +313,29 @@ trait WakaWorkflowTrait
         return $rulesSets[$rulesSet] ?? null;
     }
 
-    public function hasNoRole() {
+    public function hasNoRole()
+    {
         $user = \BackendAuth::getUser();
-        if($user->is_superuser) {
+        if ($user->is_superuser) {
             return false;
         }
         $place = null;
         $place = $this->state;
         if (!$place) {
-            $workflow = $this->workflow_get();
+            $workflow = $this->getWakaWorkflow();
             $places = $workflow->getDefinition()->getPlaces();
             $place = array_key_first($places);
         }
-        
+
         //trace_log($place);
 
-        $noRoleCode = $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['norole'] ?? []; // string place name
-        if($noRoleCode == []) {
+        $noRoleCode = $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['norole'] ?? []; // string place name
+        if ($noRoleCode == []) {
             return false;
         }
-        
-        
-        if(in_array($user->role->code, $noRoleCode))  {
+
+
+        if (in_array($user->role->code, $noRoleCode)) {
             return true;
         } else {
             return false;
@@ -320,36 +352,35 @@ trait WakaWorkflowTrait
             $place = $this->state;
         }
         //trace_log($place);
-        $label = $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['label'] ?? $place; // string place name
+        $label = $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['label'] ?? $place; // string place name
         return Lang::get($label);
     }
 
-    
+
 
     public function getWfMustTransAttribute($place = null)
     {
-        if(!$place) {
+        if (!$place) {
             $place = $this->state;
         }
-        return $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['must_trans'] ?? false; // string place name
+        return $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['must_trans'] ?? false; // string place name
     }
 
     public function getWfHiddenFields($place = null)
     {
-        if(!$place) {
+        if (!$place) {
             $place = $this->state;
         }
-        return $this->workflow_get()->getMetadataStore()->getPlaceMetadata($place)['hidden_fields'] ?? []; // string place name
+        return $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['hidden_fields'] ?? []; // string place name
     }
     //
-    public function getLastLog($stateName) {
+    public function getLastLog($stateName)
+    {
         $log =  $this->state_logs()->where('state', $stateName)->orderBy('created_at', 'desc')->first();
-        if($log) {
+        if ($log) {
             return $log->created_at;
         } else {
             return null;
         }
-        
-
     }
 }

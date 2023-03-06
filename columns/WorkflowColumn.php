@@ -82,10 +82,10 @@ class WorkflowColumn
     {
         $place = $this->record->state;
         if (!$place) {
-            $arrayPlaces = $this->record->workflow_get()->getMarking($this->record)->getPlaces();
+            $arrayPlaces = $this->record->getWakaWorkflow()->getMarking($this->record)->getPlaces();
             $place = array_key_first($arrayPlaces);
         }
-        $placeMetadata = $this->record->workflow_get()->getMetadataStore()->getPlaceMetadata($place);
+        $placeMetadata = $this->record->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place);
         $icon = null;
         $label = \Lang::get($placeMetadata['label'] ?? $place);
         $color = $placeMetadata['color'] ?? null;

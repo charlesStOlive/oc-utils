@@ -357,8 +357,8 @@ class Btns extends WidgetBase
     {
 
         $model = $this->controller->formGetModel();
-        $transitions = $model->workflow_get()->getEnabledTransitions($model);
-        $workflowMetadata = $model->workflow_get()->getMetadataStore();
+        $transitions = $model->getWakaWorkflow()->getEnabledTransitions($model);
+        $workflowMetadata = $model->getWakaWorkflow()->getMetadataStore();
         $objTransition = [];
         foreach ($transitions as $transition) {
             $hidden = $workflowMetadata->getMetadata('hidden', $transition) ?? false;

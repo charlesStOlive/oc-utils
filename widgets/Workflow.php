@@ -40,8 +40,8 @@ class Workflow extends WidgetBase
 
     public function getWorkFlowTransitions($withHidden = false)
     {
-        $transitions = $this->model->workflow_get()->getEnabledTransitions($this->model);
-        $workflowMetadata = $this->model->workflow_get()->getMetadataStore();
+        $transitions = $this->model->getWakaWorkflow()->getEnabledTransitions($this->model);
+        $workflowMetadata = $this->model->getWakaWorkflow()->getMetadataStore();
         $objTransition = [];
         foreach ($transitions as $transition) {
             $hidden = $workflowMetadata->getMetadata('hidden', $transition) ?? false;

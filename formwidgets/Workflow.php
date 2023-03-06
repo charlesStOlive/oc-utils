@@ -68,26 +68,11 @@ class Workflow extends FormWidgetBase
         //$this->vars['datas'] = $this->getWorkFlowData();
     }
 
-    // /**
-    //  * @inheritDoc
-    //  */
-    // public function getWorkFlowData()
-    // {
-    //     $workflowName = $this->workflowName;
-    //     $workflow = $this->model->workflow_get();
-    //     $transitions = $workflow->getEnabledTransitions($this);
-
-    //     $possibleTransition = [];
-    //     foreach ($transitions as $transition) {
-    //         $name = $transition->getName();
-    //         $label = $workflow->getMetadata('label', $transition) ?? $name;
-    //         $possibleTransition[$name] = $label;
-    //     }
-    // }
+    
 
     public function initWorkflow()
     {
-        $this->workflow = $workflow = $this->model->workflow_get();
+        $this->workflow = $workflow = $this->model->getWakaWorkflow();
         $this->workflowMetadata = $workflow->getMetadataStore();
     }
 

@@ -83,7 +83,7 @@ class WorkflowBehavior extends ControllerBehavior
             $model->change_state = post('try');
             //IMPORTANT A GARDER POUR L INSTANT IL Y A DES FORMULES COMPLEXES A GARDER POUR UNE AUTRE FOIS-----------
             // $tryToChangeStates = post('try');
-            // $wfMetadataStore = $model->workflow_get()->getMetadataStore();
+            // $wfMetadataStore = $model->getWakaWorkflow()->getMetadataStore();
             // $tryToChangeStates = explode(',',$tryToChangeStates);
             // $transitionChosen = null;
             // $modelData = $this->controller->formGetWidget()->getSaveData();
