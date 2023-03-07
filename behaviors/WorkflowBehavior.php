@@ -9,19 +9,19 @@ use Session;
 class WorkflowBehavior extends ControllerBehavior
 {
     public $controller;
-    public $workflowWidget;
+    // public $workflowWidget;
     public $model;
     public $config;
     public $user;
     /**
      * @inheritDoc
      */
-    protected $requiredProperties = ['workflowConfig'];
+    // protected $requiredProperties = ['workflowConfig'];
 
     /**
      * @var array Configuration values that must exist when applying the primary config file.
      */
-    protected $requiredConfig = ['places'];
+    // protected $requiredConfig = ['places'];
 
     public $popupAfterSave;
 
@@ -34,14 +34,14 @@ class WorkflowBehavior extends ControllerBehavior
     public function __construct($controller)
     {
         parent::__construct($controller);
-        $this->workflowWidget = new \Waka\Utils\Widgets\Workflow($controller);
-        $this->workflowWidget->alias = 'workflow';
+        // $this->workflowWidget = new \Waka\Utils\Widgets\Workflow($controller);
+        // $this->workflowWidget->alias = 'workflow';
         $this->controller = $controller;
         $this->user = $controller->user;
         //trace_log($controller->user);
-        $this->workflowWidget->model = $controller->formGetModel();
-        $this->workflowWidget->config = $this->config = $this->makeConfig($controller->workflowConfig, $this->requiredConfig);
-        $this->workflowWidget->bindToController();
+        // $this->workflowWidget->model = $controller->formGetModel();
+        // $this->workflowWidget->config = $this->config = $this->makeConfig($controller->workflowConfig, $this->requiredConfig);
+        // $this->workflowWidget->bindToController();
 
         \Event::listen('waka.workflow.popup_afterSave', function($data) {
             \Session::put('popup_afterSave', $data);

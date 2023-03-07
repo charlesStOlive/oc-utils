@@ -23,14 +23,14 @@ class Btns extends WidgetBase
         $this->vars['context'] = $this->context;
         $this->vars['modelClass'] = str_replace('\\', '\\\\', $this->config->modelClass);
         $this->vars['user'] = $this->user = \BackendAuth::getUser();
-        $this->vars['hasWorkflow'] = $this->config->workflow;
+        $this->vars['hasWorkflow'] = $this->config->workflow ? true : false;
     }
 
     public function renderBar($context = 'update', $mode = 'update', $modelId = null)
     {
         //trace_log($context);
         $this->prepareComonVars($context);
-        $configBtns = $this->config->action_bar['config_btns'] ?? null;
+        $configBtns = $this->config->action_bar['config_btns'] ?? [];
         $this->vars['mode'] = $mode;
         $this->vars['partials'] = $this->config->action_bar['partials'] ?? null;
         if ($mode == 'update') {
@@ -47,11 +47,14 @@ class Btns extends WidgetBase
 
     public function renderWorkflowOrBtn($context = null)
     {
+        trace_log("renderWorkflowOrBtn");
+        trace_log($context);
         if($context == 'preview') {
             return null;
         }
         $this->prepareComonVars($context);
         $hasWorkflow = $this->config->workflow;
+
         if(!$hasWorkflow) {
             return $this->makePartial('sub/base_buttons');
         }
@@ -71,19 +74,16 @@ class Btns extends WidgetBase
         }
 
         $formAutoConfig = [];
-        $is_form_auto = $this->config->workflow[$state]['form_auto'] ?? true;
-        if($is_form_auto) {
-            $formAutoConfig = $this->config->workflow[$state]['form_auto'] ?? false;
-            //La form auto peux aussi être déclarer dans le YAML
-            if(!$formAutoConfig) {
+        $formAutoConfig = $this->config->workflow[$state]['form_auto'] ?? [];
+        if(!count($formAutoConfig)) {
                 $formAutoConfig = $model->listWfPlaceFormAuto();
-            } 
         }
         $wfTrys = $formAutoConfig;
 
-
+        
         $transitions = $this->getWorkFlowTransitions();
         $separateOnStateConfigYaml = $this->config->workflow[$state]['separate'] ?? [];
+        trace_log($separateOnStateConfigYaml);
 
         //traitement du tableau des boutons séparés et création d'un premier tableau
         $wfConfigSeparates = []; 
@@ -229,8 +229,6 @@ class Btns extends WidgetBase
     public function renderLot()
     {
         $this->prepareComonVars('list');
-        //$configBtns = $this->config->tool_bar['lot'] ?? null;
-        //trace_log("preparation du lot");
         $this->vars['hasWorkflow'] = $this->config->workflow;
         $this->vars['btns'] = $this->getBtns($this->config->tool_bar['config_lot'] ?? null);
         return $this->makePartial('container_lot');
@@ -357,8 +355,9 @@ class Btns extends WidgetBase
     {
 
         $model = $this->controller->formGetModel();
-        $transitions = $model->getWakaWorkflow()->getEnabledTransitions($model);
-        $workflowMetadata = $model->getWakaWorkflow()->getMetadataStore();
+        $modelWorkflow = $model->getWakaWorkflow();
+        $transitions = $modelWorkflow->getEnabledTransitions($model);
+        $workflowMetadata = $modelWorkflow->getMetadataStore();
         $objTransition = [];
         foreach ($transitions as $transition) {
             $hidden = $workflowMetadata->getMetadata('hidden', $transition) ?? false;

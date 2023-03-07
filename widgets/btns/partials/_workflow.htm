@@ -1,17 +1,17 @@
 <?php if (!$wfTrys) : ?>
-<?= $this->makePartial('workflow/btn_save_icon', ['wfTrys' => $wfTrys]);?>
+    <?= $this->makePartial('workflow/btn_save_icon', ['wfTrys' => null]);?>
 <?php endif ?>
 
 <?php if ($separateFirst) : ?>
-<?= $this->makePartial('workflow/workflow_buttons',['btnTrans' => $wfSeparates]);?>
+    <?= $this->makePartial('workflow/workflow_buttons',['btnTrans' => $wfSeparates]);?>
 <?php endif ?>
 
 <?php if ($wfTrys) : ?>
-<?= $this->makePartial('workflow/btn_save_auto', ['wfTrys' => $wfTrys]);?>
+    <?= $this->makePartial('workflow/btn_save_auto', ['wfTrys' => $wfTrys]);?>
 <?php endif ?>
 
 <?= $this->makePartial('workflow/workflow_dd_button',['btnTrans' => $transitions]);?>
 
 <?php if (!$separateFirst) : ?>
-<?= $this->makePartial('workflow/workflow_buttons',['btnTrans' => $wfSeparates]);?>
+    <?= $this->makePartial('workflow/workflow_buttons',['btnTrans' => $wfSeparates]);?>
 <?php endif ?>
