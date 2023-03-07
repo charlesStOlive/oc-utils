@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'env' => env('APP_ENV', 'dev'),
     'civ' => ['Mme/M.' => 'Mme/M.', 'Mme' => 'Mme', 'M.' => 'M.', 'Dr' => 'Dr', 'Pr' => 'Pr'],
     'basic_state' => ['Brouillon' =>'Brouillon','Désactivé' => 'Désactivé','Actif' =>'Actif'],
     'btns' => [
