@@ -305,6 +305,7 @@ class Plugin extends PluginBase
             'Waka\Utils\FormWidgets\ComonBlocs' => 'comonblocs',
             'Waka\Utils\FormWidgets\Lists' => 'lists',
             'Waka\Utils\FormWidgets\WakaFinder' => 'wakafinder',
+            'Waka\Utils\FormWidgets\WakaRichEditor' => 'wakaeditor',
         ];
     }
 

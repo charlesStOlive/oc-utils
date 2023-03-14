@@ -11,6 +11,10 @@ class TinyUuid
         return $str;
     }
 
+    public static function generateFromDate() {
+        return  \Carbon\Carbon::now()->format('y_n_j-G_i_s');
+    }
+
     public static function uuid(string $prefix = '', bool $more_entropy = false)
     {
         return uniqid($prefix, $more_entropy);
