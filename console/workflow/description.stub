@@ -4,7 +4,7 @@
 * comentaire : {{configs.com.data }}
 
 ## Representation graphique
-![](../assets/docs_images/{{name}}_tb.jpeg)
+![](../assets/docs_images/{{lower_name}}_tb.jpeg)
 
 ## Liste des états
 {% for place in places %}
