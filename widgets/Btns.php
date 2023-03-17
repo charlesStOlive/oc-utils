@@ -11,6 +11,7 @@ class Btns extends WidgetBase
     protected $defaultAlias = 'production';
 
     public $config;
+    public $workflowConfigState;
     public $model;
     public $fields;
     public $format;
@@ -24,19 +25,35 @@ class Btns extends WidgetBase
         $this->vars['modelClass'] = str_replace('\\', '\\\\', $this->config->modelClass);
         $this->vars['user'] = $this->user = \BackendAuth::getUser();
         $this->vars['hasWorkflow'] = $this->config->workflow ? true : false;
+        $this->model = $this->controller->formGetModel();
+        $this->workflowConfigState = $this->getWorkflowConfigFromState($this->model);
+    }
+
+    public function getWorkflowConfigFromState($model = null) {
+        if(!$model) {
+            $model = $this->controller->formGetModel();
+        }
+        $state = $model?->state;
+        if(!$state) {
+            return [];
+        } else {
+            return  $this->config->workflow[$state] ?? [];
+        }
     }
 
     public function renderBar($context = 'update', $mode = 'update', $modelId = null)
     {
-        //trace_log($context);
         $this->prepareComonVars($context);
         $configBtns = $this->config->action_bar['config_btns'] ?? [];
         $this->vars['mode'] = $mode;
+        //Est ce qu'il y a des partials à ajouter à la barre ?
         $this->vars['partials'] = $this->config->action_bar['partials'] ?? null;
+        
+        //Rendu en fonction du mode. le mode par default est à update mais il peut être une list dans les popup actions. 
         if ($mode == 'update') {
             $model = $this->controller->formGetModel();
-            $this->vars['btns'] = $this->getBtns($configBtns);
             $this->vars['modelId'] = $model->id;
+            $this->vars['btns'] = $this->getBtns($configBtns);
             return $this->makePartial('action_bar');
         } else {
             $this->vars['btns'] = $this->getBtns($configBtns, true);
@@ -47,8 +64,8 @@ class Btns extends WidgetBase
 
     public function renderWorkflowOrBtn($context = null)
     {
-        trace_log("renderWorkflowOrBtn");
-        trace_log($context);
+        //trace_log("renderWorkflowOrBtn");
+        //trace_log($context);
         if($context == 'preview') {
             return null;
         }
@@ -58,32 +75,27 @@ class Btns extends WidgetBase
         if(!$hasWorkflow) {
             return $this->makePartial('sub/base_buttons');
         }
-        //
-        $model = $this->controller->formGetModel();
-        //
-        $noRole =  $model->hasNoRole();
-        if($noRole) {
+        if($this->model->userHasNoRole()) {
             return $this->makePartial('workflow/no_wf_role');
         }
-        $state = $model->state;
         //trace_log($state);
         //trace_log($this->config->workflow);
-        $block = $this->config->workflow[$state]['block'] ?? false;
+        $block = $this->workflowConfigState['block'] ?? false;
         if($block) {
             return $this->makePartial('workflow/no_wf_role');
         }
 
         $formAutoConfig = [];
-        $formAutoConfig = $this->config->workflow[$state]['form_auto'] ?? [];
+        $formAutoConfig = $this->workflowConfigState['form_auto'] ?? [];
         if(!count($formAutoConfig)) {
-                $formAutoConfig = $model->listWfPlaceFormAuto();
+                $formAutoConfig = $this->model->listWfPlaceFormAuto();
         }
         $wfTrys = $formAutoConfig;
 
         
         $transitions = $this->getWorkFlowTransitions();
-        $separateOnStateConfigYaml = $this->config->workflow[$state]['separate'] ?? [];
-        trace_log($separateOnStateConfigYaml);
+        $separateOnStateConfigYaml = $this->workflowConfigState['separate'] ?? [];
+        //trace_log($separateOnStateConfigYaml);
 
         //traitement du tableau des boutons séparés et création d'un premier tableau
         $wfConfigSeparates = []; 
@@ -100,9 +112,11 @@ class Btns extends WidgetBase
 
 
         $wfOriginalSeparates = [];
+        trace_log('transitions');
+        trace_log($transitions);
         //Information venant du workflow on va réorganiser les boutons si besoin.
         foreach($transitions as $key => $transition) {
-            //Attention la clef est d etype ,0,1,2 elle ne sert qu'a enlever les tableaux. 
+            //Attention la clef est de type ,0,1,2 elle ne sert qu'a enlever les tableaux. 
             //trace_log($transition['value']);
             if(in_array($transition['value'], $formAutoConfig)) {
                 unset($transitions[$key]);
@@ -133,9 +147,9 @@ class Btns extends WidgetBase
         }
 
         
-        $this->vars['mustTrans'] =  $model->wfMustTrans;
-        $this->vars['separateFirst'] =  $this->config->workflow[$state]['separateFirst'] ?? false;
-        $this->vars['modelId'] = $model->id;
+        $this->vars['mustTrans'] =  $this->model->wfMustTrans;
+        $this->vars['separateFirst'] =  $this->workflowConfigState['separateFirst'] ?? false;
+        $this->vars['modelId'] = $this->model->id;
         $this->vars['transitions'] = $transitions;
         $this->vars['wfTrys'] = $wfTrys ? "try:'".implode(',', $wfTrys)."'" : null;
         $this->vars['wfSeparates'] = $wfSeparates;
@@ -234,6 +248,18 @@ class Btns extends WidgetBase
         return $this->makePartial('container_lot');
     }
 
+    public function renderCallOut() {
+        if($hint = $this->workflowConfigState['hint'] ?? false) {
+            $this->vars['hintTitle'] = $hint['title'] ?? 'Info';
+            $this->vars['hintContent'] = \Lang::get($hint['content']);
+            $this->vars['hintType'] = $hint['type'] ?? 'info';
+            return $this->makePartial('callout');
+        } else {
+            return null;
+        }
+        
+    }
+
     public function getBtns($configurator, $isInContainer = false)
     {
         if (!$configurator) {
@@ -242,13 +268,9 @@ class Btns extends WidgetBase
         $btns = [];
         $groups = $configurator['groups'] ?? [];
         $collection = new Collection($configurator['btns']);
-        //trace_log($collection);
         //Blocage si dans les hide de la config
-        $model = $this->controller->formGetModel();
-        if($model) {
-             //trace_log($model->state);
-            $modelState = $model->state;
-            $hiddenBar = $this->config->workflow[$modelState]['hide'] ?? false;
+        if($this->model) {
+            $hiddenBar = $this->workflowConfigState['hide'] ?? false;
             if($hiddenBar) {
                 return [];
             }
@@ -355,25 +377,26 @@ class Btns extends WidgetBase
     {
 
         $model = $this->controller->formGetModel();
-        $modelWorkflow = $model->getWakaWorkflow();
-        $transitions = $modelWorkflow->getEnabledTransitions($model);
-        $workflowMetadata = $modelWorkflow->getMetadataStore();
+        $transitions =  $model->getWakaWorkflow()->getEnabledTransitions($model);
         $objTransition = [];
         foreach ($transitions as $transition) {
-            $hidden = $workflowMetadata->getMetadata('hidden', $transition) ?? false;
+            $transitionMeta = $model->wakaWorkflowGetTransitionMetadata($transition);
+            $hidden = $transitionMeta['hidden'] ?? false;
             if (!$hidden) {
                 $name = $transition->getName();
-                $label = $workflowMetadata->getMetadata('label', $transition) ?? $name;
-                $com = $workflowMetadata->getMetadata('com', $transition) ?? null;
-                $redirect = $workflowMetadata->getMetadata('redirect', $transition) ?? null;
-                $icon = $workflowMetadata->getMetadata('icon', $transition) ?? null;
-                $type = $workflowMetadata->getMetadata('type', $transition) ?? null;
+                $label = $transitionMeta['label'] ?? null;
+                $button = $transitionMeta['button'] ?? null;
+                $buton = $button ? $button : $label;
+                $com = $transitionMeta['com'] ?? null;
+                $redirect = $transitionMeta['redirect'] ?? null;
+                $icon = $transitionMeta['icon'] ?? null;
+                $color = $transitionMeta['color'] ?? null;
                 $object = [
                     'value' => $name,
-                    'label' => \Lang::get($label),
+                    'label' => \Lang::get($buton),
                     'com' => $com,
                     'icon' => $icon,
-                    'type' => $type,
+                    'color' => $color,
                     'redirect' => $redirect,
                 ];
                 array_push($objTransition, $object);

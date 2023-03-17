@@ -69,11 +69,12 @@ class PlacesImport implements ToCollection, WithHeadingRow, WithCalculatedFormul
                 'alerte' => $row['alerte'] ?? null,
                 'icon' => $row['icon'] ?? null,
                 'color' => $row['color'] ?? null,
-                'rules' => $row['rules'] ?? null,
+                'noroles' => $row['noroles'] ?? null,
                 'cron_auto' => $row['cron_auto'] ?? null,
                 'form_auto' => $row['form_auto'] ?? null,
                 'must_trans' => $row['must_trans'] ?? null,
                 'hidden_fields' => $row['hidden_fields'] ?? null,
+                'new_workflow' =>  $row['new_workflow'] ?? null,
             ];
             array_push($this->data, $obj);
         }
@@ -96,10 +97,12 @@ class TransImport implements ToCollection, WithHeadingRow, WithCalculatedFormula
                 'to' => $row['to'] ?? null,
                 'name' => $row['final_name'] ?? null,
                 'lang' => $row['lang'] ?? null,
+                'button' => $row['button'] ?? null,
                 'com' => $row['com'] ?? null,
                 'redirect' => $row['redirect'] ?? null,
                 'rules' => $row['rules'] ?? null,
-                'type' => $row['type'] ?? null,
+                'color' => $row['color'] ?? null,
+                'goto'  => $row['goto'] ?? null,
                 'permissions' => $row['permissions'] ?? null,
                 'hidden' => $row['hidden'] ?? null,
                 'fnc_prod' => $row['fnc_prod'] ?? null,

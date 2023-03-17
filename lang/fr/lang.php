@@ -28,6 +28,7 @@ return [
     ],
     'global' => [
         'details' => 'Détails',
+        'confirm' => 'Confirmer',
         'slug' => 'Slug',
         'updated_at' => 'MAJ',
         'created_at' => 'Crée le',

@@ -1,4 +1,6 @@
-<?php namespace Waka\Utils\Classes;
+<?php
+
+namespace Waka\Utils\Classes;
 
 class CreateWorkflowDataFromExcel extends CreateBase
 {
@@ -45,7 +47,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
         //
         $trans = $trans->reject(function ($item, $key) {
             $checkField = $item['name'] ?? null;
-            if(!$checkField) {
+            if (!$checkField) {
                 return true;
             } else {
                 return false;
@@ -55,7 +57,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
             $item['functions'] = [];
             $fncProd = $item['fnc_prod'] ?? [];
             $froms = $item['froms'] ?? null;
-            $item['froms'] = explode(',',$item['froms']);
+            $item['froms'] = explode(',', $item['froms']);
             //trace_log("fncProd : " . $fncProd);
             if (!empty($fncProd)) {
                 //trace_log("Travail sur les fonctions de production");
@@ -151,6 +153,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
         $tradPlacesCom = $places->where('com', '<>', null)->lists('com', 'name');
         $tradTrans = $trans->where('lang', '<>', null)->lists('lang', 'name');
         $tradTransCom = $trans->where('com', '<>', null)->lists('com', 'name');
+        $tradButton = $trans->where('button', '<>', null)->lists('button', 'name');
 
         $places = $places->toArray();
         //trace_log($places);
@@ -170,6 +173,7 @@ class CreateWorkflowDataFromExcel extends CreateBase
             'tradPlacesCom' => $tradPlacesCom,
             'tradPlacesAlertes' => $tradPlacesAlertes,
             'tradTransCom' => $tradTransCom,
+            'tradButton' => $tradButton,
             'places' => $places,
             'fncs' => $fncs,
             'trans' => $trans,

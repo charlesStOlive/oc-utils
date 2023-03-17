@@ -32,14 +32,17 @@
 {% if place.alerte %}
                 alerte: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}.places.{{place.name}}_alerte{%else%}{{place.alerte}}{%endif%} 
 {% endif %}
-{% if place.rules %}
-                norole: [{{place.rules}}]
+{% if place.noroles %}
+                noroles: [{{place.noroles}}]
 {% endif %}
 {% if place.cron_auto %}
                 cron_auto: [{{place.cron_auto}}]
 {% endif %}
 {% if place.form_auto %}
                 form_auto: [{{place.form_auto}}]
+{% endif %}
+{% if place.new_workflow %}
+                new_workflow: true
 {% endif %}
 {% if place.color %}
                 color: {{place.color}}
@@ -60,8 +63,14 @@
         {{transition.name}}:
             metadata: 
                 label: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}.trans.{{transition.name}}{%else%}{{transition.lang}}{%endif%} 
+{% if transition.button %}
+                button: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}.trans.{{transition.name}}_btn{%else%}{{transition.button}}{%endif%} 
+{% endif %}
 {% if transition.com %}
-                com: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}.trans.{{transition.name}}_com{%else%}{{transition.lang}}{%endif%} 
+                com: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}.trans.{{transition.name}}_com{%else%}{{transition.com}}{%endif%} 
+{% endif %}
+{% if transition.goto %}
+                goto: {{ transition.goto }} 
 {% endif %}
 {% if transition.rules %}
                 rulesSet: {{transition.rules}}
@@ -72,8 +81,8 @@
 {% if transition.redirect %}
                 redirect: "{{transition.redirect}}"
 {% endif %}
-{% if transition.type %}
-                type: {{transition.type}}
+{% if transition.color %}
+                color: {{transition.color}}
 {% endif %}
 {% if transition.functions %}
                 fncs:

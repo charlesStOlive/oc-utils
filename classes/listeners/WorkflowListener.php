@@ -1,4 +1,6 @@
-<?php namespace Waka\Utils\Classes\Listeners;
+<?php
+
+namespace Waka\Utils\Classes\Listeners;
 
 // use Lang;
 // use MathPHP\Algebra;
@@ -39,6 +41,7 @@ class WorkflowListener
      */
     public function onLeave($event)
     {
+        $this->launchFunction($event, 'trait_onLeave');
     }
 
     /**
@@ -46,7 +49,7 @@ class WorkflowListener
      */
     public function onTransition($event)
     {
-        //trace_log('----onTransition launchFunction');
+        $this->launchFunction($event, 'trait_onTransition');
     }
 
     /**
@@ -74,7 +77,7 @@ class WorkflowListener
      * ATTention differents des autres evenements, provien du workflowtrait
      * Obligatoire à cause du systhème de dataSource qui ne fonctionne que sur les élements déjà enregistré.
      */
-    public function onAfterSavedFunction($model, $fnc)
+    protected function onAfterSavedFunction($model, $fnc)
     {
         $functionName = array_keys($fnc)[0] ?? null;
         if (!$functionName) {
@@ -87,7 +90,7 @@ class WorkflowListener
         }
     }
 
-    public function launchFunction($event, $type = 'trait')
+    protected function launchFunction($event, $type = 'trait')
     {
         $eventTransition = $event->getTransition();
         $fncs = new \Winter\Storm\Support\Collection($event->getMetadata('fncs', $eventTransition));
@@ -101,16 +104,16 @@ class WorkflowListener
             if (method_exists($this, (string) $fnc)) {
                 $this->{$fnc}($event, $attributes['args'] ?? null);
             } else {
-                throw new \SystemException("la fonction : " . $fnc . " n'existe pas dans l'ecouteur d'evenement du workflow");
+                throw new \SysteomException("la fonction : " . $fnc . " n'existe pas dans l'ecouteur d'evenement du workflw");
             }
         }
     }
 
-    public function launchGardFunction($event)
+    protected function launchGardFunction($event)
     {
         $eventTransition = $event->getTransition();
         $fncs = new \Winter\Storm\Support\Collection($event->getMetadata('fncs', $eventTransition));
-        
+
         $fncs = $fncs->where('type', 'gard');
         if (!$fncs->count()) {
             return false;

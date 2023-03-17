@@ -1,4 +1,6 @@
-<?php namespace Waka\Utils\Console;
+<?php
+
+namespace Waka\Utils\Console;
 
 use Config;
 use Exception;
@@ -13,7 +15,7 @@ use Workflow;
  */
 class WorkflowDump extends BaseScaffoldCommand
 {
-    
+
 
     protected static $defaultName = 'waka:workflowDump';
 
@@ -25,8 +27,8 @@ class WorkflowDump extends BaseScaffoldCommand
         {plugin : The name of the plugin. <info>(eg: Winter.Blog)</info>}
         {model : The name of the model. <info>(eg: ImportPosts)</info>}';
 
-       
-        
+
+
 
     /**
      * The console command description.
@@ -93,11 +95,11 @@ class WorkflowDump extends BaseScaffoldCommand
         $dumper = new GraphvizDumper();
 
         //Verification si le dossier image existe pour la doc. 
-        $path = plugins_path(strtolower($author).'/'.strtolower($plugin).'/assets/docs_images');
+        $path = plugins_path(strtolower($author) . '/' . strtolower($plugin) . '/assets/docs_images');
         \File::isDirectory($path) or \File::makeDirectory($path, 0777, true, true);
-        
 
-        
+
+
 
 
 
@@ -107,6 +109,7 @@ class WorkflowDump extends BaseScaffoldCommand
         $process = new Process($dotCommand);
         $process->setWorkingDirectory($path);
         $process->setInput($dumper->dump($definition, null, $tdOptions));
+
         //trace_log($dumper->dump($definition, null, $tdOptions));
         $process->mustRun();
 
@@ -124,10 +127,19 @@ class WorkflowDump extends BaseScaffoldCommand
 
     public function createDotCommand($workflowSlug, $type, $format)
     {
-        //trace_log("dot -T$format -o " . $path.'/' . $workflowSlug . '_' . $type . '.' . $format);
-        return ['dot', "-T${format}", '-o', "${workflowSlug}_${type}.${format}"];
-        // return ["dot -T$format -o " . $path.'/' . $workflowSlug . '_' . $type . '.' . $format];
-    }
+        // Spécifiez la taille de la mémoire allouée à Graphviz
+        $memory_limit = '2G';
 
-    
+        // Définissez la commande pour générer le graphique
+        $command = ['dot', "-T${format}", '-o', "${workflowSlug}_${type}.${format}"];
+
+        // Ajouter l'option de mémoire si la plate-forme actuelle est Windows
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $command[] = "-Gmemory_limit=${memory_limit}";
+        } else {
+            $command[] = "-Gmemory_limit=${memory_limit / 1000000}m";
+        }
+
+        return $command;
+    }
 }

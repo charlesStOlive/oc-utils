@@ -6,17 +6,35 @@
 ## Representation graphique
 ![](../assets/docs_images/{{lower_name}}_tb.jpeg)
 
+
+##Explications graph : 
+### Etat : 
+* les réctangles arronds représentent les états
+* CRON_AUTO : indique que des tentatives de transitions seront automatiquement effectués par l'app. 
+* FORM_AUTO : indique que le formulaire va tenter d'éffectuer une transition automatique en fonction des données qu'il possède. 
+
+### Transitions :  
+* les rectangles droits représentent les transitions 
+* Un réctange de couleur avec BTN, indique qu'un bouton portant ce nom sera arriché dans le formulaire 
+* il y a trois types de fonctions : 
+  * Gard : Une fonction qui permet de valider ou non une transition, si la fonction retourne false, la transition ne sera pas autorisé. 
+  * Trait: Une fonction de traitement qui sera executé lors de la transitions 
+  * Prod: Une fonction qui va produire un élement, cette fonction est appelé après l'enregistrmeent du modèle porteur du workflow. 
+
 ## Liste des états
 {% for place in places %}
 * **{{place.lang}}** | code : {{place.name}}
-{% if place.rules %}
-    * Rôle n'ayant pas accès à cet état : [{{place.rules}}]
+{% if place.noroles %}
+    * Rôles bloquées : **{{place.noroles}}**
 {% endif %}
 {% endfor %}
 
 ## Liste des transitions
 {% for transition in trans %}
 * **{{transition.lang}}** | code : {{transition.name}}
+{% if transition.button %}
+    * Bouton : {{transition.button}}
+{% endif %}
 {% if transition.rules %}
     * Appliquer un jeux de contrôle : {{transition.rules}}
 {% endif %}
@@ -28,7 +46,7 @@
 {% endif %}
 {% endfor %}
 
-## Les jeux de permissions des champs
+## Les jeux de validations des champs
 {% for key, rulesSet in rulesSets %}
-* {{key}}: {{rulesSet.message}}
+* **{{key}}**: {{rulesSet.message}}
 {% endfor %}

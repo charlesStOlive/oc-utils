@@ -101,8 +101,8 @@ class WakaRichEditor extends FormWidgetBase
         $this->vars['value'] = $this->getLoadValue();
         $this->vars['toolbarButtons'] = $this->evalToolbarButtons();
         $this->vars['useMediaManager'] = BackendAuth::getUser()->hasAccess('media.manage_media');
-        trace_log('waka.utils::froala.html_toolbar_buttons.'.$this->toolbarDefault);
-        trace_log(Config::get('waka.utils::froala.html_toolbar_buttons.'.$this->toolbarDefault));
+        //trace_log('waka.utils::froala.html_toolbar_buttons.'.$this->toolbarDefault);
+        //trace_log(Config::get('waka.utils::froala.html_toolbar_buttons.'.$this->toolbarDefault));
         $this->vars['globalToolbarButtons'] = Config::get('waka.utils::froala.html_toolbar_buttons.'.$this->toolbarDefault);
         $this->vars['allowEmptyTags'] = Config::get('waka.utils::froala.html_allow_empty_tags');
         $this->vars['allowTags'] = Config::get('waka.utils::froala.html_allow_tags');
@@ -138,7 +138,7 @@ class WakaRichEditor extends FormWidgetBase
 
     public function onLoadPageLinksForm()
     {
-        trace_log("onLoadPageLinksForm");
+        //trace_log("onLoadPageLinksForm");
         $this->vars['links'] = $this->getPageLinksArray();
         return $this->makePartial('modules/backend/formwidgets/richeditor/partials/_page_links_form.php');
     }

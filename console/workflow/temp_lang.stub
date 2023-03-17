@@ -17,6 +17,8 @@ return [
         '{{key}}' => '{{trad}}',
 {% endfor %}{% for key,trad in tradTransCom  %}
         '{{key}}_com' => '{{trad}}',
+{% endfor %}{% for key,trad in tradButton  %}
+        '{{key}}_btn' => '{{trad}}',
 {% endfor %}
     ],
     'error_message' => [

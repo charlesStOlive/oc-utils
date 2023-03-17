@@ -160,8 +160,8 @@ trait WakaWorkflowTrait
     public function getWorkflowName($workflowName = null)
     {
         if (!$workflowName) {
-            if ($this->actualWorkflow) {
-                return $this->defaultWorkflowName = $this->actualWorkflow;
+            if ($this->wf) {
+                return $this->defaultWorkflowName = $this->wf;
             } else {
                 return $this->defaultWorkflowName;
             }
@@ -216,17 +216,15 @@ trait WakaWorkflowTrait
         }
     }
 
-    public function getWfPlaces()
+    private function getWfPlaces()
     {
-        $workflow = $this->getWakaWorkflow();
-        return $workflow->getDefinition()->getPlaces();
+        return $this->getWakaWorkflow()->getDefinition()->getPlaces();
     }
 
     public function getStateAttribute($value)
     {
         if (!$value) {
-            $workflow = $this->getWakaWorkflow();
-            $places = $workflow->getDefinition()->getPlaces();
+            $places = $this->getWfPlaces();
             $value = array_key_first($places);
         }
         return $value;
@@ -263,29 +261,65 @@ trait WakaWorkflowTrait
         return $results;
     }
 
+    public function getWfPlaceLabelAttribute($state_column = null)
+    {
+        //A faire $state_column pour changer la colonne source de l'etat
+        $place = null;
+        if ($state_column) {
+            $place = $this->{$state_column};
+        } else {
+            $place = $this->state;
+        }
+        $label = $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['label'] ?? $place; // string place name
+        return Lang::get($label);
+    }
+    //
+    public function getWfPlaceButtonAttribute($state_column = null)
+    {
+        //A faire $state_column pour changer la colonne source de l'etat
+        $place = null;
+        if ($state_column) {
+            $place = $this->{$state_column};
+        } else {
+            $place = $this->state;
+        }
+        $placeMetaData = $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place);
+        $button = $placeMetaData['button'] ?? $this->placeMetaData['label']; // string place name
+        return Lang::get($button);
+    }
+
+
+
 
     public function listWfPlaceFormAuto()
     {
-        $workflow = $this->getWakaWorkflow();
-        $place = $this->state;
-        $form_auto = $workflow->getMetadataStore()->getPlaceMetadata($place)['form_auto'] ?? [];
+        $form_auto = $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($this->state)['form_auto'] ?? [];
         return $form_auto;
     }
     public function listWfPlaceCronAuto()
     {
-        $workflow = $this->getWakaWorkflow();
-        $place = $this->state;
-        $form_auto = $workflow->getMetadataStore()->getPlaceMetadata($place)['cron_auto'] ?? [];
-        return $form_auto;
+        $cront_auto = $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($this->state)['form_auto'] ?? [];
+        return $cront_auto;
+    }
+
+    public function getWfMustTransAttribute($place = null)
+    {
+        if (!$place) $place =  $this->state;
+        return $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['must_trans'] ?? false; // string place name
+    }
+
+    public function getWfHiddenFields($place = null)
+    {
+        if (!$place) $place =  $this->state;
+        return $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['hidden_fields'] ?? []; // string place name
     }
 
     public function listWfWorklowstateWithAutomatisation()
     {
-        $workflow = $this->getWakaWorkflow();
-        $places = $workflow->getDefinition()->getPlaces();
+        $places = $this->getWakaWorkflow()->getDefinition()->getPlaces();
         $results = [];
         foreach ($places as $place) {
-            $automatisation = $workflow->getMetadataStore()->getPlaceMetadata($place)['cron_auto'] ?? false;
+            $automatisation = $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['cron_auto'] ?? false;
             if ($automatisation) {
                 $results[$place] = $automatisation;
             }
@@ -308,7 +342,7 @@ trait WakaWorkflowTrait
         return $rulesSets[$rulesSet] ?? null;
     }
 
-    public function hasNoRole()
+    public function userHasNoRole()
     {
         $user = \BackendAuth::getUser();
         if ($user->is_superuser) {
@@ -317,19 +351,13 @@ trait WakaWorkflowTrait
         $place = null;
         $place = $this->state;
         if (!$place) {
-            $workflow = $this->getWakaWorkflow();
-            $places = $workflow->getDefinition()->getPlaces();
+            $places = $this->getWakaWorkflow()->getDefinition()->getPlaces();
             $place = array_key_first($places);
         }
-
-        //trace_log($place);
-
-        $noRoleCode = $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['norole'] ?? []; // string place name
+        $noRoleCode = $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['noroles'] ?? []; // string place name
         if ($noRoleCode == []) {
             return false;
         }
-
-
         if (in_array($user->role->code, $noRoleCode)) {
             return true;
         } else {
@@ -337,45 +365,13 @@ trait WakaWorkflowTrait
         }
     }
 
-    public function getWfPlaceLabelAttribute($state_column = null)
+    public function getLastLog($stateName)
     {
-        //A faire $state_column pour changer la colonne source de l'etat
-        $place = null;
-        if ($state_column) {
-            $place = $this->{$state_column};
+        $log =  $this->state_logs()->where('state', $stateName)->orderBy('created_at', 'desc')->first();
+        if ($log) {
+            return $log->created_at;
         } else {
-            $place = $this->state;
+            return null;
         }
-        //trace_log($place);
-        $label = $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['label'] ?? $place; // string place name
-        return Lang::get($label);
     }
-
-
-
-    public function getWfMustTransAttribute($place = null)
-    {
-        if (!$place) {
-            $place = $this->state;
-        }
-        return $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['must_trans'] ?? false; // string place name
-    }
-
-    public function getWfHiddenFields($place = null)
-    {
-        if (!$place) {
-            $place = $this->state;
-        }
-        return $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['hidden_fields'] ?? []; // string place name
-    }
-    //
-    // public function getLastLog($stateName)
-    // {
-    //     $log =  $this->state_logs()->where('state', $stateName)->orderBy('created_at', 'desc')->first();
-    //     if ($log) {
-    //         return $log->created_at;
-    //     } else {
-    //         return null;
-    //     }
-    // }
 }

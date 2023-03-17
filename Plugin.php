@@ -203,12 +203,12 @@ class Plugin extends PluginBase
             $controller->addJs('/plugins/waka/utils/assets/js/clipboard.min.js');
             $controller->addCss('/plugins/wcli/wconfig/assets/css/waka.css');
             $env = \Config::get("waka.utils::env");
-            trace_log('env : '.$env);
+            //trace_log('env : '.$env);
             if($env == 'local') {
-                trace_log('local');
-                $controller->addCss('/plugins/waka/utils/assets/css/menu_env_local.css');
+                //trace_log('local');
+                $controller->addCss('/plugins/waka/utils/assets/css/menu_env_local_2.css');
             } else if($env == 'dev') {
-                $controller->addCss('/plugins/waka/utils/assets/css/menu_env_dev.css');
+                $controller->addCss('/plugins/waka/utils/assets/css/menu_env_dev_2.css');
             } 
         });
 

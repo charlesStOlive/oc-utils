@@ -185,7 +185,7 @@ class WorkflowCreate extends BaseScaffoldCommand
 
         $prepareExcel = new \Waka\Utils\Classes\CreateWorkflowDataFromExcel();
 
-        trace_log($prepareExcel->prepareVars($data));
+        // trace_log($prepareExcel->prepareVars($data));
         return $prepareExcel->prepareVars($data);
     }
 
