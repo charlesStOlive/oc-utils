@@ -319,14 +319,6 @@ class DataSource extends Extendable
         return $this->query->wfPlaceLabel();
     }
 
-    public function getStateLogsValues($modelId = null)
-    {
-        //trace_log('getStateLogsValues');
-        $this->instanciateQuery($modelId);
-        $results = $this->query->state_logs()->orderBy('created_at')->get()->toArray();
-        return $results;
-    }
-
     /**
      * Utils for EMAIL ---------------------------------------------------
      * Fonctions d'identifications des contacts, utilises dans les popup de wakamail

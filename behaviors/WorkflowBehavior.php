@@ -49,7 +49,7 @@ class WorkflowBehavior extends ControllerBehavior
 
     public function listInjectRowClass($record, $value)
     {
-        if ($record->userHasNoRole()) {
+        if (!$record->userHasWfPermission()) {
             return 'nolink  disabled';
         }
     }
@@ -70,7 +70,7 @@ class WorkflowBehavior extends ControllerBehavior
     {
         //trace_log("formBeforeSave");
         //trace_log(post());
-        if ($model->userHasNoRole()) {
+        if (!$model->userHasWfPermission()) {
             throw new \ValidationException(['error' => "Vous n'avez pas le droit d'enregistrer dans l'état actuel"]);
         } else {
             if (post('change_state') != '') {

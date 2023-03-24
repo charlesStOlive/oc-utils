@@ -75,7 +75,7 @@ Datasource->getFullQuery($modelId = null)
 Datasource->listRelation()
 Datasource->getValues($modelId = null, $withInde = true)
 Datasource->getWorkflowState()
-Datasource->getStateLogsValues($modelId = null)
+
 Datasource->getContact($type, $modelId = null)
 Datasource->getSrcImage()
 Datasource->getImagesFilesFrom($type, $code = null)

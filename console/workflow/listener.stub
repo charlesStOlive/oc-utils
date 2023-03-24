@@ -1,9 +1,9 @@
-<?php namespace {{studly_author}}\{{studly_plugin}}\Listeners;
+<?php namespace {{author | studly }}\{{plugin | studly}}\Listeners;
 
 use Carbon\Carbon;
 use Waka\Utils\Classes\Listeners\WorkflowListener;
 
-class Workflow{{studly_name}}Listener extends WorkflowListener
+class Workflow{{name | studly}}Listener extends WorkflowListener
 {
     /**
      * Register the listeners for the subscriber.
@@ -13,13 +13,14 @@ class Workflow{{studly_name}}Listener extends WorkflowListener
     public function subscribe($event)
     {
         //Evenement obligatoires
-        $event->listen('workflow.{{lower_name}}.guard', [$this, 'onGuard']);
-        $event->listen('workflow.{{lower_name}}.entered', [$this, 'onEntered']);
-        $event->listen('workflow.{{lower_name}}.afterModelSaved', [$this, 'onAfterSavedFunction']);
+        $event->listen('workflow.{{name | lower}}.guard', [$this, 'onGuard']);
+       $event->listen('workflow.{{name | lower}}.entered', [$this, 'onEntered']);
+        $event->listen('workflow.{{name | lower}}.enter', [$this, 'onEnter']);
+        $event->listen('workflow.{{name | lower}}.afterModelSaved', [$this, 'onAfterSavedFunction']);
         //Evenement optionels à déclarer ici.
-        //$event->listen('workflow.{{lower_name}}.leave', [$this, 'onLeave']);
-        //$event->listen('workflow.{{lower_name}}.transition', [$this, 'onTransition']);
-        //$event->listen('workflow.{{lower_name}}.enter', [$this, 'onEnter']);
+        //$event->listen('workflow.{{name | lower}}.leave', [$this, 'onLeave']);
+        //$event->listen('workflow.{{name | lower}}.transition', [$this, 'onTransition']);
+        //$event->listen('workflow.{{name | lower}}.enter', [$this, 'onEnter']);
     }
 
     /**

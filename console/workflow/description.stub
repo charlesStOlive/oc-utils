@@ -4,7 +4,7 @@
 * comentaire : {{configs.com.data }}
 
 ## Representation graphique
-![](../assets/docs_images/{{lower_name}}_tb.jpeg)
+![](../assets/docs_images/{{name | lower}}_tb.jpeg)
 
 
 ##Explications graph : 
@@ -12,6 +12,8 @@
 * les réctangles arronds représentent les états
 * CRON_AUTO : indique que des tentatives de transitions seront automatiquement effectués par l'app. 
 * FORM_AUTO : indique que le formulaire va tenter d'éffectuer une transition automatique en fonction des données qu'il possède. 
+* Si il y a une permission alors seul les utilisateurs avec ses permissions auront accès à l'état. 
+* Si il y a une NO permission alors seul les  utilisateurs ayant une permission différente auront assès à l'état. A noter : N'écrase pas la config du controller. 
 
 ### Transitions :  
 * les rectangles droits représentent les transitions 
@@ -24,8 +26,11 @@
 ## Liste des états
 {% for place in places %}
 * **{{place.lang}}** | code : {{place.name}}
-{% if place.noroles %}
-    * Rôles bloquées : **{{place.noroles}}**
+{% if place.permissions %}
+    * Permissions : **{{place.permissions}}**
+{% endif %}
+{% if place.no_permissions %}
+    * NO Permissions : **{{place.no_permisisons}}**
 {% endif %}
 {% endfor %}
 
@@ -40,8 +45,12 @@
 {% endif %}
 {% if transition.functions %}
     * Liste des fonctions 
-{% for functions in transition.functions %}
-        *  {{functions.fnc}} | type : {{functions.type}} {% if functions.arguments %} |  Arguments : {{functions.arguments | join(', ')}} {% endif %} | description : {{ functions.label}}
+{% for fncName,functions in transition.functions %}
+        *  {{fncName}} | type : {{functions.type}}
+{% if functions.args %}{% for argName,argValue in functions.args %}
+            * {{argName}} : {{argValue}} 
+{% endfor %}
+{% endif %}
 {% endfor %}
 {% endif %}
 {% endfor %}
@@ -49,4 +58,9 @@
 ## Les jeux de validations des champs
 {% for key, rulesSet in rulesSets %}
 * **{{key}}**: {{rulesSet.message}}
+{% endfor %}
+
+## Les scopes
+{% for scope in scopes %}
+* **{{scope.key}}**: {{scope.label}}
 {% endfor %}

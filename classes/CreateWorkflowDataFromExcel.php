@@ -2,9 +2,8 @@
 
 namespace Waka\Utils\Classes;
 
-class CreateWorkflowDataFromExcel extends CreateBase
+class CreateWorkflowDataFromExcel
 {
-
     public function prepareVars($data)
     {
         $plugin = $data['plugin'];
@@ -16,35 +15,74 @@ class CreateWorkflowDataFromExcel extends CreateBase
         $trans = $data['trans'];
         $putTrans = $data['putTrans'];
 
+        // Configuration
         $configs = $config->toArray();
 
-        $rules = $config->where('type', '==', 'rules');
-        $rules = $rules->map(function ($item, $key) {
+        // Récupération des règles
+        $rules = $config->where('type', '==', 'rules')->map(function ($item, $key) {
             if ($item['type'] == 'rules') {
                 $item['data'] = explode(',', $item['data']);
             }
             return $item;
         });
 
+        // Récupération des règles sets
         $ruleSetArray = $config->where('type', '==', 'ruleset')->lists('label', 'key');
         $rulesSets = [];
         foreach ($ruleSetArray as $key => $message) {
-            //trace_log($rules);
             $set = $rules->filter(function ($item) use ($key) {
                 return in_array($key, $item['data']);
             });
-            //trace_log($set);
             $rulesSets[$key] = [
                 'fields' => $set,
                 'message' => $message,
             ];
-            //trace_log('fin de boucle');
         }
-        //trace_log("resultat");
-        //trace_log($rulesSets);
 
-        //
-        //
+        $scopes = $config->where('type', '==', 'scopes');
+        //trace_log( $scopes);
+
+        // Récupération des traductions des champs des workflows
+        $trads = $config->where('type', '==', 'lang')->lists('label', 'key');
+
+        // Récupération des règles des champs des workflows
+        $tradFieldRules = $config->where('type', '==', 'rules')->toArray();
+
+        // // Récupération des fonctions
+        // $fncs = $config->where('type', '==', 'fnc')->lists('label', 'key');
+
+        // Récupération des fonctions
+        $newFncs =  [];
+        $fncsString = $config->where('type', '==', 'fnc')->pluck('key')->toArray();
+        foreach ($fncsString as $line) {
+            if (trim($line) == '') continue;
+            preg_match('/(\w+)\(([^)]*)\)/', $line, $matches);
+            $name = null;
+            try {
+                $name = $matches[1];
+            } catch (\Exception $ex) {
+                //trace_log('Il manque des parentheses sur '.$line);
+            }
+            $args = $this->getArguments($line);
+            $newFncs[$name] = ['args' => $args];
+        }
+        //trace_log('----newFncs----');
+        //trace_log($newFncs);
+
+        // Récupération des traductions des places
+        $tradPlaces = $places->where('lang', '<>', null)->lists('lang', 'name');
+        $tradPlacesAlertes = $places->where('alerte', '<>', null)->lists('alerte', 'name');
+        $tradPlacesCom = $places->where('com', '<>', null)->lists('com', 'name');
+
+        // Récupération des traductions des transitions
+        $tradTrans = $trans->where('lang', '<>', null)->lists('lang', 'name');
+        $tradTransCom = $trans->where('com', '<>', null)->lists('com', 'name');
+        $tradButton = $trans->where('button', '<>', null)->lists('button', 'name');
+
+        // Traitement des places
+        $places = $places->toArray();
+
+        // Traitement des transitions
         $trans = $trans->reject(function ($item, $key) {
             $checkField = $item['name'] ?? null;
             if (!$checkField) {
@@ -52,115 +90,15 @@ class CreateWorkflowDataFromExcel extends CreateBase
             } else {
                 return false;
             }
-        });
-        $trans = $trans->map(function ($item, $key) use ($config) {
-            $item['functions'] = [];
-            $fncProd = $item['fnc_prod'] ?? [];
-            $froms = $item['froms'] ?? null;
+        })->map(function ($item, $key) use ($newFncs) {
             $item['froms'] = explode(',', $item['froms']);
-            //trace_log("fncProd : " . $fncProd);
-            if (!empty($fncProd)) {
-                //trace_log("Travail sur les fonctions de production");
-                $fncName = $item['fnc_prod'];
-                $args = $this->getArgs($fncName, $config);
-                $label = $this->getFncLabel($fncName, $config);
-                $vals = $item['fnc_prod_val'] ?? false;
-                if ($vals) {
-                    $vals = explode(',', $vals);
-                }
-                $argval = [];
-                if (is_countable($args)) {
-                    for ($i = 0; $i < count($args); $i++) {
-                        $argval[$args[$i]] = $vals[$i] ?? null;
-                    }
-                }
-
-                $obj = [
-                    'fnc' => $fncName,
-                    'type' => 'prod',
-                    'arguments' => $argval,
-                    'label' => $label,
-                ];
-                $item['functions'][$fncName] = $obj;
-            }
-            $fncTrait = $item['fnc_trait'] ?? false;
-            //trace_log("fnctrait : " . $fncTrait);
-            if (!empty($fncTrait)) {
-                //trace_log("Travail sur les fonctions de production");
-                $fncName = $item['fnc_trait'];
-                $args = $this->getArgs($fncName, $config);
-                $label = $this->getFncLabel($fncName, $config);
-                $traitType = $this->getTraitType($fncName, $config);
-                $vals = $item['fnc_trait_val'] ?? false;
-                if ($vals) {
-                    $vals = explode(',', $vals);
-                }
-                $argval = [];
-                if (is_countable($args)) {
-                    for ($i = 0; $i < count($args); $i++) {
-                        $argval[$args[$i]] = $vals[$i] ?? null;
-                    }
-                }
-
-                $obj = [
-                    'fnc' => $fncName,
-                    'type' => $traitType,
-                    'arguments' => $argval,
-                    'label' => $label,
-                ];
-                $item['functions'][$fncName] = $obj;
-            }
-            $fncGard = $item['fnc_gard'] ?? false;
-            //trace_log("fnctrait : " . $fncTrait);
-            if (!empty($fncGard)) {
-                //trace_log("Travail sur les fonctions de production");
-                $fncName = $item['fnc_gard'];
-                $args = $this->getArgs($fncName, $config);
-                $label = $this->getFncLabel($fncName, $config);
-                $vals = $item['fnc_gard_val'] ?? false;
-                if ($vals) {
-                    $vals = explode(',', $vals);
-                }
-                $argval = [];
-                //trace_log($args);
-                //trace_log($vals);
-                if (is_countable($args)) {
-                    for ($i = 0; $i < count($args); $i++) {
-                        $argval[$args[$i]] = $vals[$i] ?? null;
-                    }
-                }
-
-                $obj = [
-                    'fnc' => $fncName,
-                    'type' => 'gard',
-                    'arguments' => $argval,
-                    'label' => $label,
-                ];
-                $item['functions'][$fncName] = $obj;
-            }
+            $item['functions'] = $this->ananlyseItemsFunctions($item, $newFncs);
             return $item;
         });
+
         //trace_log($trans->toArray());
 
-        $fncs = $config->where('type', '==', 'fnc')->lists('label', 'key');
-
-        //Travail sur les langues
-        $trads = $config->where('type', '==', 'lang')->lists('label', 'key');
-        $tradFieldRules = $config->where('type', '==', 'rules')->toArray();
-        //trace_log($tradFieldRules);
-        $tradPlaces = $places->where('lang', '<>', null)->lists('lang', 'name');
-        $tradPlacesAlertes = $places->where('alerte', '<>', null)->lists('alerte', 'name');
-        $tradPlacesCom = $places->where('com', '<>', null)->lists('com', 'name');
-        $tradTrans = $trans->where('lang', '<>', null)->lists('lang', 'name');
-        $tradTransCom = $trans->where('com', '<>', null)->lists('com', 'name');
-        $tradButton = $trans->where('button', '<>', null)->lists('button', 'name');
-
-        $places = $places->toArray();
-        //trace_log($places);
-        $trans = $trans->toArray();
-
-        //trace_log($trans);
-
+        // Résultat final
         $all = [
             'name' => $workflowName,
             'model' => $model,
@@ -175,44 +113,95 @@ class CreateWorkflowDataFromExcel extends CreateBase
             'tradTransCom' => $tradTransCom,
             'tradButton' => $tradButton,
             'places' => $places,
-            'fncs' => $fncs,
+            'fncs' => $newFncs,
             'trans' => $trans,
             'rulesSets' => $rulesSets,
             'putTrans' => $putTrans,
             'tradFieldRules' => $tradFieldRules,
+            'scopes' => $scopes,
         ];
-
-        return $this->processVars($all);
+        return $all;
     }
 
+    /**
+     * Récupère les arguments d'une fonction à partir de la configuration
+     *
+     * @param string $fncName
+     * @param array $config
+     * @return array|null
+     */
     public function getArgs($fncName, $config)
     {
         $args = $config->where('key', $fncName)->first();
         $args = $args['data'] ?? false;
+
         //Les arguments sont un string séparé par une , dans la colonne data
         if ($args) {
-            $args = explode(',', $args);
-            return $args;
+            return explode(',', $args);
         }
         return null;
     }
 
-    public function getTraitType($fncName, $config)
+
+
+
+
+    function getArguments($str)
     {
-        $traitType = $config->where('key', $fncName)->first();
-        $traitType = $traitType['value'] ?? 'trait_onEntered';
-        //Les arguments sont un string séparé par une , dans la colonne data
-        return $traitType;
+        preg_match_all('/\(([^)]*)\)/', $str, $matches);
+        //trace_log($matches);
+        if (isset($matches[1][0]) && trim($matches[1][0]) != '') {
+            //trace_log($matches[1][0]);
+            return array_map('trim', explode(',', $matches[1][0]));
+        }
+        return [];
     }
 
-    public function getFncLabel($fncName, $config)
+    function ananlyseItemsFunctions($item, $allFncs)
     {
-        $args = $config->where('key', $fncName)->first();
-        $args = $args['label'] ?? false;
-        //Les arguments sont un string séparé par une , dans la colonne data
-        if ($args) {
-            return $args;
+
+        $fncs = [];
+        foreach ($item as $key => $value) {
+
+            if (strpos($key, 'fnc_') === 0 && trim($value) != '') {
+                $type = substr($key, 4);
+                $parts = array_map('trim', explode('|', $value));
+
+                $notEmptyParts = array_filter($parts, function ($part) {
+                    return trim($part) !== '';
+                });
+
+
+
+                if (empty($notEmptyParts)) {
+                    continue;
+                }
+
+
+                foreach ($notEmptyParts as $part) {
+                    if ($part == '') continue;
+                    //trace_log("part : " . $part);
+                    preg_match('/(\w+)\(([^)]*)\)/', $part, $matches);
+                    $name = $matches[1];
+                    //trace_log('name : ' . $name);
+                    $args = $this->getArguments($part);
+                    //trace_log('args--');
+                    //trace_log($args);
+                    //trace_log(" vide ? ".count($args));
+                    //trace_log($allFncs[$name]);
+                    $fncData = $allFncs[$name];
+                    $fncData = ['type' => $type];
+                    if (!empty($args)) {
+                        //trace_log($allFncs[$name]['args']);
+                        //trace_log($args);
+                        $fncData['args'] = array_combine($allFncs[$name]['args'], $args);
+                    }
+
+                    $fncs[$name] = $fncData;
+                }
+            }
         }
-        return null;
+        //trace_log($fncs);
+        return $fncs;
     }
 }

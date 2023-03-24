@@ -38,3 +38,6 @@
 1.5.1:
     - "creation des blocs dynamiques"
     - create_rule_blocs_table.php
+2.0.0:
+    - "Ajout des wf dans stateLogs"
+    - create_stateables_table_u200.php

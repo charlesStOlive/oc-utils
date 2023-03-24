@@ -61,8 +61,8 @@ class Workflow extends FormWidgetBase
         $this->vars['model'] = $this->model;
         $this->formField->options = $this->getWorkFlowOptions();
         $this->vars['field'] = $this->formField;
-        //trace_log("No role : ".$this->model->userHasNoRole());
-        $this->vars['userHasNoRole'] = $this->formField->readOnly = $this->model->userHasNoRole();
+        //trace_log("No role : ".$this->model->userHasWfPermission());
+        $this->vars['userHasWfPermission'] = $this->formField->readOnly = !$this->model->userHasWfPermission();
         //$this->vars['options'] = $this->getWorkFlowData();
         //$this->vars['datas'] = $this->getWorkFlowData();
     }

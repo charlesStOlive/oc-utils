@@ -39,17 +39,17 @@ class BackUser extends RuleConditionBase  implements RuleInterface
      */
 
     private function check($modelSrc) {
-       //trace_log("check user");
         if(\App::runningInConsole()) {
             return true;
         }
-
+        
         $user = \BackendAuth::getUser();
         $mode = $this->getConfig('checkMode');
+
         $operator = $this->getConfig('operator');
         $value = $this->getConfig('value');
         if($mode == "permissions") {
-            return $this->comparePermissions($user, $operator, $value);
+            return $this->comparePermissions($user, $value);
         }
         if($mode == "roleCode") {
             return $this->compareRole($user->role->code, $operator, $value);
@@ -67,17 +67,8 @@ class BackUser extends RuleConditionBase  implements RuleInterface
     }
     
 
-    public function comparePermissions($user, $operator, $value) {
-        switch ($operator) {
-            case 'where' :
-                return $user->hasAccess($value);
-            case 'whereNot' :
-                return !$user->hasAccess($value);;
-            case 'wherein' :
-                return $user->hasAccess([$value]);
-            case 'whereNotIn' :
-                return !$user->hasAccess([$value]);
-        }
+    public function comparePermissions($user, $value) {
+        return $user->hasAccess($value);
     }
 
     public function compareRole($code, $operator, $value) {

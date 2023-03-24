@@ -30,6 +30,13 @@ class WorkflowListener
      * trace_log($globalMetadata);
      * trace_log($model->name);
      */
+    public function recLogs($event) {
+        trace_log("recLogs");
+        $model = $event->getSubject();
+        trace_log($model->name);
+        $model->storeStatelog($event);
+        return false;
+    }
     public function onGuard($event)
     {
         $blocked = $this->launchGardFunction($event);
@@ -41,7 +48,7 @@ class WorkflowListener
      */
     public function onLeave($event)
     {
-        $this->launchFunction($event, 'trait_onLeave');
+        $this->launchFunction($event, 'leave');
     }
 
     /**
@@ -49,7 +56,7 @@ class WorkflowListener
      */
     public function onTransition($event)
     {
-        $this->launchFunction($event, 'trait_onTransition');
+        $this->launchFunction($event, 'transition');
     }
 
     /**
@@ -57,7 +64,7 @@ class WorkflowListener
      */
     public function onEnter($event)
     {
-        $this->launchFunction($event, 'trait_onEnter');
+        $this->launchFunction($event, 'enter');
     }
 
     /**
@@ -65,7 +72,7 @@ class WorkflowListener
      */
     public function onEntered($event)
     {
-        $this->launchFunction($event, 'trait_onEntered');
+        $this->launchFunction($event, 'entered');
     }
 
     /**
@@ -77,7 +84,7 @@ class WorkflowListener
      * ATTention differents des autres evenements, provien du workflowtrait
      * Obligatoire à cause du systhème de dataSource qui ne fonctionne que sur les élements déjà enregistré.
      */
-    protected function onAfterSavedFunction($model, $fnc)
+    public function onAfterSavedFunction($model, $fnc)
     {
         $functionName = array_keys($fnc)[0] ?? null;
         if (!$functionName) {
@@ -90,7 +97,7 @@ class WorkflowListener
         }
     }
 
-    protected function launchFunction($event, $type = 'trait')
+    public function launchFunction($event, $type = 'trait')
     {
         $eventTransition = $event->getTransition();
         $fncs = new \Winter\Storm\Support\Collection($event->getMetadata('fncs', $eventTransition));
@@ -104,12 +111,12 @@ class WorkflowListener
             if (method_exists($this, (string) $fnc)) {
                 $this->{$fnc}($event, $attributes['args'] ?? null);
             } else {
-                throw new \SysteomException("la fonction : " . $fnc . " n'existe pas dans l'ecouteur d'evenement du workflw");
+                throw new \SystemException("la fonction : " . $fnc . " n'existe pas dans l'ecouteur d'evenement du workflow : ".get_class($this));
             }
         }
     }
 
-    protected function launchGardFunction($event)
+    public function launchGardFunction($event)
     {
         $eventTransition = $event->getTransition();
         $fncs = new \Winter\Storm\Support\Collection($event->getMetadata('fncs', $eventTransition));

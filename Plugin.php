@@ -79,6 +79,9 @@ class Plugin extends PluginBase
                 'snakeCase' => function ($twig) {
                     return snake_case($twig);
                 },
+                'studly' => function ($twig) {
+                    return \Str::studly($twig);
+                },
                 'defaultConfig' => function ($twig, $config_name) {
                     $dataFromConfig = \Config('wcli.wconfig::' . $config_name);
                     //trace_log($dataFromConfig);
@@ -230,6 +233,9 @@ class Plugin extends PluginBase
         $this->registerConsoleCommand('waka:cleanModels', 'Waka\Utils\Console\CleanModels');
         $this->registerConsoleCommand('waka:cleanFiles', 'Waka\Utils\Console\CleanFiles');
         $this->registerConsoleCommand('waka:ReduceImages', 'Waka\Utils\Console\ReduceImages');
+        $this->registerConsoleCommand('waka:checktrads', 'Waka\Utils\Console\PluginscheckAllTrad');
+        $this->registerConsoleCommand('waka:tradauto', 'Waka\Utils\Console\TradautoCommand');
+        
 
         CombineAssets::registerCallback(function ($combiner) {
             $combiner->registerBundle('$/waka/utils/formwidgets/rulebuilder/assets/css/rules.less');

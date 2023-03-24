@@ -203,7 +203,7 @@ class WakaRichEditor extends FormWidgetBase
          *
          *     Event::listen('backend.richeditor.listTypes', function () {
          *          return [
-         *              'my-identifier' => 'author.plugin::lang.richeditor.link_types.my_identifier',
+         *              'my-identifier' => #'author.plugin::lang.richeditor.link_types.my_identifier',
          *          ];
          *     });
          *

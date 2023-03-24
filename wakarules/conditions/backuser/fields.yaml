@@ -14,6 +14,10 @@ fields:
         label: Opérateur
         type: dropdown
         options: listOperators
+        trigger:
+            field: checkMode
+            action: show 
+            condition: value[roleCode] 
     value:
         label: Valeur attendu
 

@@ -135,8 +135,6 @@ class ImagesList extends FormWidgetBase
 
         $this->imageWidget = $this->createFormWidget();
         $this->imageWidget->getField('source')->options = $ds->wimages->getAllPicturesKey();
-        // $this->imageWidget->getField('crop')->options = \Config::get('waka.cloudis::ImageOptions.crop.options');
-        // $this->imageWidget->getField('gravity')->options = \Config::get('waka.cloudis::ImageOptions.gravity.options');
         $this->imageWidget->getField('code')->value = $data['code'];
         $this->imageWidget->getField('source')->value = $data['source'] ?? null;
         $this->imageWidget->getField('width')->value = $data['width'] ?? null;

@@ -71,14 +71,14 @@ fields:
             extension: auto
         useCaption: false
     media:
-        label: waka.babyler::texture.media
+        label: Media
         #Attention au tab lors d'un copier/coller
         tab: image et options
         span: right
         type: mediafinder
         dependsOn: imageMode
     url:
-        label: waka.babyler::texture.url
+        label: Textures
         #Attention au tab lors d'un copier/coller
         tab: image et options
         span: right

@@ -1,9 +1,10 @@
-{{lower_name}}:
+{{name | lower}}:
     type: state_machine
     metadata: 
-        name: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{configs.name.key}}{% else %}{{configs.name.label}}{% endif %} 
+        name: {%if putTrans %}{{author | lower}}.{{plugin | lower}}::{{name | lower}}.{{configs.name.key}}{% else %}{{configs.name.label}}{% endif %} 
 {% if configs.com %}
-        com: {{lower_author}}.{{lower_plugin}}::{{lower_name}}.{{ configs.com.key }} 
+        com: {{author | lower}}.{{plugin | lower}}::{{name | lower}}.{{ configs.com.key }} 
+{% endif %}
 {% if rulesSets |length > 0 %}
         rulesSets:
 {% for key, rulesSet in rulesSets %}
@@ -12,28 +13,33 @@
 {% for field in rulesSet.fields %}
                     {{field.key}}: {{field.value}}              
 {% endfor %}
-                messages: {{lower_author}}.{{lower_plugin}}::{{lower_name}}_errors
+                messages: {{author | lower}}.{{plugin | lower}}::{{name | lower}}_errors
 {% endfor %}
+
 {% endif %}
-{% endif %}
+{% if scopes | length > 0 %}
+        scopes:
+{% for scope in scopes %}
+            {{scope.key}}: [{{scope.value}}]              
+{% endfor %}{% endif %}
     marking_store:
         type: single_state
         property: {{configs.arguments.value}}
     supports:
-        - \{{studly_author}}\{{studly_plugin}}\Models\{{studly_model}}
+        - \{{author | studly }}\{{plugin | studly}}\Models\{{ model | studly}}
     places:
 {% for place in places %}
         {{place.name}}:
             metadata:
-                label: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}.places.{{place.name}}{%else%}{{place.lang}}{%endif%} 
+                label: {%if putTrans %}{{author | lower}}.{{plugin | lower}}::{{name | lower}}.places.{{place.name}}{%else%}{{place.lang}}{%endif%} 
 {% if place.com %}
-                com: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}.places.{{place.name}}_com{%else%}{{place.com}}{%endif%} 
+                com: {%if putTrans %}{{author | lower}}.{{plugin | lower}}::{{name | lower}}.places.comments.{{place.name}}{%else%}{{place.com}}{%endif%} 
 {% endif %}
-{% if place.alerte %}
-                alerte: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}.places.{{place.name}}_alerte{%else%}{{place.alerte}}{%endif%} 
+{% if place.permissions %}
+                permissions: [{{place.permissions}}]
 {% endif %}
-{% if place.noroles %}
-                noroles: [{{place.noroles}}]
+{% if place.no_permissions %}
+                no_permissions: [{{place.no_permissions}}]
 {% endif %}
 {% if place.cron_auto %}
                 cron_auto: [{{place.cron_auto}}]
@@ -62,12 +68,12 @@
 {% for transition in trans %}
         {{transition.name}}:
             metadata: 
-                label: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}.trans.{{transition.name}}{%else%}{{transition.lang}}{%endif%} 
+                label: {%if putTrans %}{{author | lower}}.{{plugin | lower}}::{{name | lower}}.trans.{{transition.name}}{%else%}{{transition.lang}}{%endif%} 
 {% if transition.button %}
-                button: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}.trans.{{transition.name}}_btn{%else%}{{transition.button}}{%endif%} 
+                button: {%if putTrans %}{{author | lower}}.{{plugin | lower}}::{{name | lower}}.trans.buttons.{{transition.name}}{%else%}{{transition.button}}{%endif%} 
 {% endif %}
 {% if transition.com %}
-                com: {%if putTrans %}{{lower_author}}.{{lower_plugin}}::{{lower_name}}.trans.{{transition.name}}_com{%else%}{{transition.com}}{%endif%} 
+                com: {%if putTrans %}{{author | lower}}.{{plugin | lower}}::{{name | lower}}.trans.comments.{{transition.name}}{%else%}{{transition.com}}{%endif%} 
 {% endif %}
 {% if transition.goto %}
                 goto: {{ transition.goto }} 
@@ -86,12 +92,12 @@
 {% endif %}
 {% if transition.functions %}
                 fncs:
-{% for functions in transition.functions %}
-                    {{functions.fnc}}:
+{% for keyfnc,functions in transition.functions %}
+                    {{keyfnc}}:
                         type: {{functions.type}}
-{% if functions.arguments %}
+{% if functions.args %}
                         args:
-{% for key,arg in functions.arguments %}
+{% for key,arg in functions.args %}
                             {{key}}: {{arg}}
 {% endfor %}{% endif %}
 {% endfor %}{% endif %}

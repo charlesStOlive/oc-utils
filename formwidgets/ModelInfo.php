@@ -86,7 +86,7 @@ class ModelInfo extends FormWidgetBase
         try {
             $modelvalues = $this->ds->getValues($modelId);
         } catch (\Exception $ex) {
-            trace_log($ex->getMessage());
+            //trace_log($ex->getMessage());
             return [];
 
         }
@@ -171,20 +171,26 @@ class ModelInfo extends FormWidgetBase
                 }
                
             }
+            
 
             if ($type == 'state_logs') {
                 //trace_log('state_logs');
                 $value = [];
-                $logs = $this->ds->getStateLogsValues($modelId);
+                $logs = $this->model->state_logs()->orderBy('created_at')->get();
                 //trace_log($logs);
                 if ($logs) {
                     $src_trad = $field['src_trad'] ?? null;
                     foreach ($logs as $log) {
+                        //trace_log($log->toArray());
+                        $label = $log->name;
+                        if($log->wf) {
+                             $label = Lang::get($src_trad .'::'.$log->wf.'.trans.'. $label);
+                        }
                         $logDate = new WakaDate();
                         $logValue = DateTimeHelper::makeCarbon($log['created_at'], false);
                         $logvalue =  $logDate->localeDate($logValue, 'date-time');
                         $obj = [
-                            'label' => Lang::get($src_trad . $log['name'] ?? null),
+                            'label' => $label,
                             'user' => $log['user'] ?? 'inc',
                             'created_at' => $logvalue,
                         ];

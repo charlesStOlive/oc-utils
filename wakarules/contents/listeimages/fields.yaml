@@ -34,7 +34,7 @@ fields:
         type: checkbox
     # BLOC IMAGE TOUT EST LIEE AU HELPER : RuleHelpers dans classes/traits/utils
     media:
-        label: waka.babyler::texture.media
+        label: Media
         commentAbove: vous devez choisir un reperotire 
         #Attention au tab lors d'un copier/coller
         span: left

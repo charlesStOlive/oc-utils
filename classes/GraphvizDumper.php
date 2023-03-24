@@ -102,9 +102,14 @@ class GraphvizDumper implements DumperInterface
             if (null !== $cron_auto) {
                 $cron_auto = "CRON AUTO : ".implode(',',$cron_auto);
             }
-            $noroles = $workflowMetadata->getMetadata('noroles', $place);
-            if (null !== $noroles) {
-                $noroles = "Exclusions : ".implode(',',$noroles);
+            $permissions = $workflowMetadata->getMetadata('permissions', $place);
+            $no_permissions = $workflowMetadata->getMetadata('no_permissions', $place);
+            $perms = null;
+            if (null !== $permissions) {
+                $perms .= "P : ".implode(',',$permissions)." ";
+            }
+            if (null !== $no_permissions) {
+                $perms .= "!P : ".implode(',',$no_permissions);
             }
             $hidden_fields = $workflowMetadata->getMetadata('hidden_fields', $place);
             if (null !== $hidden_fields) {
@@ -116,7 +121,7 @@ class GraphvizDumper implements DumperInterface
             }
             $new_workflow = $workflowMetadata->getMetadata('new_workflow', $place);
             if (null !== $new_workflow) {
-                $attributes['shape'] = 'Mdiamond';
+                $attributes['shape'] = 'invhouse';
             }
             $places[$key] = [
                 'attributes' => $attributes,
@@ -125,10 +130,10 @@ class GraphvizDumper implements DumperInterface
                 'cron_auto' => $cron_auto,
                 'form_auto' => $form_auto,
                 'hidden_fields' => $hidden_fields,
-                'noroles' => $noroles,
+                'perms' => $perms,
             ];
         }
-        trace_log($places);
+        //trace_log($places);
 
         return $places;
     }
@@ -156,28 +161,47 @@ class GraphvizDumper implements DumperInterface
             }
             
             $functions = $workflowMetadata->getMetadata('fncs', $transition) ?? null;
-            $completeNameWithFunction = "";
-            $gard = null;
-            $prod = null;
-            $trait = null;
+            //trace_log($functions);
+            $gard = [];
+            $prod = [];
+            $trait = [];
 
             if ($functions) {
-                $attributes['style'] = 'filled';
+                //trace_log($functions);
                 foreach ($functions as $fncKeyName => $function) {
-                    
                     $type = $function['type'] ?? null;
+                    $args = $function['args'] ?? null;
+                    if($args) {
+                        $fncKeyName .='('.count($args).')';
+                    }
                     //trace_log($type);
                     if ($type == 'gard') {
-                        $gard = "Gard : " . $fncKeyName;
+                        array_push($gard, $fncKeyName);
+                        
                     }
                     else if ($type == 'prod') {
-                        $prod = "Prod : " . $fncKeyName;
+                        $args = 
+                         array_push($prod, $fncKeyName);
                     }
                     else {
-                        $trait = "Trait : " . $fncKeyName;
+                         array_push($trait, $fncKeyName);
                     }
                 }
             }
+
+            //trace_log($gard);
+            if(count($gard)) {
+                $gard = "Gard: " . implode(',',$gard);
+            }
+            if(count($prod)) {
+                $prod = "Prod: " . implode(',',$prod);
+            }
+            if(count($trait)) {
+                $trait = "Trait: " . implode(',',$trait);
+            }
+            
+            //trace_log($prod);
+            //trace_log($trait);
             $hidden = $workflowMetadata->getMetadata('hidden', $transition);
             if (null !== $hidden) {
                 $attributes['style'] = 'dashed';
@@ -230,10 +254,10 @@ class GraphvizDumper implements DumperInterface
         $form_auto = $this->createRow($place['form_auto'] ?? null);
         $must_trans = $this->createRow($place['must_trans'] ?? null);
         $hidden_fields = $this->createRow($place['hidden_fields'] ?? null);
-        $noroles = $this->createRow($place['noroles']?? null);
+        $perms = $this->createRow($place['perms']?? null);
         $label = $this->escape($label);
         $label = str_replace('|', '<BR/>', $label);
-        $text = sprintf('<<table border="0"  cellborder="0"><tr><td><b><font point-size="16"> %s</font></b></td></tr>%s %s %s %s %s</table>>', $label, $cron_auto, $form_auto,$must_trans, $noroles,$hidden_fields);
+        $text = sprintf('<<table border="0"  cellborder="0"><tr><td><b><font point-size="16"> %s</font></b></td></tr>%s %s %s %s %s</table>>', $label, $cron_auto, $form_auto,$must_trans, $perms,$hidden_fields);
         return $text;
     }
 
@@ -258,21 +282,21 @@ class GraphvizDumper implements DumperInterface
     public function createTransitionLabelTab($trans)
     {
         $transName = $trans['name'];
-        trace_log($transName);
-        trace_log($trans);
+        //trace_log($transName);
+        //trace_log($trans);
         $code = $this->createRow($trans['code']);
         $button = $this->createButtonRow($trans['button'] ?? null, $trans['color'] ?? null);
         $rules = $this->createRow($trans['rules'] ?? null);
-        $gard = $this->createRow($trans['gard'] ?? null, 'right');
-        $prod = $this->createRow($trans['prod'] ?? null, 'right');
-        $trait = $this->createRow($trans['trait'] ?? null, 'right');
+        $gard = $this->createRightRow($trans['gard'] ?? null);
+        $prod = $this->createRightRow($trans['prod'] ?? null);
+        $trait = $this->createRightRow($trans['trait'] ?? null);
         $transName = $this->escape($transName);
         $transName = str_replace('|', '<BR/>', $transName);
-        $text = sprintf('<<table border="0"  cellborder="0"><tr><td><b><font point-size="14"> %s</font></b></td></tr>%s %s %s %s %s %s</table>>', $transName, $code, $button,$rules, $gard, $prod, $trait,);
+        $text = sprintf('<<table border="0"  cellborder="0"><tr><td><b><font point-size="14"> %s</font></b></td></tr>%s %s %s %s %s %s</table>>', $transName, $code, $button,$rules, $gard, $trait, $prod);
         return $text;
     }
 
-    public function createRow($name, $align="center")
+    public function createRow($name)
     {
         
         if (!$name) {
@@ -280,7 +304,19 @@ class GraphvizDumper implements DumperInterface
         } else {
             // trace_log($name);
             $name = str_replace('|', '<BR/>', $name);
-            return sprintf('<tr><td align="%s">%s</td></tr>', $align, $name);
+            return sprintf('<tr><td>%s</td></tr>', $name);
+        }
+    }
+
+    public function createRightRow($name)
+    {
+        
+        if (!$name) {
+            return null;
+        } else {
+            // trace_log($name);
+            $name = str_replace('|', '<BR/>', $name);
+            return sprintf('<tr><td align="right"><i>%s</i></td></tr>', $name);
         }
     }
 
@@ -305,6 +341,7 @@ class GraphvizDumper implements DumperInterface
             default:
                 $color = "gray";
         }
+        $name = $this->escape($name);
         $name = str_replace('|', '<BR/>', $name);
         return sprintf('<tr><td  bgcolor="%s" align="left"><font color="white">%s</font></td></tr>', $color, $name);
     }
@@ -402,7 +439,7 @@ class GraphvizDumper implements DumperInterface
      */
     protected function escape($value): string
     {
-        return \is_bool($value) ? ($value ? '1' : '0') : addslashes($value);
+        return  \is_bool($value) ? ($value ? '1' : '0') : addslashes(str_replace("&", "&amp;", $value));
     }
 
     protected function addAttributes(array $attributes): string
