@@ -24,7 +24,7 @@
                    value="all"
                    type="radio"
                    id="all">
-            <label for="all"><?=e(trans("waka.utils::lang.popup.all"))?></label>
+            <label for="all"><?=e(trans('waka.utils::lang.popup.all'))?></label>
             <p class="help-block">Nombre : <?=$allCount?> </p>
         </div>
         <?php endIf ?>
@@ -35,7 +35,7 @@
                    value="filtered"
                    type="radio"
                    id="filtered">
-            <label for="filtered"><?=e(trans("waka.utils::lang.popup.filtered"))?></label>
+            <label for="filtered"><?=e(trans('waka.utils::lang.popup.filtered'))?></label>
             <p class="help-block">Nombre : <?=$filteredCount?></p>
         </div>
         <?php endIf ?>
@@ -45,7 +45,7 @@
                    value="checked"
                    type="radio"
                    id="checked">
-            <label for="checked"><?=e(trans("waka.utils::lang.popup.checked"))?></label>
+            <label for="checked"><?=e(trans('waka.utils::lang.popup.checked'))?></label>
             <p class="help-block">Nombre : <?=$checkedCount?></p>
         </div>
 
@@ -59,12 +59,12 @@
     <button type="submit"
             data-request="onLotsValidation"
             class="btn btn-primary">
-        <?=e(trans("waka.utils::lang.global.validate"))?>
+        <?=e(trans('waka.utils::lang.global.validate'))?>
     </button>
     <button type="button"
             class="btn btn-default"
             data-dismiss="popup">
-        <?=e(trans("waka.utils::lang.global.cancel"))?>
+        <?=e(trans('waka.utils::lang.global.cancel'))?>
     </button>
 </div>
 

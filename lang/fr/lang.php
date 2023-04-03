@@ -70,7 +70,8 @@ return [
         "job_list_description" => "Liste des taches de l'application",
         "settings_category" => "Configuration ",
         "settings_category_model" => "Gestion des Modèles",
-        "settings_controle" => "Contrôles"
+        "settings_controle" => "Contrôles",
+        "job_list_s" => "Taches"
     ],
     "page" => [
         "access_denied" => [
@@ -79,7 +80,11 @@ return [
     ],
     "popup" => [
         "change_field" => "Modifier le champ",
-        "export_lot" => "Produire un lot"
+        "export_lot" => "Produire un lot",
+        "choose_who" => "Choisissez la cible",
+        "checked" => "Cibles selectionés",
+        "all" => "Tous",
+        "filtered" => "Liste filtré"
     ],
     "prod" => [
         "produce" => "Produire",
