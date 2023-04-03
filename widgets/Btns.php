@@ -101,7 +101,7 @@ class Btns extends WidgetBase
         $hide_all_trans = $this->workflowConfigState['hide_all_trans'] ?? false;
         $change_trans = $this->workflowConfigState['change_trans'] ?? [];
         $separate_all = $this->workflowConfigState['separate_all'] ?? false;
-        trace_log($separate_all);
+        //trace_log($separate_all);
         //trace_log($this->workflowConfigState);
         //trace_log("separate_all : ".$separate_all);
 

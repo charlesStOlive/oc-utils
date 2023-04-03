@@ -131,7 +131,7 @@ trait WakaWorkflowTrait
 
 
             $model->bindEvent('model.afterSave', function () use ($model) {
-                trace_log('model after save as runned');
+                //trace_log('model after save as runned');
                 $sessionKey = post('_session_key');
                 $states = Session::pull('waka_stlog_'.$sessionKey);
                 if($states) {
@@ -213,7 +213,7 @@ trait WakaWorkflowTrait
 
     public function storeStatelog($event)
     {
-        trace_log("storeStatelog");
+        //trace_log("storeStatelog");
         $transition = $event->getTransition();
         //Preparation de l'evenement
         
