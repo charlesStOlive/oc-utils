@@ -261,7 +261,7 @@ class WorkflowCreate extends BaseScaffoldCommand
         $classToTest = new $classConstructionName;
         $this->info('-- ctrl du listener : '.$classConstructionName.' --');
         $existingMethods = get_class_methods($classToTest);
-        $listenerFncUsed = ['subscribe','onGuard','onLeave','onTransition', 'onEnter', 'onEntered', 'onAfterSavedFunction','launchFunction','launchGardFunction'  ];
+        $listenerFncUsed = ['subscribe','onGuard','onLeave','onTransition','recLogs', 'onEnter', 'onEntered', 'onAfterSavedFunction','launchFunction','launchGardFunction'  ];
         //trace_log("-------------existingMethods---------");
         //trace_log($existingMethods);
         foreach($fncs as $fnc) {
