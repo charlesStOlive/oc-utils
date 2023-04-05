@@ -41,7 +41,8 @@ return [
         "termined" => "Terminer",
         "test" => "test",
         "updated_at" => "MAJ",
-        "validate" => "Valider"
+        "validate" => "Valider",
+        "created_at" => "Crée"
     ],
     "import" => [
         "button_import" => "Importer",
