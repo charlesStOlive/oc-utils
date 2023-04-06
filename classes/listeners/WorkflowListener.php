@@ -31,9 +31,7 @@ class WorkflowListener
      * trace_log($model->name);
      */
     public function recLogs($event) {
-        //trace_log("recLogs");
         $model = $event->getSubject();
-        //trace_log($model->name);
         $model->storeStatelog($event);
         return false;
     }

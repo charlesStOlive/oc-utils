@@ -22,6 +22,7 @@ class WorkflowList
      * GLOBAL
      */
     public static function getRegisteredWorkflows() {
+        trace_log('getRegisteredWorkflows');
         $bundles = PluginManager::instance()->getRegistrationMethodValues('registerWorkflows');
         if (!$bundles) {
             return [];
@@ -36,20 +37,38 @@ class WorkflowList
         return $workflowsArray;
     }
 
-    // public static function getSrConfig()
-    // {
-    //     $workflows = Config::get('wcli.wconfig::workflows');
-    //     if ($workflows) {
-    //         $workflowsArray = [];
-    //         foreach ($workflows as $workflow) {
-    //             $wk = Yaml::parseFile(plugins_path() . $workflow);
-    //             $workflowsArray = array_merge($workflowsArray, $wk);
-    //         }
-    //         return $workflowsArray;
+    public static function getCronAuto() {
+        $workflows = \Config::get('workflow');
+        $listWorkflow = [];
+        foreach($workflows as $workflow) {
+            $modelAssocied = $workflow['supports'];
+            foreach($modelAssocied as $class) {
+                $cronAutoValues = static::getCronAutoValues($workflow);
+                if (!empty($cronAutoValues)) {
+                    array_push($listWorkflow, [
+                        'class' => $class,
+                        'cron_auto' => static::getCronAutoValues($workflow),
+                    ]);
+                }
+            }
 
-    //         //return Yaml::parseFile(plugins_path() . $dataSources[0]);
-    //     } else {
-    //         throw new \SystemException('UImpossible de trouver la config du workflow');
-    //     }
-    // }
+        }
+        return $listWorkflow;
+    }
+
+    public static function getCronAutoValues(array $workflowConfig)
+    {
+        $results = [];
+
+        $flattenedArray = \Arr::dot($workflowConfig['places']);
+
+        foreach ($flattenedArray as $key => $value) {
+            if (\Str::contains($key, '.metadata.cron_auto')) {
+                $place = explode('.', $key)[0]; // Récupère le nom de la place
+                $results[$place] = $value;
+            }
+        }
+
+        return $results;
+    }
 }
