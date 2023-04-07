@@ -355,7 +355,15 @@ trait WakaWorkflowTrait
     }
 
     public function getWfScope($scopename) {
-       $scope =  $this->getWakaWorkflow()->getMetadataStore()->getWorkflowMetadata()['scopes'][$scopename] ?? null;
+       $scope =  $this->getWakaWorkflow()->getMetadataStore()->getWorkflowMetadata()['scopes'][$scopename]['value'] ?? null;
+       if(!$scope) {
+            throw new \ApplicationException("Impossible de trouver  le scope  ".$scopename ." sur le modèle ".$this->name. " avec le Wf : ".$this->getWorkflowName());
+       } else {
+            return $scope;
+       }
+    }
+    public function getWfScopeLabel($scopename) {
+       $scope =  $this->getWakaWorkflow()->getMetadataStore()->getWorkflowMetadata()['scopes'][$scopename]['label'] ?? null;
        if(!$scope) {
             throw new \ApplicationException("Impossible de trouver  le scope  ".$scopename ." sur le modèle ".$this->name. " avec le Wf : ".$this->getWorkflowName());
        } else {
