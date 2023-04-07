@@ -63,8 +63,8 @@ class ImageWidget extends FormWidgetBase
         if($imageType == 'file') {
             $this->vars['cropOptions'] = \Config::get('waka.utils::image.baseCrop');
         } elseif($imageType) {
-            $this->vars['cropOptions'] = \Config::get('waka.cloudis::ImageOptions.crop.options');
-            $this->vars['gravityOptions'] = \Config::get('waka.cloudis::ImageOptions.gravity.options');
+            $this->vars['cropOptions'] = \Config::get('waka.utils::ImageOptions.crop.options');
+            $this->vars['gravityOptions'] = \Config::get('waka.utils::ImageOptions.gravity.options');
         } 
         $this->vars['imageType'] = $imageType;
     }
@@ -104,8 +104,8 @@ class ImageWidget extends FormWidgetBase
                 '#'.$this->getId().'image_option' => $this->makePartial('options_classique'),
             ]; 
         } else {
-            $this->vars['cropOptions'] = \Config::get('waka.cloudis::ImageOptions.crop.options');
-            $this->vars['gravityOptions'] = \Config::get('waka.cloudis::ImageOptions.gravity.options');
+            $this->vars['cropOptions'] = \Config::get('waka.utils::ImageOptions.crop.options');
+            $this->vars['gravityOptions'] = \Config::get('waka.utils::ImageOptions.gravity.options');
             return [
                 '#'.$this->getId().'image_option' => $this->makePartial('options_cloudi'),
             ]; 

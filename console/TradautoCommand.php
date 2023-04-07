@@ -52,9 +52,7 @@ class TradautoCommand extends BaseScaffoldCommand
         array_set($langContent, $codeData['code'], $codeData['code']);
         $filePath = $basePath. '/' .$codeData['vendor']. '/' .$codeData['plugin'].'/lang/fr/'.$codeData['file'].'.php';
         $fileContent = '<?php' . PHP_EOL . PHP_EOL;
-        $jsonContent = json_encode($langContent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        $modernArraySyntax = str_replace(['{', '}', '":'], ['[', ']', '" =>'], $jsonContent);
-        $fileContent .= 'return ' . $modernArraySyntax . ';' . PHP_EOL;
+        $fileContent .= 'return ' . \Brick\VarExporter\VarExporter::export($langContent) . ';' . PHP_EOL;
         file_put_contents($filePath, $fileContent);
         //trace_log("Created: {$text}");
         return "Created: {$text}";
@@ -105,9 +103,7 @@ class TradautoCommand extends BaseScaffoldCommand
         array_set($langContent, $code, $string);
         //trace_log($langContent);
         $fileContent = '<?php' . PHP_EOL . PHP_EOL;
-        $jsonContent = json_encode($langContent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        $modernArraySyntax = str_replace(['{', '}', '":'], ['[', ']', '" =>'], $jsonContent);
-        $fileContent .= 'return ' . $modernArraySyntax . ';' . PHP_EOL;
+        $fileContent .= 'return ' . \Brick\VarExporter\VarExporter::export($langContent) . ';' . PHP_EOL;
         file_put_contents($filePath, $fileContent);
 
     }

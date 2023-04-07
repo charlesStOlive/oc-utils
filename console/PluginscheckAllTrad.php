@@ -48,16 +48,13 @@ class PluginscheckAllTrad extends BaseScaffoldCommand
      */
     public function handle()
     {
-        $directories = ['wcli', 'waka','../themes'];
-
-
-
+        $directories = ['wcli', 'waka', '../themes'];
 
         $analysed = $this->getAnalysedFiles($directories);
-        //trace_log($analysed['nested']);
         $existing = $this->extractLanguageFiles($directories);
+        //trace_log($analysed['nested']);
+        // trace_log($existing);
         $result = $this->mergeAndFindDifferenceRecursive($analysed['nested'], $existing);
-        //trace_log($result);
         $this->createLanguageFiles($result['mergedArray']);
     }
 
@@ -114,17 +111,18 @@ class PluginscheckAllTrad extends BaseScaffoldCommand
             }
 
             foreach ($langFiles as $langKey => $langContent) {
+                $langContent = $this->recursive_ksort($langContent);
                 $langFile = $langPath . '/' . $langKey . '.php';
 
                 // Génère le contenu du fichier PHP avec la syntaxe moderne
                 $fileContent = '<?php' . PHP_EOL . PHP_EOL;
-                $jsonContent = json_encode($langContent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-                $modernArraySyntax = str_replace(['{', '}', '":'], ['[', ']', '" =>'], $jsonContent);
-                $fileContent .= 'return ' . $modernArraySyntax . ';' . PHP_EOL;
+                $fileContent .= 'return ' . \Brick\VarExporter\VarExporter::export($langContent) . ';' . PHP_EOL;
 
                 // Crée le fichier de langue
                 if (!$this->option('simulate')) {
                     if (!file_exists($langFile)) {
+                        $this->info('missing lang file '.$langFile);
+                        $this->info(json_encode($langContent, true));
                         if ($this->confirm('Vous allez créer un nouveau fichier ici : '.$langFile)) {
                             file_put_contents($langFile, $fileContent);
                         }
@@ -133,6 +131,16 @@ class PluginscheckAllTrad extends BaseScaffoldCommand
                     }
                     
                 }
+            }
+        }
+    }
+
+    protected function recursive_ksort(&$array)
+    {
+        ksort($array);
+        foreach ($array as &$value) {
+            if (is_array($value)) {
+                $this->recursive_ksort($value);
             }
         }
     }
@@ -191,37 +199,75 @@ class PluginscheckAllTrad extends BaseScaffoldCommand
     private function getAnalysedFiles($directories)
     {
         $strings = collect();
-        $pattern = $re = '/(?:(?<!config:)(?<!options:)(?<!option:)(?:^|\s)|el\'\s=>\s\'|trans\(\'|ang::get\(\')(\b\w+\.\w+\b)::(\b\w+\b)(?:\.)(\b\w+(?:\.\w+)*\b)/';
+        $pattern = '/(?P<src>\w+\.\w+)::(?P<full_key>(?P<lg>\w+)(\.(?P<mid_key>\w+(\.\w+)*))?\.(?P<key>\w+))/';
         foreach ($directories as $directory) {
             $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(plugins_path($directory)));
             foreach ($iterator as $file) {
-
-                if ($file->isFile() && in_array($file->getExtension(), ['yaml', 'php', 'htm'])) {
+                if ($file->isFile() && in_array($file->getExtension(), ['yaml', 'php', 'htm', 'md'])) {
                     $content = file_get_contents($file);
-                    preg_match_all($pattern, $content, $matches);
-                    foreach ($matches[0] as $match) {
-                        preg_match('/(\b\w+\.\w+\b)::(\b\w+\b)\.(\b\w+(?:\.\w+)*)\b/', $match, $submatches);
-                        $strings->push(['vp' => $submatches[1], 'file' => $submatches[2], 'code' => $submatches[3]]);
+                    preg_match_all($pattern, $content, $matches, PREG_SET_ORDER,0);
+                    //trace_log($matches);
+                    foreach ($matches as $i=>$match) {
+                        if(!$src = $match['src'] ?? false) {
+                            continue;
+                        }
+                        if(!$lg = $match['lg'] ?? false) {
+                            continue;
+                        }
+                        if(!$mid_key = $match['mid_key'] ?? false) {
+                            $mid_key = $match['key'];
+                        }
+                        $strings->push([
+                            'vp' => $src,
+                            'file' => $lg,
+                            'code' => $mid_key,
+                            'key' => $match['key'],
+                            'full' => $match[0] ?? null,
+                        ]);
                     }
+                } else {
+                    //trace_log('refusé : '.trace_log($file->getFilename()));
                 }
             }
         }
-        $Collection = $strings->sortby('code')->sortby('file')->sortby('vp')->groupBy(['vp', 'file']);
-        $flattFileVpCollection = $Collection->map(function ($fileGroup, $vpKey) {
-            return $fileGroup->map(function ($codeGroup, $fileKey) {
-                $combined = [];
-                foreach ($codeGroup as $item) {
-                    $combined[$item['code']] = null;
-                }
-
-                return $combined;
-            });
+        
+        
+        trace_log('count strings : '.$strings->count());
+        $strings =  $strings->filter(function ($fileGroup, $vpKey) {
+            $lang = \Lang::get($fileGroup['full']);
+            if($lang == $fileGroup['full']) {
+                // trace_log('Pas de langue pour '.$fileGroup['full']);
+                //La trad n'existe pas on check si c'est un settings. 
+                if(\Config::get($fileGroup['full'])) {
+                    //trace_log('une config ! '.$fileGroup['full']);
+                    return false;
+                } 
+            } 
+            return true;
         });
+        trace_log('count collection after : '.$strings->count());
+        $Collection = $strings->sortby('code')->sortby('file')->sortby('vp')->groupBy(['vp', 'file']);
+        
+        // $flattFileVpCollection = $Collection->map(function ($fileGroup, $vpKey) {
+        //     return $fileGroup->map(function ($codeGroup, $fileKey) {
+        //         $combined = [];
+        //         foreach ($codeGroup as $item) {
+        //             $combined[$item['code']] = null;
+        //         }
+
+        //         return $combined;
+        //     });
+        // });
+        
         $nestedCollection = $Collection->map(function ($fileGroup, $vpKey) {
+            // trace_log('--file group--');
+            // trace_log($fileGroup);
             return $fileGroup->map(function ($codeGroup, $fileKey) {
                 $combined = [];
                 foreach ($codeGroup as $item) {
-                    $code = $item['code'];
+                    // trace_log($item);
+                    $code = $item['code'].'.'.$item['key'];
+                    // trace_log($code);
                     array_set($combined, $code, null);
                 }
                 array_walk_recursive($combined, function (&$value, $key) {
@@ -233,9 +279,10 @@ class PluginscheckAllTrad extends BaseScaffoldCommand
                 return $combined;
             });
         });
+        // trace_log($nestedCollection->toArray());
         return [
             'nested' => $nestedCollection->toArray(),
-            'flatten' => $flattFileVpCollection->toArray(),
+            // 'flatten' => $flattFileVpCollection->toArray(),
         ];
     }
 

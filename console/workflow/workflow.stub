@@ -20,7 +20,9 @@
 {% if scopes | length > 0 %}
         scopes:
 {% for scope in scopes %}
-            {{scope.key}}: [{{scope.value}}]              
+            {{scope.key}}:
+                label: {{author | lower}}.{{plugin | lower}}::{{name | lower}}.scopes.{{scope.key}}
+                value: [{{scope.value}}]             
 {% endfor %}{% endif %}
     marking_store:
         type: single_state

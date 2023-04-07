@@ -207,10 +207,7 @@ class WorkflowCreate extends BaseScaffoldCommand
         $langContent = array_merge($this->vars['trads'], ['places' =>  $places], ['trans' =>  $trans], ['scopes' => $scopesLang] );
         $this->recursive_ksort($langContent);
         $fileContent = '<?php' . PHP_EOL . PHP_EOL;
-        $jsonContent = json_encode($langContent, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        //trace_log($jsonContent);
-        $modernArraySyntax = str_replace(['{', '}', '":'], ['[', ']', '" =>'], $jsonContent);
-        $fileContent .= 'return ' . $modernArraySyntax . ';' . PHP_EOL;
+        $fileContent .= 'return ' . \Brick\VarExporter\VarExporter::export($langContent) . ';' . PHP_EOL;
         file_put_contents($destinationFile, $fileContent);
     }
 
