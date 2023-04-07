@@ -62,6 +62,7 @@ class PluginTrad extends GeneratorCommand
         $this->vars = $this->prepareVars();
         $this->getModelLangPath();
         $this->info($this->type . 'created successfully.');
+
     }
 
     /**
@@ -78,6 +79,7 @@ class PluginTrad extends GeneratorCommand
         $this->codeLang = $this->argument('lang');
 
         $this->p_model = $model = $this->option('model');
+        return [];
     }
 
     protected function getModelLangPath() {
@@ -118,7 +120,6 @@ class PluginTrad extends GeneratorCommand
             /**/trace_log("pas de contenu");
             return;
         }
-        
         $traduction = $this->recursiveLaunchTrad($content);
 
         if($fileExiste) {
@@ -151,9 +152,21 @@ class PluginTrad extends GeneratorCommand
                     sleep(1);
                     $this->apiLimit = 0;
                 }
-                $translation = \GoogleTranslate::translate($row, $this->codeLang);
-                $rowTraducted = $translation['translated_text'];
-                $newMap[$key] =  $rowTraducted;
+                trace_log($row);
+                trace_log($this->codeLang.'---------------------------------------');
+                try {
+                    $translation = \GoogleTranslate::translate($row, 'fr',$this->codeLang);
+                    trace_log($translation);
+                    $rowTraducted = $translation['translated_text'] ?? null;
+                    $newMap[$key] =  $rowTraducted;
+                } catch (\Exception $ex) {
+                    trace_log($ex->getMessage());
+                    trace_log('error');
+                    $newMap[$key] =  $row;
+                }
+                
+                
+                
             }
         }
         return $newMap;
@@ -172,82 +185,6 @@ class PluginTrad extends GeneratorCommand
         }
         return $diff;
     }
-    /**
-     * NE PAS SUPPRIMER OU A SAUVEGARDER AILLEUL
-     * ANCIENNE IDEE UTILITE POSSIBLE POUR AUTRE CODES
-     * storeMapKey permet de suvegarder les clefs d'un tableau dans un nouveau tableau en temps que valeur
-     * createMapRow : permet d'enlever des clefs d'un tableau
-     * fetchKey : remt les clef dun' tableau si il a les mêmes lignes que storeMzapKey.
-     *  Si dessous ancinne partie du code et les3 fonctions.
-     */
-        //Création du mappage de sauvegarde ( on va enlever les clefs avant de lancer la traduction.
-        //$contentStoredKey = $this->storeMapKey($content);
-        //trace_log($contentStoredKey);
-        //$contentMappedRow = $this->createMapRow($content);
-        //trace_log($contentMappedRow);
-        //TRADUCTION
-        // $contentJson = json_encode($contentMappedRow, JSON_UNESCAPED_UNICODE );
-        // trace_log($contentJson);
-        //trace_log($translation);
-        // $contentReturn = json_decode($translation['translated_text'],true,512);
-        // //trace_log($contentReturn);
-        // // $contentReturn = json_decode(File::get($this->originalFolder.'/json_comp.json'));
-        // $fetched = $this->fetchKey($contentStoredKey, $contentReturn);
-        // //trace_log($fetched);
-        // if($fileExiste) {
-        //     $fetched  = array_merge_recursive($tradContent, $fetched);
-        // } 
-        // //PERMET DE TESTER 
-        // //$contentReturn = json_decode(File::get($this->originalFolder.'/json_en.json'));
-
-
-    // public function storeMapKey($rows, $key = null) {
-    //     $newMap  = [];
-    //     if($key) {
-    //         array_push($newMap, $key);
-    //     }
-    //     foreach($rows as $key=> $row) {
-    //         if(is_array($row)) {
-    //             $row =  $this->storeMapKey($row, $key);
-    //             array_push($newMap, $row);
-    //         } else {
-    //             array_push($newMap, $key);
-    //         }
-    //     }
-    //     return $newMap;
-    // }
-    // public function createMapRow($rows) {
-    //     $newMap  = [];
-    //     foreach($rows as $key=> $row) {
-            
-    //         if(is_array($row)) {
-    //             $row =  $this->createMapRow($row);
-    //             array_push($newMap, $row);
-    //         } else {
-    //             array_push($newMap, $row);
-    //         }
-    //     }
-    //     return $newMap;
-    // }
-
-
-    // public function fetchKey($keyArray, $rowArray, $key=null) {
-    //     $newMap  = [];
-    //     foreach($keyArray as $key=>$row) {
-    //         if(is_array($row)) {
-    //             $newKey = array_shift($row);
-    //             $newRow =  $this->fetchKey($row,$rowArray[$key]);
-    //             $newMap[$newKey] = $newRow;
-    //         } else {
-    //             $newKey = $keyArray[$key];
-    //             $newRow = $rowArray[$key];
-    //             $newMap[$newKey] = $newRow;
-    //         }
-    //     }
-    //     return $newMap;
-    // }
-
-    
 
     /**
      * Get the console command arguments.

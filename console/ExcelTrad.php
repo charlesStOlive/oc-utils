@@ -70,6 +70,7 @@ class ExcelTrad extends GeneratorCommand
             $this->importExcel();
         }
         
+        
     }
 
     /**
@@ -86,6 +87,7 @@ class ExcelTrad extends GeneratorCommand
         $codeLangs = $this->argument('langs');
         $this->arrayLangs = explode(',', $codeLangs);
         $this->p_model = $model = $this->option('model');
+        return [];
     }
 
     public function getExcelFileName() {
@@ -168,26 +170,14 @@ class ExcelTrad extends GeneratorCommand
                 $finalData = [];
                 if($data) {
                     foreach ($data as $key => $value) {
-                        array_set($finalData, $key, $value);
+                        if($key && $key != '')  array_set($finalData, $key, $value);
                     }
                 }
                 $filePath = $folderLangPath.'/'.$sheetName.'.php';
-                //trace_log($filePath);
-                //trace_log($finalData);
-
-                //Methode 1
-                // $stubLang = $this->getSourcePath() . '/trad/lang.stub';
-                // $langStubContent = File::get($stubLang);
-                // $destinationContent = Twig::parse($langStubContent, ['data' => $finalData]);
-
                 //Methode 2
-                $finalData =  VarExporter::export($finalData,VarExporter::NO_CLOSURES);
-                $stubLang = $this->getSourcePath() . '/trad/langVar.stub';
-                $langStubContent = File::get($stubLang);
-                $destinationContent = Twig::parse($langStubContent, ['data' => $finalData]);
-
-
-                File::put($filePath,$destinationContent);
+                $fileContent = '<?php' . PHP_EOL . PHP_EOL;
+                $fileContent .= 'return ' . \Brick\VarExporter\VarExporter::export($finalData) . ';' . PHP_EOL;
+                File::put($filePath,$fileContent);
             }
         }
     }
