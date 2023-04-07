@@ -10,6 +10,7 @@ return [
         'confirm' => 'Confirmer',
         'create' => 'Créer',
         'create_close' => 'Créer & fermer',
+        'created_at' => 'Crée',
         'creating_indicator' => 'Création en cours',
         'delete' => 'Supprimer',
         'delete_confirm' => 'Voulez vous vraiment supprimer la selection ?',
@@ -41,8 +42,7 @@ return [
         'termined' => 'Terminer',
         'test' => 'test',
         'updated_at' => 'MAJ',
-        'validate' => 'Valider',
-        'created_at' => 'Crée'
+        'validate' => 'Valider'
     ],
     'import' => [
         'button_import' => 'Importer',
@@ -51,10 +51,17 @@ return [
         'import_indicator' => 'Import en cours'
     ],
     'job_list' => [
+        'created_at' => 'Crée le',
+        'date_diff' => 'date diff',
+        'end_at' => 'Terminé le',
+        'name' => 'Noms',
         'scopes' => [
             'not_end' => 'Ne pas afficher les taches terminées',
             'only_user' => 'Seulement vos taches'
-        ]
+        ],
+        'started_at' => 'Commencé le',
+        'state' => 'Etat',
+        'user_name' => 'Nom utilisateur'
     ],
     'joblist' => [
         'btn_counter_label' => 'NB Jobs'
@@ -62,10 +69,10 @@ return [
     'menu' => [
         'job_list' => 'Liste des taches',
         'job_list_description' => 'Liste des taches de l\'application',
+        'job_list_s' => 'Taches',
         'settings_category' => 'Configuration ',
         'settings_category_model' => 'Gestion des Modèles',
-        'settings_controle' => 'Contrôles',
-        'job_list_s' => 'Taches'
+        'settings_controle' => 'Contrôles'
     ],
     'page' => [
         'access_denied' => [
@@ -73,12 +80,13 @@ return [
         ]
     ],
     'popup' => [
-        'change_field' => 'Modifier le champ',
-        'export_lot' => 'Produire un lot',
-        'choose_who' => 'Choisissez la cible',
-        'checked' => 'Cibles selectionés',
         'all' => 'Tous',
-        'filtered' => 'Liste filtré'
+        'change_field' => 'Modifier le champ',
+        'checked' => 'Cibles selectionés',
+        'choose_who' => 'Choisissez la cible',
+        'export_lot' => 'Produire un lot',
+        'filtered' => 'Liste filtré',
+        'traitement_lots' => null
     ],
     'prod' => [
         'produce' => 'Produire',
@@ -86,7 +94,6 @@ return [
         'tools' => 'Outils'
     ],
     'rules' => [
-        'label' => 'AJouter',
         'prompt' => 'Ajouter bloc',
         'prompt_share' => 'Ajouter bloc partagé'
     ],
@@ -94,7 +101,25 @@ return [
         'conditions_id' => [
             'description' => 'Description condition',
             'label' => 'Titre condition'
-        ]
+        ],
+        'field' => 'Champs',
+        'field_com' => 'Commentaire sur le champ',
+        'id' => 'ID',
+        'id_com' => 'Commentaire sur ID',
+        'libelle' => 'Libelle',
+        'scope_bool' => 'Filtre bool',
+        'scope_field' => 'filtre champ',
+        'scope_field_com' => 'filtre champ com',
+        'scope_relation' => 'Filtre sur relation',
+        'scope_relation_com' => 'Filtre relation com',
+        'scope_value' => 'Valeur du scope',
+        'scope_values' => 'Valeurs du scope',
+        'scope_values_com' => 'Valeurs du scope com',
+        'self' => 'SELF',
+        'target' => 'Cible',
+        'target_com' => 'Cible com',
+        'userRoles' => 'Role utilisateur',
+        'users' => 'Utilisateurs'
     ],
     'settings' => [
         'activate_builder' => 'Activer le bouton du Builder',
@@ -110,11 +135,17 @@ return [
         'update' => 'Mettre à jours'
     ],
     'workflow' => [
+        'btn_workflow' => 'BOuton workflow',
+        'change_state' => 'Changer d\'état',
+        'confirm_no_trans_title' => 'Transitions interdites',
+        'must_trans' => 'Transition obligatoire',
         'popup' => [
             'confirm_title' => 'Confirmation',
             'next_place_label' => 'Prochain état : ',
             'save_no_transition' => 'Votre modèle sera sauvé sans appliquer de transition.',
             'transition' => 'Transition : '
-        ]
+        ],
+        'state' => 'Etat',
+        'state_change_forbidden' => 'Changement état interdit'
     ]
 ];

@@ -111,7 +111,7 @@ class PluginscheckAllTrad extends BaseScaffoldCommand
             }
 
             foreach ($langFiles as $langKey => $langContent) {
-                $langContent = $this->recursive_ksort($langContent);
+                $this->recursive_ksort($langContent);
                 $langFile = $langPath . '/' . $langKey . '.php';
 
                 // Génère le contenu du fichier PHP avec la syntaxe moderne
