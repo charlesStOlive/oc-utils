@@ -22,7 +22,6 @@ class WorkflowList
      * GLOBAL
      */
     public static function getRegisteredWorkflows() {
-        trace_log('getRegisteredWorkflows');
         $bundles = PluginManager::instance()->getRegistrationMethodValues('registerWorkflows');
         if (!$bundles) {
             return [];

@@ -28,7 +28,7 @@
                 foreach ($fieldOptions as $key => $option): ?>
                 <div class="radio custom-radio">
                     <input name="<?= $field->getName() ?>" value="<?= e($key) ?>" type="radio" id="lw_<?=$i?>" />
-                    <label for="lw_<?=$i?>"><?= e(trans($option['label'])) ?></label>
+                    <label for="lw_<?=$i?>"><?= e(trans($option['button'])) ?></label>
                 </div>
                 <?php 
                  $i++;

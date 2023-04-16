@@ -152,16 +152,16 @@ class PluginTrad extends GeneratorCommand
                     sleep(1);
                     $this->apiLimit = 0;
                 }
-                trace_log($row);
-                trace_log($this->codeLang.'---------------------------------------');
+                //trace_log($row);
+                //trace_log($this->codeLang.'---------------------------------------');
                 try {
                     $translation = \GoogleTranslate::translate($row, 'fr',$this->codeLang);
-                    trace_log($translation);
+                    //trace_log($translation);
                     $rowTraducted = $translation['translated_text'] ?? null;
                     $newMap[$key] =  $rowTraducted;
                 } catch (\Exception $ex) {
-                    trace_log($ex->getMessage());
-                    trace_log('error');
+                    //trace_log($ex->getMessage());
+                    //trace_log('error');
                     $newMap[$key] =  $row;
                 }
                 

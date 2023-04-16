@@ -100,6 +100,7 @@ class Workflow extends FormWidgetBase
                 $label = $this->workflowMetadata->getMetadata('label', $transition) ?? $name;
                 $possibleTransition[$name] = [
                     'label' => $label,
+                    'button' => $this->workflowMetadata->getMetadata('button', $transition) ?? null,
                     'type' => $this->workflowMetadata->getMetadata('type', $transition) ?? null,
                     'com' => $this->workflowMetadata->getMetadata('com', $transition) ?? null,
                     'icon' => $this->workflowMetadata->getMetadata('icon', $transition) ?? null,

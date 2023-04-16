@@ -84,14 +84,19 @@ class WorkflowListener
      */
     public function onAfterSavedFunction($model, $fnc)
     {
+        
         $functionName = array_keys($fnc)[0] ?? null;
         if (!$functionName) {
+            \Log::error('onAfterSavedFunction : $ functionName est manquant');
+            //trace_log($fnc);
             return;
         }
 
         $arguments = $fnc[$functionName]['args'] ?? null;
         if (method_exists($this, $functionName)) {
             $this->{$functionName}($model, $arguments ?? null);
+        } else {
+            \Log::error('onAfterSavedFunction : '.$functionName.' n existe pas');
         }
     }
 

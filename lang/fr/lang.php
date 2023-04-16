@@ -135,7 +135,7 @@ return [
         'update' => 'Mettre à jours'
     ],
     'workflow' => [
-        'btn_workflow' => 'BOuton workflow',
+        'btn_workflow' => 'Sauver et...',
         'change_state' => 'Changer d\'état',
         'confirm_no_trans_title' => 'Transitions interdites',
         'must_trans' => 'Transition obligatoire',

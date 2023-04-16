@@ -139,8 +139,8 @@ trait WakaWorkflowTrait
                 }
                 
                 $changeState = $model->change_state ? $model->change_state  : $model->getOriginalPurgeValue('change_state');
+                //trace_log("executeWorkflowFunctionAfterSave () =".$changeState);
                 $model->executeWorkflowFunctionAfterSave($changeState);
-                return;
             });
         });
     }
@@ -153,6 +153,7 @@ trait WakaWorkflowTrait
 
     public function executeWorkflowFunctionAfterSave($changeState)
     {
+        //trace_log("executeWorkflowFunctionAfterSave : ".$changeState);
         if (!$changeState) {
             return;
         }
@@ -160,10 +161,19 @@ trait WakaWorkflowTrait
         //
         $transition = self::getWfTransition($changeState, $this);
         $afterSaveFunction = $this->wakaWorkflowGetTransitionMetadata($transition)['fncs'] ?? null;
+        //trace_log($afterSaveFunction);
         if ($afterSaveFunction) {
             $afterSaveFunction = new \Winter\Storm\Support\Collection($afterSaveFunction);
-            $fnc = $afterSaveFunction->where('type', 'prod')->toArray();
-            \Event::fire('workflow.' . $workflowName . '.afterModelSaved', [$this, $fnc]);
+            $fncProd = $afterSaveFunction->where('type', 'prod')->toArray();
+            if($fncProd) {
+                //trace_log("Event::fire : workflow." . $workflowName . ".afterModelSaved");
+                //trace_log($fncProd);
+                \Event::fire('workflow.' . $workflowName . '.afterModelSaved', [$this, $fncProd]);
+            } else {
+                //trace_log('PAS DE FONCTION');
+            }
+            
+            
         }
     }
 

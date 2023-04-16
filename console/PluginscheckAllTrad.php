@@ -232,7 +232,6 @@ class PluginscheckAllTrad extends BaseScaffoldCommand
         }
         
         
-        trace_log('count strings : '.$strings->count());
         $strings =  $strings->filter(function ($fileGroup, $vpKey) {
             $lang = \Lang::get($fileGroup['full']);
             if($lang == $fileGroup['full']) {
@@ -245,7 +244,6 @@ class PluginscheckAllTrad extends BaseScaffoldCommand
             } 
             return true;
         });
-        trace_log('count collection after : '.$strings->count());
         $Collection = $strings->sortby('code')->sortby('file')->sortby('vp')->groupBy(['vp', 'file']);
         
         // $flattFileVpCollection = $Collection->map(function ($fileGroup, $vpKey) {

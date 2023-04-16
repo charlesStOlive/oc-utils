@@ -54,8 +54,7 @@ class ExportLang implements FromCollection, WithHeadings, ShouldAutoSize, WithSt
 
     public function collection()
     {
-        trace_log($this->fileName);
-        trace_log($this->fileContent);
+
         $baseLangContent = new Collection($this->fileContent['fr']);
         
         $baseLangContent = $baseLangContent->map(function ($item, $key) {
