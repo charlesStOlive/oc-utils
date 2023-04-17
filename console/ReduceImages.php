@@ -91,7 +91,9 @@ class ReduceImages extends Command
         
         if($image->isImage()) {
             $path = $image->getLocalPath();
-            
+            if(!File::exists($path)) {
+                return;
+            }
             $width = $image->width;
             $height = $image->height;
             $largest = null;

@@ -275,7 +275,7 @@ trait WakaWorkflowTrait
                 break;
             }
         }
-        throw new \ApplicationException("Impossible de trouver  le changement d'état ".$changeState ." sur le modèle ".$model->name. " avec le Wf : ".$model->getWorkflowName());
+        throw new \ApplicationException(\Lang::get("waka.utils::lang.workflow.error.trans_not_found", ['t_name' => $changeState, 'm_name' => $model->name, 'wf_name' => $model->getWorkflowName()]));
     }
 
     public function getWfTransitionRedirection($label_transition = null)

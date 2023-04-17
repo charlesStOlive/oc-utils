@@ -138,6 +138,9 @@ return [
         'btn_workflow' => 'Sauver et...',
         'change_state' => 'Changer d\'état',
         'confirm_no_trans_title' => 'Transitions interdites',
+        'error' => [
+            'trans_not_found' => 'Impossible de trouver la transition :t_name sur le modèle :m_name avec le Wf :wf_name ',
+        ],
         'must_trans' => 'Transition obligatoire',
         'popup' => [
             'confirm_title' => 'Confirmation',
