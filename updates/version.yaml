@@ -41,3 +41,6 @@
 2.0.0:
     - "Ajout des wf dans stateLogs"
     - create_stateables_table_u200.php
+2.1.0:
+    - "Ajout des index dans state log"
+    - create_stateables_table_u210.php

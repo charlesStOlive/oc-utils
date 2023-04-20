@@ -16,7 +16,6 @@ class WorkflowList
 
         // Vérifie si les workflows sont en cache
         if (Cache::has($cacheKey)) {
-            trace_log(Cache::get($cacheKey));
             return Cache::get($cacheKey);
         }
 
