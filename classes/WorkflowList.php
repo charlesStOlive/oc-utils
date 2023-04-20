@@ -6,21 +6,31 @@
 use Config;
 use Yaml;
 use System\Classes\PluginManager;
+use Cache;
 
 class WorkflowList
 {
     public static function getAll()
     {
-        return self::getRegisteredWorkflows();
+       $cacheKey = 'allWorkflows';
+
+        // Vérifie si les workflows sont en cache
+        if (Cache::has($cacheKey)) {
+            trace_log(Cache::get($cacheKey));
+            return Cache::get($cacheKey);
+        }
+
+        // Récupère tous les workflows enregistrés
+        $workflows = static::getRegisteredWorkflows();
+
+        // Stocke les workflows en cache de manière permanente
+        Cache::rememberForever($cacheKey, function () use ($workflows) {
+            return $workflows;
+        });
+
+        return $workflows;
     }
-    // public static function get($workflowKey)
-    // {
-    //     $result = self::getSrConfig();
-    //     return $result[$workflowKey];
-    // }
-    /**
-     * GLOBAL
-     */
+    
     public static function getRegisteredWorkflows() {
         $bundles = PluginManager::instance()->getRegistrationMethodValues('registerWorkflows');
         if (!$bundles) {

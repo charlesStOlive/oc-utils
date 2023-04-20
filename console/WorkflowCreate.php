@@ -64,6 +64,8 @@ class WorkflowCreate extends BaseScaffoldCommand
     {
         //trace_log('je commence worrkflow create');
         $this->vars = $this->prepareVars(true);
+        //
+        $this->call('cache:forget', ['key' => 'allWorkflows']);
 
         //trace_log($this->vars);
 
