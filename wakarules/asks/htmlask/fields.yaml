@@ -7,7 +7,6 @@ fields:
         label: Pour une fonction ? 
         type: checkbox
         span: left
-        restricted: true
     fnc_attributes:
         label: Nom de la fonction
         span: right
@@ -15,7 +14,6 @@ fields:
             action: show
             field: is_fnc
             condition: checked
-        restricted: true
     html:
         label: Text HTML
         type: richeditor
