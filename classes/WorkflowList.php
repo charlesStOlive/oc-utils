@@ -109,7 +109,7 @@ class WorkflowList
         $results = [];
 
         $flattenedArray = \Arr::dot($workflowConfig['places']);
-        $defaultCronTime = $workflowConfig['metadata']['cron_auto_timeXXXXX'] ?? '14h54';
+        $defaultCronTime = $workflowConfig['metadata']['cron_auto_timeXXXXX'] ?? '15h00';
 
         foreach ($flattenedArray as $key => $value) {
             if (\Str::contains($key, '.metadata.cron_auto')) {
