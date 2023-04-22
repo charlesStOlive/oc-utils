@@ -85,6 +85,11 @@ class WorkflowList
         }
         $listWorkflow = array_reduce($listWorkflow, function ($carry, $item) {
             $time = $item['cron_auto']['time'];
+            $execute = $item['cron_auto']['execute'];
+
+            // Supprime la clé 'cron_auto' et ajoute 'execute' au même niveau que 'class'
+            unset($item['cron_auto']);
+            $item['execute'] = $execute;
 
             if (!isset($carry[$time])) {
                 $carry[$time] = [];
@@ -104,7 +109,7 @@ class WorkflowList
         $results = [];
 
         $flattenedArray = \Arr::dot($workflowConfig['places']);
-        $defaultCronTime = $workflowConfig['metadata']['cron_auto_time'] ?? '00h04';
+        $defaultCronTime = $workflowConfig['metadata']['cron_auto_timeXXXXX'] ?? '14h54';
 
         foreach ($flattenedArray as $key => $value) {
             if (\Str::contains($key, '.metadata.cron_auto')) {

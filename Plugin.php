@@ -207,12 +207,12 @@ class Plugin extends PluginBase
             $controller->addCss('/plugins/wcli/wconfig/assets/css/waka.css');
             $env = \Config::get("waka.utils::env");
             //trace_log('env : '.$env);
-            if($env == 'local') {
+            if ($env == 'local') {
                 //trace_log('local');
                 $controller->addCss('/plugins/waka/utils/assets/css/menu_env_local_2.css');
-            } else if($env == 'dev') {
+            } else if ($env == 'dev') {
                 $controller->addCss('/plugins/waka/utils/assets/css/menu_env_dev_2.css');
-            } 
+            }
         });
 
         //Foralaedotor
@@ -235,7 +235,7 @@ class Plugin extends PluginBase
         $this->registerConsoleCommand('waka:ReduceImages', 'Waka\Utils\Console\ReduceImages');
         $this->registerConsoleCommand('waka:checktrads', 'Waka\Utils\Console\PluginscheckAllTrad');
         $this->registerConsoleCommand('waka:tradauto', 'Waka\Utils\Console\TradautoCommand');
-        
+
 
         CombineAssets::registerCallback(function ($combiner) {
             $combiner->registerBundle('$/waka/utils/formwidgets/rulebuilder/assets/css/rules.less');
@@ -289,6 +289,33 @@ class Plugin extends PluginBase
                 return $value;
             },
         ];
+    }
+
+    public function registerSchedule($schedule)
+    {
+        $cronAutos = \Waka\Utils\Classes\WorkflowList::getCronAuto();
+
+        foreach ($cronAutos as $time => $cronAuto) {
+            $formattedTime = str_replace('h', ':', $time);
+            $schedule->call(function () use ($cronAuto) {
+                foreach ($cronAuto as $classToExecute) {
+                    $class = $classToExecute['class'] ?? null;
+                    $executions = $classToExecute['execute'] ?? [];
+                    if ($class) {
+                        foreach ($executions as $place => $transition) {
+                            $models = $class::where('state', $place)->get();
+                            foreach ($models as $model) {
+                                if ($model->wakaWorkflowCan($transition)) {
+                                    trace_log($model->name . ' doit passer la transition :  ' . $transition);
+                                    // $model->change_state = $transition;
+                                    // $model->save();
+                                }
+                            }
+                        }
+                    }
+                }
+            })->dailyAt($formattedTime);
+        }
     }
 
     public function registerFormWidgets(): array
