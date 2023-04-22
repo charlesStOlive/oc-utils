@@ -64,3 +64,11 @@
 {% for scope in scopes %}
 * **{{scope.key}}**: {{scope.label}} | [{{scope.value}}]  
 {% endfor %}
+
+## Les executions automatiques par taches cron auront lieu par défaut à  {{ configs.cron_auto_time.value | default('00h04')}}
+Liste des cron auto 
+{% for place in places %}
+{% if place.cron_auto %}
+* {{place.name}}: [{{place.cron_auto}}]
+{% endif %}
+{% endfor %}

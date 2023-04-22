@@ -4,6 +4,7 @@
         name: {%if putTrans %}{{author | lower}}.{{plugin | lower}}::{{name | lower}}.{{configs.name.key}}{% else %}{{configs.name.label}}{% endif %} 
 {% if configs.com %}
         com: {{author | lower}}.{{plugin | lower}}::{{name | lower}}.{{ configs.com.key }} 
+        cron_auto_time: {{ configs.cron_auto_time.value | default('00h04')}}
 {% endif %}
 {% if rulesSets |length > 0 %}
         rulesSets:
