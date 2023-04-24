@@ -19,6 +19,7 @@ return [
         'placeholder_w' => "-- Change state--",
         'placeholder_contact' => "--Choose contact--",
         'placeholder_client' => "--Choose client--",
+        'please_wait' => 'Please wait...',
         'sort_order' => "Order",
         'return' => "Return",
         'delete_selected' => "Delete selection",

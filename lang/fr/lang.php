@@ -6,6 +6,7 @@ return [
     ],
     'global' => [
         'cancel' => 'Abandonner',
+        
         'close' => 'Fermer',
         'confirm' => 'Confirmer',
         'create' => 'Créer',
@@ -30,6 +31,7 @@ return [
         'placeholder_contact' => '--Choisissez un contact--',
         'placeholder_model' => '-- Choisissez un modèle --',
         'placeholder_w' => '-- Changez d\'état--',
+        'please_wait' => 'Veuillez patienter...',
         'prompt_record' => 'Cliquez sur l\'icône pour choisir un enregistrement',
         'reorder' => 'Réordonner',
         'save' => 'Sauver',
