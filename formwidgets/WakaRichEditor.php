@@ -83,7 +83,7 @@ class WakaRichEditor extends FormWidgetBase
     public function render()
     {
         $this->prepareVars();
-        return $this->makePartial('modules/backend/formwidgets/richeditor/partials/_richeditor.php');
+        return $this->makePartial('~/modules/backend/formwidgets/richeditor/partials/_richeditor.php');
     }
 
     /**
@@ -140,7 +140,7 @@ class WakaRichEditor extends FormWidgetBase
     {
         //trace_log("onLoadPageLinksForm");
         $this->vars['links'] = $this->getPageLinksArray();
-        return $this->makePartial('modules/backend/formwidgets/richeditor/partials/_page_links_form.php');
+        return $this->makePartial('~/modules/backend/formwidgets/richeditor/partials/_page_links_form.php');
     }
 
     /**
