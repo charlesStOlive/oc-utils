@@ -285,7 +285,7 @@ trait WakaWorkflowTrait
         return $redirection; // string place name
     }
     
-    public function listAllWorklowState($wf = null)
+    public function listAllWorkflowState($wf = null)
     {
         $workflow = $this->getWakaWorkflow($wf);
         $places = $workflow->getDefinition()->getPlaces();
