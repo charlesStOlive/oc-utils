@@ -284,10 +284,10 @@ trait WakaWorkflowTrait
         $redirection  = $this->wakaWorkflowGetTransitionMetadata($transition)['redirect'] ?? null;
         return $redirection; // string place name
     }
-
-    public function listAllWorklowstate()
+    
+    public function listAllWorklowState($wf = null)
     {
-        $workflow = $this->getWakaWorkflow();
+        $workflow = $this->getWakaWorkflow($wf);
         $places = $workflow->getDefinition()->getPlaces();
         $results = [];
         foreach ($places as $place) {

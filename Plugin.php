@@ -306,7 +306,7 @@ class Plugin extends PluginBase
                             $models = $class::where('state', $place)->get();
                             foreach ($models as $model) {
                                 if ($model->wakaWorkflowCan($transition)) {
-                                    trace_log($model->name . ' doit passer la transition :  ' . $transition);
+                                    //trace_log($model->name . ' doit passer la transition :  ' . $transition);
                                     // $model->change_state = $transition;
                                     // $model->save();
                                 }
