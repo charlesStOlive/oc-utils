@@ -17,8 +17,6 @@ class DataSources extends Extendable
     private static $datasources = [];
 
     public static function registerDataSources($data) {
-        // trace_log('registerDataSources');
-        // trace_log($data);
         $array = [];
         if(is_string($data)) {
             $data = \Yaml::parseFile($data);

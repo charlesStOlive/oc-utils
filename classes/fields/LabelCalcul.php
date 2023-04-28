@@ -32,12 +32,5 @@ class LabelCalcul extends BaseField
                 return $this->value = $val1 * $val2;
                 break;
         }
-
-        // //$operator = $this->config['operator'];
-
-        // // $calcul = new Aggregator();
-        // // $total = $calcul->operate2Rows($val1, $val2);
-        // //trace_log($total);
-        // return $this->value = $total;
     }
 }
