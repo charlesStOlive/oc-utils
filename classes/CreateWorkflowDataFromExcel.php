@@ -25,6 +25,7 @@ class CreateWorkflowDataFromExcel
             }
             return $item;
         });
+        //trace_log($rules->toArray());
 
         // Récupération des règles sets
         $ruleSetArray = $config->where('type', '==', 'ruleset')->lists('label', 'key');
@@ -38,6 +39,7 @@ class CreateWorkflowDataFromExcel
                 'message' => $message,
             ];
         }
+         //trace_log($rulesSets);
 
         $scopes = $config->where('type', '==', 'scopes');
         //trace_log( $scopes);

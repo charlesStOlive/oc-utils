@@ -350,6 +350,11 @@ trait WakaWorkflowTrait
         if (!$place) $place =  $this->state;
         return $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['hidden_fields'] ?? []; // string place name
     }
+    public function getWfROFields($place = null)
+    {
+        if (!$place) $place =  $this->state;
+        return $this->getWakaWorkflow()->getMetadataStore()->getPlaceMetadata($place)['ro_fields'] ?? []; // string place name
+    }
 
     public function listWfWorklowstateWithAutomatisation()
     {

@@ -54,6 +54,22 @@ class WorkflowBehavior extends ControllerBehavior
         }
     }
 
+    public function relationExtendConfig($config, $field, $model)
+    {
+        //trace_log('relationExtendConfig');
+        $fieldsReadOnly = $model->getWfROFields();
+        if(!count($fieldsReadOnly)) {
+            return;
+        }
+        //trace_log($fieldsReadOnly);
+        if(in_array($field , $fieldsReadOnly)) {
+            $config->view['toolbarButtons'] = false;
+            $config->view['showCheckboxes'] = false;
+            $config->manage = [];
+        } 
+        
+    }
+
     public function formExtendFields($form)
     {
         $model = $form->model;
@@ -61,6 +77,13 @@ class WorkflowBehavior extends ControllerBehavior
             $fieldsToHide = $model->getWfHiddenFields();
             foreach ($fieldsToHide as $field) {
                 $form->removeField($field);
+            }
+            $fieldsReadOnly = $model->getWfROFields();
+            foreach ($fieldsReadOnly as $field) {
+                $roField = $form->getField($field);
+                if($roField) {
+                    $roField->readOnly = true;
+                }  
             }
         }
     }

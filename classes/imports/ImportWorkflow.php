@@ -74,6 +74,7 @@ class PlacesImport implements ToCollection, WithHeadingRow, WithCalculatedFormul
                 'form_auto' => $row['form_auto'] ?? null,
                 'must_trans' => $row['must_trans'] ?? null,
                 'hidden_fields' => $row['hidden_fields'] ?? null,
+                'ro_fields' => $row['ro_fields'] ?? null,
                 'new_workflow' =>  $row['new_workflow'] ?? null,
             ];
             array_push($this->data, $obj);

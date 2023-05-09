@@ -10,7 +10,7 @@
         rulesSets:
 {% for key, rulesSet in rulesSets %}
             {{key}}:
-                fields: {% if not  rulesSet.fields %}null{% endif %} 
+                fields: {% if not rulesSet.fields %}null{% endif %} 
 {% for field in rulesSet.fields %}
                     {{field.key}}: {{field.value}}              
 {% endfor %}
@@ -64,6 +64,9 @@
 {% endif %}
 {% if place.hidden_fields %}
                 hidden_fields: [{{place.hidden_fields | trim}}]
+{% endif %}
+{% if place.ro_fields %}
+                ro_fields: [{{place.ro_fields | trim}}]
 {% endif %}
 {% endfor %}
     initial_places: {{ configs.initial_places.value }}  # or set to an array if multiple initial places
