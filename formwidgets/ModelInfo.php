@@ -164,12 +164,11 @@ class ModelInfo extends FormWidgetBase
             if ($type == 'date') {
                 $mode = $field['mode'] ?? 'date-time';
                 $value = array_get($modelvalues, $fieldValue, 'Inconnu');
-                if($value != 'Inconnu') {
+                if($value != 'Inconnu' && $value) {
                     $date = new WakaDate();
                     $value = DateTimeHelper::makeCarbon($value, false);
                     $value =  $date->localeDate($value, $mode);
-                }
-               
+                } 
             }
             
 

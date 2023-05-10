@@ -42,7 +42,7 @@ class Btns extends WidgetBase
         if ($stateConfig) {
             return $stateConfig;
         } else {
-            \Log::error('pas de config pour le state ' . $state);
+            // \Log::error('pas de config pour le state ' . $state);
             return [];
         }
     }

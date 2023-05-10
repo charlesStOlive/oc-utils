@@ -65,6 +65,8 @@ class WorkflowBehavior extends ControllerBehavior
         if(in_array($field , $fieldsReadOnly)) {
             $config->view['toolbarButtons'] = false;
             $config->view['showCheckboxes'] = false;
+            $config->view['recordOnClick'] = null;
+
             $config->manage = [];
         } 
         
