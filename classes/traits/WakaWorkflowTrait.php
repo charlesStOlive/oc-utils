@@ -412,10 +412,10 @@ trait WakaWorkflowTrait
             return true;
         } 
         if($permission != []) {
-            if($user->hasAccess($permission)) $autorisation = true;
+            if($user->hasAccess($permission,false)) $autorisation = true;
         } 
         if($noPermission != []) {
-            if(!$user->hasAccess($noPermission)) $autorisation = true;
+            if(!$user->hasAccess($noPermission, false)) $autorisation = true;
         } 
         return $autorisation;
        

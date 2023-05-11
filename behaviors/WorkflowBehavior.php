@@ -31,6 +31,11 @@ class WorkflowBehavior extends ControllerBehavior
      * @inheritDoc
      */
 
+    /**
+     * @inheritDoc
+     */
+    protected $requiredProperties = ['btnsConfig'];
+
     //protected $workflowWidget;
 
     public function __construct($controller)
@@ -38,6 +43,9 @@ class WorkflowBehavior extends ControllerBehavior
         parent::__construct($controller);
         $this->controller = $controller;
         $this->user = $controller->user;
+        //
+        $this->config = $this->makeConfig($controller->btnsConfig, []);
+        //
         \Event::listen('waka.workflow.popup_afterSave', function ($data) {
             \Session::put('popup_afterSave', $data);
         });
@@ -49,6 +57,8 @@ class WorkflowBehavior extends ControllerBehavior
 
     public function listInjectRowClass($record, $value)
     {
+        if($this->config->workflow_options['row_no_permission_allowed'] ?? false) return;
+        //
         if (!$record->userHasWfPermission()) {
             return 'nolink  disabled';
         }

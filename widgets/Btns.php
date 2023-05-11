@@ -231,7 +231,7 @@ class Btns extends WidgetBase
             $permissionLot = $this->config->tool_bar['config_lot']['permissions'] ?? null;
             //trace_log($permissionLot);
             if ($permissionLot) {
-                if (!$this->user->hasAccess($permissionLot)) {
+                if (!$this->user->hasAccess($permissionLot,false)) {
                     $hasLot = false;
                 }
             }
@@ -253,7 +253,7 @@ class Btns extends WidgetBase
             if (!$permission) {
                 $permissionGranted = true;
             } else {
-                $permissionGranted = $this->user->hasAccess($permission);
+                $permissionGranted = $this->user->hasAccess($permission,false);
             }
             //trace_log($btn);
             $btn['permissions']  = $permissionGranted;
@@ -326,8 +326,7 @@ class Btns extends WidgetBase
             // trace_log($permissions);
             // trace_log($this->user->login);
             // trace_log($this->user->hasAccess($permissions));
-            $this->user->hasAccess($permissions);
-            if (!$this->user->hasAccess($permissions)) {
+            if (!$this->user->hasAccess($permissions, false)) {
                 //Pas de permission donc true on reject
                 //trace_log("rejet");
                 return true;

@@ -92,7 +92,8 @@ class WorkflowColumn
         if($color) {
             $color = 'text-'.$color;
         }
-
+        //trace_log($this->getConfig('showWicon'));
+        //trace_log($color);
         if ($this->getConfig('showWicon')) {
             $icon = $placeMetadata['icon'] ?? null;
             $icon = "<i class='" . $icon . "'></i>";
