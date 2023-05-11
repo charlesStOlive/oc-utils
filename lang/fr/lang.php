@@ -138,6 +138,7 @@ return [
     ],
     'workflow' => [
         'btn_workflow' => 'Sauver et...',
+        'list_histo_states' => 'Historique des états',
         'change_state' => 'Changer d\'état',
         'confirm_no_trans_title' => 'Transitions interdites',
         'error' => [

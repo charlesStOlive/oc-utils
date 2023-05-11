@@ -1,0 +1,27 @@
+.w-collapse {
+  position: relative;
+  overflow: hidden;
+}
+
+.w-collapse__title {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.w-collapse .w-collapse__icon {
+  display: inline-block;
+  font-size: 1.2em;
+  margin-left: 5px;
+}
+
+.w-collapse .w-collapse__content {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .w-collapse[data-default-lg="open"] .w-collapse__content {
+    display: block;
+  }
+}

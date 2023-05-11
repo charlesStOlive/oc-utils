@@ -1,4 +1,4 @@
-<?= e(trans($field['label'])) ?>
+<?= ($field['label']) ?>
 <p class="small p-l">
     <?php if(count($field['value'])) :  ?>
     <?php foreach($field['value'] as $row) :  ?>

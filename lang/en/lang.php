@@ -171,6 +171,7 @@ return [
         'state_history' => "History of state transitions",
     ],
     'workflow' => [
+        'list_histo_states' => 'State History',
         'no_state_change' => "No transition",
         'btn_workflow' => "Save and apply a transition",
         'state_change_forbidden' => "No accommodation",

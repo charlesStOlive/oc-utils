@@ -205,6 +205,9 @@ class Plugin extends PluginBase
             $controller->addJs('/plugins/waka/utils/assets/js/froala.js');
             $controller->addJs('/plugins/waka/utils/assets/js/clipboard.min.js');
             $controller->addCss('/plugins/wcli/wconfig/assets/css/waka.css');
+            //
+            $controller->addJs('/plugins/waka/utils/assets/js/collapser.js');
+            $controller->addCss('/plugins/waka/utils/assets/css/collapser.css');
             $env = \Config::get("waka.utils::env");
             //trace_log('env : '.$env);
             if ($env == 'local') {
