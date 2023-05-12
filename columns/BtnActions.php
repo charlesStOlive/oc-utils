@@ -49,7 +49,7 @@ class BtnActions
     data-handler="onLoadActionPopup"
     data-request-data="' . $field->getRequestData() . '"
     title="Actions">
-    <i class="icon-wrench icon-lg"></i>
+    <i class="icon-wrench btn-icon-col icon-lg"></i>
 </a>
 ';
     }
