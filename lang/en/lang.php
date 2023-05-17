@@ -171,13 +171,24 @@ return [
         'state_history' => "History of state transitions",
     ],
     'workflow' => [
-        'list_histo_states' => 'State History',
-        'no_state_change' => "No transition",
         'btn_workflow' => "Save and apply a transition",
-        'state_change_forbidden' => "No accommodation",
-        'state' => "State",
-        'change_state' => "Change state",
-        'error_place' => "state error",
+        'change_state' => "Change status",
+        'confirm_no_trans_title' => 'Transitions forbidden',
+        'error' => [
+            'trans_not_found' => 'Impossible to find the transition :t_name on the model :m_name with Wf :wf_name '
+        ],
+        'popup' => [
+            'confirm_title' => 'Confirmation',
+            'next_place_label' => 'Next status : ',
+            'save_no_transition' => 'Your model will be saved without transition.',
+            'transition' => 'Transition : '
+        ],
+        'list_histo_states' => 'Status history',
+        'must_trans' => 'Compulsory transition',
+        'no_state_change' => "Do not apply any transition",
+        'state' => "Status",
+        'state_change_forbidden' => "Status change forbidden",
+        
     ],
     'prod' => [
         'production' => "Production",

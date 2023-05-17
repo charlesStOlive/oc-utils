@@ -20,7 +20,7 @@
                 <?php if ($emptyOption): ?>
                 <div class="radio custom-radio">
                     <input checked="checked" name="<?= $field->getName() ?>" value="" type="radio" id="lw_0" />
-                    <label for="lw_0">Ne pas changer d'état</label>
+                    <label for="lw_0"><?=lang('waka.utils::lang.workflow.no_change_state') ?></label>
                 </div>
                 <?php endif ?>
                 <?php 
