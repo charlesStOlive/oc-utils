@@ -1,10 +1,16 @@
-<?= ($field['label']) ?>
-<p class="small p-l">
-    <?php if(count($field['value'])) :  ?>
-    <?php foreach($field['value'] as $row) :  ?>
-    <?= $row ?><?php if(next( $field['value'])) { ?> <br> <?php } ?>
-    <?php endforeach ?>
-    <?php else :  ?>
-    <i style="color: gray;">Aucun</i>
-    <?php endif  ?>
-</p>
+<div data-attribute="w-collapse" data-default-lg="open">
+    <div class="w-collapse__title field-section">
+        <h4><?=$data['label']?></h4>
+        <span class="w-collapse__icon"></span>
+    </div>
+    <div class="w-collapse__content">
+        <ul>
+            <?php foreach($data['value'] as $childData) : ?>
+                <li>
+                    <div>-<?=$childData?></div>
+                </li>
+                
+            <?php endforeach ?>
+        </ul>
+    </div>
+</div>
