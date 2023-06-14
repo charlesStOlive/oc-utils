@@ -185,7 +185,7 @@ return [
         ],
         'list_histo_states' => 'Status history',
         'must_trans' => 'Compulsory transition',
-        'no_state_change' => "Do not apply any transition",
+        'no_change_state' => "Do not apply any transition",
         'state' => "Status",
         'state_change_forbidden' => "Status change forbidden",
         
