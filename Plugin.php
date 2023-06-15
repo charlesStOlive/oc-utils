@@ -5,11 +5,13 @@ namespace Waka\Utils;
 use Backend;
 use Event;
 use Lang;
+use App;
+use Config;
+use Illuminate\Foundation\AliasLoader;
 use Mexitek\PHPColors\Color;
 use System\Classes\CombineAssets;
 use System\Classes\PluginBase;
 use View;
-use Illuminate\Foundation\AliasLoader;
 use Waka\Utils\Classes\DataSourceList;
 use Waka\Utils\Columns\BtnActions;
 use Waka\Utils\Columns\CalculColumn;
@@ -194,9 +196,34 @@ class Plugin extends PluginBase
      */
     public function register()
     {
-        $alias = AliasLoader::getInstance();
-        $alias->alias('DataSources', 'Waka\Utils\Facades\DataSources');
 
+        $aliasLoader = AliasLoader::getInstance();
+        //boot Maatwebsite/excel
+        $aliasLoader->alias('Excel', \Maatwebsite\Excel\Facades\Excel::class);
+        App::register(\Maatwebsite\Excel\ExcelServiceProvider::class);
+        $registeredAppPathConfig = require __DIR__ . '/config/excel.php';
+        \Config::set('excel', $registeredAppPathConfig);
+        //boot ZeroDaHero/LaravelWorkflow
+        $aliasLoader->alias('Workflow', \ZeroDaHero\LaravelWorkflow\Facades\WorkflowFacade::class);
+        App::register(\ZeroDaHero\LaravelWorkflow\WorkflowServiceProvider::class);
+        $registeredAppPathConfig = require __DIR__ . '/config/workflow.php';
+        \Config::set('workflow', $registeredAppPathConfig);
+        //
+        $aliasLoader->alias('ColorPalette', \NikKanetiya\LaravelColorPalette\ColorPaletteFacade::class);
+        App::register(\NikKanetiya\LaravelColorPalette\ColorPaletteServiceProvider::class);
+        //Boot backup
+        App::register(\Spatie\Backup\BackupServiceProvider::class);
+        $registeredAppPathConfig = require __DIR__ . '/config/backup.php';
+        $registeredWcliAppPath = plugins_path('wcli/wconfig/config/backup.php');
+        if(file_exists($registeredWcliAppPath)) {
+            $registeredWcliAppPathConfig = require $registeredWcliAppPath;
+            \Config::set('backup', $registeredWcliAppPathConfig);
+        } else {
+            \Config::set('backup', $registeredAppPathConfig);
+        }
+        //
+        $aliasLoader->alias('DataSources', 'Waka\Utils\Facades\DataSources');
+        //Fin  boot package composer
         \App::singleton('datasources', function () {
             return new \Waka\Utils\Classes\Ds\DataSources;
         });
