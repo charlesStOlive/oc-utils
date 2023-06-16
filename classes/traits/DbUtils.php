@@ -21,18 +21,10 @@ trait DbUtils
     }
     public static function countScope($scope)
     {
-        $count = null;
         try {
-            $count = self::{$scope}()->count();
-            //trace_log($count);
-        } catch(Throwable $t) {
-            $count = null;
-        }
-        //
-        if(!$count) {
+            return self::{$scope}()->count();
+        } catch(\Error $t) {
             return null;
-        } else {
-            return $count;
         }
     }
 
