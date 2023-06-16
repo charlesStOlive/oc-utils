@@ -4,35 +4,35 @@ files:
         title: Installation App
         group: "10 Installation"
         comment: "Comment installer le projet sur un nouveau serveur"
-        permission: waka.utils.technics
+        permissions: waka.docser.technics
         relativePath: waka/utils/docs
         order: 1
     utils_datasource:
         title: Principe des Datasource
         group: "09 Configuration"
         relativePath: waka/utils/docs
-        permission: waka.utils.technics
+        permissions: waka.docser.technics
         comment: "La Base de fusion des outils Notilac."
         order: 10
     utils_twig:
         title: Balise twig
         group: "03 Edition"
         relativePath: waka/utils/docs
-        permission: waka.utils.base
+        permissions: waka.docser.integrator
         comment: "liste des balises et fonctions twig disponibles pour l'édition"
         order: 1
     utils_rulebuilder:
         title: Principe des Composants dynamiques
         group: "09 Configuration"
         relativePath: waka/utils/docs
-        permission: waka.utils.base
+        permissions: waka.docser.technics
         comment: "Explications des asks, fncs, conditions, etc."
         order: 20
     utils_comande:
         title: Commandes artisan
         group: "99 Commandes"
         relativePath: waka/utils/docs
-        permission: waka.utils.technics
+        permissions: waka.docser.technics
         comment: "Niveau developpeur laravel & october/winter"
         order: 30
     

@@ -245,10 +245,6 @@ class Plugin extends PluginBase
             }
         });
 
-        //Foralaedotor
-        \Backend\Classes\Controller::extend(function ($controller) {
-        });
-
         $this->registerConsoleCommand('waka.injector', 'Waka\Utils\Console\CreateInjector');
         $this->registerConsoleCommand('waka.mc', 'Waka\Utils\Console\CreateModelController');
         $this->registerConsoleCommand('waka.uicolors', 'Waka\Utils\Console\CreateUiColors');
