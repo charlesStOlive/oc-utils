@@ -164,7 +164,8 @@ class GraphvizDumper implements DumperInterface
             //trace_log($functions);
             $gard = [];
             $prod = [];
-            $trait = [];
+            $enter = [];
+            $entered = [];
 
             if ($functions) {
                 //trace_log($functions);
@@ -183,8 +184,11 @@ class GraphvizDumper implements DumperInterface
                         $args = 
                          array_push($prod, $fncKeyName);
                     }
-                    else {
-                         array_push($trait, $fncKeyName);
+                    elseif ($type == 'enter') {
+                         array_push($enter, $fncKeyName);
+                    }
+                    elseif ($type == 'entered') {
+                         array_push($entered, $fncKeyName);
                     }
                 }
             }
@@ -196,8 +200,11 @@ class GraphvizDumper implements DumperInterface
             if(count($prod)) {
                 $prod = "Prod: " . implode(',',$prod);
             }
-            if(count($trait)) {
-                $trait = "Trait: " . implode(',',$trait);
+            if(count($enter)) {
+                $enter = "Enter: " . implode(',',$enter);
+            }
+            if(count($entered)) {
+                $entered = "Entered: " . implode(',',$entered);
             }
             
             //trace_log($prod);
@@ -222,7 +229,8 @@ class GraphvizDumper implements DumperInterface
                 'color' => $color,
                 'gard' => $gard,
                 'prod' => $prod,
-                'trait' => $trait,
+                'enter' => $enter,
+                'entered' => $entered,
                 'rules' => $rules,
                 
             ];
@@ -288,11 +296,12 @@ class GraphvizDumper implements DumperInterface
         $button = $this->createButtonRow($trans['button'] ?? null, $trans['color'] ?? null);
         $rules = $this->createRow($trans['rules'] ?? null);
         $gard = $this->createRightRow($trans['gard'] ?? null);
+        $enter = $this->createRightRow($trans['enter'] ?? null);
+        $entered = $this->createRightRow($trans['entered'] ?? null);
         $prod = $this->createRightRow($trans['prod'] ?? null);
-        $trait = $this->createRightRow($trans['trait'] ?? null);
         $transName = $this->escape($transName);
         $transName = str_replace('|', '<BR/>', $transName);
-        $text = sprintf('<<table border="0"  cellborder="0"><tr><td><b><font point-size="14"> %s</font></b></td></tr>%s %s %s %s %s %s</table>>', $transName, $code, $button,$rules, $gard, $trait, $prod);
+        $text = sprintf('<<table border="0"  cellborder="0"><tr><td><b><font point-size="14"> %s</font></b></td></tr>%s %s %s %s %s %s %s</table>>', $transName, $code, $button,$rules, $gard, $enter,$entered, $prod);
         return $text;
     }
 
