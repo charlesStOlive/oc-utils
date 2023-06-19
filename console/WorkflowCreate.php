@@ -129,7 +129,6 @@ class WorkflowCreate extends BaseScaffoldCommand
             $startPath = env('SRC_WAKA');
         }
         if ($this->wk_author == 'wcli') {
-            //trace_log(env('SRC_WCLI','merde'));
             $startPath = env('SRC_WCLI');
         }
 

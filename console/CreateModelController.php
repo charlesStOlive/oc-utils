@@ -86,7 +86,6 @@ class CreateModelController extends BaseScaffoldCommand
             $startPath = env('SRC_WAKA');
         } 
         if($this->w_author == 'wcli') {
-            //trace_log(env('SRC_WCLI','merde'));
             $startPath = env('SRC_WCLI');
         }
 

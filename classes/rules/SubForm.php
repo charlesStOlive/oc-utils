@@ -477,11 +477,10 @@ class SubForm extends Extendable
                     continue;
                 }
                 if (!in_array($targetClass, $onlyClass) && $onlyClass != [] && $targetClass != null) {
-                    //trace_log('merde');
                     continue;
                 }
                 if (in_array($targetClass, $excludeClass) && $excludeClass != [] && $targetClass != null) {
-                    //trace_log('merde');
+
                     continue;
                 }
                 $obj = new $class;
