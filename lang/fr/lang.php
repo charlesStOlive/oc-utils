@@ -153,6 +153,8 @@ return [
         'no_change_state' => 'Ne pas changer d\'état',
         'state' => 'Etat',
         'state_change_forbidden' => 'Changement état interdit'
-        
+    ],
+    'validators' => [
+        'dimensions_min' => 'le champs  :attribute à une ou plusieurs image trop petites ( Lmin :width Hmin :height )'
     ]
 ];

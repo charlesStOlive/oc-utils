@@ -215,7 +215,7 @@ class Plugin extends PluginBase
         App::register(\Spatie\Backup\BackupServiceProvider::class);
         $registeredAppPathConfig = require __DIR__ . '/config/backup.php';
         $registeredWcliAppPath = plugins_path('wcli/wconfig/config/backup.php');
-        if(file_exists($registeredWcliAppPath)) {
+        if (file_exists($registeredWcliAppPath)) {
             $registeredWcliAppPathConfig = require $registeredWcliAppPath;
             \Config::set('backup', $registeredWcliAppPathConfig);
         } else {
@@ -368,6 +368,8 @@ class Plugin extends PluginBase
         ];
     }
 
+    
+
     /**
      * Boot method, called right before the request route.
      *
@@ -479,6 +481,18 @@ class Plugin extends PluginBase
                 }
             }
         });
+
+        \Validator::replacer('dimensions_min', function ($message, $attribute, $rule, $parameters) {
+            //trace_log($parameters);
+            return \Lang::get('waka.utils::lang.validators.dimensions_min', ['attribute' => $attribute, 'width' => $parameters[0],  'height' => $parameters[0]]);
+        });
+    }
+
+    public function registerValidationRules()
+    {
+        return [
+            'dimensions_min' => \Waka\Utils\Classes\Validators\DimensionsMin::class,
+        ];
     }
 
     /**
@@ -551,7 +565,7 @@ class Plugin extends PluginBase
                 'order' => 150,
                 'permissions' => ['wcli.wconfig.admin'],
             ],
-            
+
 
         ];
     }
