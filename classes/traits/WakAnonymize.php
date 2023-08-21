@@ -7,7 +7,7 @@ use Session;
 trait WakAnonymize
 {
 
-    public $anonymizeText = "Anonimisé";
+    public $anonymizeText = "Anonymisé";
 
     //public $anoymizeFields = [];
 
